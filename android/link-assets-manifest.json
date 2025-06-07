@@ -1,0 +1,53 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/IRANSans(FaNum).ttf",
+      "sha1": "830c3bbddc74d5cf3f5dceedcdc25d25864622be"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans(FaNum)_Black.ttf",
+      "sha1": "cf50bdbbfa96de5474cbf839d89b46829a04efa8"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans(FaNum)_Bold.ttf",
+      "sha1": "30804cf6192e8c51327fe30da4faad5ecd8d24b8"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans(FaNum)_Light.ttf",
+      "sha1": "071dbe91da0e5f2af93f5492ba470195cb88854e"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans(FaNum)_Medium.ttf",
+      "sha1": "803845d97ad623faa1113612b726c8b1852ecf03"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans(FaNum)_UltraLight.ttf",
+      "sha1": "d77e6dba7dbf6d6c3cde0b649b3f28f9593b1a96"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans.ttf",
+      "sha1": "0deeaccf16de65ab0f2f6fe434f3e003c02606e9"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans_Black.ttf",
+      "sha1": "26a01a20ac14837b10239bc0fb567049ac620117"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans_Bold.ttf",
+      "sha1": "b443e2d1fea6137ff3cc363342e980be0c91ee99"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans_Light.ttf",
+      "sha1": "65b01a446223be9913ce9425cf062e61d7820298"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans_Medium.ttf",
+      "sha1": "0bc1dda1dd6f52b0dbe49f89d5f41b7e8e034a74"
+    },
+    {
+      "path": "src/assets/fonts/IRANSans_UltraLight.ttf",
+      "sha1": "947714a0e097e9c8a5001b1acc466baa1a33fd65"
+    }
+  ]
+}

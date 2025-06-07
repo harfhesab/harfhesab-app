@@ -11,6 +11,18 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		247906A1FC9D470AA29F9B12 /* IRANSans(FaNum).ttf in Resources */ = {isa = PBXBuildFile; fileRef = 57F876D2CD2B47638471B946 /* IRANSans(FaNum).ttf */; };
+		5A93215700E84721A6111F3E /* IRANSans(FaNum)_Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7AE8C91901043C3A551FEE7 /* IRANSans(FaNum)_Black.ttf */; };
+		63F8552815194E2D9BDC3D89 /* IRANSans(FaNum)_Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 129DD9DAD63E4407BC256758 /* IRANSans(FaNum)_Bold.ttf */; };
+		0C1249401A9D4AAFA95EB326 /* IRANSans(FaNum)_Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 43C005AA14C841C0A5C037F9 /* IRANSans(FaNum)_Light.ttf */; };
+		393571C4CC9B459E94ECA5C6 /* IRANSans(FaNum)_Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F9B3CF788354579A1B8157C /* IRANSans(FaNum)_Medium.ttf */; };
+		8FD4254A19024EF38A1E7481 /* IRANSans(FaNum)_UltraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2035FF5E96714B7EA20EF93A /* IRANSans(FaNum)_UltraLight.ttf */; };
+		F67C1B24508645CDAA82BA59 /* IRANSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81921FB3A77446C2A947556B /* IRANSans.ttf */; };
+		9E7BED0DA3504BD2B52EEF96 /* IRANSans_Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A894F602B41D4530886AC340 /* IRANSans_Black.ttf */; };
+		70315F051905418F8C896DDB /* IRANSans_Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B529B34053D4B19956B27F6 /* IRANSans_Bold.ttf */; };
+		ED1B431AC1BB4A85AE8F86C4 /* IRANSans_Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9920210F21734CE9A717077C /* IRANSans_Light.ttf */; };
+		220D6A0D694441A192E4ECF4 /* IRANSans_Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AE6725C973CA4E2384CDBE77 /* IRANSans_Medium.ttf */; };
+		0F8C517DA6364CE4B94EEF69 /* IRANSans_UltraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A034EACA95C44B2A0861777 /* IRANSans_UltraLight.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +47,18 @@
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = project/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = project/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		57F876D2CD2B47638471B946 /* IRANSans(FaNum).ttf */ = {isa = PBXFileReference; name = "IRANSans(FaNum).ttf"; path = "../src/assets/fonts/IRANSans(FaNum).ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D7AE8C91901043C3A551FEE7 /* IRANSans(FaNum)_Black.ttf */ = {isa = PBXFileReference; name = "IRANSans(FaNum)_Black.ttf"; path = "../src/assets/fonts/IRANSans(FaNum)_Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		129DD9DAD63E4407BC256758 /* IRANSans(FaNum)_Bold.ttf */ = {isa = PBXFileReference; name = "IRANSans(FaNum)_Bold.ttf"; path = "../src/assets/fonts/IRANSans(FaNum)_Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		43C005AA14C841C0A5C037F9 /* IRANSans(FaNum)_Light.ttf */ = {isa = PBXFileReference; name = "IRANSans(FaNum)_Light.ttf"; path = "../src/assets/fonts/IRANSans(FaNum)_Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9F9B3CF788354579A1B8157C /* IRANSans(FaNum)_Medium.ttf */ = {isa = PBXFileReference; name = "IRANSans(FaNum)_Medium.ttf"; path = "../src/assets/fonts/IRANSans(FaNum)_Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2035FF5E96714B7EA20EF93A /* IRANSans(FaNum)_UltraLight.ttf */ = {isa = PBXFileReference; name = "IRANSans(FaNum)_UltraLight.ttf"; path = "../src/assets/fonts/IRANSans(FaNum)_UltraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		81921FB3A77446C2A947556B /* IRANSans.ttf */ = {isa = PBXFileReference; name = "IRANSans.ttf"; path = "../src/assets/fonts/IRANSans.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A894F602B41D4530886AC340 /* IRANSans_Black.ttf */ = {isa = PBXFileReference; name = "IRANSans_Black.ttf"; path = "../src/assets/fonts/IRANSans_Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8B529B34053D4B19956B27F6 /* IRANSans_Bold.ttf */ = {isa = PBXFileReference; name = "IRANSans_Bold.ttf"; path = "../src/assets/fonts/IRANSans_Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9920210F21734CE9A717077C /* IRANSans_Light.ttf */ = {isa = PBXFileReference; name = "IRANSans_Light.ttf"; path = "../src/assets/fonts/IRANSans_Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AE6725C973CA4E2384CDBE77 /* IRANSans_Medium.ttf */ = {isa = PBXFileReference; name = "IRANSans_Medium.ttf"; path = "../src/assets/fonts/IRANSans_Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2A034EACA95C44B2A0861777 /* IRANSans_UltraLight.ttf */ = {isa = PBXFileReference; name = "IRANSans_UltraLight.ttf"; path = "../src/assets/fonts/IRANSans_UltraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +117,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				7169299D475F415D96304401 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -115,6 +140,26 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		7169299D475F415D96304401 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				57F876D2CD2B47638471B946 /* IRANSans(FaNum).ttf */,
+				D7AE8C91901043C3A551FEE7 /* IRANSans(FaNum)_Black.ttf */,
+				129DD9DAD63E4407BC256758 /* IRANSans(FaNum)_Bold.ttf */,
+				43C005AA14C841C0A5C037F9 /* IRANSans(FaNum)_Light.ttf */,
+				9F9B3CF788354579A1B8157C /* IRANSans(FaNum)_Medium.ttf */,
+				2035FF5E96714B7EA20EF93A /* IRANSans(FaNum)_UltraLight.ttf */,
+				81921FB3A77446C2A947556B /* IRANSans.ttf */,
+				A894F602B41D4530886AC340 /* IRANSans_Black.ttf */,
+				8B529B34053D4B19956B27F6 /* IRANSans_Bold.ttf */,
+				9920210F21734CE9A717077C /* IRANSans_Light.ttf */,
+				AE6725C973CA4E2384CDBE77 /* IRANSans_Medium.ttf */,
+				2A034EACA95C44B2A0861777 /* IRANSans_UltraLight.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -185,6 +230,18 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				247906A1FC9D470AA29F9B12 /* IRANSans(FaNum).ttf in Resources */,
+				5A93215700E84721A6111F3E /* IRANSans(FaNum)_Black.ttf in Resources */,
+				63F8552815194E2D9BDC3D89 /* IRANSans(FaNum)_Bold.ttf in Resources */,
+				0C1249401A9D4AAFA95EB326 /* IRANSans(FaNum)_Light.ttf in Resources */,
+				393571C4CC9B459E94ECA5C6 /* IRANSans(FaNum)_Medium.ttf in Resources */,
+				8FD4254A19024EF38A1E7481 /* IRANSans(FaNum)_UltraLight.ttf in Resources */,
+				F67C1B24508645CDAA82BA59 /* IRANSans.ttf in Resources */,
+				9E7BED0DA3504BD2B52EEF96 /* IRANSans_Black.ttf in Resources */,
+				70315F051905418F8C896DDB /* IRANSans_Bold.ttf in Resources */,
+				ED1B431AC1BB4A85AE8F86C4 /* IRANSans_Light.ttf in Resources */,
+				220D6A0D694441A192E4ECF4 /* IRANSans_Medium.ttf in Resources */,
+				0F8C517DA6364CE4B94EEF69 /* IRANSans_UltraLight.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

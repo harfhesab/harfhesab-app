@@ -1,0 +1,10 @@
+password    PodKiosk$@$2024
+Alias       kiosk_key
+password    PodKiosk$@$2024
+validity    25
+            Kiosk Pod
+            Kiosk Pod
+            Pod
+            Tehran
+            Tehran
+            IR
