@@ -1,35 +1,12 @@
 import { BSON } from "realm";
-
-export interface WordType {
-  _id: BSON.ObjectId;
-  word: string;
-  word_hint?: string;
-  unknown_word?: boolean;
-  letters?: string[];
-  additional_words?: string[];
-  order?: number;
-};
-
-export interface PartType {
-  _id: BSON.ObjectId;
-  sentence: string;
-  sentence_hint?: string;
-  words: WordType[];
-  order?: number;
-};
-
-export interface MediaType {
-  path: string;
-  order?: number;
-  file_type?: string;
-  duration?: string;
-};
+import { IMediaType } from "../general/embeddes/MediaTypes";
+import { IPartStageType } from "../general/embeddes/PartStageTypes";
 
 export interface IStageType {
   _id: BSON.ObjectId;
-  parts: PartType[];
-  media: MediaType[];
-  voice: MediaType[];
+  parts: IPartStageType[];
+  media: IMediaType[];
+  voice: IMediaType[];
   stage_hint?: string;
   season: BSON.ObjectId;
   language?: BSON.ObjectId;

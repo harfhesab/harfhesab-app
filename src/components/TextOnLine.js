@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
 function TextOnLine(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
 
     return(
         <View style={[styles.container, {marginTop:props.top, marginBottom:props.bottom}]}>

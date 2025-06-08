@@ -10,7 +10,7 @@ export class PackageSeason extends Realm.Object<PackageSeason> {
   media!: Media[];
   music?: Media;
   badg?: string;
-  season_number: SeasonNumberInPackage[];
+  season_number!: SeasonNumberInPackage[];
   number_stage?: number;
   is_visible: boolean = true;
   is_active: boolean = true;

@@ -6,7 +6,7 @@ import Font from '../../utils/Font';
 
 const width = Dimensions.get('window').width;
 function TimerShowOTP (props) {
-  const colors = useTheme().colors;
+  const {colors} = useTheme().colors;
   const [minutes, setMinutes] = useState(props.minutes)
   const [seconds, setSeconds] = useState(props.seconds)
   

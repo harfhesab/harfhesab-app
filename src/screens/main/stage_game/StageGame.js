@@ -1,18 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {useTheme} from '@react-navigation/native';
+import { getRealm } from '../../../realm';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
 
-    useEffect(()=>{
+    useEffect(() => {
+        console.log("000000000000000")
         getData()
-    }, [])
-    const getData = async()=>{
-        
+    }, []);
+    const getData = async ()=>{
+        const realm = await getRealm();
+        console.log("111111111111111", realm)
     }
     const tryAgain = ()=>{
         setLoading(true)
@@ -35,3 +38,4 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 });
+export default StageGame;

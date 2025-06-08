@@ -5,7 +5,7 @@ import Font from '../utils/Font';
 
 const width = Dimensions.get('window').width
 function FooterPaginate({loading, tryAgain, tryOperation}){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     return(
         tryAgain == true?
         <View style={styles.container}>

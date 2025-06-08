@@ -5,7 +5,7 @@ import { BarIndicator } from 'react-native-indicators';
 
 const width = Dimensions.get('window').width;
 function GraphLoading(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     return(
         <View style={styles.container}>
             <BarIndicator color={colors.color} count={5} size={40}/>

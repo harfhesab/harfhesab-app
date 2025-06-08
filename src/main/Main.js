@@ -6,10 +6,6 @@ import MainRoutes from './MainRoutes';
 import SignRoutes from './SignRoutes';
 import Toast from 'react-native-toast-message';
 import ToastConfig from '../components/ToastConfig';
-import MyAlert from '../components/alert/MyAlert';
-import AlertHelper from '../components/alert/AlertHelper';
-import FrontLoad from '../components/frontLoading/FrontLoad';
-import LoadingHelper from '../components/frontLoading/LoadingHelper';
 import Globals from '../utils/Globals';
 import { useSelector } from 'react-redux';
 
@@ -36,8 +32,6 @@ const Main = (props) => {
               <SignRoutes/>
             }
             <Toast config={ToastConfig}/>
-            <MyAlert ref = {Ref => {AlertHelper.setRef(Ref)}}/>
-            <FrontLoad ref = {Ref => {LoadingHelper.setRef(Ref)}}/>
         </NavigationContainer>
       </PaperProvider>
     </SafeAreaView>

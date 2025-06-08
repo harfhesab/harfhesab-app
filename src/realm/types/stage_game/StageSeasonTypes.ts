@@ -1,15 +1,4 @@
-export interface IStageSeasonMedia {
-  path: string;
-  order?: number;
-  file_type?: string;
-  duration?: string;
-}
-
-export interface IStageSeasonMusic {
-  path?: string;
-  file_type?: string;
-  duration?: string;
-}
+import { IMediaType } from "../general/embeddes/MediaTypes";
 
 export interface IStageSeason {
   _id?: Realm.BSON.ObjectId;
@@ -17,8 +6,8 @@ export interface IStageSeason {
   description?: string;
   language?: Realm.BSON.ObjectId;
 
-  media: IStageSeasonMedia[];
-  music?: IStageSeasonMusic;
+  media: IMediaType[];
+  music?: IMediaType;
 
   badg?: string;
   season_number?: number;

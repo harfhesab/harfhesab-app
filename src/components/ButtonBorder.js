@@ -5,7 +5,7 @@ import { DotIndicator } from 'react-native-indicators';
 import {useTheme} from '@react-navigation/native';
 
 function ButtonBorder(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     return(
         <TouchableOpacity activeOpacity={0.7} onPress={props.onPress} style={{borderRadius:props.borderRadius, width:props.width, height:props.height, alignItems:'center', justifyContent:'center', borderColor:props?.color || colors.color, borderWidth:1}}>
             {

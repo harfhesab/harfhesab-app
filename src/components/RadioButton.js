@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 
 function RadioButton(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     
     return(
         <View pointerEvents={"none"} style={{borderRadius:props.size/2, borderWidth:1.5, borderColor:props.color, alignItems:'center', justifyContent:'center', width:props.size, height:props.size, backgroundColor:colors.background4}}>

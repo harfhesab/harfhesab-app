@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface AuthState {
+interface UiState {
   theme: string;
 }
 
-const initialState: AuthState = {
+const initialState: UiState = {
   theme: "t1",
 };
 
-const authSlice = createSlice({
+const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
@@ -21,6 +21,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { changeTheme } = authSlice.actions;
+export const { changeTheme } = uiSlice.actions;
 
-export default authSlice.reducer;
+export default uiSlice.reducer;

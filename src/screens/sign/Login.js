@@ -37,7 +37,7 @@ function Login(props){
         <View style={styles.container}>
             <View style={{flex:1, flexDirection:'column', justifyContent:'space-between', alignItems:'center'}}>
                     <View style={{width:width, marginTop:80, alignItems:'center'}}>
-                        <Text style={{fontFamily:Font.bold, color:colors.text_white_1, fontSize:25, marginTop:40}}>{"ورود به بازی"}</Text>
+                        <Text style={{fontFamily:Font.bold, color:colors.color, fontSize:25, marginTop:40}}>{"ورود به بازی"}</Text>
                     </View>
                     <View style={{width:width-40, marginBottom:80, gap:20}}>
                         <View style={{ width:"100%"}}>

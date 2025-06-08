@@ -7,7 +7,7 @@ import { login, logout } from '../../../redux/slices/authSlice';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
 

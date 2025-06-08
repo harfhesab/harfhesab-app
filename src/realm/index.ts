@@ -33,6 +33,5 @@ export const getRealm = async (): Promise<Realm> => {
     schema: schemas,
     schemaVersion: 1,
   });
-
   return realmInstance;
 };

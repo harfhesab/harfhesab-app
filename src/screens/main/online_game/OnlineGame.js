@@ -4,7 +4,7 @@ import {useTheme} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get("window")
 function OnlineGame(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
 
@@ -35,3 +35,4 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 });
+export default OnlineGame;

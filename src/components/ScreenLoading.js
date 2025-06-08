@@ -9,7 +9,7 @@ import Globals from '../utils/Globals';
 
 const width = Dimensions.get('window').width;
 function ScreenLoading(props){
-    const colors = useTheme().colors;
+    const {colors} = useTheme().colors;
     
     return(
         <View style={styles.container}>

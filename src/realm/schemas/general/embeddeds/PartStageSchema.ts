@@ -5,8 +5,8 @@ export class WordStage extends Realm.Object<WordStage> {
   word!: string;
   word_hint?: string;
   unknown_word?: boolean;
-  letters?: string[];
-  additional_words?: string[];
+  letters: string[] = []; 
+  additional_words: string[] = [];
   order?: number;
 
   static schema: Realm.ObjectSchema = {
@@ -17,8 +17,8 @@ export class WordStage extends Realm.Object<WordStage> {
       word: "string",
       word_hint: "string?",
       unknown_word: { type: "bool", default: false },
-      letters: "string[]?",
-      additional_words: "string[]?",
+      letters: "string[]",
+      additional_words: "string[]",
       order: "int?",
     },
   };
