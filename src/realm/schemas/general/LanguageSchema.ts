@@ -1,7 +1,7 @@
-import Realm from "realm";
+import { BSON, Realm } from "realm";
 
 export class Language extends Realm.Object<Language> {
-  _id!: Realm.BSON.ObjectId;
+  _id!: BSON.ObjectId;
   name!: string;
   badg?: string;
   stage_game?: boolean;

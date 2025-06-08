@@ -1,29 +1,27 @@
 import Realm from "realm";
 import { StageGameVersionControl } from "./schemas/stage_game/StageGameVersionControlSchema";
-import {
-    Stage,
-    Word,
-    Part,
-    Media
-} from "./schemas/stage_game/StageSchema";
-import {
-  StageSeason,
-  StageSeasonMedia,
-  StageSeasonMusic,
-} from "./schemas/stage_game/StageSeasonSchema";
+import { StageSeason } from "./schemas/stage_game/StageSeasonSchema";
+import { Stage } from "./schemas/stage_game/StageSchema";
+import { Media } from "./schemas/general/embeddeds/MediaSchema";
+import { PartStage, WordStage } from "./schemas/general/embeddeds/PartStageSchema";
+import { Language } from "./schemas/general/LanguageSchema";
+import { PackageSeason, SeasonNumberInPackage } from "./schemas/package_game/PackageSeasonSchema";
+import { PackageStage } from "./schemas/package_game/PackageStageSchema";
 
 const schemas = [
     StageGameVersionControl,
-    /////////////////////////////
+    StageSeason,
     Stage,
-    Word,
-    Part,
+    /////////////////////////////
+    PartStage,
+    WordStage,
     Media,
     /////////////////////////////
-    StageSeason,
-    StageSeasonMedia,
-    StageSeasonMusic,
+    Language,
     /////////////////////////////
+    PackageSeason,
+    SeasonNumberInPackage,
+    PackageStage
 ];
 
 let realmInstance: Realm | null = null;
