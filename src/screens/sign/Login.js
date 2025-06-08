@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import {StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity} from 'react-native';
-import { connect } from 'react-redux';
 import {useTheme} from '@react-navigation/native';
 import Font from '../../utils/Font';
 import Globals from '../../utils/Globals';
@@ -8,11 +7,13 @@ import ButtonLinear from '../../components/ButtonLinear';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import {loginOperation} from '../../redux/actions/MainAction';
 import Icon from '../../utils/Icon';
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/slices/authSlice';
 
 const {width} = Dimensions.get("window")
 function Login(props){
+    const dispatch = useDispatch();
     const {colors} = useTheme().colors;
     const [phone, setPhone] = useState("")
     const [focus, setFocus] = useState('')
@@ -27,7 +28,8 @@ function Login(props){
         setPhone(text)
     }
     const loginRequest = ()=>{
-        props.loginOperation(true)
+        const fakeToken = "your_access_token_here";
+        dispatch(login({ token: fakeToken }));
     }
     
 
@@ -78,9 +80,4 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
 });
-const mapDispatchToProps = (dispatch) => {
-    return {
-        loginOperation: (data) => dispatch(loginOperation(data)),
-    }
-}
-export default connect(null, mapDispatchToProps)(Login)
+export default Login

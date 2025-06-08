@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
-import { connect } from 'react-redux';
 import {useTheme} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get("window")
@@ -36,15 +35,3 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 });
-
-const mapStateToProps = (state) => {
-    return {
-        
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(OnlineGame)

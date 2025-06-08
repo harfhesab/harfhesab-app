@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
-import { connect } from 'react-redux';
 import {useTheme} from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../../redux/store/RootReducer';
+import { login, logout } from '../../../redux/slices/authSlice';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
@@ -37,14 +39,4 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapStateToProps = (state) => {
-    return {
-        
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Account)
+export default Account;

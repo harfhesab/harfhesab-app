@@ -1,2 +1,0 @@
-export const HIDE_SPLASH = "HIDE_SPLASH";
-export const LOGIN_OPERATION = "LOGIN_OPERATION";
