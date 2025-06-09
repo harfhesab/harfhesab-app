@@ -1,5 +1,7 @@
+import { BSON } from "realm";
+
 export interface IStageGameVersionControl {
-  _id: Realm.BSON.ObjectId;
+  _id: BSON.ObjectId;
   version_created: number;
   version_updated: number;
   version_deleted: number;

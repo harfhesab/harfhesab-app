@@ -1,8 +1,8 @@
-import { BSON, Realm } from "realm";
+import Realm, { BSON } from "realm";
 import { Media } from "../general/embeddeds/MediaSchema";
 import { PartStage } from "../general/embeddeds/PartStageSchema";
 
-export class Stage extends Realm.Object<Stage> {
+export class PackageStage extends Realm.Object<PackageStage> {
   _id!: BSON.ObjectId;
   parts!: PartStage[];
   media!: Media[];
@@ -10,8 +10,7 @@ export class Stage extends Realm.Object<Stage> {
   stage_hint?: string;
   season!: BSON.ObjectId;
   language?: BSON.ObjectId;
-  stage_number_in_language!: number;
-  stage_number_in_season!: number;
+  stage_number!: number;
   is_visible?: boolean;
   is_active?: boolean;
   version_created?: number;
@@ -21,7 +20,7 @@ export class Stage extends Realm.Object<Stage> {
   updatedAt?: Date;
 
   static schema: Realm.ObjectSchema = {
-    name: "Stage",
+    name: "PackageStage",
     primaryKey: "_id",
     properties: {
       _id: "objectId",
@@ -31,8 +30,7 @@ export class Stage extends Realm.Object<Stage> {
       stage_hint: "string?",
       season: "objectId",
       language: "objectId?",
-      stage_number_in_language: "int",
-      stage_number_in_season: "int",
+      stage_number: "int",
       is_visible: { type: "bool", default: true },
       is_active: { type: "bool", default: true },
       version_created: "int?",

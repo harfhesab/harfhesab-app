@@ -1,12 +1,12 @@
 import { BSON } from "realm";
-import { IMediaType } from "../general/embeddes/MediaTypes";
-import { IPartStageType } from "../general/embeddes/PartStageTypes";
+import { IMedia } from "../general/embeddes/media.interface";
+import { IPartStage } from "../general/embeddes/part-stage.interface";
 
-export interface IStageType {
+export interface IStage {
   _id: BSON.ObjectId;
-  parts: IPartStageType[];
-  media: IMediaType[];
-  voice: IMediaType[];
+  parts: IPartStage[];
+  media: IMedia[];
+  voice: IMedia[];
   stage_hint?: string;
   season: BSON.ObjectId;
   language?: BSON.ObjectId;

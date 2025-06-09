@@ -1,6 +1,6 @@
 import { BSON } from "realm";
 
-export interface IWordStageType {
+export interface IWordStage {
   _id: BSON.ObjectId;
   word: string;
   word_hint?: string;
@@ -10,10 +10,10 @@ export interface IWordStageType {
   order?: number;
 }
 
-export interface IPartStageType {
+export interface IPartStage {
   _id: BSON.ObjectId;
   sentence: string;
   sentence_hint?: string;
-  words: IWordStageType[];
+  words: IWordStage[];
   order?: number;
 }

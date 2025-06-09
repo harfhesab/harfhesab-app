@@ -5,10 +5,10 @@ import {useTheme} from '@react-navigation/native';
 import MyTransCall from '../utils/translations/MyTrans';
 import Font from '../utils/Font';
 import Icon from '../utils/Icon';
-import PackageGame from '../screens/main/package_game/PackageGame';
-import StageGame from '../screens/main/stage_game/StageGame';
+import PackageGame from '../screens/main/package-game/PackageGame';
+import StageGame from '../screens/main/stage-game/StageGame';
 import Account from '../screens/main/account/Account';
-import OnlineGame from '../screens/main/online_game/OnlineGame';
+import OnlineGame from '../screens/main/online-game/OnlineGame';
 import FastImage from '@d11/react-native-fast-image';
 
 const Tab = createBottomTabNavigator();

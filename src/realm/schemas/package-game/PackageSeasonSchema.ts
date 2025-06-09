@@ -1,17 +1,16 @@
-import { BSON, Realm } from "realm";
+import Realm, { BSON } from "realm";
 import { Media } from "../general/embeddeds/MediaSchema";
 
-export class StageSeason extends Realm.Object<StageSeason> {
+export class PackageSeason extends Realm.Object<PackageSeason> {
   _id!: BSON.ObjectId;
+  package!: BSON.ObjectId[];
   title!: string;
   description?: string;
   language?: BSON.ObjectId;
   media!: Media[];
   music?: Media;
   badg?: string;
-  season_number?: number;
-  stage_number_from?: number;
-  stage_number_to?: number;
+  season_number!: SeasonNumberInPackage[];
   number_stage?: number;
   is_visible: boolean = true;
   is_active: boolean = true;
@@ -25,19 +24,18 @@ export class StageSeason extends Realm.Object<StageSeason> {
   updatedAt!: Date;
 
   static schema: Realm.ObjectSchema = {
-    name: "StageSeason",
+    name: "PackageSeason",
     primaryKey: "_id",
     properties: {
       _id: "objectId",
+      package: "objectId[]",
       title: "string",
       description: "string?",
       language: "objectId?",
       media: "Media[]",
       music: "Media",
       badg: "string?",
-      season_number: "int?",
-      stage_number_from: "int?",
-      stage_number_to: "int?",
+      season_number: "SeasonNumberInPackage[]",
       number_stage: "int?",
       is_visible: { type: "bool", default: true },
       is_active: { type: "bool", default: true },
@@ -49,6 +47,24 @@ export class StageSeason extends Realm.Object<StageSeason> {
       version_deleted: "int?",
       createdAt: "date",
       updatedAt: "date",
+    },
+  };
+}
+
+export class SeasonNumberInPackage extends Realm.Object<SeasonNumberInPackage> {
+  package!: BSON.ObjectId;
+  season_number!: number;
+  stage_number_from!: number;
+  stage_number_to!: number;
+
+  static schema: Realm.ObjectSchema = {
+    name: "SeasonNumberInPackage",
+    embedded: true,
+    properties: {
+      package: "objectId",
+      season_number: "int",
+      stage_number_from: "int",
+      stage_number_to: "int",
     },
   };
 }

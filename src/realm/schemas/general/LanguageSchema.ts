@@ -1,4 +1,4 @@
-import { BSON, Realm } from "realm";
+import Realm, { BSON } from "realm";
 
 export class Language extends Realm.Object<Language> {
   _id!: BSON.ObjectId;
