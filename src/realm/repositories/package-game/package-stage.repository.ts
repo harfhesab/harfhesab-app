@@ -69,7 +69,7 @@ export const getPackageStagesBySeasonId = (
     .filtered("season == $0 AND is_visible == true", objectId)
     .sorted("stage_number");
 
-  return results;
+  return Array.from(results);
 };
 
 // --- تابع حذف سند بر اساس _id ---

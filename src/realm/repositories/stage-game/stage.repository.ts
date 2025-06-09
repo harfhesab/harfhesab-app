@@ -69,8 +69,9 @@ export const getStagesBySeasonId = (
     .filtered("season == $0 AND is_visible == true", objectId)
     .sorted("stage_number_in_season");
 
-  return results;
+  return Array.from(results);
 };
+
 
 // --- تابع حذف سند بر اساس _id ---
 export const deleteStageById = (realm: Realm, id: BSON.ObjectId | string): boolean => {
