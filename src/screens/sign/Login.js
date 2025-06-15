@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Dimensions, KeyboardAvoidingView} from 'react-native';
 import Icon from '../../utils/Icon';
 import { connect } from 'react-redux';
 import {useTheme} from '@react-navigation/native';
@@ -15,6 +15,7 @@ import DeviceInfo from 'react-native-device-info';
 import { convertFaDigitToEn } from '../../utils/ConvertFaDigitToEn';
 import { phoneDigitSeperator } from '../../utils/PhoneDigitSeprator';
 import ButtonGradient from '../../components/ButtonGradient';
+import TextInput from '../../components/inuts/TextInput';
 
 const width = Dimensions.get('window').width;
 function Login(props){
@@ -93,19 +94,13 @@ function Login(props){
                     <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
                     <Text style={{fontFamily:Font.black, fontSize:30, color:colors.test_2.color, alignSelf:'center'}}>{"ورود به بازی"}</Text>
                     <View style={{marginTop:100, width:width}}>
-                        <Text style={{fontFamily:Font.medium, color:colors.text, fontSize:12, marginHorizontal:30}}>{"شماره موبایل"}</Text>
                         <TextInput
+                            title={"شماره موبایل"}
                             placeholder={"شماره موبایل"}
-                            placeholderTextColor={colors.text5}
-                            onFocus={()=>focusTextInput('1')}
-                            onBlur={()=>{setFocus('')}}
-                            selectionColor={Globals.data.configs.colors.rgba1}
-                            cursorColor={colors.color}
                             value={phoneDigitSeperator(phone)}
                             maxLength={13}
                             onChangeText={changePhone}
                             keyboardType={'numeric'}
-                            style={{width:width - 60, color:colors.text, fontFamily:Font.medium, fontSize:14, alignSelf:'center', height:50, backgroundColor:colors.background4, borderRadius:5, borderWidth:1, borderColor:focus == '1'?colors.color:colors.border, paddingHorizontal:15}}
                         />
                     </View>
                     <TouchableOpacity activeOpacity={0.7} onPress={loginWithOtp} style={{marginTop:30}}>
