@@ -6,15 +6,15 @@ import DeviceInfo from 'react-native-device-info';
 import {DotIndicator} from 'react-native-indicators';
 import Font from '../../utils/Font';
 import LinearGradient from 'react-native-linear-gradient';
-import Globals from '../../utils/Globals';
 import { useSelector } from 'react-redux';
+import Color from '../../utils/Color';
 
 const {width, height} = Dimensions.get('window')
 function Splash(props){
     const { theme } = useSelector((state) => state.ui);
 
     return(
-        <LinearGradient colors={Globals.data.configs.themes[theme].colors.background_gradient} style={{flex:1}}>
+        <LinearGradient colors={Color.themes[theme].colors.background_gradient} style={{flex:1}}>
             <Text>{"در حال بارگذاری"}</Text>
         </LinearGradient>
     )

@@ -1,76 +1,118 @@
-import React, { useState, useRef } from 'react';
-import {StyleSheet, View, TextInput, Text, Dimensions, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View, Text, TextInput, TouchableOpacity, Dimensions, KeyboardAvoidingView} from 'react-native';
+import Icon from '../../utils/Icon';
+import { connect } from 'react-redux';
 import {useTheme} from '@react-navigation/native';
 import Font from '../../utils/Font';
-import Globals from '../../utils/Globals';
-import ButtonLinear from '../../components/ButtonLinear';
+import { DotIndicator } from 'react-native-indicators';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import Icon from '../../utils/Icon';
-import { useDispatch } from 'react-redux';
-import { login } from '../../redux/slices/authSlice';
+import LinearGradient from 'react-native-linear-gradient';
+import Globals from '../../utils/Globals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import messaging from '@react-native-firebase/messaging';
+import DeviceInfo from 'react-native-device-info';
+import { convertFaDigitToEn } from '../../utils/ConvertFaDigitToEn';
+import { phoneDigitSeperator } from '../../utils/PhoneDigitSeprator';
+import ButtonGradient from '../../components/ButtonGradient';
 
-const {width} = Dimensions.get("window")
+const width = Dimensions.get('window').width;
 function Login(props){
-    const dispatch = useDispatch();
     const {colors} = useTheme().colors;
-    const [phone, setPhone] = useState("")
-    const [focus, setFocus] = useState('')
+    const [phone, setPhone] = useState('')
+    const [secureText, setSecureText] = useState(true)
     const [loading, setLoading] = useState(false)
-    const phoneRef = useRef()
-    
+    const [loadingWithOtp, setLoadingWithOtp] = useState('')
+    const [focus, setFocus] = useState('')
 
     const focusTextInput = (key)=>{
         setFocus(key)
     }
+
     const changePhone = (text)=>{
         setPhone(text)
     }
-    const loginRequest = ()=>{
-        const fakeToken = "your_access_token_here";
-        dispatch(login({ token: fakeToken }));
+    const loginWithOtp = async() => {
+        if(phone.length < 13){
+            Toast.show({
+                type: 'warning',
+                text1: "شماره موبایل خود را به صورت صحیح وارد کنید."
+            })
+        } else {
+            setLoading(false)
+            setLoadingWithOtp(true)
+            await axios({
+                url:'/',
+                method:'post',
+                data: {
+                    query : `
+                    query requestLoginRealEstateOnlyOtp($phone : String!){
+                        requestLoginRealEstateOnlyOtp(phone : $phone) {
+                            status,
+                            message,
+                            minuts,
+                            seconds
+                        }
+                    }
+                    `,
+                    variables : {
+                        "phone" : phone.replaceAll(' ', ''),
+                    }
+                }
+            }).then((response)=>{
+                setLoadingWithOtp(false)
+                if(response.data?.data == null){
+                    Toast.show({
+                        type: 'error',
+                        text1: response.data.errors[0].data[0].message
+                    })
+                } else {
+                    const data = response.data.data?.requestLoginRealEstateOnlyOtp
+                    if(data?.status == 200) {
+                        const minutes = data?.minuts;
+                        const seconds = data?.seconds;
+                        props.navigation.navigate('OTP', {phone: phone.replaceAll(' ', ''), minutes: minutes, seconds: seconds})
+                    } else {
+                        Toast.show({
+                            type: 'error',
+                            text1: 'مشکلی پیش آمد دوباره تلاش کنید'
+                        })
+                    }
+                }
+            }).catch((error)=>{
+                setLoadingWithOtp(false)
+            })
+        }
     }
-    
-
+    const navigateToRequestRegister = () =>{
+        props.navigation.navigate('RequestRegister')
+    }
     return(
-        <View style={styles.container}>
-            <View style={{flex:1, flexDirection:'column', justifyContent:'space-between', alignItems:'center'}}>
-                    <View style={{width:width, marginTop:80, alignItems:'center'}}>
-                        <Text style={{fontFamily:Font.bold, color:colors.color, fontSize:25, marginTop:40}}>{"ورود به بازی"}</Text>
+        <View style={[styles.container, {backgroundColor:colors.background}]}>
+                <View style={styles.container2}>
+                    <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
+                    <Text style={{fontFamily:Font.black, fontSize:30, color:colors.test_2.color, alignSelf:'center'}}>{"ورود به بازی"}</Text>
+                    <View style={{marginTop:100, width:width}}>
+                        <Text style={{fontFamily:Font.medium, color:colors.text, fontSize:12, marginHorizontal:30}}>{"شماره موبایل"}</Text>
+                        <TextInput
+                            placeholder={"شماره موبایل"}
+                            placeholderTextColor={colors.text5}
+                            onFocus={()=>focusTextInput('1')}
+                            onBlur={()=>{setFocus('')}}
+                            selectionColor={Globals.data.configs.colors.rgba1}
+                            cursorColor={colors.color}
+                            value={phoneDigitSeperator(phone)}
+                            maxLength={13}
+                            onChangeText={changePhone}
+                            keyboardType={'numeric'}
+                            style={{width:width - 60, color:colors.text, fontFamily:Font.medium, fontSize:14, alignSelf:'center', height:50, backgroundColor:colors.background4, borderRadius:5, borderWidth:1, borderColor:focus == '1'?colors.color:colors.border, paddingHorizontal:15}}
+                        />
                     </View>
-                    <View style={{width:width-40, marginBottom:80, gap:20}}>
-                        <View style={{ width:"100%"}}>
-                            <Text style={{fontFamily:Font.medium, color:colors.text4, fontSize:14, textAlign:'justify', marginTop:2}}>{"برای ورود به بازی شماره موبایل خود را وارد کنید"}</Text>
-                            <TextInput
-                                ref={phoneRef}
-                                placeholder={"شماره موبایل"}
-                                placeholderTextColor={colors.text5}
-                                onFocus={()=>focusTextInput('1')}
-                                onBlur={()=>{setFocus('')}}
-                                selectionColor={Globals.data.configs.colors.rgba1}
-                                cursorColor={colors.color}
-                                value={phone}
-                                maxLength={11}
-                                onSubmitEditing={loginRequest}
-                                onChangeText={changePhone}
-                                keyboardType={"numeric"}
-                                style={{width:"100%", marginTop:2, fontSize:18, textAlignVertical:'center', color:colors.text, fontFamily:Font.en_medium,  alignSelf:'center', height:65, borderRadius:5, borderWidth:2, borderColor:focus == '1'?colors.color:colors.border, paddingHorizontal:15}}
-                            />
-                        </View>
-                        <View style={{width:'100%', alignItems:'center'}}>
-                            <ButtonLinear
-                                text={'ورود به بازی'}
-                                onPress={loginRequest}
-                                loading={loading}
-                                textSize={16}
-                                width={width-40}
-                                height={65}
-                                borderRadius={5}
-                            />
-                        </View>
-                    </View>
-            </View>
+                    <TouchableOpacity activeOpacity={0.7} onPress={loginWithOtp} style={{marginTop:30}}>
+                        
+                    </TouchableOpacity>
+                </KeyboardAvoidingView>
+                </View>
         </View>
     )
 }
@@ -78,6 +120,32 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    container2: {
+        alignItems:'center',
+        justifyContent:'center',
+        height:Dimensions.get('window').height - 55
+    },
+    loginBtn:{
+        width:width - 60,
+        height:50,
+        alignSelf:'center',
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:5,
+    },
+    loginBtnTxt: {
+        fontFamily:Font.medium,
+        fontSize:14
+    },
+    loginTxt: {
+        fontFamily:Font.medium,
+        fontSize:12,
+    },
+    requstRegister: {
+        fontFamily:Font.medium,
+        fontSize:14,
     },
 });
 export default Login

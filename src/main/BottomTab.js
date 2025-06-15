@@ -20,13 +20,13 @@ const BottomTab = (props) => {
       initialRouteName="StageGame"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.bottom_tab_active,
-        tabBarInactiveTintColor: colors.bottom_tab_inactive,
+        tabBarActiveTintColor: colors.bottom_tab.active,
+        tabBarInactiveTintColor: colors.bottom_tab.inactive,
         tabBarStyle: [
           {
             display: "flex",
             height:65,
-            backgroundColor: colors.bottom_tab_background
+            backgroundColor: colors.bottom_tab.background,
           },
           null
         ]

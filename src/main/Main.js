@@ -8,12 +8,13 @@ import Toast from 'react-native-toast-message';
 import ToastConfig from '../components/ToastConfig';
 import Globals from '../utils/Globals';
 import { useSelector } from 'react-redux';
+import Color from '../utils/Color';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.ui);
 
-  const selectedTheme = Globals.data.configs.themes[theme];
+  const selectedTheme = Color.themes[theme];
   const CustomeTheme = {
     ...NavigationDefaultTheme,
     ...PaperDefaultTheme,
