@@ -1,37 +1,38 @@
 import React, {memo} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import Font from '../utils/Font';
-import { DotIndicator, UIActivityIndicator } from 'react-native-indicators';
+import Font from '../../utils/Font';
+import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
 import LinearGradient from 'react-native-linear-gradient';
+import {useTheme} from '@react-navigation/native';
 
-function ButtonGradient({loading, loadingType, loadingContent, onPress, borderRadius, width, height, text, text2, icon, complateContent, backgorundGradinte, textSize, fontFamily, justifyContent}){
+function ButtonGradient(
+    {loading, loadingType, onPress, borderRadius, width, height, text, text2, icon, ComplateContent, backgorundGradinte, textSize, fontFamily, justifyContent, activeOpacity}
+){
     const {colors} = useTheme().colors;
 
     const renderLoading = ()=>(
         <View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
             {
-                loadingContent?
-                <loadingContent/>:
                 !loadingType?
                 <DotIndicator color={colors.button_gradient.content_1} count={3} size={7}/>:
                 loadingType == "DotIndicator"?
                 <DotIndicator color={colors.button_gradient.content_1} count={3} size={7}/>:
-                loadingType == "UIActivityIndicator"&&
-                <UIActivityIndicator color={colors.button_gradient.content_1} count={3} size={7}/>
+                loadingType == "MaterialIndicator"&&
+                <MaterialIndicator color={colors.button_gradient.content_1} trackWidth={3} size={25}/>
             }
         </View>
     )
 
     return(
-        <TouchableOpacity disabled={loading} activeOpacity={0.7} onPress={onPress} style={{width:width, height:height, alignItems:'center', justifyContent:'center', borderRadius:borderRadius}}>
-            <LinearGradient colors={backgorundGradinte??colors.button_gradient.backgorund} style={{borderRadius:borderRadius, width:"100%", height:"100%"}}>
-                <View style={{borderRadius:borderRadius, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
+        <TouchableOpacity disabled={loading} activeOpacity={activeOpacity??0.8} onPress={onPress} style={{width:width, height:height, alignItems:'center', justifyContent:'center', borderRadius:borderRadius??5, shadowColor:colors.shadow.a1, elevation:3}}>
+            <LinearGradient colors={backgorundGradinte??colors.button_gradient.background} style={{borderRadius:borderRadius??5, width:"100%", height:"100%"}}>
+                <View style={{borderRadius:borderRadius??5, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
                     {
                         loading == true?
                         (renderLoading())
                         :
-                        complateContent?
-                        (<complateContent/>)
+                        ComplateContent?
+                        (<ComplateContent/>)
                         :
                         icon?
                         (<View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:justifyContent??'space-between', paddingHorizontal:15}}>

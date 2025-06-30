@@ -5,31 +5,35 @@ import TimerOTP from './TimerOTP';
 import Font from '../../utils/Font';
 
 const width = Dimensions.get('window').width;
-function TimerShowOTP (props) {
+function TimerShowOTP ({minutes, seconds, endOfTime, fontSize, fontFamily, color}) {
   const {colors} = useTheme().colors;
-  const [minutes, setMinutes] = useState(props.minutes)
-  const [seconds, setSeconds] = useState(props.seconds)
+  const [minutesState, setMinutesState] = useState(minutes)
+  const [secondsState, setSecondsState] = useState(seconds)
   
   useEffect(()=>{
-    if(props){
-      setMinutes(props.minutes)
-      setSeconds(props.seconds)
+    if(seconds){
+      setSecondsState(seconds)
     }
-  }, [props])
+  }, [seconds])
+  useEffect(()=>{
+    if(minutes){
+      setMinutesState(minutes)
+    }
+  }, [minutes])
 
   const timer = {
-    fontSize: width * 0.04,
-    fontFamily: Font.medium,
-    color: colors.text,
+    fontSize: fontSize??16,
+    fontFamily: fontFamily??Font.medium,
+    color: color??colors.text.a1,
   }
  
   return (
     <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
           <TimerOTP
             style={timer}
-            minutes={minutes}
-            seconds={seconds}
-            endOfTime={props.endOfTime}
+            minutes={minutesState}
+            seconds={secondsState}
+            endOfTime={endOfTime}
           />
       </View>
   );

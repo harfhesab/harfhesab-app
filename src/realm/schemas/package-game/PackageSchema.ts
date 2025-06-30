@@ -45,10 +45,7 @@ export class Package extends Realm.Object<Package> {
   badg?: string;
   seasons!: SeasonInPackage[];
   taken_source?: TakenSource;
-  content_source_type!: "original" | "derived" | "copy";
-  publication_status!: "draft" | "ready" | "published" | "archived" | "rejected";
-  completion_status!: "incomplete" | "in_progress" | "complete" | "finalized";
-  language?: BSON.ObjectId;
+  language_ref?: BSON.ObjectId;
   topic_category!: BSON.ObjectId[];
   package_collection!: BSON.ObjectId[];
   icon_image?: string;
@@ -80,10 +77,7 @@ export class Package extends Realm.Object<Package> {
       badg: "string?",
       seasons: "SeasonInPackage[]",
       taken_source: "TakenSource?",
-      content_source_type: "string",
-      publication_status: "string",
-      completion_status: "string",
-      language: "objectId?",
+      language_ref: "objectId?",
       topic_category: "objectId[]",
       package_collection: "objectId[]",
       icon_image: "string?",

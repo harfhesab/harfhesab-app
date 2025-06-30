@@ -9,7 +9,7 @@ export interface IPackageStage {
   voice: IMedia[];
   stage_hint?: string;
   season: BSON.ObjectId;
-  language?: BSON.ObjectId;
+  language_ref?: BSON.ObjectId;
   stage_number: number;
   is_visible?: boolean;
   is_active?: boolean;

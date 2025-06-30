@@ -1,7 +1,5 @@
-import { BSON } from "realm";
-
 export interface IWordStage {
-  _id: BSON.ObjectId;
+  _id: string;
   word: string;
   word_hint?: string;
   unknown_word?: boolean;
@@ -11,7 +9,7 @@ export interface IWordStage {
 }
 
 export interface IPartStage {
-  _id: BSON.ObjectId;
+  _id: string;
   sentence: string;
   sentence_hint?: string;
   words: IWordStage[];

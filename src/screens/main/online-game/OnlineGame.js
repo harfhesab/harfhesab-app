@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import {useTheme} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import LinearGradient from 'react-native-linear-gradient';
 
 const {width, height} = Dimensions.get("window")
 function OnlineGame(props){
@@ -21,18 +23,19 @@ function OnlineGame(props){
     }
     
     return(
-        <View>
+        <SafeAreaView>
+            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
+                <View style={styles.container}>
 
-        </View>
+                </View>
+            </LinearGradient>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
-    },
-    linearGradient: {
-        flex: 1,
     },
 });
 export default OnlineGame;

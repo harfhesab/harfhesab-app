@@ -1,11 +1,12 @@
 import React, {memo, useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, TextInput, ActivityIndicator} from 'react-native';
-import Font from '../utils/Font';
+import Font from '../../utils/Font';
 import { DotIndicator, UIActivityIndicator } from 'react-native-indicators';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../../utils/Icon';
+import {useTheme} from '@react-navigation/native';
 
-function TextInput({
+function InputText({
         value,
         onChangeText,
         maxLength,
@@ -22,6 +23,7 @@ function TextInput({
         onSubmitEditing,
         returnKeyType,
         borderWidth,
+        borderRadius,
         checkValue,
         height,
         maxHeight,
@@ -51,13 +53,13 @@ function TextInput({
                 </View>
                 )
             }
-            <View style={{width:"100%", flexDirection:'row', alignItems:'center', borderWidth:borderWidth??1, borderColor:focused == true?colors.primary.a1:checkValueState == true?colors.alert.a1:colors.border.a1, paddingHorizontal:10}}>
+            <View style={{backgroundColor:`${colors.primary.a1}40`, width:"100%", flexDirection:'row', alignItems:'center', borderWidth:borderWidth??1, borderRadius:borderRadius??5, borderColor:focused == true?colors.primary.a1:checkValueState == true?colors.alert.a1:colors.border.a1, paddingHorizontal:10}}>
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={placeholderTextColor??colors.text.a5}
                     onFocus={()=>{
                         setFocused(true)
-                        setCheckValue(false)
+                        setCheckValueState(false)
                     }}
                     onBlur={()=>setFocused(false)}
                     selectionColor={colors.rgb.a1}
@@ -76,34 +78,30 @@ function TextInput({
                         flex:1,
                         color:colors.text.a1,
                         fontFamily:fontFamily??Font.medium,
-                        fontSize:fontSize??14,
+                        fontSize:fontSize??16,
                         alignSelf:'center',
-                        height:height??55,
+                        height:height??65,
                         maxHeight:maxHeight,
-                        backgroundColor:colors.background4,
-                        borderRadius:5,
-                        borderWidth:1,
-                        borderColor:focus == '1'?colors.color:colors.border,
-                        paddingHorizontal:5
+                        paddingHorizontal:5,
                     }}
                 />
-                {(clearText && !search)&&(
-                    <TouchableOpacity activeOpacity={0.6} onPress={clearText} style={{with:30, alignItems:'center'}}>
-                        <Icon name={"delete"} type={"Feather"} style={{fontSize:20, color:colors.text.a2}}/>
+                {(clearText && !search && value.length > 0)&&(
+                    <TouchableOpacity activeOpacity={0.6} onPress={clearText} style={{width:40, alignItems:'center'}}>
+                        <Icon name={"delete"} type={"Feather"} style={{fontSize:25, color:colors.text.a5}}/>
                     </TouchableOpacity>
                 )}
                 {secureTextEntry&&(
-                    <TouchableOpacity activeOpacity={0.6} onPress={()=>setSecureTextEntryState(prev => !prev)} style={{with:30, alignItems:'center'}}>
+                    <TouchableOpacity activeOpacity={0.6} onPress={()=>setSecureTextEntryState(prev => !prev)} style={{width:30, alignItems:'center'}}>
                         <Icon name={secureTextEntryState == true?"eye":"eye-off"} type={"Feather"} style={{fontSize:20, color:colors.text.a2}}/>
                     </TouchableOpacity>
                 )}
                 {search&&(
-                    <View style={{with:30, alignItems:'center'}}>
+                    <View style={{width:30, alignItems:'center'}}>
                         {
                             loading?(
                             <ActivityIndicator size={22} color={colors.primary.a1} />
                             ):(value?.length > 0 && clearText)?(
-                                <TouchableOpacity activeOpacity={0.6} onPress={clearText} style={{with:30, alignItems:'center'}}>
+                                <TouchableOpacity activeOpacity={0.6} onPress={clearText} style={{width:30, alignItems:'center'}}>
                                     <Icon name={"delete"} type={"Feather"} style={{fontSize:20, color:colors.text.a2}}/>
                                 </TouchableOpacity>
                             ):(<Icon name={"search"} type={"Feather"} style={{color:colors.text.a5, fontSize:20}}/>)
@@ -114,4 +112,4 @@ function TextInput({
         </View>
     )
 }
-export default memo(TextInput);
+export default memo(InputText);

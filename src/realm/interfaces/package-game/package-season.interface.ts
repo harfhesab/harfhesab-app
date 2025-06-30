@@ -6,7 +6,7 @@ export interface IPackageSeason {
   package: BSON.ObjectId[];
   title: string;
   description?: string;
-  language?: BSON.ObjectId;
+  language_ref?: BSON.ObjectId;
   media: IMedia[];
   music?: IMedia;
   badg?: string;
@@ -14,9 +14,6 @@ export interface IPackageSeason {
   number_stage?: number;
   is_visible?: boolean;
   is_active?: boolean;
-  content_source_type: "original" | "derived" | "copy";
-  publication_status: "draft" | "ready" | "published" | "archived" | "rejected";
-  completion_status: "incomplete" | "in_progress" | "complete" | "finalized";
   version_created?: number;
   version_updated?: number;
   version_deleted?: number;

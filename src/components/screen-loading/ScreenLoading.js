@@ -1,12 +1,12 @@
 import React, {memo} from 'react';
 import {StyleSheet, View, Dimensions, Text, TouchableOpacity} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import { DotIndicator, UIActivityIndicator } from 'react-native-indicators';
+import { DotIndicator, MaterialIndicator, BallIndicator } from 'react-native-indicators';
 import Font from '../../utils/Font';
 import ButtonGradient from '../buttons/ButtonGradient';
 
 const width = Dimensions.get('window').width;
-function ScreenLoading({loading, loadingType, getError, getErrorComponent, noItem, noItemComponent, tryAgain}){
+function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErrorComponent, noItem, NoItemComponent, tryAgain}){
     const {colors} = useTheme().colors;
     
 
@@ -14,11 +14,11 @@ function ScreenLoading({loading, loadingType, getError, getErrorComponent, noIte
         <View style={{width:'100%', height:120, alignItems:'center', justifyContent:'center'}}>
             {
                 !loadingType?
-                <DotIndicator color={colors.button_gradient.content_1} count={3} size={7}/>:
+                <DotIndicator color={colors.text.a1} count={3} size={8}/>:
                 loadingType == "DotIndicator"?
-                <DotIndicator color={colors.button_gradient.content_1} count={3} size={7}/>:
-                loadingType == "UIActivityIndicator"&&
-                <UIActivityIndicator color={colors.button_gradient.content_1} count={12} size={15}/>
+                <DotIndicator color={colors.text.a1} count={3} size={8}/>:
+                loadingType == "MaterialIndicator"&&
+                <MaterialIndicator color={colors.text.a1} trackWidth={3} size={30}/>
             }
         </View>
     )
@@ -29,15 +29,15 @@ function ScreenLoading({loading, loadingType, getError, getErrorComponent, noIte
                 getError == true?
                 (<>
                     {
-                        getErrorComponent?
-                        <getErrorComponent/>
+                        GetErrorComponent?
+                        <GetErrorComponent/>
                         :
                         <View style={{ width:"100%", height:"100%", flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10}}>
                             <Text style={[styles.text1, {color:colors.text.a1}]}>{"ارتباط برقرار نشد"}</Text>
                             <Text style={[styles.text2, {color:colors.text.a3}]}>{"متأسفانه مشکلی پیش آمد. لطفا دوباره تلاش کنید."}</Text>
                             <ButtonGradient
                                 text={"تلاش مجدد"}
-                                textSize={14}
+                                textSize={16}
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
@@ -49,15 +49,15 @@ function ScreenLoading({loading, loadingType, getError, getErrorComponent, noIte
                 :noItem == true?
                 (<>
                     {
-                        noItemComponent?
-                        <noItemComponent/>
+                        NoItemComponent?
+                        <NoItemComponent/>
                         :
                         <View style={{ width:"100%", height:"100%", flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10}}>
                             <Text style={[styles.text1, {color:colors.text.a1}]}>{"موردی یافت نشد"}</Text>
                             <Text style={[styles.text2, {color:colors.text.a3}]}>{"موردی برای نمایش یافت نشد."}</Text>
                             <ButtonGradient
                                 text={"تلاش مجدد"}
-                                textSize={14}
+                                textSize={16}
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
@@ -67,7 +67,14 @@ function ScreenLoading({loading, loadingType, getError, getErrorComponent, noIte
                     }
                 </>)
                 :loading == true&&
-                (renderLoading())
+                <>
+                    {
+                        LoadingComponent?
+                        <LoadingComponent/>
+                        :
+                        (renderLoading())
+                    }
+                </>
             }
         </View>
     )
@@ -80,16 +87,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     text1:{
-        fontFamily: Font.medium,
-        fontSize: 17,
+        fontFamily: Font.bold,
+        fontSize: 20,
         textAlign: 'center',
         maxWidth:"60%",
     },
     text2:{
         fontFamily: Font.medium,
-        fontSize: 13,
+        fontSize: 16,
         textAlign: 'center',
         maxWidth:"60%",
+        lineHeight:28
     },
 })
 export default memo(ScreenLoading);

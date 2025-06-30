@@ -5,23 +5,33 @@ export default {
                 primary:{
                     a1 : "#0ea960"
                 },
-                background_gradient : ['#00bcd4', '#2ccce4', '#8ed1fc'],
+                background_gradient : ['#0c2c5d', '#214479', '#335588'],
+                text_banner : {
+                    background : ["#bf5340", "#813123", "#491a11"],
+                    content_1 : "#e8edf5",
+                    content_2 : "#c4d2e5"
+                },
+                header : {
+                    background : "#011c46",
+                    content_1 : "#F0F0F0",
+                    content_2 : "#d1d1d1"
+                },
                 bottom_tab : {
-                    background : "#00bcd4",
+                    background : "#0c2c5d",
                     active : "#FFFFFF",
                     inactive : "#BDBDBD"
                 },
                 button_gradient : {
-                    background : ["#0ea960", "#079f58", "#01944f"],
+                    background : ["#0ea960", "#099956", "#018044"],
                     content_1 : "#FFFFFF",
                     content_2 : "#EBEBEB"
                 },
                 text:{
-                    a1 : "#0e2b2f",
-                    a2 : "#1a383c",
-                    a3 : "#2c464a",
-                    a4 : "#40595d",
-                    a5 : "#70959b"
+                    a1 : "#FFFFFF",
+                    a2 : "#F0F0F0",
+                    a3 : "#d1d1d1",
+                    a4 : "#cccccc",
+                    a5 : "#BDBDBD"
                 },
                 rgb:{
                     a1 : "rgba(14,169,96,0.80)",
@@ -31,11 +41,30 @@ export default {
                     a5 : "rgba(14,169,96,0.20)",
                 },
                 border: {
-                    a1 : "#0b343a",
-                    a2 : "#166673",
+                    a1 : "#94a9c8",
+                    a2 : "#708ab0",
                 },
                 alert: {
-                    a1 : "#ff0f0f"
+                    a1 : "#CC0000"
+                },
+                shadow:{
+                    a1:"#00000095"
+                },
+                toast:{
+                    background:"#F0F0F0",
+                    text1:"#222222",
+                    text2:"#333333",
+                    error:"#CC0000",
+                    info:"#0088cc",
+                    success:"#0ea960"
+                },
+                alert_component : {
+                    background : "#0c2c5d",
+                    success : ['#007E33', '#00C851'],
+                    error : ['#CC0000', '#ff4444'],
+                    info : ['#0099CC', '#33b5e5'],
+                    warning : ['#FF8800', '#ffbb33'],
+                    question : ['#FF8800', '#ffbb33'],
                 },
                 ///////////////////////////
                 white_1 : "#FFFFFF", 
@@ -49,8 +78,6 @@ export default {
                 background3 : '#FFF',
                 background4 : '#FFF',
                 background5 : '#F9FCFC',
-                border : '#d1d1d1',
-                border2 : '#dfdfdf',
                 text2 : '#333',
                 text3 : '#000',
                 text4 : '#666',
@@ -72,13 +99,23 @@ export default {
                     a1 : "#0ea960"
                 },
                 background_gradient : ['#24404f', '#345769', '#497083'],
+                text_banner : {
+                    background : ["#4d2119", "#863a2d", "#5d4037"],
+                    content_1 : "#F0F0F0",
+                    content_2 : "#d1d1d1"
+                },
+                header : {
+                    background : "#24404f",
+                    content_1 : "#F0F0F0",
+                    content_2 : "#d1d1d1"
+                },
                 bottom_tab : {
                     background : "#24404f",
                     active : "#FFFFFF",
                     inactive : "#BDBDBD"
                 },
                 button_gradient : {
-                    background : ["#0ea960", "#079f58", "#01944f"],
+                    background : ["#0ea960", "#088148", "#046336"],
                     content_1 : "#FFFFFF",
                     content_2 : "#EBEBEB"
                 },
@@ -102,6 +139,25 @@ export default {
                 },
                 alert: {
                     a1 : "#ff0f0f"
+                },
+                shadow:{
+                    a1:"#000000"
+                },
+                toast:{
+                    background:"#33333350",
+                    text1:"#FFFFFF",
+                    text2:"#d1d1d1",
+                    error:"#ff0f0f",
+                    info:"#0088cc",
+                    success:"#0ea960"
+                },
+                alert_component : {
+                    background : "#0c2c5d",
+                    success : ['#007E33', '#00C851'],
+                    error : ['#CC0000', '#ff4444'],
+                    info : ['#0099CC', '#33b5e5'],
+                    warning : ['#FF8800', '#ffbb33'],
+                    question : ['#FF8800', '#ffbb33'],
                 },
                 ///////////////////////////
                 white_1 : "#FFFFFF", 

@@ -9,7 +9,7 @@ export class Stage extends Realm.Object<Stage> {
   voice!: Media[];
   stage_hint?: string;
   season!: BSON.ObjectId;
-  language?: BSON.ObjectId;
+  language_ref?: BSON.ObjectId;
   stage_number_in_language!: number;
   stage_number_in_season!: number;
   is_visible?: boolean;
@@ -30,7 +30,7 @@ export class Stage extends Realm.Object<Stage> {
       voice: "Media[]",
       stage_hint: "string?",
       season: "objectId",
-      language: "objectId?",
+      language_ref: "objectId?",
       stage_number_in_language: "int",
       stage_number_in_season: "int",
       is_visible: { type: "bool", default: true },

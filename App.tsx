@@ -6,9 +6,15 @@ import Main from './src/main/Main';
 import {I18nManager } from 'react-native';
 import { RealmProviderWrapper } from './src/realm/RealmProviderWrapper';
 import Splash from './src/components/splash/Splash';
+import axios from 'axios';
+import Globals from './src/utils/Globals';
 
 
 I18nManager.forceRTL(true)
+
+axios.defaults.baseURL = Globals.baseURL;
+axios.defaults.headers.post['Accept'] = 'application/json';
+axios.defaults.headers.post['client'] = 'user';
 function App(): React.JSX.Element {
   
   return (

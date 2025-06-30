@@ -7,9 +7,8 @@ export const createStageSeason = (
   data: Partial<Omit<StageSeason, "createdAt" | "updatedAt">> & { _id: BSON.ObjectId | string }
 ): boolean => {
   try {
-    const objectId = typeof data._id === "string"
-      ? new BSON.ObjectId(data._id)
-      : data._id;
+    const objectId = typeof data._id === "string"? new BSON.ObjectId(data._id):data._id;
+    const languageId = typeof data.language_ref === "string"? new BSON.ObjectId(data.language_ref):data.language_ref;
     const exists = realm.objectForPrimaryKey("StageSeason", objectId);
     if (exists) {
       return false;
@@ -18,6 +17,7 @@ export const createStageSeason = (
       realm.create("StageSeason", {
         ...data,
         _id: objectId,
+        language_ref : languageId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -33,22 +33,21 @@ export const createManyStageSeasons = (
   realm: Realm,
   dataList: Array<Partial<Omit<StageSeason, "createdAt" | "updatedAt">> & { _id: BSON.ObjectId | string }>
 ): boolean => {
-  const batchSize = 200;
+  const batchSize = 100;
   try {
     for (let i = 0; i < dataList.length; i += batchSize) {
       const batch = dataList.slice(i, i + batchSize);
       realm.write(() => {
         batch.forEach(data => {
-          const objectId = typeof data._id === "string"
-            ? new BSON.ObjectId(data._id)
-            : data._id;
-
+          const objectId = typeof data._id === "string"? new BSON.ObjectId(data._id):data._id;
+          const languageId = typeof data.language_ref === "string"? new BSON.ObjectId(data.language_ref):data.language_ref;
           // بررسی اینکه سند با این _id قبلاً وجود دارد یا نه
           const exists = realm.objectForPrimaryKey("StageSeason", objectId);
           if (!exists) {
             realm.create("StageSeason", {
               ...data,
               _id: objectId,
+              language_ref : languageId,
               createdAt: new Date(),
               updatedAt: new Date(),
             });
@@ -58,6 +57,69 @@ export const createManyStageSeasons = (
     }
     return true;
   } catch (error) {
+    return false;
+  }
+};
+
+// تابع آپدیت گروهی اسناد
+export const updateManyStageSeasons = (
+  realm: Realm,
+  dataList: Array<Partial<Omit<StageSeason, "_id" | "createdAt">> & { _id: BSON.ObjectId | string }>
+): boolean => {
+  const batchSize = 100;
+  try {
+    for (let i = 0; i < dataList.length; i += batchSize) {
+      const batch = dataList.slice(i, i + batchSize);
+      realm.write(() => {
+        batch.forEach(data => {
+          const objectId = typeof data._id === "string" ? new BSON.ObjectId(data._id) : data._id;
+          const existing = realm.objectForPrimaryKey<StageSeason>("StageSeason", objectId);
+          if (existing) {
+            if (data.language_ref) {
+              existing.language_ref = typeof data.language_ref === "string"? new BSON.ObjectId(data.language_ref) : data.language_ref;
+            }
+            Object.entries(data).forEach(([key, value]) => {
+              if (
+                key !== "_id" &&
+                key !== "createdAt" &&
+                key !== "language_ref" &&
+                Object.prototype.hasOwnProperty.call(existing, key)
+              ) {
+                (existing as any)[key] = value;
+              }
+            });
+            existing.updatedAt = new Date();
+          }
+        });
+      });
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+// تابع حذف گروهی اسناد
+export const deleteManyStageSeasons = (
+  realm: Realm,
+  dataList: Array<{ _id: BSON.ObjectId | string }>
+): boolean => {
+  const batchSize = 100;
+  try {
+    for (let i = 0; i < dataList.length; i += batchSize) {
+      const batch = dataList.slice(i, i + batchSize);
+      realm.write(() => {
+        batch.forEach(({ _id }) => {
+          const objectId = typeof _id === "string" ? new BSON.ObjectId(_id) : _id;
+          const existing = realm.objectForPrimaryKey<StageSeason>("StageSeason", objectId);
+          if (existing) {
+            realm.delete(existing);
+          }
+        });
+      });
+    }
+    return true;
+  } catch (e) {
     return false;
   }
 };
@@ -80,31 +142,6 @@ export const getStageSeasonsByLanguage = (
   return results;
 };
 
-// --- تابع آپدیت سند بر اساس _id ---
-export const updateStageSeasonById = async (
-  realm: Realm,
-  id: BSON.ObjectId,
-  updatedData: Partial<Omit<StageSeason, "_id" | "createdAt">>
-): Promise<StageSeason | null> => {
-  let stageSeason = realm.objectForPrimaryKey<StageSeason>("StageSeason", id);
-  if (!stageSeason) return null;
-
-  realm.write(() => {
-    for (const key in updatedData) {
-      if (
-        Object.prototype.hasOwnProperty.call(updatedData, key) &&
-        key !== "_id" &&
-        key !== "createdAt"
-      ) {
-        (stageSeason as any)[key] = (updatedData as any)[key];
-      }
-    }
-    stageSeason.updatedAt = new Date();
-  });
-
-  return stageSeason;
-};
-
 // --- تابع حذف سند بر اساس _id ---
 export const deleteStageSeasonById = async (
   realm: Realm,
@@ -118,4 +155,37 @@ export const deleteStageSeasonById = async (
   });
 
   return true;
+};
+
+// --- تابع آپدیت سند بر اساس _id ---
+export const updateStageSeasonById = (
+  realm: Realm,
+  id: BSON.ObjectId | string,
+  newData: Partial<Omit<StageSeason, "_id" | "createdAt">>
+): boolean => {
+  try {
+    const objectId = typeof id === "string" ? new BSON.ObjectId(id) : id;
+    const existing = realm.objectForPrimaryKey<StageSeason>("StageSeason", objectId);
+    if (!existing) return false;
+
+    realm.write(() => {
+      if (newData.language_ref) {
+        existing.language_ref = typeof newData.language_ref === "string"? new BSON.ObjectId(newData.language_ref): newData.language_ref;
+      }
+      Object.entries(newData).forEach(([key, value]) => {
+        if (
+          key !== "_id" &&
+          key !== "createdAt" &&
+          key !== "language_ref"
+        ) {
+          (existing as any)[key] = value;
+        }
+      });
+      existing.updatedAt = new Date();
+    });
+
+    return true;
+  } catch (e) {
+    return false;
+  }
 };

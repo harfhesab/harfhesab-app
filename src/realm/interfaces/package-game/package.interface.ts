@@ -23,10 +23,7 @@ export interface IPackage {
   badg?: string;
   seasons: ISeasonInPackage[];
   taken_source?: ITakenSource;
-  content_source_type: "original" | "derived" | "copy";
-  publication_status: "draft" | "ready" | "published" | "archived" | "rejected";
-  completion_status: "incomplete" | "in_progress" | "complete" | "finalized";
-  language?: BSON.ObjectId;
+  language_ref?: BSON.ObjectId;
   topic_category: BSON.ObjectId[];
   package_collection: BSON.ObjectId[];
   icon_image?: string;

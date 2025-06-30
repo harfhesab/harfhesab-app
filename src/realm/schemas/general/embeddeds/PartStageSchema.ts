@@ -1,7 +1,7 @@
-import Realm, { BSON } from "realm";
+import Realm from "realm";
 
 export class WordStage extends Realm.Object<WordStage> {
-  _id!: BSON.ObjectId;
+  _id!: string;
   word!: string;
   word_hint?: string;
   unknown_word?: boolean;
@@ -13,7 +13,7 @@ export class WordStage extends Realm.Object<WordStage> {
     name: "WordStage",
     embedded: true,
     properties: {
-      _id: "objectId",
+      _id: "string",
       word: "string",
       word_hint: "string?",
       unknown_word: { type: "bool", default: false },
@@ -25,7 +25,7 @@ export class WordStage extends Realm.Object<WordStage> {
 }
 
 export class PartStage extends Realm.Object<PartStage> {
-  _id!: BSON.ObjectId;
+  _id!: string;
   sentence!: string;
   sentence_hint?: string;
   words!: WordStage[];
@@ -35,7 +35,7 @@ export class PartStage extends Realm.Object<PartStage> {
     name: "PartStage",
     embedded: true,
     properties: {
-      _id: "objectId",
+      _id: "string",
       sentence: "string",
       sentence_hint: "string?",
       words: "WordStage[]",

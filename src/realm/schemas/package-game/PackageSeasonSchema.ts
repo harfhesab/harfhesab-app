@@ -6,7 +6,7 @@ export class PackageSeason extends Realm.Object<PackageSeason> {
   package!: BSON.ObjectId[];
   title!: string;
   description?: string;
-  language?: BSON.ObjectId;
+  language_ref?: BSON.ObjectId;
   media!: Media[];
   music?: Media;
   badg?: string;
@@ -14,9 +14,6 @@ export class PackageSeason extends Realm.Object<PackageSeason> {
   number_stage?: number;
   is_visible: boolean = true;
   is_active: boolean = true;
-  content_source_type!: "original" | "derived" | "copy";
-  publication_status!: "draft" | "ready" | "published" | "archived" | "rejected";
-  completion_status!: "incomplete" | "in_progress" | "complete" | "finalized";
   version_created?: number;
   version_updated?: number;
   version_deleted?: number;
@@ -31,7 +28,7 @@ export class PackageSeason extends Realm.Object<PackageSeason> {
       package: "objectId[]",
       title: "string",
       description: "string?",
-      language: "objectId?",
+      language_ref: "objectId?",
       media: "Media[]",
       music: "Media",
       badg: "string?",
@@ -39,9 +36,6 @@ export class PackageSeason extends Realm.Object<PackageSeason> {
       number_stage: "int?",
       is_visible: { type: "bool", default: true },
       is_active: { type: "bool", default: true },
-      content_source_type: "string?",
-      publication_status: "string?",
-      completion_status: "string?",
       version_created: "int?",
       version_updated: "int?",
       version_deleted: "int?",

@@ -9,7 +9,7 @@ export interface IStage {
   voice: IMedia[];
   stage_hint?: string;
   season: BSON.ObjectId;
-  language?: BSON.ObjectId;
+  language_ref?: BSON.ObjectId;
   stage_number_in_language: number;
   stage_number_in_season: number;
   is_visible?: boolean;

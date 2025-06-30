@@ -1,8 +1,7 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Dimensions, SafeAreaView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Text, TouchableOpacity, Dimensions, SafeAreaView, ScrollView, KeyboardAvoidingView} from 'react-native';
 import { connect } from 'react-redux';
 import {useTheme} from '@react-navigation/native';
-import MyTransCall from '../../utils/translations/MyTrans';
 import Font from '../../utils/Font';
 import {setToken} from '../../../redux/actions/MainAction';
 import { DotIndicator } from 'react-native-indicators';
@@ -11,96 +10,141 @@ import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import { phoneDigitSeperator } from '../../utils/PhoneDigitSeprator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-    CodeField,
-    Cursor,
-    useBlurOnFulfill,
-    useClearByFocusCell,
-} from 'react-native-confirmation-code-field';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import messaging from '@react-native-firebase/messaging';
 import DeviceInfo from 'react-native-device-info';
+import InputCodeField from '../../components/inuts/InputCodeField';
+import ButtonGradient from '../../components/buttons/ButtonGradient';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from '../../utils/Icon';import {
+    getHash,
+    startOtpListener,
+    useOtpVerify,
+} from 'react-native-otp-verify';
+import Globals from '../../utils/Globals';
+import { useDispatch } from "react-redux";
+import { login } from '../../redux/slices/authSlice';
   
   
-const width = Dimensions.get('window').width;
-const CELL_COUNT = 6;
+const {width, height} = Dimensions.get('window');
 function VerifyWithOTP(props){
+    const dispatch = useDispatch();
+    const {colors} = useTheme().colors;
     const [value, setValue] = useState('');
+    const [hash, setHash] = useState("")
     const [loading, setLoading] = useState(false)
     const [newOtpLoading, setNewOtpLoading] = useState(false)
-    const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
     const [newOtp, setNewOtp] = useState(false)
     const [minutes, setMinutes] = useState(props.route.params?.minutes)
     const [seconds, setSeconds] = useState(props.route.params?.seconds)
-    const [prop, getCellOnLayoutHandler] = useClearByFocusCell({
-        value,
-        setValue,
-    });
-    const colors = useTheme().colors;
+    const { stopListener } = useOtpVerify({numberOfDigits: 6});
+    const phone = props.route.params?.phone
+
+
+    const removeListener = ()=>{
+        stopListener()
+    }
+
+    useEffect(() => {
+        getHash().then(hash => {
+            if(hash[0]?.length > 1){
+                setHash(hash[0])
+            }
+        }).catch(console.log);
+      
+        startOtpListener(message => {
+            const match = /(\d{6})/g.exec(message);
+            if (match && match[1]) {
+                const otp = match[1];
+                setValue(otp);
+                const time = setTimeout(()=>{
+                    verifyWithOtp(otp)
+                    clearTimeout(time)
+                }, 500)
+            }
+        });
+        return () => removeListener();
+    }, []);
 
     const endOfTime = ()=>{
         setNewOtp(true)
         setMinutes(0)
         setSeconds(0)
     }
-    const requestNewOtp = ()=>{
+    const requestNewOtp = async ()=>{
         setValue('')
         setNewOtpLoading(true)
-        axios({
+        await axios({
             url:'/',
             method:'post',
             data: {
                 query : `
-                query requestNewOtpRealEstate($phone : String!){
-                    requestNewOtpRealEstate(phone : $phone) {
+                mutation requestOtpForUserLogin($phone : String!, $hash_id : String){
+                    requestOtpForUserLogin(phone : $phone, hash_id : $hash_id) {
                         status,
                         message,
+                        seconds,
+                        minutes,
                     }
                 }
                 `,
                 variables : {
-                    "phone" : props.route.params?.phone,
+                    "phone" : phone,
+                    "hash_id" : hash
                 }
             }
         }).then((response)=>{
-            if(response.data?.data == null){
+            setNewOtpLoading(false)
+            if(!response.data?.data){
                 Toast.show({
-                    type: 'error',
-                    text1: response.data.errors[0].data[0].message
+                    type: "error",
+                    text1 : "خطا در ارسال کد",
+                    text2: response.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
+                    visibilityTime: 6000
                 })
-                setNewOtpLoading(false)
                 setNewOtp(true)
             } else {
-                if(response.data.data?.requestNewOtpRealEstate?.status == 200) {
+                const data = response.data.data?.requestOtpForUserLogin
+                if(data?.status == 200) {
                     Toast.show({
-                        type: 'success',
-                        text1: response.data.data?.requestNewOtpRealEstate?.message
+                        type: "success",
+                        text1 : data?.message??"کد تایید ارسال شد.",
                     })
-                    setNewOtpLoading(false)
+                    const minutes = data?.minutes;
+                    const seconds = data?.seconds;
+                    setMinutes(minutes)
+                    setSeconds(seconds)
                     setNewOtp(false)
-                    setMinutes(2)
-                    setSeconds(0)
                 }
             }
         }).catch((error)=>{
+            Toast.show({
+                type: "error",
+                text1 : "خطا در ارسال کد",
+                text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
+            })
             setNewOtpLoading(false)
             setNewOtp(true)
         })
     }
-    const login = async ()=>{
+    const verifyUserLoginWithOTP = async (text)=>{
+        const otp = text??value
         if(newOtp == true) {
             Toast.show({
-                type: 'error',
-                text1: MyTransCall.translate('otp', 'otp_error_2')
+                type: "error",
+                text1 : "خطای کد تایید",
+                text2: 'اعتبار کد تاییدی که برایتان ارسال شده، تمام شده است. لطفا مجدد درخواست کد تایید کنید.',
+                visibilityTime: 6000
             })
-        } else if(value.length < 6) {
+        } else if(otp.length < 6) {
             Toast.show({
-                type: 'error',
-                text1: MyTransCall.translate('otp', 'otp_error_1')
+                type: "error",
+                text1 : "خطای کد تایید",
+                text2: 'یک کد تایید 6 رقمی به شماره موبایلتان ارسال شده است. آن را به صورت صحیح وارد کنید.',
+                visibilityTime: 6000
             })
         } else {
             setLoading(true)
-            const app_type = 'apk'
             // const firebase_token = await messaging().getToken()
             const os = await DeviceInfo.getSystemName()
             const os_version = await DeviceInfo.getSystemVersion()
@@ -114,31 +158,33 @@ function VerifyWithOTP(props){
                 method:'post',
                 data: {
                     query : `
-                    mutation consultantRequestLoginToCRMWithOTP(
+                    mutation verifyUserLoginWithOTP(
                         $phone : String!,
                         $code : String!,
-                        $app_type : String,
                         $firebase_token : String,
+                        $app_version : String,
                         $os : String,
                         $os_version : String,
                         $device_brand : String,
                         $device_name : String,
                         $device_model : String,
-                        $app_version : String,
                         $unique_id : String,
+                        $install_source : String,
+                        $build_type : String,
                     ){
-                        consultantRequestLoginToCRMWithOTP(
+                        verifyUserLoginWithOTP(
                             phone : $phone,
                             code : $code,
-                            app_type : $app_type,
                             firebase_token : $firebase_token,
+                            app_version : $app_version,
                             os : $os,
                             os_version : $os_version,
                             device_brand : $device_brand,
                             device_name : $device_name,
                             device_model : $device_model,
-                            app_version : $app_version,
                             unique_id : $unique_id,
+                            install_source : $install_source,
+                            build_type : $build_type,
                         ) {
                             status,
                             message,
@@ -147,135 +193,121 @@ function VerifyWithOTP(props){
                     }
                     `,
                     variables : {
-                        "phone" : props.route.params?.phone,
-                        "code" : value,
-                        "app_type" : app_type,
+                        "phone" : phone,
+                        "code" : otp,
                         "firebase_token" : "",
+                        "app_version" : app_version,
                         "os" : os,
                         "os_version" : os_version,
                         "device_brand" : device_brand,
                         "device_name" : device_name,
                         "device_model" : device_model,
-                        "app_version" : app_version,
                         "unique_id" : unique_id,
+                        "install_source" : Globals.install_source,
+                        "build_type" : Globals.build_type
                     }
                 }
             }).then(async(response)=>{
-                if(response.data?.data == null){
-                    setLoading(false)
+                setLoading(false)
+                const data = response?.data?.data?.verifyUserLoginWithOTP
+                if(data?.status == 200) {
+                    const token = data?.token
+                    dispatch(login({token}))
+                    axios.defaults.headers.post['token'] = token;
                     Toast.show({
-                        type: 'error',
-                        text1: response.data.errors[0].data[0].message
+                        type: "success",
+                        text1 : "ورود به حساب",
+                        text2 : "ورود به حساب کاربری با موفقیت انجام شد."
                     })
                 } else {
-                    const data = response.data.data?.consultantRequestLoginToCRMWithOTP
-                    if(data?.status == 200) {
-                        setLoading(false)
-                        const token = data?.token;
-                        await AsyncStorage.setItem('jwt', token)
-                        axios.defaults.headers.post['token'] = token;
-                        props.setToken(token)
-                    }
+                    Toast.show({
+                        type: "error",
+                        text1 : "خطا در ورود",
+                        text2: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
+                        visibilityTime: 6000
+                    })
                 }
             }).catch(()=>{
                 setLoading(false)
+                Toast.show({
+                    type: "error",
+                    text1 : "خطا در ورود",
+                    text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
+                    visibilityTime: 6000
+                })
             })
         }
     }
     return(
-        <View style={[styles.container, {backgroundColor:colors.background}]}>
-            <View style={{alignItems:'center'}}>
-            <MaterialCommunityIcons name={'tooltip-cellphone'} color={colors.text4} style={{fontSize:width * 0.2}}/>
-            <Text style={{fontFamily:Font.black, color:colors.text2, fontSize:18, textAlign:'center', marginVertical:20}}>{MyTransCall.translate('otp', 'enter_verify')}</Text>
-            <Text style={{fontFamily:Font.medium, color:colors.text4, fontSize:12, textAlign:'center'}}>{MyTransCall.translate('otp', 'send_otp')}</Text>
-            <Text style={{textDecorationLine:'underline', fontFamily:Font.bold, color:colors.text4, fontSize:14, textAlign:'center', marginBottom:10}}>{phoneDigitSeperator(props.route.params?.phone || '')}</Text>
-            <SafeAreaView >
-                <CodeField
-                    ref={ref}
-                    {...prop}
-                    // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
-                    value={value}
-                    onChangeText={setValue}
-                    cellCount={CELL_COUNT}
-                    rootStyle={styles.codeFieldRoot}
-                    autoFocus={true}
-                    keyboardType="number-pad"
-                    textContentType="oneTimeCode"
-                    renderCell={({index, symbol, isFocused}) => (
-                    <Text
-                        key={index}
-                        style={[styles.cell, {borderColor:isFocused?colors.color:colors.border, backgroundColor:colors.background4, color:colors.text}]}
-                        onLayout={getCellOnLayoutHandler(index)}>
-                        {symbol || (isFocused ? <Cursor /> : null)}
-                    </Text>
-                    )}
-                />
-            </SafeAreaView>
-            </View>
-            <View style={{width:'100%', alignItems:'center'}}>
-                <View style={{width:'100%', height:50, alignItems:'center', justifyContent:'center'}}>
-                {
-                    newOtpLoading == true?
-                    <DotIndicator color={colors.text} count={3} size={7}/>
-                    :
-                    newOtp == true?
-                    <TouchableOpacity activeOpacity={0.5} onPress={requestNewOtp}>
-                        <Text style={{fontFamily:Font.bold, color:colors.color, fontSize:12, textAlign:'center'}}>{MyTransCall.translate('otp', 'request_new')}</Text>
-                    </TouchableOpacity>
-                    :
-                    <TimerShowOTP
-                        minutes={minutes}
-                        seconds={seconds}
-                        endOfTime={endOfTime}
-                    />
-                }
+        <SafeAreaView>
+            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
+                <View style={styles.container}>
+                    <ScrollView>
+                        <View style={{justifyContent:"center", alignItems:'center', paddingTop:50}}>
+                            <Icon name={'tooltip-cellphone'} type={"MaterialCommunityIcons"} style={{color:colors.text.a3, fontSize:100}}/>
+                            <Text style={{fontFamily:Font.black, color:colors.text.a1, fontSize:18, textAlign:'center', marginVertical:10}}>{'کد تایید را وارد کنید'}</Text>
+                            <Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:12, textAlign:'center'}}>{'یک کد 6 رقمی به شماره‌ موبایل شما ارسال شد'}</Text>
+                            <Text style={{textDecorationLine:'underline', fontFamily:Font.black, color:colors.text.a3, fontSize:16, textAlign:'center', marginBottom:30}}>{phoneDigitSeperator(phone || '')}</Text>
+                            <InputCodeField
+                                value={value}
+                                setValue={(text)=>{
+                                    setValue(text)
+                                    if(text.length == 6){
+                                        verifyUserLoginWithOTP(text)
+                                    }
+                                }}
+                                cellCount={6}
+                                onSubmitEditing={verifyUserLoginWithOTP}
+                            />
+                        </View>
+                    </ScrollView>
+                    <KeyboardAvoidingView behavior='position' >
+                        <View style={{justifyContent:"center", alignItems:'center', paddingBottom:50}}>
+                            <View style={{width:width, flexDirection:'row', height:50, alignItems:'center', justifyContent:'space-between', paddingHorizontal:20}}>
+                                <View>
+                                    {
+                                        newOtpLoading == true?
+                                        <DotIndicator color={colors.text.a1} count={3} size={7}/>
+                                        :
+                                        newOtp == true?
+                                        <TouchableOpacity activeOpacity={0.5} onPress={requestNewOtp}>
+                                            <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'درخواست مجدد کد'}</Text>
+                                        </TouchableOpacity>
+                                        :
+                                        <TimerShowOTP
+                                            minutes={minutes}
+                                            seconds={seconds}
+                                            endOfTime={endOfTime}
+                                            fontSize={16}
+                                            fontFamily={Font.black}
+                                        />
+                                    }
+                                </View>
+                                <TouchableOpacity activeOpacity={0.5} onPress={()=>{props.navigation.goBack()}}>
+                                    <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'تغییر شماره موبایل'}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <ButtonGradient
+                                height={65}
+                                width={width - 40}
+                                text={"ورود"}
+                                onPress={verifyUserLoginWithOTP}
+                                loading={loading}
+                                textSize={18}
+                                borderRadius={10}
+                            />
+                        </View>
+                    </KeyboardAvoidingView>
                 </View>
-                <TouchableOpacity activeOpacity={0.5} onPress={login} style={[styles.btnStyle, {backgroundColor:colors.color}]}>
-                    {
-                        loading == true?
-                        <DotIndicator color={colors.white} count={3} size={7}/>
-                        :
-                        <Text style={[styles.btnText, {color:colors.white}]}>{MyTransCall.translate('otp', 'login')}</Text>
-                    }
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.5} style={{marginTop:10}} onPress={()=>{props.navigation.goBack()}}>
-                    <Text style={{fontFamily:Font.bold, color:colors.color, fontSize:12, textAlign:'center'}}>{MyTransCall.translate('otp', 'change_phone')}</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+            </LinearGradient>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex:1,
         alignItems:'center',
-        justifyContent:'space-evenly'
+        justifyContent:'space-between'
     },
-    codeFieldRoot: {flexDirection:'row-reverse'},
-    cell: {
-        width: width * 0.1,
-        height: width * 0.1,
-        alignItems:'center',
-        justifyContent:'center',
-        fontSize: width * 0.06,
-        fontFamily: Font.medium,
-        borderWidth: 1,
-        borderRadius: 5,
-        margin:5,
-        textAlignVertical: 'center',
-        textAlign: 'center',
-    },
-    btnStyle: {
-        width: width * 0.6 + 50,
-        height:50,
-        borderRadius:5,
-        alignItems:'center',
-        justifyContent:'center',
-        marginTop:30
-    },
-    btnText: {
-        fontFamily: Font.medium,
-        fontSize: 14 
-    }
 });
 export default VerifyWithOTP
