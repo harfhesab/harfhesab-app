@@ -4,9 +4,10 @@ import Font from '../../utils/Font';
 import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
 import LinearGradient from 'react-native-linear-gradient';
 import {useTheme} from '@react-navigation/native';
+import Icon from '../../utils/Icon';
 
 function ButtonGradient(
-    {loading, loadingType, onPress, borderRadius, width, height, text, text2, icon, ComplateContent, backgorundGradinte, textSize, fontFamily, justifyContent, activeOpacity}
+    {loading, loadingType, onPress, borderRadius, width, height, text, text2, iconName, iconType, iconSize, ComplateContent, backgorundGradinte, textSize, fontFamily, justifyContent, flexDirection, activeOpacity}
 ){
     const {colors} = useTheme().colors;
 
@@ -28,16 +29,16 @@ function ButtonGradient(
             <LinearGradient colors={backgorundGradinte??colors.button_gradient.background} style={{borderRadius:borderRadius??5, width:"100%", height:"100%"}}>
                 <View style={{borderRadius:borderRadius??5, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
                     {
-                        loading == true?
+                        (loading == true)?
                         (renderLoading())
                         :
                         ComplateContent?
                         (<ComplateContent/>)
                         :
-                        icon?
-                        (<View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:justifyContent??'space-between', paddingHorizontal:15}}>
-                            <Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:colors.button_gradient.content_1, textAlign:'center'}}>{text}</Text>
-                            <props.icon/>
+                        (iconName && iconType)?
+                        (<View style={{flexDirection:flexDirection??'row', alignItems:'center', width:'100%', justifyContent:justifyContent??'center', paddingHorizontal:15, gap:15}}>
+                            <Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:colors.button_gradient.content_1}}>{text}</Text>
+                            <Icon name={iconName} type={iconType} style={{fontSize:iconSize??25, color:colors.button_gradient.content_1}}/>
                         </View>)
                         :
                         (<View style={{width:'100%', alignItems:'center'}}>

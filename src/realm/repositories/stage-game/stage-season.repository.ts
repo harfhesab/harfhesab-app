@@ -124,22 +124,45 @@ export const deleteManyStageSeasons = (
   }
 };
 
-// --- تابع گرفتن همه اسناد بر اساس فیلد language با pagination ---
+// --- تابع گرفتن همه اسناد بر اساس فیلد language ---
 export const getStageSeasonsByLanguage = (
   realm: Realm,
-  languageId: BSON.ObjectId,
+  language: BSON.ObjectId | string
+): Realm.Results<StageSeason> => {
+  try {
+    const languageId = typeof language === "string"
+      ? new BSON.ObjectId(language)
+      : language;
+
+    return realm
+      .objects<StageSeason>("StageSeason")
+      .filtered("language_ref == $0 AND is_visible == true", languageId)
+      .sorted("season_number");
+  } catch (error) {
+    return [] as unknown as Realm.Results<StageSeason>;
+  }
+};
+
+// --- تابع گرفتن همه اسناد بر اساس فیلد language با pagination ---
+export const paginateStageSeasonsByLanguage = (
+  realm: Realm,
+  language: BSON.ObjectId | string,
   page: number = 1,
   pageSize: number = 20
 ): StageSeason[] => {
-  const offset = (page - 1) * pageSize;
+  try {
+    const offset = (page - 1) * pageSize;
+    const languageId = typeof language === "string"? new BSON.ObjectId(language) : language;
+    const results = realm
+      .objects<StageSeason>("StageSeason")
+      .filtered("language_ref == $0 AND is_visible == true", languageId)
+      .sorted("season_number") // به‌صورت پیش‌فرض ascending
+      .slice(offset, offset + pageSize);
 
-  const results = realm
-    .objects<StageSeason>("StageSeason")
-    .filtered("language == $0 AND is_visible == true", languageId)
-    .sorted("season_number") // به‌صورت پیش‌فرض ascending
-    .slice(offset, offset + pageSize);
-
-  return results;
+    return results;
+  } catch (error) {
+    return [];
+  }
 };
 
 // --- تابع حذف سند بر اساس _id ---

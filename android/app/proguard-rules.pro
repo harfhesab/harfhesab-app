@@ -17,3 +17,6 @@
   **[] $VALUES;
   public *;
 }
+-keep class com.faizal.OtpVerify.** { *; }
+-keep class com.google.android.gms.auth.api.phone.** { *; }
+-dontwarn com.google.android.gms.**

@@ -5,6 +5,7 @@ interface StageGameState {
   versionUpdatedContent: number;
   versionDeletedContent: number;
   forceUpdate: boolean;
+  stageGameLanguage: string | null;
 }
 
 const initialState: StageGameState = {
@@ -12,30 +13,32 @@ const initialState: StageGameState = {
   versionUpdatedContent: 0,
   versionDeletedContent: 0,
   forceUpdate: false,
+  stageGameLanguage: null,
 };
 
 const stageGamePersistSlice = createSlice({
   name: 'stageGamePersist',
   initialState,
   reducers: {
-    changeVersionContent(
-      state,
-      action: PayloadAction<{ versionCreatedContent: number; versionUpdatedContent: number; versionDeletedContent: number; }>
-    ) {
+    changeStageGameLanguage(state, action: PayloadAction<{ language: string }>) {
+      state.stageGameLanguage = action.payload.language
+    },
+    changeVersionContent(state, action: PayloadAction<{ versionCreatedContent: number; versionUpdatedContent: number; versionDeletedContent: number; }>) {
       state.versionCreatedContent = action.payload.versionCreatedContent;
       state.versionUpdatedContent = action.payload.versionUpdatedContent;
       state.versionDeletedContent = action.payload.versionDeletedContent;
       state.forceUpdate = false;
     },
-    changeStageGameForceUpdate(
-      state,
-      action: PayloadAction<{ forceUpdate: boolean }>
-    ) {
+    changeStageGameForceUpdate(state, action: PayloadAction<{ forceUpdate: boolean }>) {
       state.forceUpdate = action.payload.forceUpdate;
     },
   },
 });
 
-export const { changeVersionContent, changeStageGameForceUpdate } = stageGamePersistSlice.actions;
+export const { 
+  changeStageGameLanguage,
+  changeVersionContent,
+  changeStageGameForceUpdate
+} = stageGamePersistSlice.actions;
 
 export default stageGamePersistSlice.reducer;

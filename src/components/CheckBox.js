@@ -1,33 +1,101 @@
-import React, {useState, useEffect} from "react";
-import {View, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect, useRef } from "react";
+import { View, TouchableOpacity, Animated, Easing } from "react-native";
 import Icon from "../utils/Icon";
+import { useTheme } from "@react-navigation/native";
 
-function CheckBox(props){
-    const [check, setCheck] = useState(props.check)
+function CheckBox({ check, onPress, size, borderRadius, borderWidth, color, disabled }) {
+    const { colors } = useTheme().colors;
+    const [checkState, setCheckState] = useState(check);
+    const [visibleCheck, setVisibleCheck] = useState(check);
+    const finalSize = size ?? 25;
+
+    const scaleAnim = useRef(new Animated.Value(check ? 1 : 0)).current;
+    const bgAnim = useRef(new Animated.Value(check ? 1 : 0)).current;
 
     useEffect(() => {
-        setCheck(props.check)
-    }, [props.check]);
-    
-    const change = ()=>{
-        setCheck(!check)
-        const time = setTimeout(()=>{
-            props.onPress()
-            setCheck(props.check)
-            clearTimeout(time)
-        }, 100)
-    }
-    
-    return(
-        <TouchableOpacity onPress={change} activeOpacity={0.7} >
-            <View style={{borderRadius:props.size*0.15, borderWidth:props.size*0.075, borderColor:props.color, alignItems:'center', justifyContent:'center', width:props.size, height:props.size, backgroundColor:check == true?props.color:"transparent"}}>
-                {
-                    check == true?
-                    <Icon name={'check'} type={'Feather'} style={{color:'#FFF', fontSize:props.size*0.8}} />
-                    :null
-                }
-            </View>
+        setCheckState(check);
+
+        // animate background color
+        Animated.timing(bgAnim, {
+            toValue: check ? 1 : 0,
+            duration: 300,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: false,
+        }).start();
+
+        if (check) {
+            setVisibleCheck(true);
+            scaleAnim.setValue(0);
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                useNativeDriver: true,
+                friction: 5,
+                tension: 120,
+            }).start();
+        } else {
+            Animated.sequence([
+                Animated.timing(scaleAnim, {
+                    toValue: 1.3,
+                    duration: 100,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(scaleAnim, {
+                    toValue: 0,
+                    duration: 150,
+                    easing: Easing.out(Easing.quad),
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                setVisibleCheck(false);
+            });
+        }
+    }, [check]);
+
+    const change = () => {
+        if (disabled) return;
+        const newState = !checkState;
+        setCheckState(newState);
+        const time = setTimeout(() => {
+            onPress?.(newState);
+            clearTimeout(time);
+        }, 100);
+    };
+
+    // interpolate background color between "transparent" and active color
+    const backgroundColor = bgAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ["transparent", color ?? colors.check_box.color],
+    });
+
+    return (
+        <TouchableOpacity disabled={disabled} onPress={change} activeOpacity={0.7}>
+            <Animated.View
+                style={{
+                    borderRadius: borderRadius ?? 5,
+                    borderWidth: borderWidth ?? 1.5,
+                    borderColor: color ?? colors.check_box.color,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: finalSize,
+                    height: finalSize,
+                    backgroundColor: backgroundColor,
+                }}
+            >
+                {visibleCheck && (
+                    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                        <Icon
+                            name="check"
+                            type="FontAwesome6"
+                            style={{
+                                color: colors.check_box.check,
+                                fontSize: finalSize * 0.8,
+                            }}
+                        />
+                    </Animated.View>
+                )}
+            </Animated.View>
         </TouchableOpacity>
-    )
+    );
 }
-export default React.memo(CheckBox)
+
+export default React.memo(CheckBox);

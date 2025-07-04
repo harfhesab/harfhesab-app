@@ -2,13 +2,13 @@ import React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 
-const width = Dimensions.get('window').width;
-function Border(props){
+function Border({top, bottom, height, horizontal, width, color}){
     const {colors} = useTheme().colors;
+    const horizontalMargin = horizontal??0
 
     return(
-        <View style={[styles.container, {marginTop:props.top, marginBottom:props.bottom}]}>
-            <View style={{height:0, borderTopWidth:props.height, width:width - props.horizontal * 2, alignSelf:'center', borderTopColor:colors.border}}/>
+        <View style={[styles.container, {marginTop:top??0, marginBottom:bottom??0, width:width??"100%", paddingHorizontal:horizontal??0}]}>
+            <View style={{height:0, borderTopWidth:height??1.5, width:"100%", alignSelf:'center', borderTopColor:color??colors.border.a1}}/>
         </View>
     )
 }
@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     container:{
         justifyContent:'center',
         alignItems:'center',
-        width: width,
     },
 })
 export default Border;

@@ -5,21 +5,21 @@ export default {
                 primary:{
                     a1 : "#0ea960"
                 },
-                background_gradient : ['#0c2c5d', '#214479', '#335588'],
+                background_gradient : ['#1b0b63', '#311b92', '#512da8'],
                 text_banner : {
                     background : ["#bf5340", "#813123", "#491a11"],
                     content_1 : "#e8edf5",
                     content_2 : "#c4d2e5"
                 },
                 header : {
-                    background : "#011c46",
+                    background : "#1b0b63",
                     content_1 : "#F0F0F0",
                     content_2 : "#d1d1d1"
                 },
                 bottom_tab : {
-                    background : "#0c2c5d",
+                    background : "#1b0b63",
                     active : "#FFFFFF",
-                    inactive : "#BDBDBD"
+                    inactive : "#AAAAAA"
                 },
                 button_gradient : {
                     background : ["#0ea960", "#099956", "#018044"],
@@ -59,12 +59,21 @@ export default {
                     success:"#0ea960"
                 },
                 alert_component : {
-                    background : "#0c2c5d",
+                    background : "#1b0b63",
                     success : ['#007E33', '#00C851'],
                     error : ['#CC0000', '#ff4444'],
                     info : ['#0099CC', '#33b5e5'],
                     warning : ['#FF8800', '#ffbb33'],
                     question : ['#FF8800', '#ffbb33'],
+                },
+                bottom_drawer : {
+                    background : "#1b0b63",
+                    text1 : "#F0F0F0",
+                    text2 : "#d1d1d1",
+                },
+                check_box : {
+                    color : "#0ea960",
+                    check : "#FFFFFF"
                 },
                 ///////////////////////////
                 white_1 : "#FFFFFF", 
@@ -158,6 +167,15 @@ export default {
                     info : ['#0099CC', '#33b5e5'],
                     warning : ['#FF8800', '#ffbb33'],
                     question : ['#FF8800', '#ffbb33'],
+                },
+                bottom_drawer : {
+                    background : "#0c2c5d",
+                    text1 : "#F0F0F0",
+                    text2 : "#d1d1d1",
+                },
+                check_box : {
+                    color : "#0ea960",
+                    check : "#FFFFFF"
                 },
                 ///////////////////////////
                 white_1 : "#FFFFFF", 
