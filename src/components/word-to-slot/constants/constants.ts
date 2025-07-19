@@ -9,7 +9,7 @@ export const SLOT_NUMBER_IN_ROW = 6; // تعداد اسلات در یک ردیف
 const SLUT_SIZE_CALCULATION = (width - ((SLOT_HORIZONTAL*2)+((SLOT_NUMBER_IN_ROW-1)*SLOT_GAP))) / SLOT_NUMBER_IN_ROW;
 export const SLOT_SIZE = SLUT_SIZE_CALCULATION > 60?60:SLUT_SIZE_CALCULATION;
 export const SLOT_SENSITIVITY_SIZE = 120;
-export const SLOT_BORDER_RADIUS = 12;
+export const SLOT_BORDER_RADIUS = 10;
 export const SLOT_TEXT_FONT_SIZE = SLOT_SIZE/2.2;
 export const SLOT_BOTTOM_OFFSET = 50;
 
@@ -20,7 +20,7 @@ export const BOUNDARY_BOTTOM_OFFSET = 15; // فاصله محدوده از پای
 
 export const BOUNDARY_WIDTH = width - (BOUNDARY_HORIZONTAL_OFFSET*2);
 export const BOUNDARY_HEIGHT = height * 0.45;
-export const BOUNDARY_BORDER_RADIUS = 12;
+export const BOUNDARY_BORDER_RADIUS = 10;
 export const BOUNDARY_BORDER_WIDTH = 2;
 export const BOUNDARY_TOP_OFFSET = height - BOUNDARY_HEIGHT + BOUNDARY_BOTTOM_OFFSET;
 
@@ -37,6 +37,7 @@ export const FONT_SIZE_DRAGGING = CARD_SIZE_DRAGGING/4.5; // فونت سایز �
 export const FONT_SIZE_SLOTTED = CARD_SIZE_SLOTTED/4.5; // فونت سایز در حالت اسلات
 export const MAX_VELOCITY = 200;
 export const MIN_VELOCITY = 50;
+export const CARD_BORDER_RADIUS = 10;
 
 
 

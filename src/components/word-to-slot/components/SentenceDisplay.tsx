@@ -2,6 +2,7 @@ import React, { memo, useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import {  useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
+import {useTheme} from '@react-navigation/native';
 
 interface Props {
   words: string[];
@@ -9,6 +10,7 @@ interface Props {
 
 const SentenceDisplay = ({words}: Props) => {
     const { slots, cards } = useDragDrop();
+      const {colors} = useTheme().colors;
     // ساخت متن جمله از کلمات متصل به اسلات‌ها
     const sentence = Object.keys(slots)
         .sort((a, b) => Number(a) - Number(b)) // مرتب‌سازی بر اساس ایندکس اسلات
@@ -35,7 +37,7 @@ const SentenceDisplay = ({words}: Props) => {
 
     return (
         <View style={styles.sentenceContainer}>
-            <Text style={styles.sentenceText}>{sentence}</Text>
+            <Text style={[styles.sentenceText, {color:colors.text.a1}]}>{sentence}</Text>
         </View>
     );
 };
@@ -49,7 +51,6 @@ const styles = StyleSheet.create({
   sentenceText: {
     fontSize: 18,
     fontFamily: Font.black,
-    color: '#333',
     textAlign: 'center',
   },
 });

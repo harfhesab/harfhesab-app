@@ -24,6 +24,7 @@ function StageGame(props){
     const [page, setPage] = useState(1)
 
     useEffect(() => {
+        props.navigation.navigate("WordToSlotStageGame")
         if(forceUpdate == true){
             AlertHelper.showAlert({
                 body: "یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",

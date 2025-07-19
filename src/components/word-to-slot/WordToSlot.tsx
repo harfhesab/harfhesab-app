@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Text, Dimensions } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DragDropProvider, useDragDrop } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
@@ -17,35 +17,40 @@ import {
   DISTANCE_BOUNDARY_AND_SLOT
 } from './constants/constants';
 import SentenceDisplay from './components/SentenceDisplay';
+import LinearGradient from 'react-native-linear-gradient';
+import {useTheme} from '@react-navigation/native';
 
 const words = ["بابا", "با", "اسب", "با", "سرعت زیادی", "آمد"];
 
 
-
+const {width, height} = Dimensions.get("window")
 const WordToSlot = () => {
+  const {colors} = useTheme().colors;
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <DragDropProvider>
-        <SafeAreaView style={styles.container}>
-          <SentenceDisplay words={words} />
-          <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
-            <View style={styles.dropZoneContainer}>
-              <DropZoneList count={words.length} />
+    <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <DragDropProvider>
+          <SafeAreaView style={styles.container}>
+            <SentenceDisplay words={words} />
+            <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
+              <View style={styles.dropZoneContainer}>
+                <DropZoneList count={words.length} />
+              </View>
+              <View style={styles.boundaryContainer}>
+                <FloatingCardList words={words} />
+              </View>
             </View>
-            <View style={styles.boundaryContainer}>
-              <FloatingCardList words={words} />
-            </View>
-          </View>
-        </SafeAreaView>
-      </DragDropProvider>
-    </GestureHandlerRootView>
+          </SafeAreaView>
+        </DragDropProvider>
+      </GestureHandlerRootView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff8e1',
     zIndex: 0,
     flexDirection: 'column',
     alignItems: 'center',
@@ -67,7 +72,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: SLOT_GAP,
     justifyContent: 'center',
-    backgroundColor: '#fff3e0',
     width: BOUNDARY_WIDTH,
     zIndex: -1,
   },

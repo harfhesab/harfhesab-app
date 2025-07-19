@@ -18,6 +18,7 @@ import {
   BOUNDARY_HEIGHT,
   BOUNDARY_X,
   BOUNDARY_Y,
+  CARD_BORDER_RADIUS,
   CARD_SIZE_FLOATING,
   CARD_SIZE_DRAGGING,
   CARD_SIZE_SLOTTED,
@@ -220,7 +221,7 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
 const styles = StyleSheet.create({
   card: {
     position: 'absolute',
-    borderRadius: 12,
+    borderRadius: CARD_BORDER_RADIUS,
     backgroundColor: '#ffd54f',
     justifyContent: 'center',
     alignItems: 'center',

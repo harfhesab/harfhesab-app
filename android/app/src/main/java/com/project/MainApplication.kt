@@ -43,12 +43,12 @@ class MainApplication : Application(), ReactApplication {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
-    val sharedI18nUtilInstance = I18nUtil.getInstance()
-    sharedI18nUtilInstance.forceRTL(this, false)
-    sharedI18nUtilInstance.allowRTL(this, false)
     // val sharedI18nUtilInstance = I18nUtil.getInstance()
-    // sharedI18nUtilInstance.forceRTL(this, true)
-    // sharedI18nUtilInstance.allowRTL(this, true)
+    // sharedI18nUtilInstance.forceRTL(this, false)
+    // sharedI18nUtilInstance.allowRTL(this, false)
+    val sharedI18nUtilInstance = I18nUtil.getInstance()
+    sharedI18nUtilInstance.forceRTL(this, true)
+    sharedI18nUtilInstance.allowRTL(this, true)
   }
 
   override fun attachBaseContext(base: Context?) {
