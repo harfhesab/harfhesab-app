@@ -44,8 +44,11 @@ class MainApplication : Application(), ReactApplication {
       load()
     }
     val sharedI18nUtilInstance = I18nUtil.getInstance()
-    sharedI18nUtilInstance.forceRTL(this, true)
-    sharedI18nUtilInstance.allowRTL(this, true)
+    sharedI18nUtilInstance.forceRTL(this, false)
+    sharedI18nUtilInstance.allowRTL(this, false)
+    // val sharedI18nUtilInstance = I18nUtil.getInstance()
+    // sharedI18nUtilInstance.forceRTL(this, true)
+    // sharedI18nUtilInstance.allowRTL(this, true)
   }
 
   override fun attachBaseContext(base: Context?) {
