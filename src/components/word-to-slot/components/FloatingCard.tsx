@@ -27,13 +27,9 @@ import {
   FONT_SIZE_SLOTTED,
 } from "../constants/constants";
 
-// افست‌ها برای جبران موقعیت به منظور نگه داشتن مرکز کارت
-const OFFSET_DRAGGING = (CARD_SIZE_DRAGGING - CARD_SIZE_FLOATING) / 2; // 10 پیکسل
-const OFFSET_SLOTTED = (CARD_SIZE_SLOTTED - CARD_SIZE_FLOATING) / 2; // -10 پیکسل
-
 // تنظیمات انیمیشن برای نرم‌تر شدن
-const SPRING_CONFIG_SOFT = { stiffness: 280, damping: 10, mass: 1.1, overshootClamping: false }; // برای درگ و بازگشت به شناور
-const SPRING_CONFIG_SOFT_SLOT = { stiffness: 280, damping: 10, mass: 1.1, overshootClamping: false }; // برای چسبیدن به اسلات
+const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
+const SPRING_CONFIG_SOFT_SLOT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای چسبیدن به اسلات
 
 interface Props {
   word: string;
@@ -135,13 +131,13 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
       const slotPos = getSlotPosition(closestSlot)!;
       position.value = withSpring(
         {
-          x: slotPos.x - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + OFFSET_SLOTTED,
-          y: slotPos.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + OFFSET_SLOTTED,
+          x: slotPos.x - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
+          y: slotPos.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
         },
         SPRING_CONFIG_SOFT_SLOT
       );
       const fromSlot = getSlotOfCard(id);
-      runOnJS(assignCardToSlot)(id, closestSlot, dragFromSlot.value);
+      runOnJS(assignCardToSlot)(id, closestSlot, fromSlot);
 
       if (fromSlot !== null && fromSlot !== closestSlot) {
         runOnJS(unassignCardFromSlot)(fromSlot);
@@ -173,10 +169,12 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
       isDragging.value = true;
       cardSize.value = withSpring(CARD_SIZE_DRAGGING, SPRING_CONFIG_SOFT);
       fontSize.value = withSpring(FONT_SIZE_DRAGGING_SCALED, SPRING_CONFIG_SOFT);
-      offset.value = { x: position.value.x + OFFSET_SLOTTED, y: position.value.y + OFFSET_SLOTTED };
+      // ذخیره موقعیت فعلی به عنوان افست
+      offset.value = { x: position.value.x, y: position.value.y };
+      // جبران موقعیت برای حفظ مرکز کارت هنگام تغییر اندازه
       position.value = {
-        x: position.value.x - OFFSET_DRAGGING + OFFSET_SLOTTED,
-        y: position.value.y - OFFSET_DRAGGING + OFFSET_SLOTTED,
+        x: position.value.x - (CARD_SIZE_DRAGGING - cardSize.value) / 2,
+        y: position.value.y - (CARD_SIZE_DRAGGING - cardSize.value) / 2,
       };
       velocity.value = { vx: 0, vy: 0 };
       const currentSlot = getSlotOfCard(id);
@@ -187,9 +185,10 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
       }
     })
     .onUpdate(e => {
+      'worklet';
       position.value = {
-        x: offset.value.x + e.translationX - OFFSET_DRAGGING,
-        y: offset.value.y + e.translationY - OFFSET_DRAGGING,
+        x: offset.value.x + e.translationX - (cardSize.value - CARD_SIZE_SLOTTED) / 2,
+        y: offset.value.y + e.translationY - (cardSize.value - CARD_SIZE_SLOTTED) / 2,
       };
     })
     .onEnd(() => {

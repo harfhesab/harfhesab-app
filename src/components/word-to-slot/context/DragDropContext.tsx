@@ -43,8 +43,8 @@ interface Card {
 interface ContextProps {
   registerCard: (card: Card) => void;
   getSlotPosition: (index: number) => Position | undefined;
-  assignCardToSlot: (cardId: string, slotIndex: number) => void;
-  unassignCardFromSlot: (slotIndex: number) => void;
+  assignCardToSlot: (cardId: string, slotIndex: number, fromSlot: number | null) => void;
+  unassignCardFromSlot: (slotIndex: number | null) => void;
   getSlotOfCard: (cardId: string) => number | null;
   cards: Record<string, Card>;
   slots: Record<number, string>;
