@@ -21,6 +21,7 @@ function cleanParts(parts: IPartStage[]): PartStage[] {
           unknown_word: !!word.unknown_word,
           letters: word.letters || [],
           additional_words: word.additional_words || [],
+          hidden_words: word.hidden_words || [],
           order: word.order ?? null,
         })),
     }));

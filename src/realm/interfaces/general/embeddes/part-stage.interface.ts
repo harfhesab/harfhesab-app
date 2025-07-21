@@ -5,6 +5,7 @@ export interface IWordStage {
   unknown_word?: boolean;
   letters: string[]; 
   additional_words: string[];
+  hidden_words: string[];
   order?: number;
 }
 

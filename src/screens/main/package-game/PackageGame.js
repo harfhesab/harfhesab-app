@@ -1,15 +1,16 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import {StyleSheet, Platform, View, Text, Dimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, Platform, View, Text, Dimensions, TouchableOpacity, FlatList} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
+import CollectionPackageList from '../../../components/list-view-items/CollectionPackageList';
+import BannerSwiper from '../../../components/BannerSwiper';
 
 const {width, height} = Dimensions.get("window")
 function PackageGame(props){
     const {colors} = useTheme().colors;
-    const [banner, setBanner] = useState([])
     const [collection, setCollection] = useState([])
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(true)
@@ -69,16 +70,17 @@ function PackageGame(props){
             }
         }).then(async(response)=>{
             const dataReceived = response.data.data?.paginatePackageGameCollectionAndOther
+            const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setLoading(false)
-                setCollection(dataReceived.collection)
+                setCollection(newData)
                 setPage(dataReceived.nextPage)
                 setFooterLoading(true)
             } else {
                 if(dataReceived.collection.length > 0){
                     setFooterLoading(false)
                     setLoading(false)
-                    setCollection(dataReceived.collection)
+                    setCollection(newData)
                     setPage(1)
                 } else {
                     setFooterLoading(false)
@@ -144,14 +146,15 @@ function PackageGame(props){
             }
         }).then(async(response)=>{
             const dataReceived = response.data.data?.paginatePackageGameCollectionAndOther
+            const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
             if(dataReceived.hasNextPage == true){
-                setCollection([...collection, ...dataReceived.collection])
+                setCollection([...collection, ...newData])
                 setPage(dataReceived.nextPage)
                 setFooterLoading(true)
             } else {
                 if(dataReceived.collection.length > 0){
                     setFooterLoading(false)
-                    setCollection([...collection, ...dataReceived.collection])
+                    setCollection([...collection, ...newData])
                     setPage(page)
                 } else {
                     setFooterLoading(false)
@@ -200,9 +203,19 @@ function PackageGame(props){
         }
     }
     const renderItem = useCallback(({item})=>(
-        <View>
-
+        item?.banner == true?
+        <View style={{width:width, alignItems:'center'}}>
+            <BannerSwiper
+                banner={item}
+                navigation={props.navigation}
+            />
         </View>
+        :
+        <CollectionPackageList
+            _id={item?._id}
+            title={item?.title}
+            list={item?.list}
+        />
     ), [])
     const memoizedValue = useMemo(() => renderItem, [data]);
     const keyExtractor = (item,index)=>index.toString()

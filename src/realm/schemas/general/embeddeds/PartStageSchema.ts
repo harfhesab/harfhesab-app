@@ -7,6 +7,7 @@ export class WordStage extends Realm.Object<WordStage> {
   unknown_word?: boolean;
   letters: string[] = []; 
   additional_words: string[] = [];
+  hidden_words: string[] = [];
   order?: number;
 
   static schema: Realm.ObjectSchema = {
@@ -19,6 +20,7 @@ export class WordStage extends Realm.Object<WordStage> {
       unknown_word: { type: "bool", default: false },
       letters: "string[]",
       additional_words: "string[]",
+      hidden_words: "string[]",
       order: "int?",
     },
   };

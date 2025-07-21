@@ -227,6 +227,7 @@ const getNewVersionCreatedStageGameContent = async ({page, dispatch, realm, stat
                                     unknown_word,
                                     letters,
                                     additional_words,
+                                    hidden_words,
                                     order
                                 },
                                 order
@@ -383,6 +384,7 @@ const getNewVersionUpdatedStageGameContent = async ({page, dispatch, realm, stat
                                     unknown_word,
                                     letters,
                                     additional_words,
+                                    hidden_words,
                                     order
                                 },
                                 order
@@ -629,6 +631,7 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
                                     unknown_word,
                                     letters,
                                     additional_words,
+                                    hidden_words,
                                     order
                                 },
                                 order
