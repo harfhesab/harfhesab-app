@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import {StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import Swiper from 'react-native-swiper';
+// import Swiper from 'react-native-swiper';
 import FastImage from '@d11/react-native-fast-image';
 
 const width = Dimensions.get('window').width;
@@ -17,7 +17,7 @@ function BannerSwiper({navigation, banner}){
     }
     return(
         <View style={{width:bannerWidth, height:bannerWidth * 0.45, alignItems:'center', justifyContent:'center', borderRadius:20, alignSelf:'center'}}>
-            <Swiper
+            {/* <Swiper
                 style={styles.swiper}
                 showsButtons={false}
                 index={banner.length - 1}
@@ -41,7 +41,7 @@ function BannerSwiper({navigation, banner}){
                         </TouchableOpacity>
                     ))
                 }
-            </Swiper>
+            </Swiper> */}
         </View>
     )
 }

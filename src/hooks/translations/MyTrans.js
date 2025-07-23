@@ -1,5 +1,5 @@
 import fa from './fa';
-import Globals from '../Globals';
+import Globals from '../../utils/Globals';
 
 class MyTrans {
     translate(page, sub, text) {

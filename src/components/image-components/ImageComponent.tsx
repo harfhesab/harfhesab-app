@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image as RNImage, ImageStyle, StyleProp } from 'react-native';
+import { View, StyleSheet, ImageStyle, StyleProp } from 'react-native';
 import FastImage, { FastImageProps, ResizeMode } from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
+import Icon from '../../utils/Icon';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const BASE_URL = Globals.uri;
 
@@ -29,6 +31,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
   onError,
   ...props
 }) => {
+  const colors = useAppTheme()
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -47,11 +50,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
   return (
     <View style={[{ width, height }, styles.container, style]}>
       {!loaded && !error && (
-        <RNImage
-          source={placeholderIcon}
-          style={[StyleSheet.absoluteFill, { width, height }]}
-          resizeMode="center"
-        />
+        <Icon name={"image"} type={"Ionicons"} style={{fontSize:40, color:colors.text.a1}}/>
       )}
 
       <FastImage

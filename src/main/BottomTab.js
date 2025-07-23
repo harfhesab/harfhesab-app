@@ -2,7 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StyleSheet, Text, View } from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import MyTransCall from '../utils/translations/MyTrans';
+import MyTransCall from '../hooks/translations/MyTrans';
 import Font from '../utils/Font';
 import Icon from '../utils/Icon';
 import PackageGame from '../screens/main/package-game/PackageGame';

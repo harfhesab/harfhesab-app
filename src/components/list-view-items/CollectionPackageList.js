@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {View, Text, TouchableNativeFeedback, Dimensionsm, ScrollView} from 'react-native';
+import {View, Text, TouchableNativeFeedback, Dimensions, ScrollView} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';

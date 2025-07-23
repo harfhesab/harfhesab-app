@@ -124,6 +124,8 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
       }
     }
 
+    const fromSlot = dragFromSlot.value; // استفاده از dragFromSlot به جای getSlotOfCard
+
     if (closestSlot !== -1 && maxOverlap > 0) {
       isAssigned.value = true;
       cardSize.value = withSpring(CARD_SIZE_SLOTTED, SPRING_CONFIG_SOFT_SLOT);
@@ -136,12 +138,7 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
         },
         SPRING_CONFIG_SOFT_SLOT
       );
-      const fromSlot = getSlotOfCard(id);
       runOnJS(assignCardToSlot)(id, closestSlot, fromSlot);
-
-      if (fromSlot !== null && fromSlot !== closestSlot) {
-        runOnJS(unassignCardFromSlot)(fromSlot);
-      }
     } else {
       cardSize.value = withSpring(CARD_SIZE_FLOATING, SPRING_CONFIG_SOFT);
       fontSize.value = withSpring(FONT_SIZE_FLOATING_SCALED, SPRING_CONFIG_SOFT);
@@ -155,9 +152,8 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
         vy: (Math.random() - 0.5) * 200,
       };
       isAssigned.value = false;
-      const currentSlot = getSlotOfCard(id);
-      if (currentSlot !== null) {
-        runOnJS(unassignCardFromSlot)(currentSlot);
+      if (fromSlot !== null) {
+        runOnJS(unassignCardFromSlot)(fromSlot);
       }
     }
   };
