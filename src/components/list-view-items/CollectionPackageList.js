@@ -1,15 +1,15 @@
 import React, {memo} from 'react';
 import {View, Text, TouchableNativeFeedback, Dimensions, ScrollView} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import PackageCollectionItem from '../card/package-game-card/PackageCollectionItem';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
 function CollectionPackageList({_id, title, arrowText, list}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
 
     const onClick = () => {
         if (disabled) return;

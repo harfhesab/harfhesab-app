@@ -1,9 +1,9 @@
 import React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import useAppTheme from '../hooks/theme/useAppTheme';
 
 function Border({top, bottom, height, horizontal, width, color}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const horizontalMargin = horizontal??0
 
     return(

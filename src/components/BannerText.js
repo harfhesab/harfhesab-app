@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, Text} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Font from '../utils/Font';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../utils/Icon';
+import useAppTheme from '../hooks/theme/useAppTheme';
 
 
 function BannerText({iconName, iconType, iconFontSize, iconRepeat, iconEnd, width, height, borderRadius, text1, alignItemsText1, fontFamilyText1, fontSizeText1, textAlignText1, lineHeightText1, text2, alignItemsText2, fontFamilyText2, fontSizeText2, textAlignText2, lineHeightText2}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
 
     return(
         <LinearGradient colors={colors.text_banner.background} style={{borderRadius:borderRadius??10, width:width??"100%", height:height??"100%", shadowColor:colors.shadow.a1, elevation:10}}>

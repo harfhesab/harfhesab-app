@@ -1,6 +1,5 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView, StyleSheet} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Modal from "react-native-modal";
 import Font from '../../utils/Font';
 import Toast from 'react-native-toast-message';
@@ -14,10 +13,11 @@ import CheckBoxItem from '../list-view-items/CheckBoxItem';
 import SimpleCenterItem from '../list-view-items/SimpleCenterItem';
 import ArrowItem from '../list-view-items/ArrowItem';
 import RadioButtonItem from '../list-view-items/RadioButtonItem';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const {width, height} = Dimensions.get('window');
 const BottomDrawer = React.forwardRef((props, ref)=>{
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const maxHeight = height*0.9 - 160;
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(true)

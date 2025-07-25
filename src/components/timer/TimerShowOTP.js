@@ -1,12 +1,12 @@
 import React, {useEffect, useState, memo} from 'react';
 import { View, Dimensions} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import TimerOTP from './TimerOTP';
 import Font from '../../utils/Font';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width;
 function TimerShowOTP ({minutes, seconds, endOfTime, fontSize, fontFamily, color}) {
-  const {colors} = useTheme().colors;
+  const colors = useAppTheme();
   const [minutesState, setMinutesState] = useState(minutes)
   const [secondsState, setSecondsState] = useState(seconds)
   

@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Dimensions, SafeAreaView} from 'react-native';
 import { connect } from 'react-redux';
-import {useTheme} from '@react-navigation/native';
 import Font from '../../utils/Font';
 import {
     CodeField,
@@ -9,11 +8,12 @@ import {
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
+import useAppTheme from '../../hooks/theme/useAppTheme';
   
   
 const width = Dimensions.get('window').width;
 function InputCodeField({value,  cellCount, setValue, onSubmitEditing}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const ref = useBlurOnFulfill({value, cellCount});
     const [prop, getCellOnLayoutHandler] = useClearByFocusCell({
         value,

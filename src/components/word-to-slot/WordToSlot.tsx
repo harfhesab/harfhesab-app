@@ -18,14 +18,14 @@ import {
 } from './constants/constants';
 import SentenceDisplay from './components/SentenceDisplay';
 import LinearGradient from 'react-native-linear-gradient';
-import {useTheme} from '@react-navigation/native';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const words = ["بابا", "با", "اسب", "با", "سرعت زیادی", "آمد"];
 
 
 const {width, height} = Dimensions.get("window")
 const WordToSlot = () => {
-  const {colors} = useTheme().colors;
+  const colors = useAppTheme();
 
   return (
     <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>

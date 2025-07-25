@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -11,10 +10,11 @@ import BottomDrawer from '../../../components/bottom-drawer/BottomDrawer';
 import BottomDrawerHelper from '../../../components/bottom-drawer/BottomDrawerHelper';
 import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
 import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
+import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme()
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const realm = useRealm();
@@ -24,8 +24,33 @@ function StageGame(props){
     const [page, setPage] = useState(1)
 
     useEffect(() => {
-        props.navigation.navigate("WordToSlotStageGame")
-        if(forceUpdate == true){
+        // props.navigation.navigate("WordToSlotStageGame")
+        startFirst()
+    }, []);
+    const startFirst = async() =>{
+        if(stageGameLanguage){
+            getData()
+        }
+        if(versionCreatedContent == 0){
+            AlertHelper.showAlert({
+                body: "برای شروع بازی، محتوای بازی مرحله‌ای را دریافت کنید.",
+                buttons: [
+                    {
+                        text: 'دریافت محتوا',
+                        onPress: () => {
+                            props.navigation.navigate("StageGameUpdateScreen")
+                        },
+                        type:'bold'
+                    },
+                ],
+                options : {
+                    type: 'warning',
+                    cancelable: false,
+                    bodyAlign:'center',
+                    textAlign:'center',
+                },
+            });
+        } else if(forceUpdate == true){
             AlertHelper.showAlert({
                 body: "یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
                 buttons: [
@@ -44,18 +69,13 @@ function StageGame(props){
                     textAlign:'flex-start'
                 },
             });
+        } else if(!stageGameLanguage){
+            getLanguages()
         } else {
             const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
             checkStageGameContentVersion({ dispatch, realm, state, versionContent });
         }
-    }, []);
-    useEffect(()=>{
-        if(stageGameLanguage){
-            getData()
-        } else {
-            getLanguages()
-        }
-    }, [])
+    }
     const getLanguages = ()=>{
         const languages = getAllLanguages(realm)
         BottomDrawerHelper.showBottomDrawer({

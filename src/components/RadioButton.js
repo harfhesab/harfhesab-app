@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, Animated, Easing } from "react-native";
-import { useTheme } from '@react-navigation/native';
+import useAppTheme from "../hooks/theme/useAppTheme";
 
 function RadioButton({ selected, onPress, size, borderWidth, color, disabled }) {
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const [selectedState, setSelectedState] = useState(selected);
 
     const finalSize = size ?? 20;

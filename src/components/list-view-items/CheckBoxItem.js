@@ -1,15 +1,15 @@
 import React, {useState, memo, useEffect} from 'react';
 import {View, Text, TouchableNativeFeedback, Dimensions} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import CheckBox from '../CheckBox';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
 function CheckBoxItem({check, disabled, checkBoxSize, onPress, width, height, paddingHorizontal, iconName, iconType, iconSize, iconColor, imageUrl, imageSize, imageLocal, text1, text2, fontFamilyText1, fontSizeText1, fontFamilyText2, fontSizeText2}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const [checkState, setCheckState] = useState(check);
 
     useEffect(() => {

@@ -1,13 +1,13 @@
 import React from "react";
 import {StyleSheet, View, Text, Dimensions, TouchableNativeFeedback} from 'react-native';
 import Icon from "../../utils/Icon";
-import {useTheme} from '@react-navigation/native';
 import Font from "../../utils/Font";
 import { goBack } from "../../main/navigationService";
+import useAppTheme from "../../hooks/theme/useAppTheme";
 
 const {width} = Dimensions.get('window');
 function GeneralHeader({height, hideShadow, paddingHorizontal, rightComponent, leftComponent, back, backIconSize, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
 
     const goBackOnClick = ()=>{
         goBack()

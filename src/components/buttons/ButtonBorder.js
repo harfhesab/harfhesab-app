@@ -2,12 +2,12 @@ import React, {memo} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import Font from '../../utils/Font';
 import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
-import {useTheme} from '@react-navigation/native';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 function ButtonBorder(
     {loading, loadingType, onPress, borderRadius, borderWidth, borderColor, width, height, text, text2, iconName, iconType, iconSize, complateContent, textSize, fontFamily, justifyContent, flexDirection, activeOpacity}
 ){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
 
     const renderLoading = ()=>(
         <View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>

@@ -4,7 +4,7 @@ import Font from '../../utils/Font';
 import { DotIndicator, UIActivityIndicator } from 'react-native-indicators';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../../utils/Icon';
-import {useTheme} from '@react-navigation/native';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 function InputText({
         value,
@@ -32,7 +32,7 @@ function InputText({
         title,
         required
     }){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const [focused, setFocused] = useState(false)
     const [checkValueState, setCheckValueState] = useState(checkValue)
     const [secureTextEntryState, setSecureTextEntryState] = useState(secureTextEntry)

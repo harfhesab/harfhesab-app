@@ -1,14 +1,14 @@
 import React, {memo} from 'react';
 import {View, Text, TouchableNativeFeedback, Dimensions} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
 function SimpleCenterItem({ onPress, disabled, width, height, paddingHorizontal, text1, fontFamilyText1, fontSizeText1, colorText1}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
 
     const onClick = () => {
         if (disabled) return;

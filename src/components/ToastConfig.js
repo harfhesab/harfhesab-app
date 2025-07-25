@@ -1,7 +1,7 @@
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import Font from '../utils/Font';
-import {useTheme} from '@react-navigation/native';
 import Icon from '../utils/Icon';
+import useAppTheme from '../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width;
 const ToastConfig = {
@@ -16,7 +16,7 @@ const ToastConfig = {
     ),
 };
 const Toast = ({text1, text2, type})=>{
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const iconName = type == "success"?"sticker-check":type == "error"?"sticker-alert":type == "info"&&"sticker-text"
     return(
         <View style={[styles.box, {backgroundColor:colors.toast.background, borderStartColor:colors.toast[type], shadowColor:colors.shadow.a1}]}>

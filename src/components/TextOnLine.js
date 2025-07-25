@@ -1,10 +1,10 @@
 import React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import useAppTheme from '../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width;
 function TextOnLine(props){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
 
     return(
         <View style={[styles.container, {marginTop:props.top, marginBottom:props.bottom}]}>

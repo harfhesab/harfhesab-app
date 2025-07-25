@@ -1,6 +1,5 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Modal from "react-native-modal";
 import Font from '../../utils/Font';
 import Toast from 'react-native-toast-message';
@@ -9,10 +8,11 @@ import ButtonBorder from '../buttons/ButtonBorder';
 import ButtonGradient from '../buttons/ButtonGradient';
 import LinearGradient from 'react-native-linear-gradient';
 import LottieView from 'lottie-react-native';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const {width, height} = Dimensions.get('window');
 const Alert = React.forwardRef((props, ref)=>{
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     const contentWidth = width-60;
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(true)

@@ -1,7 +1,6 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StyleSheet, Text, View } from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import MyTransCall from '../hooks/translations/MyTrans';
 import Font from '../utils/Font';
 import Icon from '../utils/Icon';
@@ -10,10 +9,11 @@ import StageGame from '../screens/main/stage-game/StageGame';
 import Account from '../screens/main/account/Account';
 import OnlineGame from '../screens/main/online-game/OnlineGame';
 import FastImage from '@d11/react-native-fast-image';
+import useAppTheme from '../hooks/theme/useAppTheme';
 
 const Tab = createBottomTabNavigator();
 const BottomTab = (props) => {
-  const {colors} = useTheme().colors;
+  const colors = useAppTheme()
   
   return (
     <Tab.Navigator

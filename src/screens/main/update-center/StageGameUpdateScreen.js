@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,10 +13,11 @@ import ButtonGradient from '../../../components/buttons/ButtonGradient';
 import { setDataCheck, setStatus } from '../../../redux/slices/stageGameDownloadSlice';
 import { useRealm } from '../../../realm';
 import { startUpdateStageGameContentTask } from '../../../utils/background-task/StageGameContentTask';
+import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 const {width, height} = Dimensions.get("window")
 function StageGameUpdateScreen(props){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme()
     const dispatch = useDispatch();
     const state = useSelector((state) => state.stageGameDownload);
     const realm = useRealm();
@@ -72,6 +72,7 @@ function StageGameUpdateScreen(props){
                 }
             }
         }).then((response)=>{
+            console.log("1111111", response)
             const data = response.data?.data?.checkStageGameContentVersion
             if(data){
                 dispatch(setDataCheck({data:data}))
@@ -87,6 +88,7 @@ function StageGameUpdateScreen(props){
                 setFirstCheckGetError(true)
             }
         }).catch((err)=>{
+            console.log("22222222", err)
             setFirstCheckGetError(true)
         })
     }

@@ -1,13 +1,13 @@
 import React, {memo} from 'react';
 import {StyleSheet, View, Dimensions, Text, TouchableOpacity} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import { DotIndicator, MaterialIndicator, BallIndicator } from 'react-native-indicators';
 import Font from '../../utils/Font';
 import ButtonGradient from '../buttons/ButtonGradient';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width;
 function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErrorComponent, noItem, NoItemComponent, tryAgain}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     
 
     const renderLoading = ()=>(

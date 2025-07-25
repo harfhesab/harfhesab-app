@@ -1,13 +1,13 @@
 import React, {memo} from "react";
 import {StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 // import Swiper from 'react-native-swiper';
 import FastImage from '@d11/react-native-fast-image';
+import useAppTheme from "../hooks/theme/useAppTheme";
 
 const width = Dimensions.get('window').width;
 const bannerWidth = width > 600?460:width - 30
 function BannerSwiper({navigation, banner}){
-    const colors = useTheme().colors;
+    const colors = useAppTheme();
     const onClickItem = (item)=>{
         if(item?.url && (item?.url?.includes("http://") || item?.url?.includes("https://"))){
             navigation.navigate("WebViewScreen", {url:item.url})

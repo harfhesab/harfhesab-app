@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
+import useAppTheme from '../../../../hooks/theme/useAppTheme';
 
 const {width, height} = Dimensions.get("window")
 function WordToSlotStageGame(props){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme()
    
     
     return(

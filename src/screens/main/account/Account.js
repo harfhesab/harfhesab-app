@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store/RootReducer';
 import { login, logout } from '../../../redux/slices/authSlice';
 import LinearGradient from 'react-native-linear-gradient';
+import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme()
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
 

@@ -1,16 +1,17 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import {StyleSheet, Platform, View, Text, Dimensions, TouchableOpacity, FlatList} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import CollectionPackageList from '../../../components/list-view-items/CollectionPackageList';
 import BannerSwiper from '../../../components/BannerSwiper';
+import GeneralHeader from '../../../components/header/GeneralHeader';
+import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 const {width, height} = Dimensions.get("window")
 function PackageGame(props){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme()
     const [collection, setCollection] = useState([])
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(true)
@@ -217,14 +218,14 @@ function PackageGame(props){
             list={item?.list}
         />
     ), [])
-    const memoizedValue = useMemo(() => renderItem, [data]);
+    const memoizedValue = useMemo(() => renderItem, [collection]);
     const keyExtractor = (item,index)=>index.toString()
     
     return(
          <View style={[styles.container, {backgroundColor:colors.background}]}> 
             <GeneralHeader
                 back={false}
-                title={"بروزرسانی محتوای بازی مرحله‌ای"}
+                title={"بسته‌های بازی"}
             />
             <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
                 <View style={styles.container}>

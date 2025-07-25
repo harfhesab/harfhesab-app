@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, KeyboardAvoidingView, SafeAreaView} from 'react-native';
 import Icon from '../../utils/Icon';
-import {useTheme} from '@react-navigation/native';
 import Font from '../../utils/Font';
 import { DotIndicator } from 'react-native-indicators';
 import axios from 'axios';
@@ -10,11 +9,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import ButtonGradient from '../../components/buttons/ButtonGradient';
 import InputText from '../../components/inuts/InputText';
 import { getHash } from 'react-native-otp-verify';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 
 const {width, height} = Dimensions.get('window');
 function Login(props){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme()
     const [phone, setPhone] = useState('')
     const [loading, setLoading] = useState(false)
     const [hash, setHash] = useState("")

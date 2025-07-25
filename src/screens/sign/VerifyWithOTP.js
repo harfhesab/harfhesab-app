@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Dimensions, SafeAreaView, ScrollView, KeyboardAvoidingView} from 'react-native';
 import { connect } from 'react-redux';
-import {useTheme} from '@react-navigation/native';
 import Font from '../../utils/Font';
 import {setToken} from '../../../redux/actions/MainAction';
 import { DotIndicator } from 'react-native-indicators';
@@ -24,12 +23,13 @@ import Icon from '../../utils/Icon';import {
 import Globals from '../../utils/Globals';
 import { useDispatch } from "react-redux";
 import { login } from '../../redux/slices/authSlice';
+import useAppTheme from '../../hooks/theme/useAppTheme';
   
   
 const {width, height} = Dimensions.get('window');
 function VerifyWithOTP(props){
     const dispatch = useDispatch();
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme()
     const [value, setValue] = useState('');
     const [hash, setHash] = useState("")
     const [loading, setLoading] = useState(false)

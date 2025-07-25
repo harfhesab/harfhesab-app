@@ -1,11 +1,11 @@
 import React, {memo} from 'react';
 import {StyleSheet, View, Dimensions, TouchableOpacity, Text, ActivityIndicator} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Font from '../utils/Font';
+import useAppTheme from '../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
 function FooterPaginate({loading, tryAgain, tryOperation}){
-    const {colors} = useTheme().colors;
+    const colors = useAppTheme();
     return(
         tryAgain == true?
         <View style={styles.container}>

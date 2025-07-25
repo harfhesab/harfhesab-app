@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, Animated, Easing } from "react-native";
 import Icon from "../utils/Icon";
-import { useTheme } from "@react-navigation/native";
+import useAppTheme from "../hooks/theme/useAppTheme";
 
 function CheckBox({ check, onPress, size, borderRadius, borderWidth, color, disabled }) {
-    const { colors } = useTheme().colors;
+    const colors = useAppTheme();
     const [checkState, setCheckState] = useState(check);
     const [visibleCheck, setVisibleCheck] = useState(check);
     const finalSize = size ?? 25;
