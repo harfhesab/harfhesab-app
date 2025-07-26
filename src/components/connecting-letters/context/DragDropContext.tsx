@@ -226,51 +226,11 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const checkWord = useCallback(
     (draggedCardId: string) => {
       const currentWord = word.join('');
-      const validWords = ['سلام', 'ملاس', 'لامس'];
+      const validWords = ['سیب', 'لیس', 'کوی'];
 
-      if (word.length >= 4 && validWords.includes(currentWord)) {
+      if (validWords.includes(currentWord)) {
         console.log('Success: کلمه درست است!');
-        // Remove used cards and add new ones
-        const newCards = { ...cards };
-        const allAttachedCards: string[] = [draggedCardId];
-        const collectAttached = (id: string) => {
-          Object.keys(cards).forEach((otherId) => {
-            if (cards[otherId].attachedTo.value === id) {
-              allAttachedCards.push(otherId);
-              collectAttached(otherId);
-            }
-          });
-        };
-        collectAttached(draggedCardId);
-        allAttachedCards.forEach((id) => {
-          delete newCards[id];
-        });
-        setCards(newCards);
-        setWord([]);
-        setDraggedCardId(null);
-        // Add new cards
-        const newLetters = ['س', 'ل', 'ا', 'م'];
-        newLetters.forEach((letter, index) => {
-          const id = `${letter}_${index}_${Date.now()}`;
-          const initialX = Math.random() * (BOUNDARY_WIDTH - CARD_SIZE_FLOATING);
-          const initialY = Math.random() * (BOUNDARY_HEIGHT - CARD_SIZE_FLOATING);
-          registerCard({
-            id,
-            letter,
-            homePosition: { x: initialX, y: initialY },
-            position: useSharedValue({ x: initialX, y: initialY }),
-            velocity: useSharedValue({
-              vx: (Math.random() - 0.5) * MAX_VELOCITY,
-              vy: (Math.random() - 0.5) * MAX_VELOCITY,
-            }),
-            isDragging: useSharedValue(false),
-            isAttached: useSharedValue(false),
-            cardSize: useSharedValue(CARD_SIZE_FLOATING),
-            fontSize: useSharedValue(FONT_SIZE_FLOATING),
-            attachedTo: useSharedValue(null),
-            attachIndex: useSharedValue(0),
-          });
-        });
+        detachCards(draggedCardId);
       } else {
         console.log('Error: کلمه نادرست است یا ناقص');
         detachCards(draggedCardId);

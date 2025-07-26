@@ -24,7 +24,7 @@ function StageGame(props){
     const [page, setPage] = useState(1)
 
     useEffect(() => {
-        props.navigation.navigate("ConnectingLetters")
+        props.navigation.navigate("ConnectingLettersStageGame")
         startFirst()
     }, []);
     const startFirst = async() =>{

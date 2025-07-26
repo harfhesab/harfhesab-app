@@ -4,7 +4,7 @@ import { useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 
-const WordDisplay = () => {
+const WordDisplay = ({data}: any) => {
   const { word } = useDragDrop();
   const colors = useAppTheme();
 
@@ -13,7 +13,7 @@ const WordDisplay = () => {
   return (
     <View style={styles.wordContainer}>
       <Text style={[styles.wordText, { color: colors.text.a1 }]}>
-        {currentWord || 'کلمه را بسازید'}
+        {currentWord}
       </Text>
     </View>
   );

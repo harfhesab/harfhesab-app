@@ -20,7 +20,7 @@ const letters = ['س', 'ل', 'ا', 'م', 'خ', 'ب'];
 
 const { width, height } = Dimensions.get('window');
 
-const LetterToWord = () => {
+const ConnectingLetters = ({data}:any) => {
   const colors = useAppTheme();
 
   return (
@@ -28,9 +28,9 @@ const LetterToWord = () => {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <DragDropProvider>
           <SafeAreaView style={styles.container}>
-            <WordDisplay />
+            <WordDisplay data={data}/>
             <View style={styles.boundaryContainer}>
-              <FloatingCardList letters={letters} />
+              <FloatingCardList letters={data?.letters} />
             </View>
           </SafeAreaView>
         </DragDropProvider>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     zIndex: 0,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   boundaryContainer: {
     height: BOUNDARY_HEIGHT,
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(LetterToWord);
+export default memo(ConnectingLetters);
