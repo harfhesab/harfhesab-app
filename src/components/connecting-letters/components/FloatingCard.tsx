@@ -108,19 +108,20 @@ function FloatingCard({ letter, index }: Props) {
     const currentPos = position.value;
     if (!currentPos) return;
 
+    // Find the last attached card in the chain
     let lastAttachedId = id;
-    let maxIndex = 0;
-
-    // Find the last attached card
-    Object.keys(cards).forEach((otherId) => {
-      if (otherId !== id && cards[otherId]?.attachedTo?.value === id) {
-        const index = cards[otherId].attachIndex.value;
-        if (index > maxIndex) {
-          maxIndex = index;
-          lastAttachedId = otherId;
-        }
+    let currentId = id;
+    while (currentId) {
+      const nextCard = Object.values(cards).find(
+        (c) => c.attachedTo.value === currentId && c.id !== id
+      );
+      if (nextCard) {
+        lastAttachedId = nextCard.id;
+        currentId = nextCard.id;
+      } else {
+        break;
       }
-    });
+    }
 
     // Update overlap durations
     Object.keys(cards).forEach((otherId) => {

@@ -51,6 +51,7 @@ interface ContextProps {
   cards: Record<string, Card>;
   word: string[];
   draggedCardId: string | null;
+  setWord: React.Dispatch<React.SetStateAction<string[]>>; // اضافه کردن setWord
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
@@ -117,38 +118,52 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (!card || !target || (card.isAttached.value && !isDraggingCard) || cardId === targetId) return;
 
       if (isDraggingCard) {
-        // For the dragged card, initialize it as the root card
         card.isDragging.value = true;
         card.isAttached.value = false;
         card.attachedTo.value = null;
         card.attachIndex.value = 0;
         card.cardSize.value = withSpring(CARD_SIZE_DRAGGING, SPRING_CONFIG_MAGNET);
         card.fontSize.value = withSpring(FONT_SIZE_ATTACHED, SPRING_CONFIG_MAGNET);
+        setWord([card.letter]);
       } else {
-        // For attached cards
         card.isAttached.value = true;
         card.attachedTo.value = targetId;
         card.cardSize.value = withSpring(CARD_SIZE_ATTACHED, SPRING_CONFIG_MAGNET);
         card.fontSize.value = withSpring(FONT_SIZE_ATTACHED, SPRING_CONFIG_MAGNET);
 
-        // Calculate attach index
-        let attachIndex = 0;
-        const attachedCards = Object.values(cards).filter(
-          (c) => c.attachedTo.value === targetId && c.id !== cardId
-        );
-        if (attachedCards.length > 0) {
-          attachIndex = Math.max(...attachedCards.map((c) => c.attachIndex.value)) + 1;
+        let attachIndex = 1;
+        let currentTargetId = targetId;
+        while (currentTargetId && cards[currentTargetId]) {
+          const currentCard = cards[currentTargetId];
+          if (currentCard.attachedTo.value) {
+            attachIndex++;
+            currentTargetId = currentCard.attachedTo.value;
+          } else {
+            break;
+          }
         }
         card.attachIndex.value = attachIndex;
 
-        // Append the attached card's letter to the word
-        setWord((prev) => {
-          const draggedCard = draggedCardId ? cards[draggedCardId] : null;
-          const baseWord = draggedCard ? [draggedCard.letter] : prev;
-          const newWord = [...baseWord];
-          newWord[attachIndex] = card.letter; // Place letter at correct index
-          return newWord;
-        });
+        const orderedCards: Card[] = [];
+        const visited = new Set<string>();
+        let currentCardId = draggedCardId;
+
+        while (currentCardId && !visited.has(currentCardId)) {
+          const currentCard = cards[currentCardId];
+          if (!currentCard) break;
+          orderedCards.push(currentCard);
+          visited.add(currentCardId);
+          const nextCard = Object.values(cards).find(
+            (c) => c.attachedTo.value === currentCardId && !visited.has(c.id)
+          );
+          currentCardId = nextCard ? nextCard.id : null;
+        }
+
+        if (!visited.has(cardId)) {
+          orderedCards.push(card);
+        }
+
+        setWord(orderedCards.map((c) => c.letter));
       }
     },
     [cards, draggedCardId]
@@ -220,8 +235,6 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         };
       });
 
-      // Clear word and draggedCardId
-      setWord([]);
       setDraggedCardId(null);
     },
     [cards, isOverlapping]
@@ -229,11 +242,9 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const checkWord = useCallback(
     (draggedCardId: string) => {
-      const currentWord = word.join('');
-
       detachCards(draggedCardId);
     },
-    [cards, word, detachCards, registerCard]
+    [detachCards]
   );
 
   const frameCallback = useFrameCallback(() => {
@@ -249,7 +260,6 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return;
       }
 
-      // Speed limiting
       const speed = Math.sqrt(velocity.vx * velocity.vx + velocity.vy * velocity.vy);
       if (speed > MAX_VELOCITY) {
         const scale = MAX_VELOCITY / speed;
@@ -261,11 +271,9 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         velocity.vy *= scale;
       }
 
-      // Update position based on velocity
       let newX = pos.x + velocity.vx * 0.012;
       let newY = pos.y + velocity.vy * 0.012;
 
-      // Boundary collision
       if (newX < 0) {
         newX = 0;
         velocity.vx = -velocity.vx;
@@ -281,7 +289,6 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         velocity.vy = -velocity.vy;
       }
 
-      // Card-to-card collision
       Object.keys(cards).forEach((otherCardId) => {
         if (otherCardId === cardId || cards[otherCardId].isDragging.value || cards[otherCardId].isAttached.value) return;
         const otherPos = cards[otherCardId].position.value;
@@ -355,7 +362,6 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       card.velocity.value = { vx: velocity.vx, vy: velocity.vy };
     });
 
-    // Update positions of attached cards
     Object.keys(cards).forEach((cardId) => {
       const card = cards[cardId];
       if (!card.isAttached.value || !card.attachedTo.value) return;
@@ -364,7 +370,6 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (!target) return;
 
       const targetPos = target.position.value;
-      // Dynamic spring config based on attachIndex for trailing effect
       const springConfig = {
         ...SPRING_CONFIG_MAGNET,
         damping: SPRING_CONFIG_MAGNET.damping + card.attachIndex.value * 2,
@@ -400,6 +405,7 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         cards,
         word,
         draggedCardId,
+        setWord, // ارائه setWord در context
       }}
     >
       {children}
