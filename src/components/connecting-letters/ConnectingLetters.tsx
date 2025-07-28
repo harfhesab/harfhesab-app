@@ -20,9 +20,14 @@ const letters = ['س', 'ل', 'ا', 'م', 'خ', 'ب'];
 
 const { width, height } = Dimensions.get('window');
 
-const ConnectingLetters = ({data}:any) => {
+const ConnectingLetters = () => {
   const colors = useAppTheme();
-
+  const data = {
+        word : "کوی",
+        letters : ["ک", "و", "ی", "ب", "ل", "س"],
+        additional_words : ["بوس", "بیل", "سیب"],
+        hidden_words : ["سیل", "کولی"]
+    }
   return (
     <LinearGradient colors={colors.background_gradient} style={{ width, height }}>
       <GestureHandlerRootView style={{ flex: 1 }}>

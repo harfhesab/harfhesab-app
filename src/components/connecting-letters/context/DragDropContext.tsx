@@ -14,6 +14,8 @@ import {
   ATTACH_OFFSET_X,
   ATTACH_OFFSET_Y,
   SPRING_CONFIG_MAGNET,
+  MAX_CARDS,
+  FOLLOW_DELAY,
 } from '../constants/constants';
 
 interface Position {
@@ -143,7 +145,9 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setWord((prev) => {
           const draggedCard = draggedCardId ? cards[draggedCardId] : null;
           const baseWord = draggedCard ? [draggedCard.letter] : prev;
-          return [...baseWord, ...prev.slice(baseWord.length), card.letter];
+          const newWord = [...baseWord];
+          newWord[attachIndex] = card.letter; // Place letter at correct index
+          return newWord;
         });
       }
     },
@@ -226,15 +230,8 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const checkWord = useCallback(
     (draggedCardId: string) => {
       const currentWord = word.join('');
-      const validWords = ['سیب', 'لیس', 'کوی'];
 
-      if (validWords.includes(currentWord)) {
-        console.log('Success: کلمه درست است!');
-        detachCards(draggedCardId);
-      } else {
-        console.log('Error: کلمه نادرست است یا ناقص');
-        detachCards(draggedCardId);
-      }
+      detachCards(draggedCardId);
     },
     [cards, word, detachCards, registerCard]
   );
@@ -367,12 +364,20 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (!target) return;
 
       const targetPos = target.position.value;
+      // Dynamic spring config based on attachIndex for trailing effect
+      const springConfig = {
+        ...SPRING_CONFIG_MAGNET,
+        damping: SPRING_CONFIG_MAGNET.damping + card.attachIndex.value * 2,
+        stiffness: SPRING_CONFIG_MAGNET.stiffness - card.attachIndex.value * 20,
+        mass: SPRING_CONFIG_MAGNET.mass + card.attachIndex.value * 0.2,
+      };
+
       card.position.value = withSpring(
         {
           x: targetPos.x + card.attachIndex.value * ATTACH_OFFSET_X,
           y: targetPos.y + card.attachIndex.value * ATTACH_OFFSET_Y,
         },
-        SPRING_CONFIG_MAGNET
+        springConfig
       );
     });
   }, false);

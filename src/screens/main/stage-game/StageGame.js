@@ -11,6 +11,7 @@ import BottomDrawerHelper from '../../../components/bottom-drawer/BottomDrawerHe
 import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
 import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import Font from '../../../utils/Font';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
@@ -24,7 +25,6 @@ function StageGame(props){
     const [page, setPage] = useState(1)
 
     useEffect(() => {
-        props.navigation.navigate("ConnectingLettersStageGame")
         startFirst()
     }, []);
     const startFirst = async() =>{
@@ -118,7 +118,12 @@ function StageGame(props){
         <SafeAreaView>
             <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
                 <View style={styles.container}>
-                    
+                    <TouchableOpacity onPress={()=>props.navigation.navigate("WordToSlotStageGame")} style={{padding:60}}>
+                        <Text style={{fontSize:20, fontFamily:Font.medium, color:colors.text.a1}}>بازی جمله</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>props.navigation.navigate("ConnectingLettersStageGame")} style={{padding:60}}>
+                        <Text style={{fontSize:20, fontFamily:Font.medium, color:colors.text.a1}}>بازی کلمه</Text>
+                    </TouchableOpacity>
                 </View>
             </LinearGradient>
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>

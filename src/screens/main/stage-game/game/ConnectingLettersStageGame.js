@@ -8,7 +8,7 @@ function ConnectingLettersStageGame(props){
     const colors = useAppTheme()
     const data = {
         word : "کوی",
-        letters : ["ک", "و", "ی", "ب", "ل", "س", "ک", "ب", "ص", "ث"],
+        letters : ["ک", "و", "ی", "ب", "ل", "س"],
         additional_words : ["بوس", "بیل", "سیب"],
         hidden_words : ["سیل", "کولی"]
     }
@@ -16,9 +16,7 @@ function ConnectingLettersStageGame(props){
     
     return(
         <SafeAreaView style={styles.container}>
-            <ConnectingLetters 
-                data = {data}
-            />
+            <ConnectingLetters />
         </SafeAreaView>
     )
 }
