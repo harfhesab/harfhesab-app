@@ -1,6 +1,12 @@
 import React, { memo, useEffect, useState, useRef, useMemo } from 'react';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withSequence, withTiming, withSpring, withDelay } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSequence,
+  withTiming,
+  withSpring,
+} from 'react-native-reanimated';
 import { useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -15,15 +21,21 @@ interface Props {
     hidden_words: string[];
   };
 }
-const {width} = Dimensions.get("window")
+
+const { width } = Dimensions.get('window');
+
 const WordDisplay = ({ data }: Props) => {
   const { word, draggedCardId, setWord } = useDragDrop();
   const colors = useAppTheme();
   const [displayedWord, setDisplayedWord] = useState<string>('');
   const [isValidWord, setIsValidWord] = useState<boolean | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // برای ردیابی کارت‌ها و موقعیت آن‌ها
+  const cardPositions = useRef<
+    Array<{ char: string; translateX: Animated.SharedValue<number>; key: string }>
+  >([]);
 
-  // پاک کردن تایمر در صورت وجود
+  // پاک کردن تایمر
   const clearTimer = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -31,12 +43,12 @@ const WordDisplay = ({ data }: Props) => {
     }
   };
 
-  // به‌روزرسانی فوری متن هنگام درگ
+  // به‌روزرسانی متن هنگام درگ
   useEffect(() => {
     if (draggedCardId) {
       clearTimer();
       setDisplayedWord(word.join(''));
-      setIsValidWord(null); // پاک کردن وضعیت صحت هنگام درگ
+      setIsValidWord(null);
     }
   }, [word, draggedCardId]);
 
@@ -52,63 +64,79 @@ const WordDisplay = ({ data }: Props) => {
       setDisplayedWord(currentWord);
       setIsValidWord(isValid);
 
-      // تنظیم تایمر برای پاک کردن متن و word بعد از ۳ ثانیه
       clearTimer();
       timerRef.current = setTimeout(() => {
         setDisplayedWord('');
         setIsValidWord(null);
-        setWord([]); // پاک کردن word در context
+        setWord([]);
+        cardPositions.current = []; // ریست کردن کارت‌ها
       }, WORD_DISPLAY_DURATION);
     } else if (!draggedCardId && word.length === 0) {
       clearTimer();
       setDisplayedWord('');
       setIsValidWord(null);
+      cardPositions.current = [];
     }
 
-    // پاک کردن تایمر هنگام اتمام useEffect
     return clearTimer;
   }, [draggedCardId, word, data, setWord]);
 
-  // انیمیشن پتک‌مانند برای هر کارت
-  const CardWithAnimation = ({ char, index, isValidWord, colors }: { char: string; index: number; isValidWord: boolean | null; colors: any }) => {
-    const isAnimatedRef = useRef(false);
-    const scale = useSharedValue(0);
+  // محاسبه عرض کارت‌ها
+  const CARD_WIDTH_CALCULATION = (width - (30 + (data.letters.length - 1) * 10)) / data.letters.length;
+  const CARD_WIDTH = CARD_WIDTH_CALCULATION < 30 ? CARD_WIDTH_CALCULATION : 30;
+  const CARD_FONT_SIZE = CARD_WIDTH / 2.1;
 
-    // اجرای انیمیشن فقط یک‌بار هنگام اضافه شدن کارت
+  // کامپوننت کارت با انیمیشن
+  const CardWithAnimation = ({
+    char,
+    index,
+    isValidWord,
+    colors,
+    isNew,
+    uniqueKey,
+  }: {
+    char: string;
+    index: number;
+    isValidWord: boolean | null;
+    colors: any;
+    isNew: any;
+    uniqueKey: string;
+  }) => {
+    const isAnimatedRef = useRef(!isNew); // فقط برای کارت جدید انیمیشن اجرا بشه
+    const scale = useSharedValue(isNew ? 0 : 1); // کارت‌های قدیمی از ابتدا مقیاس 1
+    const translateX = useSharedValue(0);
+
+    // ذخیره translateX و کلید یکتا
     useEffect(() => {
-      if (!isAnimatedRef.current) {
-        // انیمیشن موجی: تأخیر بر اساس index
-        const delay = index * 100; // 100 میلی‌ثانیه تأخیر برای هر کارت
-        scale.value = withDelay(
-          delay,
-          withSequence(
-            withTiming(1.2, { duration: 150 }), // بزرگ شدن
-            withTiming(0.8, { duration: 150 }), // کوچک شدن
-            withSpring(1, { stiffness: 200, damping: 16, mass: 1 }) // بازگشت فنری
-          )
+      cardPositions.current[index] = { char, translateX, key: uniqueKey };
+    }, [char, index, uniqueKey]);
+
+    // انیمیشن پتک‌مانند فقط برای کارت جدید
+    useEffect(() => {
+      if (isNew && !isAnimatedRef.current) {
+        scale.value = withSequence(
+          withTiming(1.3, { duration: 200 }),
+          withTiming(0.7, { duration: 200 }),
+          withSpring(1, { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false })
         );
         isAnimatedRef.current = true;
       }
-    }, []);
+    }, [isNew]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: scale.value }],
+      transform: [{ scale: scale.value }, { translateX: translateX.value }],
     }));
 
-    // رنگ کارت به صورت استاتیک
     const cardStyle = {
       backgroundColor: isValidWord === null ? '#ffd54f' : isValidWord ? colors.primary.a1 : colors.alert.a1,
     };
 
     return (
-      <Animated.View
-        key={`${char}_${index}_${displayedWord}`}
-        style={[styles.cardContainer, animatedStyle]}
-      >
-        <View style={[styles.card, cardStyle]}>
+      <Animated.View key={uniqueKey} style={[styles.cardContainer, animatedStyle]}>
+        <View style={[styles.card, cardStyle, { width: CARD_WIDTH, height: CARD_WIDTH }]}>
           <Text
             style={{
-              fontSize: 15,
+              fontSize: CARD_FONT_SIZE,
               fontFamily: Font.black,
               color: isValidWord === null ? '#000' : '#FFF',
             }}
@@ -120,22 +148,54 @@ const WordDisplay = ({ data }: Props) => {
     );
   };
 
-  // استفاده از useMemo برای رندر کارت‌ها با وابستگی به isValidWord و colors
+  // جابه‌جایی کارت‌ها به وسط هنگام اضافه شدن کارت جدید
+  useEffect(() => {
+    if (word.length > 0 && draggedCardId) {
+      const wordWidth = word.length * CARD_WIDTH + (word.length - 1) * 10;
+      const startX = -wordWidth / 2; // شروع از وسط صفحه
+
+      cardPositions.current.forEach((card, idx) => {
+        if (idx < word.length) {
+          const newX = startX + idx * (CARD_WIDTH + 10);
+          card.translateX.value = withSpring(newX, {
+            stiffness: 200,
+            damping: 16,
+            mass: 1.4,
+          });
+        }
+      });
+    }
+  }, [word, draggedCardId, CARD_WIDTH]);
+
+  // رندر کارت‌ها با کلید یکتا
   const renderedCards = useMemo(() => {
-    return displayedWord.split('').map((char, index) => (
-      <CardWithAnimation
-        key={`${char}_${index}_${displayedWord}`}
-        char={char}
-        index={index}
-        isValidWord={isValidWord}
-        colors={colors}
-      />
-    ));
-  }, [displayedWord, isValidWord, colors]);
+    return displayedWord.split('').map((char, index) => {
+      const uniqueKey = `${char}_${index}_${Date.now()}`; // کلید یکتا برای هر کارت
+      const isNew = index === displayedWord.length - 1 && draggedCardId; // فقط آخرین کارت جدید است
+      return (
+        <CardWithAnimation
+          key={uniqueKey}
+          char={char}
+          index={index}
+          isValidWord={isValidWord}
+          colors={colors}
+          isNew={isNew}
+          uniqueKey={uniqueKey}
+        />
+      );
+    });
+  }, [displayedWord, isValidWord, colors, draggedCardId]);
 
   return (
     <View style={styles.wordContainer}>
-      <View style={{height:100, width:width, alignItems:'center',justifyContent:'flex-start', paddingBottom:5}}>
+      <View
+        style={{
+          width: width,
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          paddingBottom: 5,
+        }}
+      >
         <View
           style={{
             flexDirection: 'row-reverse',
@@ -149,17 +209,22 @@ const WordDisplay = ({ data }: Props) => {
         >
           {renderedCards}
         </View>
-        {
-          displayedWord&&
-          <LinearGradient colors={isValidWord === null?['#813123', '#491a11']:isValidWord?['#0ea960', '#099956', '#018044']:['#CC0000', '#ff4444']} style={{borderRadius:5}}>
-            <View style={{ height: 50, paddingHorizontal:20 }}>
-              <Text
-                style={[styles.wordText,{color:"#FFF"}]}>
-                {displayedWord}
-              </Text>
+        {displayedWord && (
+          <LinearGradient
+            colors={
+              isValidWord === null
+                ? ['#813123', '#491a11']
+                : isValidWord
+                ? ['#0ea960', '#099956', '#018044']
+                : ['#CC0000', '#ff4444']
+            }
+            style={{ borderRadius: 5 }}
+          >
+            <View style={{ paddingHorizontal: 20, paddingVertical: 1 }}>
+              <Text style={[styles.wordText, { color: '#FFF' }]}>{displayedWord}</Text>
             </View>
           </LinearGradient>
-        }
+        )}
       </View>
     </View>
   );
@@ -171,8 +236,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   wordText: {
-    fontSize: 24,
-    fontFamily: Font.black,
+    fontSize: 20,
+    fontFamily: Font.bold,
     textAlign: 'center',
   },
   cardContainer: {
@@ -182,8 +247,6 @@ const styles = StyleSheet.create({
   card: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 30,
-    height: 30,
     borderRadius: 5,
     elevation: 5,
     shadowColor: '#000',

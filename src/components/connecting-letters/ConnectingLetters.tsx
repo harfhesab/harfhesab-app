@@ -16,7 +16,6 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const letters = ['س', 'ل', 'ا', 'م', 'خ', 'ب'];
 
 const { width, height } = Dimensions.get('window');
 
