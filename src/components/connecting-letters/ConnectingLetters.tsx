@@ -16,7 +16,6 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-
 const { width, height } = Dimensions.get('window');
 
 const ConnectingLetters = () => {
@@ -24,8 +23,8 @@ const ConnectingLetters = () => {
   const data = {
         word : "کوی",
         letters : ["ک", "و", "ی", "ب", "ل", "س"],
-        additional_words : ["بوس", "بیل", "سیب"],
-        hidden_words : ["سیل", "کولی"]
+        additional_words : ["سیبوک", "کولی", "بیل", "سیب", "کولیبس"],
+        hidden_words : ["سیل", "بوس"]
     }
   return (
     <LinearGradient colors={colors.background_gradient} style={{ width, height }}>
