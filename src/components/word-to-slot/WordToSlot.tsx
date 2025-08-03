@@ -28,23 +28,21 @@ const WordToSlot = () => {
   const colors = useAppTheme();
 
   return (
-    <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <DragDropProvider>
-          <SafeAreaView style={styles.container}>
-            <SentenceDisplay words={words} />
-            <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
-              <View style={styles.dropZoneContainer}>
-                <DropZoneList count={words.length} />
-              </View>
-              <View style={styles.boundaryContainer}>
-                <FloatingCardList words={words} />
-              </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <DragDropProvider>
+        <SafeAreaView style={styles.container}>
+          <SentenceDisplay words={words} />
+          <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
+            <View style={styles.dropZoneContainer}>
+              <DropZoneList count={words.length} />
             </View>
-          </SafeAreaView>
-        </DragDropProvider>
-      </GestureHandlerRootView>
-    </LinearGradient>
+            <View style={styles.boundaryContainer}>
+              <FloatingCardList words={words} />
+            </View>
+          </View>
+        </SafeAreaView>
+      </DragDropProvider>
+    </GestureHandlerRootView>
   );
 };
 
@@ -63,7 +61,6 @@ const styles = StyleSheet.create({
     borderWidth: BOUNDARY_BORDER_WIDTH,
     borderColor: '#ff6f61',
     borderRadius: BOUNDARY_BORDER_RADIUS,
-    backgroundColor: '#fff',
     zIndex: 0,
     overflow: 'visible',
   },

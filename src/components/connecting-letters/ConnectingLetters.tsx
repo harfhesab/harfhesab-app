@@ -27,18 +27,16 @@ const ConnectingLetters = () => {
         hidden_words : ["سیل", "بوس"]
     }
   return (
-    <LinearGradient colors={colors.background_gradient} style={{ width, height }}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <DragDropProvider>
-          <SafeAreaView style={styles.container}>
-            <WordDisplay data={data}/>
-            <View style={styles.boundaryContainer}>
-              <FloatingCardList letters={data?.letters} />
-            </View>
-          </SafeAreaView>
-        </DragDropProvider>
-      </GestureHandlerRootView>
-    </LinearGradient>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <DragDropProvider>
+        <SafeAreaView style={styles.container}>
+          <WordDisplay data={data}/>
+          <View style={styles.boundaryContainer}>
+            <FloatingCardList letters={data?.letters} />
+          </View>
+        </SafeAreaView>
+      </DragDropProvider>
+    </GestureHandlerRootView>
   );
 };
 
@@ -57,7 +55,6 @@ const styles = StyleSheet.create({
     borderWidth: BOUNDARY_BORDER_WIDTH,
     borderColor: '#ff6f61',
     borderRadius: BOUNDARY_BORDER_RADIUS,
-    backgroundColor: '#fff',
     zIndex: 0,
     overflow: 'visible',
   },

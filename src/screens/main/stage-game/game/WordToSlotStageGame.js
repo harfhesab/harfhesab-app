@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
+import NightSky from '../../../../components/particles/NightSky';
 
 const {width, height} = Dimensions.get("window")
 function WordToSlotStageGame(props){
@@ -9,9 +10,11 @@ function WordToSlotStageGame(props){
    
     
     return(
-        <SafeAreaView style={styles.container}>
-            <WordToSlot />
-        </SafeAreaView>
+        <NightSky>
+            <SafeAreaView style={styles.container}>
+                <WordToSlot />
+            </SafeAreaView>
+        </NightSky>
     )
 }
 const styles = StyleSheet.create({
