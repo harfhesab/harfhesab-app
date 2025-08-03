@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, memo } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import {
   Canvas,
@@ -10,90 +10,97 @@ import {
   Blur,
   vec,
 } from '@shopify/react-native-skia';
+import Meteor from './components/Meteor';
 
 const { width, height } = Dimensions.get('window');
 
-const STAR_COUNT = 100;
+const STAR_COUNT = 250;
 const MOON_RADIUS = 20;
 const MOON_GLOW_RADIUS = 55;
 
 const generateStars = () =>
-  Array.from({ length: STAR_COUNT }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    r: Math.random() * 1.2 + 0.6,
-    baseOpacity: Math.random() * 0.3 + 0.7,
-    twinklePhase: Math.random() * Math.PI * 2,
-    twinkleSpeed: 0.5 + Math.random() * 0.5,
-    twinkleActive: false,
-    twinkleStart: 0,
-    color: Math.random() < 0.3
-      ? 'rgba(255,245,200,1)'
-      : Math.random() < 0.6
-      ? 'rgba(255,255,255,1)'
-      : 'rgba(200,220,255,1)',
-  }));
+  Array.from({ length: STAR_COUNT }, () => {
+    const isSmall = Math.random() < 0.8;
+    const r = isSmall
+      ? Math.random() * 0.7 + 0.5
+      : Math.random() * 1.2 + 1.3;
 
-type Meteor = {
+    const colorChoices = [
+      'rgba(255,255,255,1)',
+      'rgba(255, 251, 234, 0.9)',
+      'rgba(235, 243, 255, 0.9)',
+      'rgba(255, 255, 251, 0.8)',
+    ];
+
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r,
+      baseOpacity: Math.random() * 0.3 + 0.6,
+      twinklePhase: Math.random() * Math.PI * 2,
+      twinkleSpeed: 0.3 + Math.random() * 0.7,
+      twinkleActive: false,
+      twinkleStart: 0,
+      color: colorChoices[Math.floor(Math.random() * colorChoices.length)],
+      id: Math.random().toString(36).substring(2, 11),
+    };
+  });
+
+type MeteorType = {
   active: boolean;
-  startTime: number;
   startX: number;
   startY: number;
   angle: number;
+  id: string;
 };
 
 const getRandomAngle = () => {
-  // زاویه بین 0 تا 2π به جز زوایای خیلی صاف مثل 0, π, π/2, 3π/2
   let angle = 0;
   while (
-    Math.abs(Math.cos(angle)) > 0.95 || // نزدیک به افقی کامل
-    Math.abs(Math.sin(angle)) > 0.95    // نزدیک به عمودی کامل
+    Math.abs(Math.cos(angle)) > 0.95 ||
+    Math.abs(Math.sin(angle)) > 0.95
   ) {
     angle = Math.random() * 2 * Math.PI;
   }
   return angle;
 };
 
-const NightSky = ({ children }: { children?: React.ReactNode }) => {
+const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const stars = useMemo(generateStars, []);
   const [moonX, setMoonX] = useState(width * 0.1);
   const [moonY, setMoonY] = useState(height / 20);
   const [clock, setClock] = useState(0);
-  const [meteor, setMeteor] = useState<Meteor>({
-    active: false,
-    startTime: 0,
-    startX: 0,
-    startY: 0,
-    angle: Math.PI / 4,
-  });
+  const [meteors, setMeteors] = useState<MeteorType[]>([]);
   const [twinklingStars, setTwinklingStars] = useState(stars);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      setMeteors((prev) => [
+        ...prev,
+        {
+          active: true,
+          startX: Math.random() * width,
+          startY: Math.random() * height * 0.5,
+          angle: getRandomAngle(),
+          id: Math.random().toString(36).substring(2, 11),
+        },
+      ]);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     let rafId: number;
-    let meteorTimeout: ReturnType<typeof setTimeout>;
     let twinkleTimeout: ReturnType<typeof setTimeout>;
     let lastTime = Date.now();
-
-    const scheduleNextMeteor = () => {
-      const delay = 4000 + Math.random() * 6000;
-      meteorTimeout = setTimeout(() => {
-        setMeteor({
-          active: true,
-          startTime: Date.now(),
-          startX: Math.random() * width,
-          startY: Math.random() * height,
-          angle: getRandomAngle(),
-        });
-        scheduleNextMeteor();
-      }, delay);
-    };
 
     const scheduleTwinkle = () => {
       const delay = 1000 + Math.random() * 1000;
       twinkleTimeout = setTimeout(() => {
         setTwinklingStars((prevStars) => {
           const newStars = [...prevStars];
-          const twinkleCount = Math.floor(Math.random() * (40 - 20 + 1)) + 20;
+          const twinkleCount = Math.floor(Math.random() * (80 - 40 + 1)) + 40;
           const indices = new Set<number>();
           while (indices.size < twinkleCount && indices.size < STAR_COUNT) {
             indices.add(Math.floor(Math.random() * STAR_COUNT));
@@ -119,11 +126,11 @@ const NightSky = ({ children }: { children?: React.ReactNode }) => {
       setClock((prev) => prev + deltaTime / 1000);
 
       setMoonX((prev) => {
-        const next = prev + 0.002 * deltaTime;
+        const next = prev + 0.001 * deltaTime;
         return next > width + MOON_GLOW_RADIUS ? -MOON_GLOW_RADIUS : next;
       });
       setMoonY((prev) => {
-        const next = prev + 0.0005 * deltaTime;
+        const next = prev + 0.00025 * deltaTime;
         return next > width + MOON_GLOW_RADIUS ? -MOON_GLOW_RADIUS : next;
       });
 
@@ -144,53 +151,17 @@ const NightSky = ({ children }: { children?: React.ReactNode }) => {
       rafId = requestAnimationFrame(animate);
     };
 
-    scheduleNextMeteor();
     scheduleTwinkle();
     rafId = requestAnimationFrame(animate);
 
     return () => {
-      clearTimeout(meteorTimeout);
       clearTimeout(twinkleTimeout);
       cancelAnimationFrame(rafId);
     };
   }, []);
 
-  const renderMeteor = () => {
-    if (!meteor.active) return null;
-
-    const elapsed = Date.now() - meteor.startTime;
-    const t = elapsed / 1200;
-    if (t > 1) return null;
-
-    const distance = width * 0.5;
-    const dx = distance * Math.cos(meteor.angle);
-    const dy = distance * Math.sin(meteor.angle);
-    const x = meteor.startX + t * dx;
-    const y = meteor.startY + t * dy;
-    const opacity = (1 - t) * 0.8;
-
-    return (
-      <Group opacity={opacity}>
-        <Rect
-          x={x}
-          y={y}
-          width={100}
-          height={2}
-          origin={vec(x, y)}
-          transform={[{ rotate: meteor.angle }]}
-        >
-          <LinearGradient
-            start={vec(0, 0)}
-            end={vec(100, 0)}
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.9)']}
-          />
-          <Blur blur={2} />
-        </Rect>
-        <Circle cx={x} cy={y} r={2.5} color="white">
-          <Blur blur={1} />
-        </Circle>
-      </Group>
-    );
+  const handleAnimationEnd = (id: string) => {
+    setMeteors((prev) => prev.filter((m) => m.id !== id));
   };
 
   return (
@@ -207,20 +178,28 @@ const NightSky = ({ children }: { children?: React.ReactNode }) => {
         <Group>
           {twinklingStars.map((s, i) => {
             let opacity = s.baseOpacity;
+
             if (s.twinkleActive) {
               const elapsed = Date.now() - s.twinkleStart;
               const t = elapsed / 1000;
-              opacity = s.baseOpacity * (0.6 + 0.4 * Math.sin(Math.PI * t));
+              opacity = s.baseOpacity * (0.7 + 0.3 * Math.sin(Math.PI * t * s.twinkleSpeed + s.twinklePhase));
             }
+
             return (
               <Circle
                 key={`star-${i}`}
                 cx={s.x}
                 cy={s.y}
-                r={s.r}
-                color={s.color}
+                r={s.r * 2.5}
                 opacity={opacity}
-              />
+              >
+                <RadialGradient
+                  c={vec(s.x, s.y)}
+                  r={s.r * 1.2}
+                  colors={[s.color, s.color, 'rgba(255,255,255,0)']}
+                  positions={[0, 0.4, 1]}
+                />
+              </Circle>
             );
           })}
 
@@ -232,13 +211,19 @@ const NightSky = ({ children }: { children?: React.ReactNode }) => {
               <RadialGradient
                 c={vec(0, 0)}
                 r={MOON_RADIUS}
-                colors={['rgba(255,245,200,1)', 'rgba(230,230,190,1)', 'rgba(200,200,170,0.9)']}
-                positions={[0, 0.7, 1]}
+                colors={['rgba(255,245,200,1)', 'rgba(255,245,200,0.9)', 'rgba(255,245,200,0.75)', 'rgba(255,255,255,0)']}
+                positions={[0, 0.8, 0.9, 1]}
               />
             </Circle>
           </Group>
 
-          {renderMeteor()}
+          {meteors.map((meteor) => (
+            <Meteor
+              key={meteor.id}
+              meteor={meteor}
+              onAnimationEnd={() => handleAnimationEnd(meteor.id)}
+            />
+          ))}
         </Group>
       </Canvas>
       {children && <View style={StyleSheet.absoluteFill}>{children}</View>}
@@ -246,4 +231,4 @@ const NightSky = ({ children }: { children?: React.ReactNode }) => {
   );
 };
 
-export default NightSky;
+export default memo(NightSky);

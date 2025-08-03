@@ -10,11 +10,13 @@ function WordToSlotStageGame(props){
    
     
     return(
-        <NightSky>
-            <SafeAreaView style={styles.container}>
-                <WordToSlot />
-            </SafeAreaView>
-        </NightSky>
+        <SafeAreaView style={{flex:1}}>
+            <NightSky>
+                <SafeAreaView style={styles.container}>
+                    <WordToSlot />
+                </SafeAreaView>
+            </NightSky>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
