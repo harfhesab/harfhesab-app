@@ -29,6 +29,8 @@ interface TextSkiaProps {
   shadowOffsetY?: number;
   shadowBlur?: number;
   fontFamily?: keyof typeof FONTS;
+  rtl: boolean;
+  ltr: boolean;
 }
 
 // Define available fonts
@@ -50,11 +52,13 @@ export const TextSkia: React.FC<TextSkiaProps> = ({
   shadowOffsetY = 4,
   shadowBlur = 4,
   fontFamily = Font.bakh_extra_black,
+  rtl = true,
+  ltr = false,
 }) => {
   const font = useFont(FONTS[fontFamily] || FONTS[Font.bakh_extra_black], fontSize);
   if (!font) return null;
 
-  const renderedText = prepareRTLText(text);
+  const renderedText = (rtl == true && ltr == false)?prepareRTLText(text):text;
 
   const textWidth = font.measureText(renderedText).width;
   const x = (width - textWidth) / 2;

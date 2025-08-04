@@ -126,7 +126,10 @@ function StageGame(props){
                         />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>props.navigation.navigate("ConnectingLettersStageGame")} style={{padding:60}}>
-                        <Text style={{fontSize:20, fontFamily:Font.medium, color:colors.text.a1}}>بازی کلمه</Text>
+                        <TextSkia
+                            text='بازی کلمه'
+                            fontFamily={Font.bakh_black}
+                        />
                     </TouchableOpacity>
                 </View>
             </LinearGradient>
