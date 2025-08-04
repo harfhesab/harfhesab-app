@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#333',
-    fontFamily: Font.black,
+    fontFamily: Font.bakh_extra_black,
     textAlign: 'center',
   },
 });

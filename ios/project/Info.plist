@@ -61,6 +61,14 @@
 		<string>IRANSans_Light.ttf</string>
 		<string>IRANSans_Medium.ttf</string>
 		<string>IRANSans_UltraLight.ttf</string>
+		<string>YekanBakhFaNum-Black.ttf</string>
+		<string>YekanBakhFaNum-Bold.ttf</string>
+		<string>YekanBakhFaNum-ExtraBlack.ttf</string>
+		<string>YekanBakhFaNum-ExtraBold.ttf</string>
+		<string>YekanBakhFaNum-Light.ttf</string>
+		<string>YekanBakhFaNum-Regular.ttf</string>
+		<string>YekanBakhFaNum-SemiBold.ttf</string>
+		<string>YekanBakhFaNum-Thin.ttf</string>
 	</array>
 </dict>
 </plist>

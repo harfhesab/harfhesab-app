@@ -12,6 +12,7 @@ import { getAllLanguages } from '../../../realm/repositories/general/language.re
 import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
+import TextSkia from '../../../components/text-components/TextSkia';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
@@ -119,7 +120,10 @@ function StageGame(props){
             <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
                 <View style={styles.container}>
                     <TouchableOpacity onPress={()=>props.navigation.navigate("WordToSlotStageGame")} style={{padding:60}}>
-                        <Text style={{fontSize:20, fontFamily:Font.medium, color:colors.text.a1}}>بازی جمله</Text>
+                        
+                        <TextSkia
+                            text='بازی جمله'
+                        />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>props.navigation.navigate("ConnectingLettersStageGame")} style={{padding:60}}>
                         <Text style={{fontSize:20, fontFamily:Font.medium, color:colors.text.a1}}>بازی کلمه</Text>

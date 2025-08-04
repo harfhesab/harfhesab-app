@@ -13,6 +13,14 @@ class MyFont {
         this.en_medium = "IRANSans_Medium"
         this.en_light = "IRANSans_Light"
         this.en_ultra = "IRANSans_UltraLight"
+        this.bakh_black = "YekanBakhFaNum-Black"
+        this.bakh_bold = "YekanBakhFaNum-Bold"
+        this.bakh_extra_black = "YekanBakhFaNum-ExtraBlack"
+        this.bakh_extra_bold = "YekanBakhFaNum-ExtraBold"
+        this.bakh_light = "YekanBakhFaNum-Light"
+        this.bakh_regular = "YekanBakhFaNum-Regular"
+        this.bakh_semi_bold = "YekanBakhFaNum-SemiBold"
+        this.bakh_thin = "YekanBakhFaNum-Thin"
     }
 }
 

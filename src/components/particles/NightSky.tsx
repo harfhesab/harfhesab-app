@@ -14,7 +14,7 @@ import Meteor from './components/Meteor';
 
 const { width, height } = Dimensions.get('window');
 
-const STAR_COUNT = 250;
+const STAR_COUNT = 180;
 const MOON_RADIUS = 20;
 const MOON_GLOW_RADIUS = 55;
 
@@ -74,21 +74,56 @@ const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const [twinklingStars, setTwinklingStars] = useState(stars);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMeteors((prev) => [
-        ...prev,
-        {
-          active: true,
-          startX: Math.random() * width,
-          startY: Math.random() * height * 0.5,
-          angle: getRandomAngle(),
-          id: Math.random().toString(36).substring(2, 11),
-        },
-      ]);
-    }, 3000);
+    let lastMeteorTime = Date.now();
 
-    return () => clearInterval(interval);
+    let animationFrameId: number;
+
+    const loop = () => {
+      const now = Date.now();
+      const elapsed = now - lastMeteorTime;
+
+      if (elapsed > 5000) {
+        lastMeteorTime = now;
+
+        // شهاب اول
+        setMeteors((prev) => [
+          ...prev,
+          {
+            active: true,
+            startX: Math.random() * width,
+            startY: Math.random() * height * 0.5,
+            angle: getRandomAngle(),
+            id: Math.random().toString(36).substring(2, 11),
+          },
+        ]);
+
+        // شهاب دوم با تأخیر اختیاری
+        if (Math.random() < 0.3) {
+          const delay = 1000 + Math.random() * 500;
+          setTimeout(() => {
+            setMeteors((prev) => [
+              ...prev,
+              {
+                active: true,
+                startX: Math.random() * width,
+                startY: Math.random() * height * 0.5,
+                angle: getRandomAngle(),
+                id: Math.random().toString(36).substring(2, 11),
+              },
+            ]);
+          }, delay);
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(loop);
+    };
+
+    animationFrameId = requestAnimationFrame(loop);
+
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
+
+
 
   useEffect(() => {
     let rafId: number;
@@ -230,5 +265,5 @@ const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     </View>
   );
 };
-
-export default memo(NightSky);
+const areEqual = () => true;
+export default memo(NightSky, areEqual);

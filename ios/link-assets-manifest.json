@@ -48,6 +48,38 @@
     {
       "path": "src/assets/fonts/IRANSans_UltraLight.ttf",
       "sha1": "947714a0e097e9c8a5001b1acc466baa1a33fd65"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-Black.ttf",
+      "sha1": "37c555b4581a3be0a05a0bfc72bc96f8b7c96ca3"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-Bold.ttf",
+      "sha1": "798a05ccf29e3a274d5372760477483a6283ed0c"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-ExtraBlack.ttf",
+      "sha1": "9e1949d593672e2c11a15e3f4f13ea53083a5038"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-ExtraBold.ttf",
+      "sha1": "89b62b67d95c7f04258aaaf42768033d5ef805d2"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-Light.ttf",
+      "sha1": "a6e547cf0f91de6358ae9e81b8cebc5e1de90a23"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-Regular.ttf",
+      "sha1": "c9f7e24711f534b4eec8fec6bdc6986090aacb68"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-SemiBold.ttf",
+      "sha1": "6070049756513a1610d9e1e03eec849fc9f1a0e0"
+    },
+    {
+      "path": "src/assets/fonts/YekanBakhFaNum-Thin.ttf",
+      "sha1": "b76f03d01c41234f2f88fead8844d5c69ceceb27"
     }
   ]
 }
