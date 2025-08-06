@@ -26,6 +26,7 @@ import {
   FONT_SIZE_DRAGGING,
   FONT_SIZE_SLOTTED,
 } from "../constants/constants";
+import AnimatedSkiaText from '../../text-components/AnimatedSkiaText';
 
 // تنظیمات انیمیشن برای نرم‌تر شدن
 const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
@@ -207,7 +208,8 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
   return (
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.card, cardStyle]}>
-        <Animated.Text style={[styles.text, textStyle]}>{word}</Animated.Text>
+        {/* <Animated.Text style={[styles.text, textStyle]}>{word}</Animated.Text> */}
+        <AnimatedSkiaText text={word} fontSize={fontSize}/>
       </Animated.View>
     </GestureDetector>
   );
