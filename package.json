@@ -44,6 +44,7 @@
     "react-native-rtl-reshaper": "^1.0.3",
     "react-native-safe-area-context": "^5.4.1",
     "react-native-screens": "^4.11.1",
+    "react-native-sound": "^0.12.0",
     "react-native-svg": "^15.12.0",
     "react-native-toast-message": "^2.3.0",
     "react-native-vector-icons": "^10.2.0",

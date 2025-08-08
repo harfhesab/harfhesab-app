@@ -208,8 +208,14 @@ function FloatingCard({ word, index, numberOfCards }: Props) {
   return (
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.card, cardStyle]}>
-        {/* <Animated.Text style={[styles.text, textStyle]}>{word}</Animated.Text> */}
-        <AnimatedSkiaText text={word} fontSize={fontSize}/>
+        <Animated.Text style={[styles.text, textStyle]}>{word}</Animated.Text>
+        {/* <AnimatedSkiaText
+          text={word}
+          fontSize={fontSize}
+          initialFontSize={FONT_SIZE_FLOATING * fontSizeScale}
+          initialWidth={CARD_SIZE_FLOATING}
+          initialHeight={CARD_SIZE_FLOATING}
+        /> */}
       </Animated.View>
     </GestureDetector>
   );

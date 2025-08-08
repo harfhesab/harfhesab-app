@@ -18,14 +18,23 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const { width, height } = Dimensions.get('window');
 
+interface DataModel {
+  
+}
 const ConnectingLetters = () => {
   const colors = useAppTheme();
   const data = {
-        word : "کوی",
-        letters : ["ک", "و", "ی", "ب", "ل", "س"],
-        additional_words : ["سیبوک", "کولی", "بیل", "سیب", "کولیبس"],
-        hidden_words : ["سیل", "بوس"]
-    }
+    game_type : "stage-game", // stage-geme | package-game
+    stage : "_id",
+    language : "_id",
+    package : "_id",
+    sentence : "_id",
+    word : "کوی",
+    word_builded : false,
+    letters : ["ک", "و", "ی", "ب", "ل", "س"],
+    additional_words : ["سیبوک", "کولی", "بیل", "سیب", "کولیبس"],
+    hidden_words : ["سیل", "بوس"]
+  }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DragDropProvider>
@@ -53,7 +62,7 @@ const styles = StyleSheet.create({
     width: BOUNDARY_WIDTH,
     marginBottom: BOUNDARY_BOTTOM_OFFSET,
     borderWidth: BOUNDARY_BORDER_WIDTH,
-    borderColor: '#ff6f61',
+    borderColor: '#fcb900',
     borderRadius: BOUNDARY_BORDER_RADIUS,
     zIndex: 0,
     overflow: 'visible',

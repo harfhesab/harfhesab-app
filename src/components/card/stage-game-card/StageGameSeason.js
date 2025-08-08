@@ -11,15 +11,19 @@ import Font from '../../../utils/Font';
 import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import ImageComponent from '../../image-components/ImageComponent';
+import TextSkia from '../../text-components/TextSkia';
+import TextGradientSvg from '../../text-components/TextGradientSvg';
+import AnimatedCard from '../../backgroun-layer/AnimatedCard';
+import ButtonGradient from '../../buttons/ButtonGradient';
+
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const CARD_MARGIN = 15;
-const isTablet = screenWidth >= 700;
+const isTablet = screenWidth >= 600;
 
-const cardWidth = isTablet
-  ? (screenWidth - CARD_MARGIN * 3) / 2
-  : screenWidth - CARD_MARGIN * 2;
+const cardWidth = isTablet?(screenWidth - (CARD_MARGIN * 3)) / 2: screenWidth - (CARD_MARGIN * 2);
 
 function StageGameSeason({
   title,
@@ -34,61 +38,50 @@ function StageGameSeason({
   const colors = useAppTheme();
 
   return (
-    <View style={[styles.container, { width: cardWidth }]}>
-      <TouchableNativeFeedback onPress={() => {}}>
-        <View style={[styles.card, { backgroundColor: colors.card }]}>
-          <FastImage
-            source={{ uri: image }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-          <View style={styles.content}>
-            <Text style={[styles.title, { color: colors.text }]}>
-              {title}
-            </Text>
-            <Text style={[styles.description, { color: colors.textSecondary }]}>
-              {description}
-            </Text>
-            <Text style={[styles.meta, { color: colors.primary }]}>
-              فصل {seasonNumber} | مرحله {stageNumberFrom} تا {stageNumberTo}
-            </Text>
+    <View>
+        <AnimatedCard width={cardWidth} height={450}>
+          <View style={{width:"100%", flexDirection:'column', justifyContent:'space-between', height:450}}>
+            <ImageComponent
+              uri = {image}
+              width={cardWidth}
+              height={200}
+              resizeMode={"cover"}
+              borderRadius={15}
+            />
+            <View style={styles.content}>
+              <TextGradientSvg
+                  text={title}
+                  fontFamily={Font.bakh_black}
+                  fontSize={30}
+                  borderColor='#FFFFFF'
+                  borderWidth={1}
+              />
+              <Text style={ { color: colors.primary.a1 }}>
+                {description}
+              </Text>
+              <Text style={ { color: colors.text.a1, fontSize:20, fontFamily:Font.medium }}>
+                فصل {seasonNumber} | مرحله {stageNumberFrom} تا {stageNumberTo}
+              </Text>
+            </View>
+            <View style={{width:"100%", alignItems:'center', paddingBottom:15}}>
+              <ButtonGradient
+                  height={65}
+                  width={cardWidth - 30}
+                  text={"شروع بازی"}
+                  onPress={()=>{}}
+                  loading={false}
+                  textSize={18}
+                  borderRadius={10}
+              />
+            </View>
           </View>
-        </View>
-      </TouchableNativeFeedback>
+        </AnimatedCard>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    margin: CARD_MARGIN,
-  },
-  card: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    elevation: 3,
-  },
-  image: {
-    width: '100%',
-    height: 150,
-  },
-  content: {
-    padding: 12,
-  },
-  title: {
-    fontSize: 16,
-    fontFamily: Font.bold,
-  },
-  description: {
-    fontSize: 14,
-    marginTop: 4,
-    fontFamily: Font.medium,
-  },
-  meta: {
-    marginTop: 8,
-    fontSize: 12,
-    fontFamily: Font.medium,
-  },
+  
 });
 
 const areEqual = (prevProps, nextProps) => {

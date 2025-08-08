@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Canvas, Text, useFont, Group, Skia, vec, TileMode } from '@shopify/react-native-skia';
+import { Canvas, Text, useFont, Group, Skia, vec, TileMode, PaintStyle, Shadow } from '@shopify/react-native-skia';
 import Animated, { useDerivedValue, SharedValue } from 'react-native-reanimated';
-import { prepareRTLText } from '../../utils/prepareRTLText';
+import { prepareRTLText } from '../../../utils/prepareRTLText';
 
 interface AnimatedSkiaTextProps {
   text: string;
@@ -13,17 +13,21 @@ interface AnimatedSkiaTextProps {
   rtl?: boolean;
   ltr?: boolean;
   gradientColors?: string[];
+  borderColor?: string;
+  borderWidth?: number;
 }
 
-const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({ 
+const Letter: React.FC<AnimatedSkiaTextProps> = ({ 
   text,
   fontSize,
   initialFontSize,
-  gradientColors = ['#1b0b63', '#311b92', '#512da8', '#673ab7', '#7e57c2'],
   initialWidth,
   initialHeight,
   rtl = true,
   ltr = false,
+  gradientColors = ['#FF8800',  '#ff0f0f'],
+  borderColor = '#FFFFFF',
+  borderWidth = 2,
  }) => {
 
   const gradient = Skia.Shader.MakeLinearGradient(
@@ -36,7 +40,7 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
   const gradientPaint = Skia.Paint();
   gradientPaint.setShader(gradient);
 
-  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-Black.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
+  const font = useFont(require('../../../assets/fonts/YekanBakhFaNum-ExtraBlack.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
   const scale = useDerivedValue(() => fontSize.value / initialFontSize, [fontSize]);
   const transform = useDerivedValue(() => [{ scale: scale.value }], [scale]);
 
@@ -48,15 +52,28 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
   const textWidth = font.measureText(renderedText).width;
   const metrics = font.getMetrics();
   const x = ((initialWidth) - textWidth) / 2;
-  const y = initialHeight / 1.5 + (metrics.ascent + metrics.descent) / 2;
+  const y = initialHeight / 1.25 + (metrics.ascent + metrics.descent) / 2;
 
   if (font === null) {
     return null;
   }
 
+  const strokePaint = Skia.Paint();
+  strokePaint.setColor(Skia.Color(borderColor));
+  strokePaint.setStyle(PaintStyle.Stroke);
+  strokePaint.setStrokeWidth(borderWidth);
+
   return (
     <Canvas style={styles.canvas}>
       <Group transform={transform}>
+        {/* بوردر */}
+        <Text
+          x={x}
+          y={y}
+          text={renderedText}
+          font={font}
+          paint={strokePaint}
+        />
         <Text
           text={renderedText}
           font={font}
@@ -77,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnimatedSkiaText;
+export default Letter;

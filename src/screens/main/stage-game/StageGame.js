@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView} from 'react-native';
+import React, {useMemo, useState, useEffect} from 'react';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -13,6 +13,8 @@ import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistS
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
+import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
+import StageGameSeason from '../../../components/card/stage-game-card/StageGameSeason';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
@@ -23,7 +25,8 @@ function StageGame(props){
     const { stageGameLanguage, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
-    const [page, setPage] = useState(1)
+    const [noItem, setNoItem] = useState(false)
+    const [data, setData] = useState([])
 
     useEffect(() => {
         startFirst()
@@ -104,33 +107,70 @@ function StageGame(props){
         })
     }
     const getData = async (selected)=>{
-       const language = selected ?? stageGameLanguage
-       const seasons = getStageSeasonsByLanguage(realm, language)
-       console.log(seasons[0])
-       BottomDrawerHelper.hideBottomDrawer()
+        const language = selected ?? stageGameLanguage
+        const seasons = getStageSeasonsByLanguage(realm, language)
+        if(seasons && seasons.length > 0){
+            setData(seasons)
+            setLoading(false)
+        } else if(seasons?.length == 0){
+            setNoItem(true)
+        } else {
+            setGetError(true)
+        }
+        BottomDrawerHelper.hideBottomDrawer()
     }
     const tryAgain = ()=>{
         setLoading(true)
         setGetError(false)
         getData()
     }
-    
+
+    const renderItem = ({item, index})=>{
+        return(
+            <StageGameSeason
+                title={item.title}
+                description={item.description}
+                image={item.media[0].path}
+                isActive={item.is_active}
+                numberStage={item.number_stage}
+                seasonNumber={item.season_number}
+                stageNumberFrom={item.stage_number_from}
+                stageNumberTo={item.stage_number_to}
+            />
+        )
+    }
+    const memoizedValue = useMemo(() => renderItem, [data]);
+    const keyExtractor = (item,index)=>index.toString()
+    const FLATLIST_PADDING_TOP = 15
     return(
         <SafeAreaView>
             <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
                 <View style={styles.container}>
-                    <TouchableOpacity onPress={()=>props.navigation.navigate("WordToSlotStageGame")} style={{padding:60}}>
-                        
-                        <TextSkia
-                            text='بازی جمله'
+                    {
+                        loading == true?
+                        <ScreenLoading
+                            loading={loading}
+                            getError={getError}
+                            noItem={noItem}
+                            tryAgain={tryAgain}
                         />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>props.navigation.navigate("ConnectingLettersStageGame")} style={{padding:60}}>
-                        <TextSkia
-                            text='بازی کلمه'
-                            fontFamily={Font.bakh_black}
+                        :
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={keyExtractor}
+                            initialNumToRender={10}
+                            contentContainerStyle={{rowGap:25, paddingTop:FLATLIST_PADDING_TOP, paddingBottom:90}}
+                            renderItem={memoizedValue}
+                            data={data}
+                            onEndReachedThreshold={0.5}
+                            removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                            getItemLayout={(data, index) => ({
+                                length: 475,
+                                offset: FLATLIST_PADDING_TOP + 475 * index,  // 15 پدینگ بالای کل لیست
+                                index,
+                            })}
                         />
-                    </TouchableOpacity>
+                    }
                 </View>
             </LinearGradient>
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>

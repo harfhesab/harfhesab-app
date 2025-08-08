@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ImageStyle, StyleProp } from 'react-native';
+import { View, StyleSheet, ImageStyle, StyleProp, Image } from 'react-native';
 import FastImage, { FastImageProps, ResizeMode } from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import Icon from '../../utils/Icon';
@@ -7,25 +7,25 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const BASE_URL = Globals.uri;
 
-type SmartImageProps = {
+type ImageComponentProps = {
   uri: string;
   width?: number;
   height?: number;
+  borderRadius?: number;
   resizeMode?: keyof typeof FastImage.resizeMode;
   baseUrl?: boolean;
-  placeholderIcon?: any;
   style?: StyleProp<ImageStyle>;
   onLoad?: () => void;
   onError?: () => void;
 } & Omit<FastImageProps, 'onLoad' | 'onError'>;
 
-const SmartImage: React.FC<SmartImageProps> = ({
+const ImageComponent: React.FC<ImageComponentProps> = ({
   uri,
   width = 100,
   height = 100,
-  resizeMode = 'cover',
+  borderRadius = 5,
+  resizeMode = "cover",
   baseUrl = true,
-  placeholderIcon = require('../assets/image-placeholder.png'),
   style = {},
   onLoad,
   onError,
@@ -48,23 +48,29 @@ const SmartImage: React.FC<SmartImageProps> = ({
   };
 
   return (
-    <View style={[{ width, height }, styles.container, style]}>
+    <View style={[{ width, height, borderRadius }, styles.container, style]}>
       {!loaded && !error && (
-        <Icon name={"image"} type={"Ionicons"} style={{fontSize:40, color:colors.text.a1}}/>
+        <Image
+          source={require('../../assets/image/image-place-holder.png')}
+          style={{ width, height, borderRadius }}
+        />
       )}
 
-      <FastImage
-        style={{ width, height }}
-        source={{
-          uri: fullUri,
-          priority: FastImage.priority.normal,
-          cache: FastImage.cacheControl.web,
-        }}
-        resizeMode={FastImage.resizeMode[resizeMode] as ResizeMode}
-        onLoad={handleLoad}
-        onError={handleError}
-        {...props}
-      />
+      {!error && (
+        <FastImage
+          style={{ width, height, borderRadius }}
+          source={{
+            uri: fullUri,
+            priority: FastImage.priority.high,
+            cache: FastImage.cacheControl.immutable,
+          }}
+          defaultSource={require('../../assets/image/image-place-holder.png')}
+          resizeMode={FastImage.resizeMode[resizeMode] as ResizeMode}
+          onLoad={handleLoad}
+          onError={handleError}
+          {...props}
+        />
+      )}
     </View>
   );
 };
@@ -76,4 +82,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SmartImage;
+export default ImageComponent;

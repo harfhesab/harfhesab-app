@@ -3,11 +3,15 @@ import Realm from "realm";
 export class WordStage extends Realm.Object<WordStage> {
   _id!: string;
   word!: string;
+  word_builded?: boolean;
   word_hint?: string;
   unknown_word?: boolean;
+  unknown_word_completed?: boolean;
   letters: string[] = []; 
   additional_words: string[] = [];
+  additional_words_builded: string[] = [];
   hidden_words: string[] = [];
+  hidden_words_builded: string[] = [];
   order?: number;
 
   static schema: Realm.ObjectSchema = {
@@ -16,11 +20,15 @@ export class WordStage extends Realm.Object<WordStage> {
     properties: {
       _id: "string",
       word: "string",
+      word_builded: { type: "bool", default: false },
       word_hint: "string?",
       unknown_word: { type: "bool", default: false },
+      unknown_word_completed: { type: "bool", default: false },
       letters: "string[]",
       additional_words: "string[]",
+      additional_words_builded: "string[]",
       hidden_words: "string[]",
+      hidden_words_builded: "string[]",
       order: "int?",
     },
   };
@@ -29,6 +37,7 @@ export class WordStage extends Realm.Object<WordStage> {
 export class PartStage extends Realm.Object<PartStage> {
   _id!: string;
   sentence!: string;
+  sentence_builded?: boolean;
   sentence_hint?: string;
   words!: WordStage[];
   order?: number;
@@ -39,6 +48,7 @@ export class PartStage extends Realm.Object<PartStage> {
     properties: {
       _id: "string",
       sentence: "string",
+      sentence_builded: { type: "bool", default: false },
       sentence_hint: "string?",
       words: "WordStage[]",
       order: "int?",

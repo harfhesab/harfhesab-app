@@ -10,6 +10,12 @@ export const themes = {
         a1: '#0ea960',
       },
       background_gradient: ['#1b0b63', '#311b92', '#512da8'],
+      text_gradient:{
+        a1: ['#1b0b63', '#311b92', '#512da8'],
+      },
+      card : {
+        a1: "#708ab0"
+      },
       text_banner: {
         background: ['#bf5340', '#813123', '#491a11'],
         content_1: '#e8edf5',
@@ -72,83 +78,6 @@ export const themes = {
       },
       bottom_drawer: {
         background: '#1b0b63',
-        text1: '#F0F0F0',
-        text2: '#d1d1d1',
-      },
-      check_box: {
-        color: '#0ea960',
-        check: '#FFFFFF',
-      },
-    },
-  },
-  t2: {
-    colors: {
-      primary: {
-        a1: '#0ea960',
-      },
-      background_gradient: ['#24404f', '#345769', '#497083'],
-      text_banner: {
-        background: ['#4d2119', '#863a2d', '#5d4037'],
-        content_1: '#F0F0F0',
-        content_2: '#d1d1d1',
-      },
-      header: {
-        background: '#24404f',
-        content_1: '#F0F0F0',
-        content_2: '#d1d1d1',
-      },
-      bottom_tab: {
-        background: '#24404f',
-        active: '#FFFFFF',
-        inactive: '#BDBDBD',
-      },
-      button_gradient: {
-        background: ['#0ea960', '#088148', '#046336'],
-        content_1: '#FFFFFF',
-        content_2: '#EBEBEB',
-      },
-      text: {
-        a1: '#d1e0e8',
-        a2: '#c2d2db',
-        a3: '#a2bcca',
-        a4: '#86a7b9',
-        a5: '#5d7886',
-      },
-      rgb: {
-        a1: 'rgba(14,169,96,0.80)',
-        a2: 'rgba(14,169,96,0.65)',
-        a3: 'rgba(14,169,96,0.50)',
-        a4: 'rgba(14,169,96,0.35)',
-        a5: 'rgba(14,169,96,0.20)',
-      },
-      border: {
-        a1: '#b7c7d0',
-        a2: '#647983',
-      },
-      alert: {
-        a1: '#ff0f0f',
-      },
-      shadow: {
-        a1: '#000000',
-      },
-      toast: {
-        background: '#33333350',
-        text1: '#FFFFFF',
-        text2: '#d1d1d1',
-        error: '#ff0f0f',
-        info: '#0088cc',
-        success: '#0ea960',
-      },
-      alert_component: {
-        background: '#0c2c5d',
-        success: ['#007E33', '#00C851'],
-        error: ['#CC0000', '#ff4444'],
-        info: ['#0099CC', '#33b5e5'],
-        warning: ['#FF8800', '#ffbb33'],
-        question: ['#FF8800', '#ffbb33'],
-      },
-      bottom_drawer: {
-        background: '#0c2c5d',
         text1: '#F0F0F0',
         text2: '#d1d1d1',
       },

@@ -30,6 +30,7 @@ import {
   ZINDEX_BASE_FLOATING,
   ZINDEX_DRAGGING,
 } from '../constants/constants';
+import Letter from './Letter';
 
 interface Props {
   letter: string;
@@ -230,7 +231,13 @@ function FloatingCard({ letter, index }: Props) {
   return (
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.card, cardStyle]}>
-        <Animated.Text style={[styles.text, textStyle]}>{letter}</Animated.Text>
+        <Letter
+          text={letter}
+          fontSize={fontSize}
+          initialFontSize={FONT_SIZE_FLOATING}
+          initialWidth={CARD_SIZE_FLOATING}
+          initialHeight={CARD_SIZE_FLOATING}
+        />
       </Animated.View>
     </GestureDetector>
   );
@@ -240,7 +247,7 @@ const styles = StyleSheet.create({
   card: {
     position: 'absolute',
     borderRadius: CARD_BORDER_RADIUS,
-    backgroundColor: '#ffd54f',
+    backgroundColor: '#fcb900',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,

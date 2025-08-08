@@ -1,125 +1,199 @@
-import React from 'react';
-import {
-  Canvas,
-  Text,
-  useFont,
-  Skia,
-  Paint,
-  vec,
-  Shadow,
-  Group,
-  TileMode,
-  PaintStyle,
-} from '@shopify/react-native-skia';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import Svg, {
+  Defs,
+  LinearGradient,
+  Stop,
+  Text as SvgText,
+  Mask,
+  Rect,
+} from 'react-native-svg';
+import { View, Text, findNodeHandle, UIManager } from 'react-native';
+import { convertRtl } from 'react-native-rtl-reshaper';
 import Font from '../../utils/Font';
-import { prepareRTLText } from '../../utils/prepareRTLText';
 
-
-interface TextSkiaProps {
+interface TextGradientSvgProps {
   text: string;
   fontSize?: number;
-  width?: number;
+  fontFamily?: string;
+  colors?: string[];             // fill gradient
+  strokeColors?: string[];       // stroke gradient (optional)
+  borderColor?: string;          // fallback solid border color (optional)
   height?: number;
-  gradientColors?: string[];
-  borderColor?: string;
-  borderWidth?: number;
-  shadowColor?: string;
-  shadowOffsetX?: number;
-  shadowOffsetY?: number;
-  shadowBlur?: number;
-  fontFamily?: keyof typeof FONTS;
-  rtl: boolean;
-  ltr: boolean;
+  x?: number;
+  y?: number;
+  rtl?: boolean;
+  ltr?: boolean;
+  paddingHorizontal?: number;
+  paddingVertical?: number;
+  borderWidth?: number;          // stroke thickness
 }
 
-// Define available fonts
-const FONTS = {
-  [Font.bakh_extra_black]: require('../../assets/fonts/YekanBakhFaNum-ExtraBlack.ttf'),
-  [Font.bakh_black]: require('../../assets/fonts/YekanBakhFaNum-Black.ttf'),
-} as const;
-
-export const TextSkia: React.FC<TextSkiaProps> = ({
+const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
   text,
-  fontSize = 48,
-  width = 300,
-  height = 120,
-  gradientColors = ['#ff8a00', '#e52e71'],
-  borderColor = '#ffffff',
-  borderWidth = 2,
-  shadowColor = '#000000',
-  shadowOffsetX = 4,
-  shadowOffsetY = 4,
-  shadowBlur = 4,
-  fontFamily = Font.bakh_extra_black,
+  fontSize = 20,
+  fontFamily = Font.medium,
+  colors = ['#FF512F', '#DD2476'],
+  strokeColors,
+  borderColor = '#FFFFFF',
+  height,
+  x = 0,
+  y,
   rtl = true,
   ltr = false,
+  paddingHorizontal = 5,
+  paddingVertical = 1,
+  borderWidth = 0,
 }) => {
-  const font = useFont(FONTS[fontFamily] || FONTS[Font.bakh_extra_black], fontSize);
-  if (!font) return null;
+  const [textWidth, setTextWidth] = useState<number | null>(null);
+  const hiddenTextRef = useRef<Text | null>(null);
 
-  const renderedText = (rtl == true && ltr == false)?prepareRTLText(text):text;
+  const renderedText = rtl && !ltr ? convertRtl(text) : text;
+  const fillGradientId = `grad-fill-${Math.random().toString(36).substring(7)}`;
+  const strokeGradientId = `grad-stroke-${Math.random().toString(36).substring(7)}`;
+  const maskId = `mask-stroke-${Math.random().toString(36).substring(7)}`;
 
-  const textWidth = font.measureText(renderedText).width;
-  const x = (width - textWidth) / 2;
-  const y = height / 2 + fontSize / 3;
+  useEffect(() => {
+    // Reset width when text changes so we re-measure
+    setTextWidth(null);
+  }, [renderedText, fontSize, fontFamily]);
 
-  // گرادینت
-  const gradient = Skia.Shader.MakeLinearGradient(
-    vec(0, 0),
-    vec(width, 0),
-    gradientColors.map((c) => Skia.Color(c)),
-    null,
-    TileMode.Clamp
-  );
+  useEffect(() => {
+    // Measure the hidden text to get its width
+    if (!hiddenTextRef.current) return;
+    const handle = findNodeHandle(hiddenTextRef.current);
+    if (!handle) return;
 
-  const gradientPaint = Skia.Paint();
-  gradientPaint.setShader(gradient);
+    // measure: (x, y, width, height, pageX, pageY)
+    UIManager.measure(
+      handle,
+      (_x: number, _y: number, width: number /*, h, pX, pY */) => {
+        setTextWidth(width);
+      }
+    );
+  }, [hiddenTextRef.current, renderedText, fontSize, fontFamily]);
 
-  const strokePaint = Skia.Paint();
-  strokePaint.setColor(Skia.Color(borderColor));
-  strokePaint.setStyle(PaintStyle.Stroke);
-  strokePaint.setStrokeWidth(borderWidth);
+  // While measuring, render an invisible Text to measure
+  if (textWidth === null) {
+    return (
+      <Text
+        style={{
+          position: 'absolute',
+          opacity: 0,
+          fontSize,
+          fontFamily,
+        }}
+        ref={hiddenTextRef}
+      >
+        {renderedText}
+      </Text>
+    );
+  }
+
+  const totalWidth = textWidth + paddingHorizontal * 2;
+  const totalHeight = (height || fontSize * 1.5) + paddingVertical * 2;
+
+  const xPos = rtl && !ltr ? totalWidth - paddingHorizontal : paddingHorizontal;
+  const yPos = (y || fontSize) + paddingVertical;
+  const textAnchor = rtl && !ltr ? 'end' : 'start';
+
+  // helper for offsets in gradient stops (safe for single-color arrays)
+  const stopOffset = (i: number, arrLen: number) =>
+    arrLen > 1 ? `${(i / (arrLen - 1)) * 100}%` : '100%';
 
   return (
-    <View style={[styles.container, { width, height }]}>
-      <Canvas style={{ flex: 1 }}>
-        <Group>
-          {/* سایه */}
-          <Shadow
-            dx={shadowOffsetX}
-            dy={shadowOffsetY}
-            blur={shadowBlur}
-            color={shadowColor}
-          />
+    <View style={{ width: totalWidth, height: totalHeight }}>
+      <Svg height={totalHeight} width={totalWidth}>
+        <Defs>
+          {/* fill gradient */}
+          <LinearGradient id={fillGradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+            {colors.map((c, i) => (
+              <Stop key={i} offset={stopOffset(i, colors.length)} stopColor={c} stopOpacity="1" />
+            ))}
+          </LinearGradient>
 
-          {/* بوردر */}
-          <Text
-            x={x}
-            y={y}
-            text={renderedText}
-            font={font}
-            paint={strokePaint}
-          />
+          {/* stroke gradient (if provided) */}
+          {strokeColors && strokeColors.length > 0 && (
+            <LinearGradient id={strokeGradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+              {strokeColors.map((c, i) => (
+                <Stop key={i} offset={stopOffset(i, strokeColors.length)} stopColor={c} stopOpacity="1" />
+              ))}
+            </LinearGradient>
+          )}
 
-          {/* متن رنگی با گرادینت */}
-          <Text
-            x={x}
-            y={y}
-            text={renderedText}
-            font={font}
-            paint={gradientPaint}
+          {/* Mask that paints only the stroke area of the text (white = visible) */}
+          {strokeColors && strokeColors.length > 0 && borderWidth > 0 && (
+            <Mask
+              id={maskId}
+              x="0"
+              y="0"
+              width={totalWidth}
+              height={totalHeight}
+              maskUnits="userSpaceOnUse"
+            >
+              {/* Important: we render the TEXT with stroke so the mask alpha covers stroke area.
+                  Use fill="white" and stroke="white" so stroke area is opaque in mask. */}
+              <SvgText
+                fill="white"
+                stroke="white"
+                strokeWidth={borderWidth}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fontSize={fontSize}
+                fontFamily={fontFamily}
+                x={xPos}
+                y={yPos}
+                textAnchor={textAnchor}
+              >
+                {renderedText}
+              </SvgText>
+            </Mask>
+          )}
+        </Defs>
+
+        {/* If stroke gradient is requested: draw a full rect with strokeGradient and mask it */}
+        {strokeColors && strokeColors.length > 0 && borderWidth > 0 ? (
+          <Rect
+            x={0}
+            y={0}
+            width={totalWidth}
+            height={totalHeight}
+            fill={`url(#${strokeGradientId})`}
+            mask={`url(#${maskId})`}
           />
-        </Group>
-      </Canvas>
+        ) : (
+          // fallback: if no stroke gradient but borderWidth > 0, draw standard stroke (may have letter gaps)
+          borderWidth > 0 && (
+            <SvgText
+              fill="none"
+              stroke={borderColor}
+              strokeWidth={borderWidth}
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              fontSize={fontSize}
+              fontFamily={fontFamily}
+              x={xPos}
+              y={yPos}
+              textAnchor={textAnchor}
+            >
+              {renderedText}
+            </SvgText>
+          )
+        )}
+
+        {/* Main filled text (on top) with gradient fill */}
+        <SvgText
+          fill={`url(#${fillGradientId})`}
+          fontSize={fontSize}
+          fontFamily={fontFamily}
+          x={xPos}
+          y={yPos}
+          textAnchor={textAnchor}
+        >
+          {renderedText}
+        </SvgText>
+      </Svg>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    overflow: 'hidden',
-  },
-});
-
-export default TextSkia;
+export default TextGradientSvg;
