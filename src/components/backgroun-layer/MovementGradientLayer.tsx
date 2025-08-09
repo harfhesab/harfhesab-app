@@ -4,7 +4,7 @@ import { Canvas, LinearGradient, Rect, vec, SkPoint } from '@shopify/react-nativ
 import { useSharedValue, withTiming, useDerivedValue, withRepeat, Easing } from 'react-native-reanimated';
 
 // تایپ‌ها برای پراپس‌های کامپوننت
-interface AnimatedCardProps {
+interface MovementGradientLayerProps {
   width: number;
   height: number;
   children?: React.ReactNode;
@@ -12,7 +12,7 @@ interface AnimatedCardProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const AnimatedCard: React.FC<AnimatedCardProps> = ({ width, height, children }) => {
+const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, height, children }) => {
   // متغیر انیمیشن برای تغییر موقعیت گرادیان
   const gradientProgress = useSharedValue(0);
 
@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnimatedCard;
+export default MovementGradientLayer;

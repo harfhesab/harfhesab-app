@@ -14,8 +14,8 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import ImageComponent from '../../image-components/ImageComponent';
 import TextSkia from '../../text-components/TextSkia';
 import TextGradientSvg from '../../text-components/TextGradientSvg';
-import AnimatedCard from '../../backgroun-layer/AnimatedCard';
 import ButtonGradient from '../../buttons/ButtonGradient';
+import MovementGradientLayer from '../../backgroun-layer/MovementGradientLayer';
 
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -39,7 +39,7 @@ function StageGameSeason({
 
   return (
     <View>
-        <AnimatedCard width={cardWidth} height={450}>
+        <MovementGradientLayer width={cardWidth} height={450}>
           <View style={{width:"100%", flexDirection:'column', justifyContent:'space-between', height:450}}>
             <ImageComponent
               uri = {image}
@@ -75,7 +75,7 @@ function StageGameSeason({
               />
             </View>
           </View>
-        </AnimatedCard>
+        </MovementGradientLayer>
     </View>
   );
 }

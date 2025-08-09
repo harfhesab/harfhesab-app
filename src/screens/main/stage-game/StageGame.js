@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -166,7 +166,7 @@ function StageGame(props){
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                             getItemLayout={(data, index) => ({
                                 length: 475,
-                                offset: FLATLIST_PADDING_TOP + 475 * index,  // 15 پدینگ بالای کل لیست
+                                offset: FLATLIST_PADDING_TOP + 475 * index,
                                 index,
                             })}
                         />

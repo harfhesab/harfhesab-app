@@ -4,6 +4,7 @@ import FastImage, { FastImageProps, ResizeMode } from '@d11/react-native-fast-im
 import Globals from '../../utils/Globals';
 import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import ParticleLayer from '../backgroun-layer/ParticleLayer';
 
 const BASE_URL = Globals.uri;
 
@@ -47,13 +48,20 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
     onError?.();
   };
 
+  const WIDTH = width > height?height:width
+  const PLACE_HOLDER_WIDTH = WIDTH - 40 > 200?200:WIDTH-40
+
   return (
     <View style={[{ width, height, borderRadius }, styles.container, style]}>
       {!loaded && !error && (
-        <Image
-          source={require('../../assets/image/image-place-holder.png')}
-          style={{ width, height, borderRadius }}
-        />
+        <ParticleLayer height={height} width={width}>
+          <View style={{width:width, height:height, alignItems:'center', justifyContent:'center'}}>
+              <Image
+                source={require('../../assets/image/image-place-holder.png')}
+                style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius:5 }}
+              />
+          </View>
+        </ParticleLayer>
       )}
 
       {!error && (

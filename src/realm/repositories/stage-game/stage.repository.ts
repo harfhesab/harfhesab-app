@@ -171,17 +171,37 @@ export const deleteManyStages = (
 export const getStagesBySeasonId = (
   realm: Realm,
   seasonId: BSON.ObjectId | string
-): Stage[] => {
-  const objectId = typeof seasonId === "string" ? new BSON.ObjectId(seasonId) : seasonId;
+): Realm.Results<Stage> => {
+  try {
+    const objectId = typeof seasonId === "string"
+      ? new BSON.ObjectId(seasonId)
+      : seasonId;
 
-  const results = realm
-    .objects<Stage>("Stage")
-    .filtered("season == $0 AND is_visible == true", objectId)
-    .sorted("stage_number_in_season");
-
-  return Array.from(results);
+    return realm
+      .objects<Stage>("Stage")
+      .filtered("season == $0 AND is_visible == true", objectId)
+      .sorted("stage_number_in_season");
+  } catch (error) {
+    return [] as unknown as Realm.Results<Stage>;
+  }
 };
 
+// --- تابع گرفتن یک سند بر اساس _id ---
+export const getStageById = (
+  realm: Realm,
+  id: BSON.ObjectId | string
+): Stage | null => {
+  try {
+    const objectId = typeof id === "string"
+      ? new BSON.ObjectId(id)
+      : id;
+
+    return realm
+      .objectForPrimaryKey<Stage>("Stage", objectId) || null;
+  } catch (error) {
+    return null;
+  }
+};
 
 // --- تابع حذف سند بر اساس _id ---
 export const deleteStageById = (realm: Realm, id: BSON.ObjectId | string): boolean => {

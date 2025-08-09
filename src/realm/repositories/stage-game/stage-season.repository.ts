@@ -165,6 +165,23 @@ export const paginateStageSeasonsByLanguage = (
   }
 };
 
+// --- تابع گرفتن یک سند بر اساس _id ---
+export const getStageSeasonById = (
+  realm: Realm,
+  id: BSON.ObjectId | string
+): StageSeason | null => {
+  try {
+    const objectId = typeof id === "string"
+      ? new BSON.ObjectId(id)
+      : id;
+
+    return realm
+      .objectForPrimaryKey<StageSeason>("StageSeason", objectId) || null;
+  } catch (error) {
+    return null;
+  }
+};
+
 // --- تابع حذف سند بر اساس _id ---
 export const deleteStageSeasonById = async (
   realm: Realm,
