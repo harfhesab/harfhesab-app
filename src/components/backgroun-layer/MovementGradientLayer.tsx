@@ -7,12 +7,12 @@ import { useSharedValue, withTiming, useDerivedValue, withRepeat, Easing } from 
 interface MovementGradientLayerProps {
   width: number;
   height: number;
+  colors?: string[];
   children?: React.ReactNode;
 }
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, height, children }) => {
+const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, height, colors, children }) => {
   // متغیر انیمیشن برای تغییر موقعیت گرادیان
   const gradientProgress = useSharedValue(0);
 
@@ -50,7 +50,7 @@ const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, he
           <LinearGradient
             start={gradientStart}
             end={gradientEnd}
-            colors={['#d32f2f', '#f57c00', '#03a9f4', '#388e3c']}
+            colors={colors??['#d32f2f85', '#f57c0085', '#03a9f485', '#388e3c85']}
           />
         </Rect>
       </Canvas>

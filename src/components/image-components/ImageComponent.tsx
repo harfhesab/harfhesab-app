@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { View, StyleSheet, ImageStyle, StyleProp, Image } from 'react-native';
 import FastImage, { FastImageProps, ResizeMode } from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
-import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
-import ParticleLayer from '../backgroun-layer/ParticleLayer';
-import RotatingGradientLayer from '../backgroun-layer/RotatingGradientLayer';
 import MovementGradientLayer from '../backgroun-layer/MovementGradientLayer';
-import {WaveIndicator} from 'react-native-indicators';
+import { WaveIndicator } from 'react-native-indicators';
 
 const BASE_URL = Globals.uri;
 
@@ -54,7 +51,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   };
 
   const WIDTH = width > height?height:width
-  const PLACE_HOLDER_WIDTH = WIDTH - 60 > 200?200:WIDTH-60
+  const PLACE_HOLDER_WIDTH = WIDTH - 40 > 200?200:WIDTH-40
 
   return (
     <View style={[{ width, height, borderRadius }, styles.container, style]}>
@@ -103,4 +100,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageComponent;
+const areEqual = (prevProps:any, nextProps:any) => {
+  if (prevProps.uri !== nextProps.uri) return false;
+  if (prevProps.width !== nextProps.width) return false;
+  if (prevProps.height !== nextProps.height) return false;
+  return true;
+};
+
+export default memo(ImageComponent, areEqual);

@@ -1,11 +1,11 @@
 import React, {useMemo, useState, useEffect} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useRealm } from '../../../realm';
-import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-game/stage-season.repository';
+import { getStageSeasonById } from '../../../realm/repositories/stage-game/stage-season.repository';
 import BottomDrawer from '../../../components/bottom-drawer/BottomDrawer';
 import BottomDrawerHelper from '../../../components/bottom-drawer/BottomDrawerHelper';
 import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
@@ -15,9 +15,13 @@ import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageGameSeason from '../../../components/card/stage-game-card/StageGameSeason';
+import MediaSwiper from '../../../components/swiper/MediaSwiper';
+import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CARD_SIZE } from '../../../components/card/general/StageNumber';
+import { getStagesBySeasonId } from '../../../realm/repositories/stage-game/stage.repository';
+import GalaxyTwinkle from '../../../components/backgroun-layer/GalaxyTwinkle';
 
 const {width, height} = Dimensions.get("window")
-function StageGameSeason(props){
+function StagesStageGameSeason(props){
     const colors = useAppTheme()
     const realm = useRealm();
     const [loading, setLoading] = useState(true)
@@ -27,13 +31,13 @@ function StageGameSeason(props){
     const [data, setData] = useState([])
 
     useEffect(() => {
-        startFirst()
+        getData()
     }, []);
     const getData = async (selected)=>{
         const id = props?.route?.params?.season
         const season = getStageSeasonById(realm, id)
         const stages = getStagesBySeasonId(realm, id)
-        if(season && season.length > 0 && stages && stages.length > 0){
+        if(season && stages?.length > 0){
             setInfo(season)
             setData(stages)
             setLoading(false)
@@ -49,19 +53,28 @@ function StageGameSeason(props){
         getData()
     }
 
+    const LIST_HEADER_COMPONENT_HEIGHT = info?.media?.length > 0?200:0
+
     const listHeaderComponent = ()=>{
         return(
-            <View>
-
+            info?.media?.length > 0&&
+            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', marginBottom:30}}>
+                <MediaSwiper
+                    items={info?.media.concat(info?.media)}
+                    width={width-30}
+                /> 
             </View>
         )
     }
 
     const renderItem = ({item, index})=>{
         return(
-            <View>
-
-            </View>
+            <StageNumber
+                currently={index == 1?true:false}
+                lock={index > 1?true:false}
+                number={index +  1}
+                onPress={()=>{props.navigation.navigate("WordToSlotStageGame")}}
+            />
         )
     }
     const memoizedValue = useMemo(() => renderItem, [data]);
@@ -69,36 +82,42 @@ function StageGameSeason(props){
     const FLATLIST_PADDING_TOP = 15
     return(
         <SafeAreaView>
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
-                    {
-                        loading == true?
+            {
+                loading == true?
+                <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
+                    <View style={styles.container}>
                         <ScreenLoading
                             loading={loading}
                             getError={getError}
                             noItem={noItem}
                             tryAgain={tryAgain}
                         />
-                        :
+                    </View>
+                </LinearGradient>
+                :
+                <GalaxyTwinkle style={{ width: width, height: height }}>
+                    <View style={styles.container}>
                         <FlatList
                             showsVerticalScrollIndicator={false}
                             keyExtractor={keyExtractor}
-                            initialNumToRender={10}
-                            contentContainerStyle={{rowGap:25, paddingTop:FLATLIST_PADDING_TOP, paddingBottom:90}}
+                            initialNumToRender={20}
                             ListHeaderComponent={listHeaderComponent}
+                            contentContainerStyle={{direction:'ltr'}}
                             renderItem={memoizedValue}
                             data={data}
+                            style={{paddingHorizontal:15}}
+                            numColumns={LIST_STAGE_CARD_NUMBER_COLUMN}
                             onEndReachedThreshold={0.5}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                             getItemLayout={(data, index) => ({
-                                length: 475,
-                                offset: FLATLIST_PADDING_TOP + 475 * index,  // 15 پدینگ بالای کل لیست
+                                length: STAGE_CARD_SIZE + (STAGE_CARD_MARGIN*2),
+                                offset: FLATLIST_PADDING_TOP + (STAGE_CARD_MARGIN*2) + LIST_HEADER_COMPONENT_HEIGHT + (STAGE_CARD_SIZE* index),  // 15 پدینگ بالای کل لیست
                                 index,
                             })}
                         />
-                    }
-                </View>
-            </LinearGradient>
+                    </View>
+                </GalaxyTwinkle>
+            }
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>
         </SafeAreaView>
     )
@@ -109,4 +128,4 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     }
 });
-export default StageGameSeason;
+export default StagesStageGameSeason;

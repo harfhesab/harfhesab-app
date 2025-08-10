@@ -35,13 +35,14 @@ function StageGameSeason({
   stageNumberFrom,
   stageNumberTo,
   numberStage,
-  isActive
+  isActive,
+  onPress
 }) {
   const colors = useAppTheme();
 
   return (
     <View>
-        <GalaxyTwinkle style={{ width: cardWidth, height: height-200 }}>
+        <GalaxyTwinkle style={{ width: cardWidth, height: height-200, borderRadius:15 }}>
           <View style={{width:"100%", flexDirection:'column', justifyContent:'space-between', height:"100%"}}>
             <ImageComponent
               uri = {image}
@@ -68,7 +69,7 @@ function StageGameSeason({
                   height={65}
                   width={cardWidth - 30}
                   text={"شروع بازی"}
-                  onPress={()=>{}}
+                  onPress={onPress}
                   loading={false}
                   textSize={18}
                   borderRadius={10}

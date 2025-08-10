@@ -274,7 +274,6 @@ function GalaxyTwinkle({
 const styles = StyleSheet.create({
   wrapper: {
     overflow: "hidden",
-    borderRadius: 12,
     alignSelf: "stretch",
   },
 });

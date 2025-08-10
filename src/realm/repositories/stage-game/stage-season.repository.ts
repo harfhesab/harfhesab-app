@@ -166,18 +166,56 @@ export const paginateStageSeasonsByLanguage = (
 };
 
 // --- تابع گرفتن یک سند بر اساس _id ---
+// export const getStageSeasonById = (
+//   realm: Realm,
+//   id: BSON.ObjectId | string
+// ): StageSeason | null => {
+//   try {
+//     const objectId = typeof id === "string"
+//       ? new BSON.ObjectId(id)
+//       : id;
+
+//     return realm
+//       .objectForPrimaryKey<StageSeason>("StageSeason", objectId) || null;
+//   } catch (error) {
+//     return null;
+//   }
+// };
+
+// --- تابع گرفتن یک سند بر اساس _id ---
 export const getStageSeasonById = (
   realm: Realm,
   id: BSON.ObjectId | string
 ): StageSeason | null => {
   try {
-    const objectId = typeof id === "string"
-      ? new BSON.ObjectId(id)
-      : id;
+    // تبدیل id به ObjectId اگر string باشه
+    const objectId = typeof id === 'string' ? new BSON.ObjectId(id) : id;
 
-    return realm
-      .objectForPrimaryKey<StageSeason>("StageSeason", objectId) || null;
+    // گرفتن سند از Realm
+    const stageSeason = realm.objectForPrimaryKey<StageSeason>('StageSeason', objectId);
+
+    if (!stageSeason) {
+      return null;
+    }
+
+    // تبدیل به JSON و سپس به POJO
+    const plainStageSeason = JSON.parse(
+      JSON.stringify(stageSeason, (key, value) => {
+        // تبدیل ObjectId به string
+        if (value instanceof BSON.ObjectId) {
+          return value.toString();
+        }
+        // اگر مقدار undefined باشه، به null تبدیل کن (برای JSON)
+        if (value === undefined) {
+          return null;
+        }
+        return value;
+      })
+    );
+
+    return plainStageSeason as StageSeason;
   } catch (error) {
+    console.error('Error in getStageSeasonById:', error);
     return null;
   }
 };

@@ -136,6 +136,7 @@ function StageGame(props){
                 seasonNumber={item.season_number}
                 stageNumberFrom={item.stage_number_from}
                 stageNumberTo={item.stage_number_to}
+                onPress={()=>{props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString()})}}
             />
         )
     }
