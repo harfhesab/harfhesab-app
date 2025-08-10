@@ -16,9 +16,11 @@ import TextSkia from '../../text-components/TextSkia';
 import TextGradientSvg from '../../text-components/TextGradientSvg';
 import ButtonGradient from '../../buttons/ButtonGradient';
 import MovementGradientLayer from '../../backgroun-layer/MovementGradientLayer';
+import GalaxyTwinkle from '../../backgroun-layer/GalaxyTwinkle';
 
 
-const { width: screenWidth } = Dimensions.get('window');
+
+const { width: screenWidth, height } = Dimensions.get('window');
 
 const CARD_MARGIN = 15;
 const isTablet = screenWidth >= 600;
@@ -39,8 +41,8 @@ function StageGameSeason({
 
   return (
     <View>
-        <MovementGradientLayer width={cardWidth} height={450}>
-          <View style={{width:"100%", flexDirection:'column', justifyContent:'space-between', height:450}}>
+        <GalaxyTwinkle style={{ width: cardWidth, height: height-200 }}>
+          <View style={{width:"100%", flexDirection:'column', justifyContent:'space-between', height:"100%"}}>
             <ImageComponent
               uri = {image}
               width={cardWidth}
@@ -53,8 +55,6 @@ function StageGameSeason({
                   text={title}
                   fontFamily={Font.bakh_black}
                   fontSize={30}
-                  borderColor='#FFFFFF'
-                  borderWidth={1}
               />
               <Text style={ { color: colors.primary.a1 }}>
                 {description}
@@ -75,7 +75,7 @@ function StageGameSeason({
               />
             </View>
           </View>
-        </MovementGradientLayer>
+        </GalaxyTwinkle>
     </View>
   );
 }
@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
 });
 
 const areEqual = (prevProps, nextProps) => {
-  return prevProps.title === nextProps.title;
+  if (prevProps.title !== nextProps.title) return false;
+  return true;
 };
 
 export default memo(StageGameSeason, areEqual);

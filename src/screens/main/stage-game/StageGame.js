@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -158,15 +158,15 @@ function StageGame(props){
                         <FlatList
                             showsVerticalScrollIndicator={false}
                             keyExtractor={keyExtractor}
-                            initialNumToRender={10}
+                            initialNumToRender={1}
                             contentContainerStyle={{rowGap:25, paddingTop:FLATLIST_PADDING_TOP, paddingBottom:90}}
                             renderItem={memoizedValue}
                             data={data}
                             onEndReachedThreshold={0.5}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                             getItemLayout={(data, index) => ({
-                                length: 475,
-                                offset: FLATLIST_PADDING_TOP + 475 * index,
+                                length: height-200,
+                                offset: FLATLIST_PADDING_TOP + (height-200) * index,  // 15 پدینگ بالای کل لیست
                                 index,
                             })}
                         />

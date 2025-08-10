@@ -50,7 +50,7 @@ const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, he
           <LinearGradient
             start={gradientStart}
             end={gradientEnd}
-            colors={['#70426a', '#6B7280', '#3B82F6', '#10B981', '#bbaf46ff']}
+            colors={['#d32f2f', '#f57c00', '#03a9f4', '#388e3c']}
           />
         </Rect>
       </Canvas>

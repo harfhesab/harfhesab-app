@@ -5,6 +5,9 @@ import Globals from '../../utils/Globals';
 import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import ParticleLayer from '../backgroun-layer/ParticleLayer';
+import RotatingGradientLayer from '../backgroun-layer/RotatingGradientLayer';
+import MovementGradientLayer from '../backgroun-layer/MovementGradientLayer';
+import {WaveIndicator} from 'react-native-indicators';
 
 const BASE_URL = Globals.uri;
 
@@ -18,6 +21,7 @@ type ImageComponentProps = {
   style?: StyleProp<ImageStyle>;
   onLoad?: () => void;
   onError?: () => void;
+  placeHolder?: boolean;
 } & Omit<FastImageProps, 'onLoad' | 'onError'>;
 
 const ImageComponent: React.FC<ImageComponentProps> = ({
@@ -30,6 +34,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   style = {},
   onLoad,
   onError,
+  placeHolder = true,
   ...props
 }) => {
   const colors = useAppTheme()
@@ -49,19 +54,27 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   };
 
   const WIDTH = width > height?height:width
-  const PLACE_HOLDER_WIDTH = WIDTH - 40 > 200?200:WIDTH-40
+  const PLACE_HOLDER_WIDTH = WIDTH - 60 > 200?200:WIDTH-60
 
   return (
     <View style={[{ width, height, borderRadius }, styles.container, style]}>
-      {!loaded && !error && (
-        <ParticleLayer height={height} width={width}>
+      {(!loaded && placeHolder == true) &&(
+        <MovementGradientLayer height={height} width={width}>
           <View style={{width:width, height:height, alignItems:'center', justifyContent:'center'}}>
               <Image
                 source={require('../../assets/image/image-place-holder.png')}
-                style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius:5 }}
+                style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius:15 }}
               />
+              <View style={{ position: 'absolute', width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, alignItems: 'center', justifyContent: 'center' }}>
+                <WaveIndicator
+                  color={"#FFFFFF"}
+                  size={PLACE_HOLDER_WIDTH}
+                  count={2}
+                  waveMode="fill"
+                />
+              </View>
           </View>
-        </ParticleLayer>
+        </MovementGradientLayer>
       )}
 
       {!error && (
