@@ -33,30 +33,50 @@ function StageNumber({
 }) {
   const colors = useAppTheme();
 
+  const textLength = number.toString().length
+  const fontSizeScale = textLength == 1?1.5:textLength == 2?1.8:textLength == 3?2.2:2.6
+  const fontSize = STAGE_CARD_SIZE/fontSizeScale
+
   return (
     lock == true?
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#999", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
-          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:STAGE_CARD_SIZE/2, color:colors.alert.a1}}/>
+      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#abb8c3", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
+          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:STAGE_CARD_SIZE/2, color:"#2d5d86"}}/>
       </View>
     </TouchableOpacity>
     :currently == true?
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#4caf50", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
+      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#388e3c", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
           <TextGradientSvg
-              text={number}
-              fontFamily={Font.bakh_black}
-              fontSize={15}
+              text={`${number}`}
+              fontFamily={Font.bakh_extra_bold}
+              fontSize={fontSize}
+              colors={["#ff9800", "#f57c00", "#e65100"]}
+              shadowColor={"#33333350"}
+              dropShadow={true}
+              glowShadow={true}
+              glowColor={"#555555"}
+              glowBlur={10}
+              borderColor={"#ae2900"}
+              borderWidth={0.8}
           />
       </View>
     </TouchableOpacity>
     :
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#03a9f4", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
+      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#0288d1", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
           <TextGradientSvg
-                text={number}
-                fontFamily={Font.bakh_black}
-                fontSize={15}
+                text={`${number}`}
+                fontFamily={Font.bakh_extra_bold}
+                fontSize={fontSize}
+                colors={["#ff9800", "#f57c00", "#e65100"]}
+                shadowColor={"#33333350"}
+                dropShadow={true}
+                glowShadow={true}
+                glowColor={"#555555"}
+                glowBlur={10}
+                borderColor={"#ae2900"}
+                borderWidth={0.8}
             />
       </View>
     </TouchableOpacity>

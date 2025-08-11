@@ -60,8 +60,7 @@ function StagesStageGameSeason(props){
             info?.media?.length > 0&&
             <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', marginBottom:30}}>
                 <MediaSwiper
-                    items={info?.media.concat(info?.media)}
-                    width={width-30}
+                    items={info?.media}
                 /> 
             </View>
         )

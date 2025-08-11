@@ -8,8 +8,8 @@ import Svg, {
   Rect,
 } from 'react-native-svg';
 import { View, Text, findNodeHandle, UIManager } from 'react-native';
-import { convertRtl } from 'react-native-rtl-reshaper';
 import Font from '../../utils/Font';
+import { prepareRTLText } from '../../utils/prepareRTLText';
 
 interface TextGradientSvgProps {
   text: string;
@@ -47,7 +47,7 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
   const [textWidth, setTextWidth] = useState<number | null>(null);
   const hiddenTextRef = useRef<Text | null>(null);
 
-  const renderedText = rtl && !ltr ? convertRtl(text) : text;
+  const renderedText = rtl && !ltr ? prepareRTLText(text) : text;
   const fillGradientId = `grad-fill-${Math.random().toString(36).substring(7)}`;
   const strokeGradientId = `grad-stroke-${Math.random().toString(36).substring(7)}`;
   const maskId = `mask-stroke-${Math.random().toString(36).substring(7)}`;
