@@ -14,7 +14,6 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import StageGameSeason from '../../../components/card/stage-game-card/StageGameSeason';
 import MediaSwiper from '../../../components/swiper/MediaSwiper';
 import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CARD_SIZE } from '../../../components/card/general/StageNumber';
 import { getStagesBySeasonId } from '../../../realm/repositories/stage-game/stage.repository';

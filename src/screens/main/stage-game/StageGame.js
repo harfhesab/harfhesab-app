@@ -14,7 +14,8 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import StageGameSeason from '../../../components/card/stage-game-card/StageGameSeason';
+import StageGameSeasonCard, { STAGE_GAME_CARD_MARGIN } from '../../../components/card/stage-game-card/StageGameSeasonCard';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
@@ -127,7 +128,7 @@ function StageGame(props){
 
     const renderItem = ({item, index})=>{
         return(
-            <StageGameSeason
+            <StageGameSeasonCard
                 title={item.title}
                 description={item.description}
                 image={item.media[0].path}
@@ -160,11 +161,13 @@ function StageGame(props){
                             showsVerticalScrollIndicator={false}
                             keyExtractor={keyExtractor}
                             initialNumToRender={1}
-                            contentContainerStyle={{rowGap:25, paddingTop:FLATLIST_PADDING_TOP, paddingBottom:90}}
+                            contentContainerStyle={{alignItems:'center', rowGap:25, columnGap:15, paddingTop:FLATLIST_PADDING_TOP, paddingBottom:90}}
                             renderItem={memoizedValue}
                             data={data}
+                            numColumns={IS_TABLET_CONDITION ? 2 : 1}
                             onEndReachedThreshold={0.5}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                            style={{width:width, paddingHorizontal:STAGE_GAME_CARD_MARGIN}}
                             getItemLayout={(data, index) => ({
                                 length: height-200,
                                 offset: FLATLIST_PADDING_TOP + (height-200) * index,  // 15 پدینگ بالای کل لیست

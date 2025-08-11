@@ -9,12 +9,9 @@ export const themes = {
       primary: {
         a1: '#0ea960',
       },
-      background_gradient: ['#1b0b63', '#311b92', '#512da8'],
+      background_gradient: ['#163241', '#193b4d', '#24536b'],
       text_gradient:{
         a1: ['#1b0b63', '#311b92', '#512da8'],
-      },
-      card : {
-        a1: "#708ab0"
       },
       text_banner: {
         background: ['#bf5340', '#813123', '#491a11'],
@@ -22,12 +19,12 @@ export const themes = {
         content_2: '#c4d2e5',
       },
       header: {
-        background: '#1b0b63',
+        background: '#163241',
         content_1: '#F0F0F0',
         content_2: '#d1d1d1',
       },
       bottom_tab: {
-        background: '#1b0b63',
+        background: '#163241',
         active: '#FFFFFF',
         inactive: '#AAAAAA',
       },
@@ -69,7 +66,7 @@ export const themes = {
         success: '#0ea960',
       },
       alert_component: {
-        background: '#1b0b63',
+        background: '#163241',
         success: ['#007E33', '#00C851'],
         error: ['#CC0000', '#ff4444'],
         info: ['#0099CC', '#33b5e5'],
@@ -77,7 +74,7 @@ export const themes = {
         question: ['#FF8800', '#ffbb33'],
       },
       bottom_drawer: {
-        background: '#1b0b63',
+        background: '#163241',
         text1: '#F0F0F0',
         text2: '#d1d1d1',
       },
