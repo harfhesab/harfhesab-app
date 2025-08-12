@@ -187,8 +187,10 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
         <Modal
             swipeDirection={cancelable == true?['down']:null}
             swipeThreshold={180}
-            animationIn={'fadeIn'}
-            animationOut={'fadeOut'}
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
+            animationInTiming={400}
+            animationOutTiming={400}
             backdropOpacity={0.7}
             isVisible={visible}
             onBackdropPress={()=>{

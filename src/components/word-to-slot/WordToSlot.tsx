@@ -19,13 +19,21 @@ import {
 import SentenceDisplay from './components/SentenceDisplay';
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
+import { useRealm } from '../../realm';
 
 const words = ["بابا", "با", "اسب", "با", "سرعت زیادی", "آمد"];
 
 
 const {width, height} = Dimensions.get("window")
-const WordToSlot = () => {
+const WordToSlot = ({id}:{id:string}) => {
   const colors = useAppTheme();
+  const realm = useRealm();
+
+  const data = getStageById(realm, id)
+  useEffect(()=>{
+    console.log("222222222", data?.parts)
+  },[])
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

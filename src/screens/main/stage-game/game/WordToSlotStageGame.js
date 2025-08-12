@@ -7,14 +7,17 @@ import NightSky from '../../../../components/particles/NightSky';
 const {width, height} = Dimensions.get("window")
 function WordToSlotStageGame(props){
     const colors = useAppTheme()
+    const stage = props?.route?.params?.stage
    
     
     return(
-        <NightSky>
-            <SafeAreaView style={styles.container}>
-                <WordToSlot />
-            </SafeAreaView>
-        </NightSky>
+        <SafeAreaView style={styles.container}>
+            <NightSky>
+                <WordToSlot 
+                    id={stage}
+                />
+            </NightSky>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({

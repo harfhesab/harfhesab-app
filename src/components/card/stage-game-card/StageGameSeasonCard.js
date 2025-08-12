@@ -59,12 +59,15 @@ function StageGameSeasonCard({
                   text={title}
                   fontFamily={Font.bakh_black}
                   fontSize={30}
-                  dropShadow={true}
-                  shadowColor={'#FFFFFF50'}
+                  borderColor={"#002723"}
+                  borderWidth={1}
+                  glowBlur={50}
+                  glowColor={'#FFFFFF'}
+                  glowShadow={true}
                   colors={['#009688', '#40bfb3', '#79d2ca']}
                 />
             </View>
-            <View style={{alignSelf:'flex-start', backgroundColor:'#193c4d60', paddingVertical:15, paddingStart:10, paddingEnd:20, borderRadius:10, marginHorizontal:10}}>
+            <View style={{alignSelf:'flex-start', backgroundColor:'#0ea96050', paddingVertical:15, paddingStart:10, paddingEnd:20, borderRadius:10, marginHorizontal:10}}>
               <Text style={{ color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30}}>{`${title}`}</Text>
               <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30  }}>{`فصل ${seasonNumber}`}</Text>
               <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30  }}>{`${numberStage} مرحله ( ${stageNumberFrom} تا ${stageNumberTo} )`}</Text>
@@ -77,7 +80,7 @@ function StageGameSeasonCard({
                 width={150}
                 height={45}
                 gradientColors={['#d29179', '#401d11']}
-                borderRadius={15}
+                borderRadius={10}
             />
           </View>
         </View>

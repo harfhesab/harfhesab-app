@@ -8,6 +8,7 @@ export const themes = {
     colors: {
       primary: {
         a1: '#0ea960',
+        a2: '#24536b'
       },
       background_gradient: ['#163241', '#193b4d', '#24536b'],
       text_gradient:{
@@ -19,7 +20,7 @@ export const themes = {
         content_2: '#c4d2e5',
       },
       header: {
-        background: '#163241',
+        background: '#0e202a',
         content_1: '#F0F0F0',
         content_2: '#d1d1d1',
       },
@@ -48,14 +49,15 @@ export const themes = {
         a5: 'rgba(14,169,96,0.20)',
       },
       border: {
-        a1: '#94a9c8',
-        a2: '#708ab0',
+        a1: '#546874',
+        a2: '#425762',
       },
       alert: {
         a1: '#CC0000',
       },
       shadow: {
         a1: '#00000095',
+        a2: '#000000',
       },
       toast: {
         background: '#F0F0F0',

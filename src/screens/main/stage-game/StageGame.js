@@ -16,6 +16,8 @@ import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageGameSeasonCard, { STAGE_GAME_CARD_MARGIN } from '../../../components/card/stage-game-card/StageGameSeasonCard';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import GeneralHeader from '../../../components/header/GeneralHeader';
+import Icon from '../../../utils/Icon';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
@@ -23,7 +25,7 @@ function StageGame(props){
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const realm = useRealm();
-    const { stageGameLanguage, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
+    const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)
@@ -83,31 +85,60 @@ function StageGame(props){
     }
     const getLanguages = ()=>{
         const languages = getAllLanguages(realm)
+        const btn = [
+            {
+                onPress : ({radio})=>{
+                    const selected = languages[radio]._id
+                    const selectedName = languages[radio].name
+                    dispatch(changeStageGameLanguage({
+                        language:selected.toString(),
+                        languageName:selectedName.toString(),
+                    }))
+                    getData(selected)
+                },
+                text: 'انتخاب زبان',
+                loading: true,
+                type: "bold"
+            },
+        ]
+        if(stageGameLanguage){
+            const cancelBtn = {
+                onPress : ()=>{},
+                text: 'لغو',
+                loading: false,
+                type: "border"
+            }
+            btn.push(cancelBtn)
+        }
         BottomDrawerHelper.showBottomDrawer({
-            title:"برای شروع بازی مرحله‌ای یکی از زبان های زیر را انتخاب کنید.",
+            title:"زبان بازی مرحله‌ای را انتخاب کنید.",
             list: languages.map(item => ({
                 text1: item.name
             })),
-            buttons:[
-                {
-                    onPress : ({radio})=>{
-                        const selected = languages[radio]._id
-                        dispatch(changeStageGameLanguage({language:selected}))
-                        getData(selected)
-                    },
-                    text: 'انتخاب زبان',
-                    loading: true,
-                    type: "bold"
-                },
-            ],
+            buttons:btn,
             options:{
+                radioSelected: stageGameLanguage?languages.findIndex(i=>i._id == stageGameLanguage):undefined,
                 listType: "radio-button",
-                cancelable: false,
-                selectRequired: true
+                cancelable: stageGameLanguage?true:false,
+                selectRequired: stageGameLanguage?false:true
             }
         })
     }
     const getData = async (selected)=>{
+        if(data?.length > 0){
+            setData([])
+            setLoading(true)
+            setGetError(false)
+            setNoItem(false)
+            const time = setTimeout(()=>{
+                getDataOperation(selected)
+            }, 100)
+        } else {
+            getDataOperation(selected)
+        }
+        
+    }
+    const getDataOperation = (selected)=>{
         const language = selected ?? stageGameLanguage
         const seasons = getStageSeasonsByLanguage(realm, language)
         if(seasons && seasons.length > 0){
@@ -126,6 +157,18 @@ function StageGame(props){
         getData()
     }
 
+    const headerLeftComponent = ()=>{
+        return(
+            (stageGameLanguage)&&
+            <View style={{height:'100%', alignItems:'center', justifyContent:'center', paddingHorizontal:5}}>
+                <TouchableOpacity onPress={getLanguages} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:7, paddingHorizontal: 15, paddingVertical:7, backgroundColor:"#00000060"}}>
+                    <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:14}}>{`زبان ${stageGameLanguageName}`}</Text>
+                    <Icon name={'layers-outline'} type={'Ionicons'} style={{fontSize:20, color:colors.text.a3}}/>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
     const renderItem = ({item, index})=>{
         return(
             <StageGameSeasonCard
@@ -137,16 +180,24 @@ function StageGame(props){
                 seasonNumber={item.season_number}
                 stageNumberFrom={item.stage_number_from}
                 stageNumberTo={item.stage_number_to}
-                onPress={()=>{props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString()})}}
+                onPress={()=>{props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString(), seasonName:item.title.toString()})}}
             />
         )
     }
     const memoizedValue = useMemo(() => renderItem, [data]);
     const keyExtractor = (item,index)=>index.toString()
-    const FLATLIST_PADDING_TOP = 15
+    const FLATLIST_PADDING_VERTICAL = 15
+    const itemHeight = height - 200
+    const rowGap = 25
+    const numColumns = IS_TABLET_CONDITION ? 2 : 1
+    const snapInterval = itemHeight + rowGap
     return(
-        <SafeAreaView>
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
+        <View style={{flex:1}}>
+            <GeneralHeader
+                height={60}
+                LeftComponent={headerLeftComponent}
+            />
+            <LinearGradient colors={colors.background_gradient} style={{flex:1}}>
                 <View style={styles.container}>
                     {
                         loading == true?
@@ -161,24 +212,29 @@ function StageGame(props){
                             showsVerticalScrollIndicator={false}
                             keyExtractor={keyExtractor}
                             initialNumToRender={1}
-                            contentContainerStyle={{alignItems:'center', rowGap:25, columnGap:15, paddingTop:FLATLIST_PADDING_TOP, paddingBottom:90}}
+                            contentContainerStyle={{alignItems:'center', rowGap:rowGap, columnGap:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
                             renderItem={memoizedValue}
                             data={data}
-                            numColumns={IS_TABLET_CONDITION ? 2 : 1}
+                            numColumns={numColumns}
                             onEndReachedThreshold={0.5}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                             style={{width:width, paddingHorizontal:STAGE_GAME_CARD_MARGIN}}
                             getItemLayout={(data, index) => ({
-                                length: height-200,
-                                offset: FLATLIST_PADDING_TOP + (height-200) * index,  // 15 پدینگ بالای کل لیست
+                                length: itemHeight,
+                                offset: FLATLIST_PADDING_VERTICAL + Math.floor(index / numColumns) * snapInterval,
                                 index,
                             })}
+                            snapToInterval={snapInterval} // ارتفاع هر ردیف
+                            snapToAlignment="start"       // آیتم از بالا چفت شود
+                            decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
+                            disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                            bounces={true}                // فنری بودن مانند iOS
                         />
                     }
                 </View>
             </LinearGradient>
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>
-        </SafeAreaView>
+        </View>
     )
 }
 const styles = StyleSheet.create({

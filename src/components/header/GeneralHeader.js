@@ -6,18 +6,18 @@ import { goBack } from "../../main/navigationService";
 import useAppTheme from "../../hooks/theme/useAppTheme";
 
 const {width} = Dimensions.get('window');
-function GeneralHeader({height, hideShadow, paddingHorizontal, rightComponent, leftComponent, back, backIconSize, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
+function GeneralHeader({height, hideShadow, paddingHorizontal, RightComponent, LeftComponent, back, backIconSize, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
     const colors = useAppTheme();
 
     const goBackOnClick = ()=>{
         goBack()
     }
     return(
-        <View style={{backgroundColor:colors.header.background, height:height??65, width:width, shadowColor:colors.shadow.a1, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal??10, justifyContent:'space-between'}}>
-            <View style={{height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10}}>
+        <View style={{backgroundColor:colors.header.background, height:height??65, width:width, shadowColor:colors.shadow.a2, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal??10, justifyContent:'space-between', zIndex:100}}>
+            <View style={{height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:5}}>
                 {
-                    rightComponent?
-                    <rightComponent/>
+                    RightComponent?
+                    <RightComponent/>
                     :back&&
                     <TouchableNativeFeedback onPress={goBackOnClick} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                         <View pointerEvents='box-only' style={{justifyContent:'center', alignItems:'center', padding:5}}>
@@ -28,7 +28,7 @@ function GeneralHeader({height, hideShadow, paddingHorizontal, rightComponent, l
                 {
                     title&&
                     <View style={{flexDirection:'column', alignItems:'flex-start', justifyContent:'center'}}>
-                        <Text numberOfLines={1} style={{color:colors.header.content_1, maxWidth:width-100, fontFamily:titleFontFamily??Font.medium, fontSize:titleFontSize??16}}>{title}</Text>
+                        <Text numberOfLines={1} style={{color:colors.header.content_1, maxWidth:width-100, fontFamily:titleFontFamily??Font.medium, fontSize:titleFontSize??14}}>{title}</Text>
                         {
                             description&&
                             <Text numberOfLines={1} style={{color:colors.header.content_2, maxWidth:width-100, fontFamily:descriptionFontFamily??Font.medium, fontSize:descriptionFontSize??12}}>{description}</Text>
@@ -38,8 +38,8 @@ function GeneralHeader({height, hideShadow, paddingHorizontal, rightComponent, l
             </View>
             <View style={{height:"100%", flexDirection:'row', alignItems:'center'}}>
                 {
-                    leftComponent&&
-                    <leftComponent/>
+                    LeftComponent&&
+                    <LeftComponent/>
                 }
             </View>
         </View>

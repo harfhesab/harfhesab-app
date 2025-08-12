@@ -6,6 +6,7 @@ interface StageGameState {
   versionDeletedContent: number;
   forceUpdate: boolean;
   stageGameLanguage: string | null;
+  stageGameLanguageName: string | null;
 }
 
 const initialState: StageGameState = {
@@ -14,14 +15,16 @@ const initialState: StageGameState = {
   versionDeletedContent: 0,
   forceUpdate: false,
   stageGameLanguage: null,
+  stageGameLanguageName: null,
 };
 
 const stageGamePersistSlice = createSlice({
   name: 'stageGamePersist',
   initialState,
   reducers: {
-    changeStageGameLanguage(state, action: PayloadAction<{ language: string }>) {
-      state.stageGameLanguage = action.payload.language
+    changeStageGameLanguage(state, action: PayloadAction<{ language: string; languageName: string; }>) {
+      state.stageGameLanguage = action.payload.language;
+      state.stageGameLanguageName = action.payload.languageName;
     },
     changeVersionContent(state, action: PayloadAction<{ versionCreatedContent: number; versionUpdatedContent: number; versionDeletedContent: number; }>) {
       state.versionCreatedContent = action.payload.versionCreatedContent;

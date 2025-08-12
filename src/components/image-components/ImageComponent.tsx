@@ -54,8 +54,8 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   const PLACE_HOLDER_WIDTH = WIDTH - 40 > 200?200:WIDTH-40
 
   return (
-    <View style={[{ width, height, borderRadius }, styles.container, style]}>
-      {(!loaded && placeHolder == true) &&(
+    <View style={[{ width, height, borderRadius, backgroundColor:colors.primary.a2 }, styles.container, style]}>
+      {(error && !loaded && placeHolder == true) &&(
         <MovementGradientLayer height={height} width={width}>
           <View style={{width:width, height:height, alignItems:'center', justifyContent:'center'}}>
               <Image
@@ -74,7 +74,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
         </MovementGradientLayer>
       )}
 
-      {!error && (
+      {!error &&  (
         <FastImage
           style={{ width, height, borderRadius }}
           source={{
@@ -97,6 +97,8 @@ const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
     position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 });
 

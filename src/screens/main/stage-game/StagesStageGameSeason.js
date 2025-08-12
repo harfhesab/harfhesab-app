@@ -18,16 +18,19 @@ import MediaSwiper from '../../../components/swiper/MediaSwiper';
 import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CARD_SIZE } from '../../../components/card/general/StageNumber';
 import { getStagesBySeasonId } from '../../../realm/repositories/stage-game/stage.repository';
 import GalaxyTwinkle from '../../../components/backgroun-layer/GalaxyTwinkle';
+import GeneralHeader from '../../../components/header/GeneralHeader';
 
 const {width, height} = Dimensions.get("window")
 function StagesStageGameSeason(props){
     const colors = useAppTheme()
     const realm = useRealm();
+    const { stageGameLanguage, stageGameLanguageName } = useSelector((state) => state.stageGamePersist);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)
     const [info, setInfo] = useState(null)
     const [data, setData] = useState([])
+    const seasonName = props?.route?.params?.seasonName
 
     useEffect(() => {
         getData()
@@ -57,7 +60,7 @@ function StagesStageGameSeason(props){
     const listHeaderComponent = ()=>{
         return(
             info?.media?.length > 0&&
-            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', marginBottom:30}}>
+            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', marginBottom:10, paddingTop:10}}>
                 <MediaSwiper
                     items={info?.media}
                 /> 
@@ -70,8 +73,8 @@ function StagesStageGameSeason(props){
             <StageNumber
                 currently={index == 1?true:false}
                 lock={index > 1?true:false}
-                number={index +  1}
-                onPress={()=>{props.navigation.navigate("WordToSlotStageGame")}}
+                number={item.stage_number_in_language}
+                onPress={()=>{props.navigation.navigate("WordToSlotStageGame", {stage:item?._id.toString()})}}
             />
         )
     }
@@ -79,10 +82,16 @@ function StagesStageGameSeason(props){
     const keyExtractor = (item,index)=>index.toString()
     const FLATLIST_PADDING_TOP = 15
     return(
-        <SafeAreaView>
+        <View>
+            <GeneralHeader
+                height={60}
+                back={true}
+                title={`فصل ${seasonName}`}
+                description={`زبان ${stageGameLanguageName} ${info?`(مرحله ${info?.stage_number_from} تا ${info?.stage_number_to})`:undefined}`}
+            />
             {
                 loading == true?
-                <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
+                <LinearGradient colors={colors.background_gradient} style={{width:width}}>
                     <View style={styles.container}>
                         <ScreenLoading
                             loading={loading}
@@ -93,7 +102,7 @@ function StagesStageGameSeason(props){
                     </View>
                 </LinearGradient>
                 :
-                <GalaxyTwinkle style={{ width: width, height: height }}>
+                <GalaxyTwinkle style={{width:width, height:height - 60 }}>
                     <View style={styles.container}>
                         <FlatList
                             showsVerticalScrollIndicator={false}
@@ -117,13 +126,14 @@ function StagesStageGameSeason(props){
                 </GalaxyTwinkle>
             }
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>
-        </SafeAreaView>
+        </View>
     )
 }
 const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
+      justifyContent: 'center'
     }
 });
 export default StagesStageGameSeason;
