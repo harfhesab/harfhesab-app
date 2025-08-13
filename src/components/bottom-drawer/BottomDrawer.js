@@ -37,16 +37,19 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
 
     const open = (dialog)=>{
         setVisible(true)
-        setTitle(dialog?.title??null)
-        setCancelable(dialog?.options?.cancelable??true)
-        setButtons(dialog?.buttons??null)
-        setList(dialog?.list??[])
-        setListType(dialog?.options?.listType??"simple")
-        setListItemHeight(dialog?.options?.listItemHeight??60)
-        setListItemColor(dialog?.options?.listItemColor??null)
-        setListItemCheckBoxSize(dialog?.options?.listItemCheckBoxSize??null)
-        setRadioSelected(dialog?.options?.radioSelected??null)
-        setSelectRequired(dialog?.options?.selectRequired??false)
+        const time = setTimeout(()=>{
+            setTitle(dialog?.title??null)
+            setCancelable(dialog?.options?.cancelable??true)
+            setButtons(dialog?.buttons??null)
+            setList(dialog?.list??[])
+            setListType(dialog?.options?.listType??"simple")
+            setListItemHeight(dialog?.options?.listItemHeight??60)
+            setListItemColor(dialog?.options?.listItemColor??null)
+            setListItemCheckBoxSize(dialog?.options?.listItemCheckBoxSize??null)
+            setRadioSelected(dialog?.options?.radioSelected??null)
+            setSelectRequired(dialog?.options?.selectRequired??false)
+            clearTimeout(time)
+        }, 200)
     }
     const close = () => {
         setVisible(false)
@@ -187,10 +190,10 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
         <Modal
             swipeDirection={cancelable == true?['down']:null}
             swipeThreshold={180}
-            animationIn="slideInUp"
-            animationOut="slideOutDown"
-            animationInTiming={400}
-            animationOutTiming={400}
+            // animationIn="slideInUp"
+            // animationOut="slideOutDown"
+            // animationInTiming={400}
+            // animationOutTiming={400}
             backdropOpacity={0.7}
             isVisible={visible}
             onBackdropPress={()=>{

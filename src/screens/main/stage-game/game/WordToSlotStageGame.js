@@ -15,6 +15,7 @@ function WordToSlotStageGame(props){
             <NightSky>
                 <WordToSlot 
                     id={stage}
+                    type={"stage-game"}
                 />
             </NightSky>
         </SafeAreaView>

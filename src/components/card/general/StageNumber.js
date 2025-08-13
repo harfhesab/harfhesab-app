@@ -18,7 +18,7 @@ import TextGradientSvg from '../../text-components/TextGradientSvg';
 
 const { width, height } = Dimensions.get('window');
 
-const AVERAGE_SIZE = 65
+const AVERAGE_SIZE = 70
 export const STAGE_CARD_MARGIN = 5
 const PADDING_HORIZONTAL = 15
 const CALCULATE_ALMOST_NUMBER_COLUMN = (width - (PADDING_HORIZONTAL*2)) / (AVERAGE_SIZE + (STAGE_CARD_MARGIN*2))

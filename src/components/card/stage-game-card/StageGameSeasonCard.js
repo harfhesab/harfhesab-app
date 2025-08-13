@@ -13,7 +13,7 @@ import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import ImageComponent from '../../image-components/ImageComponent';
 import TextSkia from '../../text-components/TextSkia';
-import TextGradientSvg from '../../text-components/TextGradientSvg';
+import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
 import ButtonGradient from '../../buttons/ButtonGradient';
 import MovementGradientLayer from '../../backgroun-layer/MovementGradientLayer';
 import GalaxyTwinkle from '../../backgroun-layer/GalaxyTwinkle';
@@ -55,16 +55,16 @@ function StageGameSeasonCard({
           </View>
           <View style={{flex:1, width:"100%", justifyContent:'flex-start'}}>
             <View style={{paddingHorizontal:10, paddingTop:20, paddingBottom:30}}>
-                <TextGradientSvg
+                <MultiLineTextGradientSvg
                   text={title}
                   fontFamily={Font.bakh_black}
                   fontSize={30}
-                  borderColor={"#002723"}
+                  borderColor={"#795548"}
                   borderWidth={1}
                   glowBlur={50}
                   glowColor={'#FFFFFF'}
                   glowShadow={true}
-                  colors={['#009688', '#40bfb3', '#79d2ca']}
+                  colors={['#ffc107', '#ff9800', '#ff5722']}
                 />
             </View>
             <View style={{alignSelf:'flex-start', backgroundColor:'#0ea96050', paddingVertical:15, paddingStart:10, paddingEnd:20, borderRadius:10, marginHorizontal:10}}>
@@ -80,7 +80,6 @@ function StageGameSeasonCard({
                 width={150}
                 height={45}
                 gradientColors={['#d29179', '#401d11']}
-                borderRadius={10}
             />
           </View>
         </View>

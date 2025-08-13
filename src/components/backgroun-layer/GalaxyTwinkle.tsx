@@ -160,16 +160,16 @@ function GalaxyTwinkle({
         const relR = Math.random() * 0.15 + 0.1;
 
         const colorChoices = [
-          { inner: "rgba(200,100,255,0.22)", mid: "rgba(120,50,200,0.08)", positions: [0, 0.6, 1] },
-          { inner: "rgba(80,200,255,0.20)", mid: "rgba(30,110,200,0.12)", positions: [0, 0.55, 1] },
-          { inner: "rgba(255,200,140,0.12)", mid: "rgba(200,150,100,0.06)", positions: [0, 0.4, 1] },
-          { inner: "rgba(255,100,200,0.18)", mid: "rgba(200,50,150,0.07)", positions: [0, 0.6, 1] },
-          { inner: "rgba(255,50,50,0.15)", mid: "rgba(200,0,0,0.09)", positions: [0, 0.55, 1] },
-          { inner: "rgba(100,255,200,0.14)", mid: "rgba(50,200,150,0.06)", positions: [0, 0.6, 1] },
-          { inner: "rgba(255,150,50,0.17)", mid: "rgba(200,100,0,0.10)", positions: [0, 0.55, 1] },
-          { inner: "rgba(255,255,150,0.11)", mid: "rgba(200,200,100,0.05)", positions: [0, 0.65, 1] },
-          { inner: "rgba(150,255,100,0.16)", mid: "rgba(100,200,50,0.08)", positions: [0, 0.4, 1] },
-          { inner: "rgba(255,80,150,0.19)", mid: "rgba(200,30,100,0.09)", positions: [0, 0.65, 1] },
+          { inner: "rgba(200,100,255,0.14)", mid: "rgba(120,50,200,0.06)", positions: [0, 0.6, 1] },
+          { inner: "rgba(80,200,255,0.13)", mid: "rgba(30,110,200,0.08)", positions: [0, 0.55, 1] },
+          { inner: "rgba(255,200,140,0.08)", mid: "rgba(200,150,100,0.05)", positions: [0, 0.4, 1] },
+          { inner: "rgba(255,100,200,0.13)", mid: "rgba(200,50,150,0.06)", positions: [0, 0.6, 1] },
+          { inner: "rgba(255,50,50,0.10)", mid: "rgba(200,0,0,0.07)", positions: [0, 0.55, 1] },
+          { inner: "rgba(100,255,200,0.10)", mid: "rgba(50,200,150,0.05)", positions: [0, 0.6, 1] },
+          { inner: "rgba(255,150,50,0.11)", mid: "rgba(200,100,0,0.08)", positions: [0, 0.55, 1] },
+          { inner: "rgba(255,255,150,0.08)", mid: "rgba(200,200,100,0.04)", positions: [0, 0.65, 1] },
+          { inner: "rgba(150,255,100,0.11)", mid: "rgba(100,200,50,0.07)", positions: [0, 0.4, 1] },
+          { inner: "rgba(255,80,150,0.12)", mid: "rgba(200,30,100,0.05)", positions: [0, 0.65, 1] },
         ];
 
         const choice = colorChoices[Math.floor(Math.random() * colorChoices.length)];

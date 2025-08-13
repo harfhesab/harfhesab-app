@@ -27,6 +27,12 @@ const BottomTab = (props) => {
             display: "flex",
             height:65,
             backgroundColor: colors.bottom_tab.background,
+            borderTopWidth: 0.3,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -3 },
+            shadowOpacity: 0.1,
+            shadowRadius: 3,
+            elevation: 2,
           },
           null
         ]

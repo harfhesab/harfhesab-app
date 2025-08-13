@@ -26,13 +26,13 @@ const words = ["بابا", "با", "اسب", "با", "سرعت زیادی", "آ�
 
 
 const {width, height} = Dimensions.get("window")
-const WordToSlot = ({id}:{id:string}) => {
+const WordToSlot = ({id, type}:{id:string, type:string}) => {
   const colors = useAppTheme();
   const realm = useRealm();
 
-  const data = getStageById(realm, id)
+  const data = type == "stage-game" ? getStageById(realm, id)?.parts : null;
   useEffect(()=>{
-    console.log("222222222", data?.parts)
+    console.log("222222222", data)
   },[])
 
   return (

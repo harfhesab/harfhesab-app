@@ -22,8 +22,8 @@ import { createManyStageSeasons, updateManyStageSeasons, deleteManyStageSeasons 
 import { createManyLanguages, updateManyLanguages, deleteManyLanguages } from "../../realm/repositories/general/language.repository";
 
 export const checkStageGameContentVersion = async({ dispatch, realm, state, versionContent }) => {
-    InteractionManager.runAfterInteractions(() => {
-        const run = async ()=>{
+    // InteractionManager.runAfterInteractions(() => {
+    //     const run = async ()=>{
             const {
                 versionCreatedContent,
                 versionUpdatedContent,
@@ -119,12 +119,12 @@ export const checkStageGameContentVersion = async({ dispatch, realm, state, vers
             }).catch((err)=>{
                 null
             })
-        }
-        run();
-    });
+    //     }
+    //     run();
+    // });
 }
 export const updateStageGameContent = ({ dispatch, realm, state, versionContent }) => {
-    InteractionManager.runAfterInteractions(() => {
+    // InteractionManager.runAfterInteractions(() => {
         dispatch(setIsDownloading())
         const {
             dataCheck,
@@ -161,7 +161,7 @@ export const updateStageGameContent = ({ dispatch, realm, state, versionContent 
             const page = versionCreatedPage
             getNewVersionCreatedStageGameContentForFirst({page, dispatch, realm, state, versionContent})
         }
-    });
+    // });
 }
 const getNewVersionCreatedStageGameContent = async ({page, dispatch, realm, state, versionContent})=>{
     const {
@@ -717,8 +717,8 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
     })
 }
 export const upgradeStageGameContentVersion = async(newVersionContent) => {
-    InteractionManager.runAfterInteractions(() => {
-        const run = async ()=>{
+    // InteractionManager.runAfterInteractions(() => {
+    //     const run = async ()=>{
             const {
                 versionCreatedContent,
                 versionUpdatedContent,
@@ -755,9 +755,9 @@ export const upgradeStageGameContentVersion = async(newVersionContent) => {
             }).catch((err)=>{
                 showSuccessAlertForDownloaded()
             })
-        }
-        run();
-    });
+    //     }
+    //     run();
+    // });
 }
 const showSuccessAlertForDownloaded = ()=>{
     AlertHelper.showAlert({
