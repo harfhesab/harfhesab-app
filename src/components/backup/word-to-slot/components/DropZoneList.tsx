@@ -1,15 +1,17 @@
+// /components/DropZoneList.tsx
 import React, { useMemo } from 'react';
 import DropZone from './DropZone';
-import { useDragDrop } from '../context/DragDropContext';
 
-const DropZoneList = () => {
-  const { numberOfCards } = useDragDrop();
+interface Props {
+  count: number;
+}
 
+const DropZoneList = ({ count }: Props) => {
   const renderedZones = useMemo(() => {
-    return Array.from({ length: numberOfCards }).map((_, index) => (
+    return Array.from({ length: count }).map((_, index) => (
       <DropZone key={index} index={index} />
     ));
-  }, [numberOfCards]);
+  }, [count]);
 
   return <>{renderedZones}</>;
 };

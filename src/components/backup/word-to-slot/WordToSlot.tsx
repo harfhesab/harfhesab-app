@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from 'react';
 import { View, StyleSheet, SafeAreaView, Text, Dimensions } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DragDropProvider } from './context/DragDropContext';
+import { DragDropProvider, useDragDrop } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
 import DropZoneList from './components/DropZoneList';
 import {
@@ -17,28 +17,35 @@ import {
   DISTANCE_BOUNDARY_AND_SLOT
 } from './constants/constants';
 import SentenceDisplay from './components/SentenceDisplay';
+import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
 import { useRealm } from '../../realm';
 
+const words = ["بابا", "با", "اسب", "با", "سرعت زیادی", "آمد"];
+
+
 const {width, height} = Dimensions.get("window")
-const WordToSlot = ({id}:{id:string}) => {
+const WordToSlot = ({id, type}:{id:string, type:string}) => {
   const colors = useAppTheme();
   const realm = useRealm();
 
-  const data = getStageById(realm, id)
+  const data = type == "stage-game" ? getStageById(realm, id)?.parts : null;
+  useEffect(()=>{
+    console.log("222222222", data)
+  },[])
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <DragDropProvider parts={data?.parts || []} realm={realm} stageId={id}>
+      <DragDropProvider>
         <SafeAreaView style={styles.container}>
-          <SentenceDisplay />
+          <SentenceDisplay words={words} />
           <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
             <View style={styles.dropZoneContainer}>
-              <DropZoneList />
+              <DropZoneList count={words.length} />
             </View>
             <View style={styles.boundaryContainer}>
-              <FloatingCardList />
+              <FloatingCardList words={words} />
             </View>
           </View>
         </SafeAreaView>

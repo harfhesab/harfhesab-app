@@ -26,17 +26,16 @@ import {
   FONT_SIZE_DRAGGING,
   FONT_SIZE_SLOTTED,
 } from "../constants/constants";
+import AnimatedSkiaText from '../../text-components/AnimatedSkiaText';
 
 // تنظیمات انیمیشن برای نرم‌تر شدن
 const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
 const SPRING_CONFIG_SOFT_SLOT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای چسبیدن به اسلات
 
 interface Props {
-  _id: string;
   word: string;
   index: number;
-  unknown_word : boolean | null | undefined;
-  unknown_word_completed : boolean | null | undefined;
+  numberOfCards: number;
 }
 
 interface Position {
@@ -44,8 +43,7 @@ interface Position {
   y: number;
 }
 
-function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
-  const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards } = useDragDrop();
+function FloatingCard({ word, index, numberOfCards }: Props) {
   const fontSizeScale = (word.length < 3)?1.6:(word.length < 4)?1.5:(word.length < 5)?1.4:(word.length < 6)?1.3:(word.length < 7)?1.2:(word.length < 8)?1.1:(word.length > 12)?0.9:1;
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
@@ -64,6 +62,8 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   const dragFromSlot = useSharedValue<number | null>(null);
   const cardSize = useSharedValue(CARD_SIZE_FLOATING);
   const fontSize = useSharedValue(FONT_SIZE_FLOATING_SCALED);
+
+  const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot } = useDragDrop();
 
   useEffect(() => {
     registerCard({
@@ -209,6 +209,13 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.card, cardStyle]}>
         <Animated.Text style={[styles.text, textStyle]}>{word}</Animated.Text>
+        {/* <AnimatedSkiaText
+          text={word}
+          fontSize={fontSize}
+          initialFontSize={FONT_SIZE_FLOATING * fontSizeScale}
+          initialWidth={CARD_SIZE_FLOATING}
+          initialHeight={CARD_SIZE_FLOATING}
+        /> */}
       </Animated.View>
     </GestureDetector>
   );

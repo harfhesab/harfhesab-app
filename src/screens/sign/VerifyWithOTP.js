@@ -12,7 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import messaging from '@react-native-firebase/messaging';
 import DeviceInfo from 'react-native-device-info';
-import InputCodeField from '../../components/inuts/InputCodeField';
+import InputCodeField from '../../components/inputs/InputCodeField';
 import ButtonGradient from '../../components/buttons/ButtonGradient';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../../utils/Icon';import {

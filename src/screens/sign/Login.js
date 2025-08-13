@@ -7,7 +7,7 @@ import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import LinearGradient from 'react-native-linear-gradient';
 import ButtonGradient from '../../components/buttons/ButtonGradient';
-import InputText from '../../components/inuts/InputText';
+import InputText from '../../components/inputs/InputText';
 import { getHash } from 'react-native-otp-verify';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 

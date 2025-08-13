@@ -160,10 +160,10 @@ function StageGame(props){
     const headerLeftComponent = ()=>{
         return(
             (stageGameLanguage)&&
-            <View style={{height:'100%', alignItems:'center', justifyContent:'center', paddingHorizontal:5}}>
-                <TouchableOpacity onPress={getLanguages} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:7, paddingHorizontal: 15, paddingVertical:7, backgroundColor:"#00000060"}}>
+            <View style={{height:'100%', alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity onPress={getLanguages} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:8, paddingHorizontal: 10, backgroundColor:"#00000060", height:40}}>
                     <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:14}}>{`زبان ${stageGameLanguageName}`}</Text>
-                    <Icon name={'layers-outline'} type={'Ionicons'} style={{fontSize:20, color:colors.text.a3}}/>
+                    <Icon name={'layers-outline'} type={'Ionicons'} style={{fontSize:25, color:colors.text.a3}}/>
                 </TouchableOpacity>
             </View>
         )
@@ -194,7 +194,9 @@ function StageGame(props){
     return(
         <View style={{flex:1}}>
             <GeneralHeader
+                paddingHorizontal={15}
                 height={60}
+                coin={true}
                 LeftComponent={headerLeftComponent}
             />
             <LinearGradient colors={colors.background_gradient} style={{flex:1}}>

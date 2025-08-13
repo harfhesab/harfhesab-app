@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { Dimensions } from 'react-native';
-import Animated, { useFrameCallback, withSpring, SharedValue } from 'react-native-reanimated';
+import Animated, { useFrameCallback, withSpring } from 'react-native-reanimated';
 import { runOnJS } from 'react-native-reanimated';
 import {
     BOUNDARY_TOP_OFFSET,
@@ -16,7 +16,7 @@ import {
     MIN_VELOCITY,
     FONT_SIZE_SLOTTED,
 } from "../constants/constants";
-import Realm from 'realm';
+
 
 interface Position {
   x: number;
@@ -32,12 +32,12 @@ interface Card {
   id: string;
   word: string;
   homePosition: Position;
-  position: SharedValue<Position>;
-  velocity: SharedValue<Velocity>;
-  isDragging: SharedValue<boolean>;
-  isAssigned: SharedValue<boolean>;
-  cardSize: SharedValue<number>;
-  fontSize: SharedValue<number>;
+  position: Animated.SharedValue<Position>;
+  velocity: Animated.SharedValue<Velocity>;
+  isDragging: Animated.SharedValue<boolean>;
+  isAssigned: Animated.SharedValue<boolean>;
+  cardSize: Animated.SharedValue<number>;
+  fontSize: Animated.SharedValue<number>;
 }
 
 interface ContextProps {
@@ -49,47 +49,15 @@ interface ContextProps {
   cards: Record<string, Card>;
   slots: Record<number, string>;
   registerSlot: (index: number, pos: Position) => void;
-  currentWords: any[];
-  completeCurrentPart: () => void;
-  currentPartIndex: number;
-  completedSentences: string[];
-  numberOfCards: number;
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
 
-export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Realm.List<any>, realm: Realm, stageId: string }> = ({ children, parts, realm, stageId }) => {
+export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [slots, setSlots] = useState<Record<number, string>>({});
   const [slotPositions, setSlotPositions] = useState<Record<number, Position>>({});
   const [cardSlotMap, setCardSlotMap] = useState<Record<string, number>>({});
-  const [currentPartIndex, setCurrentPartIndex] = useState(0);
-  const [completedSentences, setCompletedSentences] = useState<string[]>([]);
-
-  const currentWords = parts[currentPartIndex]?.words.map((w: any) => ({
-    _id: w._id,
-    word: w.word,
-    unknown_word: w.unknown_word,
-    unknown_word_completed: w.unknown_word_completed,
-  })) || [];
-
-  const numberOfCards = currentWords.length;
-
-  const completeCurrentPart = useCallback(() => {
-    const currentSentence = parts[currentPartIndex].sentence;
-    setCompletedSentences(prev => {
-      if (!prev.includes(currentSentence)) {
-        return [...prev, currentSentence];
-      }
-      return prev;
-    });
-    if (currentPartIndex < parts.length - 1) {
-      setCurrentPartIndex(prev => prev + 1);
-    } else {
-      // مرحله کامل شد
-      console.log('Stage completed');
-    }
-  }, [currentPartIndex, parts]);
 
   const getSlotOfCard = useCallback(
     (cardId: string) => {
@@ -406,11 +374,6 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
         cards,
         slots,
         registerSlot,
-        currentWords,
-        completeCurrentPart,
-        currentPartIndex,
-        completedSentences,
-        numberOfCards,
       }}
     >
       {children}

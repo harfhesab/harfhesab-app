@@ -4,9 +4,10 @@ import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
 import { goBack } from "../../main/navigationService";
 import useAppTheme from "../../hooks/theme/useAppTheme";
+import NumberCoins from "../coin/NumberCoins";
 
 const {width} = Dimensions.get('window');
-function GeneralHeader({height, hideShadow, paddingHorizontal, RightComponent, LeftComponent, back, backIconSize, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
+function GeneralHeader({height, hideShadow, paddingHorizontal, RightComponent, LeftComponent, back, coin, backIconSize, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
     const colors = useAppTheme();
 
     const goBackOnClick = ()=>{
@@ -24,6 +25,10 @@ function GeneralHeader({height, hideShadow, paddingHorizontal, RightComponent, L
                             <Icon name={"arrow-right"} type='Feather' style={{color:colors.header.content_1, fontSize:backIconSize??30}}/>
                         </View>
                     </TouchableNativeFeedback>
+                }
+                {
+                    coin&&
+                    <NumberCoins />
                 }
                 {
                     title&&

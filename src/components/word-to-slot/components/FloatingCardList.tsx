@@ -1,22 +1,23 @@
-// /components/FloatingCardList.tsx
 import React, { useMemo } from 'react';
 import FloatingCard from './FloatingCard';
+import { useDragDrop } from '../context/DragDropContext';
 
-interface Props {
-  words: string[];
-}
+const FloatingCardList = () => {
+  const { currentWords, currentPartIndex } = useDragDrop();
 
-const FloatingCardList = ({ words }: Props) => {
   const renderedCards = useMemo(() => {
-    console.log('Rendering cards for words:', words);
-    return words.map((word, index) => (
+    console.log('Rendering cards for words:', currentWords);
+    return currentWords.map((item, index) => (
       <FloatingCard
-        key={`${word}_${index}`}
-        word={word} index={index}
-        numberOfCards={words.length}
+        key={`${item.word}_${index}_${currentPartIndex}`}
+        _id={item._id}
+        word={item.word}
+        index={index}
+        unknown_word={item.unknown_word}
+        unknown_word_completed={item.unknown_word_completed}
       />
     ));
-  }, [words]);
+  }, [currentWords]);
 
   return <>{renderedCards}</>;
 };

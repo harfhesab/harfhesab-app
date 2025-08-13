@@ -73,11 +73,6 @@ const MultiLineTextGradientSvg: React.FC<MultiLineTextGradientSvgProps> = ({
   const dropFilterId = `ds-${Math.random().toString(36).substring(7)}`;
   const glowFilterId = `glow-${Math.random().toString(36).substring(7)}`;
 
-  useEffect(() => {
-    setLines(null);
-    setTextHeight(null);
-  }, [renderedText, fontSize, fontFamily]);
-
   const textMaxWidth = width ? width - paddingHorizontal * 2 : undefined;
 
   if (lines === null || textHeight === null) {
@@ -105,7 +100,7 @@ const MultiLineTextGradientSvg: React.FC<MultiLineTextGradientSvgProps> = ({
 
   const maxLineWidth = Math.max(...lines.map((l) => l.width));
   const totalWidth = width || maxLineWidth + paddingHorizontal * 2;
-  const totalHeight = (height || textHeight + fontSize) + paddingVertical * 2;
+  const totalHeight = (height || textHeight) + paddingVertical * 2;
   const baseX = rtl && !ltr ? totalWidth - paddingHorizontal : paddingHorizontal;
   const baseY = (y || fontSize) + paddingVertical;
   const textAnchor = rtl && !ltr ? 'end' : 'start';
