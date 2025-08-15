@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
   ui: uiReducer,
   stageGamePersist: stageGamePersistReducer,
   stageGameDownload: stageGameDownloadReducer,
-  coin : coinReducer
+  coins: coinReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

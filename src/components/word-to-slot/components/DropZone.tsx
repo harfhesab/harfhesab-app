@@ -10,12 +10,14 @@ import {
   DISTANCE_BOUNDARY_AND_SLOT,
   BOUNDARY_BOTTOM_OFFSET
 } from "../constants/constants";
+import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 interface Props {
   index: number;
 }
 
 const DropZone: React.FC<Props> = ({ index }) => {
+  const colors = useAppTheme();
   const ref = useRef<View>(null);
   const { registerSlot } = useDragDrop();
 
@@ -28,7 +30,7 @@ const DropZone: React.FC<Props> = ({ index }) => {
   };
 
   return (
-    <View ref={ref} style={styles.slot} onLayout={onLayout}>
+    <View ref={ref} style={[styles.slot, {borderColor: colors.border.a1}]} onLayout={onLayout}>
       <Text style={styles.text}>{index + 1}</Text>
     </View>
   );
@@ -39,17 +41,16 @@ const styles = StyleSheet.create({
     width: SLOT_SIZE,
     height: SLOT_SIZE,
     borderWidth: 2,
-    borderColor: '#0288d1',
     borderRadius: SLOT_BORDER_RADIUS,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e1f5fe',
+    backgroundColor: '#e1f5fe50',
     zIndex: -1,
     elevation: 0,
   },
   text: {
     fontSize: SLOT_TEXT_FONT_SIZE,
-    color: '#33333350',
+    color: '#FFFFFF50',
     fontFamily: Font.black,
   },
 });

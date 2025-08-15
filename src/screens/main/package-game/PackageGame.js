@@ -8,6 +8,7 @@ import CollectionPackageList from '../../../components/list-view-items/Collectio
 import BannerSwiper from '../../../components/BannerSwiper';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import axios from 'axios';
 
 const {width, height} = Dimensions.get("window")
 function PackageGame(props){
@@ -71,6 +72,7 @@ function PackageGame(props){
             }
         }).then(async(response)=>{
             const dataReceived = response.data.data?.paginatePackageGameCollectionAndOther
+            console.log(dataReceived)
             const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setLoading(false)
@@ -91,7 +93,8 @@ function PackageGame(props){
                 }
             }
             setRefreshing(false)
-        }).catch(()=>{
+        }).catch((e)=>{
+            console.log(e)
             setFooterLoading(false)
             setLoading(true)
             setFooterTry(false)
@@ -222,12 +225,13 @@ function PackageGame(props){
     const keyExtractor = (item,index)=>index.toString()
     
     return(
-         <View style={[styles.container, {backgroundColor:colors.background}]}> 
+         <View style={{flex:1}}>
             <GeneralHeader
-                back={false}
                 title={"بسته‌های بازی"}
+                height={60}
+                coin={true}
             />
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
+            <LinearGradient colors={colors.background_gradient} style={{flex:1}}>
                 <View style={styles.container}>
                     {
                         loading == true?

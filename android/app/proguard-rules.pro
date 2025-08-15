@@ -22,3 +22,17 @@
 -dontwarn com.google.android.gms.**
 
 -keep class com.shopify.reactnative.skia.** { *; }
+
+# قوانین برای Realm
+-keep class io.realm.** { *; }
+-dontwarn io.realm.**
+-keep class io.realm.annotations.RealmModule
+-keep @io.realm.annotations.RealmModule class *
+-keep class io.realm.internal.** { *; }
+-dontwarn io.realm.internal.**
+-keepnames class * extends io.realm.RealmObject
+-keep class * extends io.realm.RealmObject { *; }
+
+# قوانین اضافی برای Hermes
+-keep class com.facebook.hermes.unicode.** { *; }
+-keep class com.facebook.jni.** { *; }

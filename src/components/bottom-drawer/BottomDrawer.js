@@ -190,10 +190,10 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
         <Modal
             swipeDirection={cancelable == true?['down']:null}
             swipeThreshold={180}
-            // animationIn="slideInUp"
-            // animationOut="slideOutDown"
-            // animationInTiming={400}
-            // animationOutTiming={400}
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
+            animationInTiming={400}
+            animationOutTiming={400}
             backdropOpacity={0.7}
             isVisible={visible}
             onBackdropPress={()=>{

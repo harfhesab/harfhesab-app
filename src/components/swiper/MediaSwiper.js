@@ -12,7 +12,7 @@ function MediaSwiper({items}){
         
     }
     return(
-        <View style={{width:bannerWidth, height:bannerWidth * 0.45, alignItems:'center', justifyContent:'center', borderRadius:20, alignSelf:'center'}}>
+        <View style={{width:bannerWidth, height:bannerWidth * 0.5, alignItems:'center', justifyContent:'center', borderRadius:20, alignSelf:'center'}}>
             <Swiper
                 style={styles.swiper}
                 showsButtons={false}
@@ -29,7 +29,7 @@ function MediaSwiper({items}){
                             <ImageComponent
                                 uri={item?.path}
                                 width={bannerWidth}
-                                height={bannerWidth * 0.45}
+                                height={bannerWidth * 0.5}
                                 resizeMode="cover"
                                 borderRadius={15}
                             />

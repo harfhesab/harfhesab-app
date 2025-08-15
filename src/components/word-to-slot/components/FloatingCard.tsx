@@ -26,6 +26,8 @@ import {
   FONT_SIZE_DRAGGING,
   FONT_SIZE_SLOTTED,
 } from "../constants/constants";
+import AnimatedSkiaText from '../../text-components/AnimatedSkiaText';
+import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 // تنظیمات انیمیشن برای نرم‌تر شدن
 const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
@@ -45,8 +47,9 @@ interface Position {
 }
 
 function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
+  const colors = useAppTheme()
   const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards } = useDragDrop();
-  const fontSizeScale = (word.length < 3)?1.6:(word.length < 4)?1.5:(word.length < 5)?1.4:(word.length < 6)?1.3:(word.length < 7)?1.2:(word.length < 8)?1.1:(word.length > 12)?0.9:1;
+  const fontSizeScale = (word.length < 3)?1.5:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
   const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;
@@ -201,14 +204,16 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     elevation: isDragging.value ? 12 : 5,
   }));
 
-  const textStyle = useAnimatedStyle(() => ({
-    fontSize: fontSize.value,
-  }));
-
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View style={[styles.card, cardStyle]}>
-        <Animated.Text style={[styles.text, textStyle]}>{word}</Animated.Text>
+      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1}]}>
+        <AnimatedSkiaText
+          text={word}
+          fontSize={fontSize}
+          initialFontSize={FONT_SIZE_FLOATING_SCALED}
+          initialWidth={CARD_SIZE_FLOATING}
+          initialHeight={CARD_SIZE_FLOATING}
+        />
       </Animated.View>
     </GestureDetector>
   );
@@ -218,7 +223,6 @@ const styles = StyleSheet.create({
   card: {
     position: 'absolute',
     borderRadius: CARD_BORDER_RADIUS,
-    backgroundColor: '#ffd54f',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,

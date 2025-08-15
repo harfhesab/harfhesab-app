@@ -6,8 +6,6 @@ import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useRealm } from '../../../realm';
 import { getStageSeasonById } from '../../../realm/repositories/stage-game/stage-season.repository';
-import BottomDrawer from '../../../components/bottom-drawer/BottomDrawer';
-import BottomDrawerHelper from '../../../components/bottom-drawer/BottomDrawerHelper';
 import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
 import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -62,7 +60,7 @@ function StagesStageGameSeason(props){
             info?.media?.length > 0&&
             <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', marginBottom:10, paddingTop:10}}>
                 <MediaSwiper
-                    items={info?.media}
+                    items={info?.media.concat(info?.media)}
                 /> 
             </View>
         )
@@ -87,6 +85,7 @@ function StagesStageGameSeason(props){
                 height={60}
                 back={true}
                 title={`فصل ${seasonName}`}
+                coin={true}
                 description={`زبان ${stageGameLanguageName} ${info?`(مرحله ${info?.stage_number_from} تا ${info?.stage_number_to})`:undefined}`}
             />
             {
@@ -125,7 +124,6 @@ function StagesStageGameSeason(props){
                     </View>
                 </GalaxyTwinkle>
             }
-            <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>
         </View>
     )
 }

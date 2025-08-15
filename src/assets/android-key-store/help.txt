@@ -1,10 +1,10 @@
-password    PodKiosk$@$2024
-Alias       kiosk_key
-password    PodKiosk$@$2024
+password    @$WordGameKey$@$2025
+Alias       word_game_key
+password    @$WordGameKey$@$2025
 validity    25
-            Kiosk Pod
-            Kiosk Pod
-            Pod
+            Word Game
+            Qaf
+            Qaf
             Tehran
             Tehran
             IR

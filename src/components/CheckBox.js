@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {memo, useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, Animated, Easing } from "react-native";
 import Icon from "../utils/Icon";
 import useAppTheme from "../hooks/theme/useAppTheme";
@@ -98,4 +98,14 @@ function CheckBox({ check, onPress, size, borderRadius, borderWidth, color, disa
     );
 }
 
-export default React.memo(CheckBox);
+const areEqual = (prevProps, nextProps) => {
+  if (prevProps.check !== nextProps.check) return false;
+  if (prevProps.disabled !== nextProps.disabled) return false;
+  if (prevProps.size !== nextProps.size) return false;
+  if (prevProps.color !== nextProps.color) return false;
+  if (prevProps.borderWidth !== nextProps.borderWidth) return false;
+  if (prevProps.borderRadius !== nextProps.borderRadius) return false;
+  if (prevProps.onPress !== nextProps.onPress) return false;
+  return true;
+};
+export default memo(CheckBox, areEqual);

@@ -9,7 +9,7 @@ const initialState: CoinState = {
 };
 
 const coinSlice = createSlice({
-  name: 'coin',
+  name: 'coins',
   initialState,
   reducers: {
     updateNumberCoins(

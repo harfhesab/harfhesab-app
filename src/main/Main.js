@@ -31,9 +31,9 @@ const Main = (props) => {
               :
               <SignRoutes/>
             }
-            <Toast config={ToastConfig}/>
-            <Alert ref = {Ref => {AlertHelper.setRef(Ref)}}/>
         </NavigationContainer>
+        <Toast config={ToastConfig}/>
+        <Alert ref = {Ref => {AlertHelper.setRef(Ref)}}/>
     </SafeAreaView>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { memo, useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, Animated, Easing } from "react-native";
 import useAppTheme from "../hooks/theme/useAppTheme";
 
@@ -22,7 +22,7 @@ function RadioButton({ selected, onPress, size, borderWidth, color, disabled }) 
 
             Animated.sequence([
                 Animated.timing(scaleAnim, {
-                    toValue: 1.2, // کمی بزرگتر از حالت نرمال
+                    toValue: 1.25, // کمی بزرگتر از حالت نرمال
                     duration: 180,
                     easing: Easing.out(Easing.ease),
                     useNativeDriver: true,
@@ -38,14 +38,8 @@ function RadioButton({ selected, onPress, size, borderWidth, color, disabled }) 
             // اول کمی بزرگ‌تر، بعد به صفر
             Animated.sequence([
                 Animated.timing(scaleAnim, {
-                    toValue: 1.1,
-                    duration: 80,
-                    easing: Easing.out(Easing.ease),
-                    useNativeDriver: true,
-                }),
-                Animated.timing(scaleAnim, {
                     toValue: 0,
-                    duration: 220,
+                    duration: 200,
                     easing: Easing.inOut(Easing.quad),
                     useNativeDriver: true,
                 })
@@ -91,5 +85,13 @@ function RadioButton({ selected, onPress, size, borderWidth, color, disabled }) 
         </TouchableOpacity>
     );
 }
-
-export default React.memo(RadioButton);
+const areEqual = (prevProps, nextProps) => {
+  if (prevProps.selected !== nextProps.selected) return false;
+  if (prevProps.disabled !== nextProps.disabled) return false;
+  if (prevProps.size !== nextProps.size) return false;
+  if (prevProps.color !== nextProps.color) return false;
+  if (prevProps.borderWidth !== nextProps.borderWidth) return false;
+  if (prevProps.onPress !== nextProps.onPress) return false;
+  return true;
+};
+export default memo(RadioButton, areEqual);

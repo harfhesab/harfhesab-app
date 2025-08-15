@@ -37,7 +37,7 @@ const WordToSlot = ({id}:{id:string}) => {
             <View style={styles.dropZoneContainer}>
               <DropZoneList />
             </View>
-            <View style={styles.boundaryContainer}>
+            <View style={[styles.boundaryContainer, {borderColor:colors.border.a1}]}>
               <FloatingCardList />
             </View>
           </View>
@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     width: BOUNDARY_WIDTH,
     marginBottom: BOUNDARY_BOTTOM_OFFSET,
     borderWidth: BOUNDARY_BORDER_WIDTH,
-    borderColor: '#ff6f61',
     borderRadius: BOUNDARY_BORDER_RADIUS,
     zIndex: 0,
     overflow: 'visible',

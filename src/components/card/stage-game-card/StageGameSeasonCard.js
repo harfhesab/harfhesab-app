@@ -48,7 +48,7 @@ function StageGameSeasonCard({
             <ImageComponent
               uri = {image}
               width={STAGE_GAME_CARD_WIDTH - 20}
-              height={(STAGE_GAME_CARD_WIDTH - 20)*45/100}
+              height={(STAGE_GAME_CARD_WIDTH - 20)*0.5}
               resizeMode={"cover"}
               borderRadius={15}
             />
@@ -67,7 +67,7 @@ function StageGameSeasonCard({
                   colors={['#ffc107', '#ff9800', '#ff5722']}
                 />
             </View>
-            <View style={{alignSelf:'flex-start', backgroundColor:'#0ea96050', paddingVertical:15, paddingStart:10, paddingEnd:20, borderRadius:10, marginHorizontal:10}}>
+            <View style={{alignSelf:'flex-start', backgroundColor:`${colors.primary.a1}50`, paddingVertical:15, paddingStart:10, paddingEnd:20, borderRadius:10, marginHorizontal:10}}>
               <Text style={{ color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30}}>{`${title}`}</Text>
               <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30  }}>{`فصل ${seasonNumber}`}</Text>
               <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30  }}>{`${numberStage} مرحله ( ${stageNumberFrom} تا ${stageNumberTo} )`}</Text>
@@ -93,6 +93,14 @@ const styles = StyleSheet.create({
 
 const areEqual = (prevProps, nextProps) => {
   if (prevProps.title !== nextProps.title) return false;
+  if (prevProps.description !== nextProps.description) return false;
+  if (prevProps.image !== nextProps.image) return false;
+  if (prevProps.seasonNumber !== nextProps.seasonNumber) return false;
+  if (prevProps.stageNumberFrom !== nextProps.stageNumberFrom) return false;
+  if (prevProps.stageNumberTo !== nextProps.stageNumberTo) return false;
+  if (prevProps.numberStage !== nextProps.numberStage) return false;
+  if (prevProps.isActive !== nextProps.isActive) return false;
+  if (prevProps.onPress !== nextProps.onPress) return false;
   return true;
 };
 
