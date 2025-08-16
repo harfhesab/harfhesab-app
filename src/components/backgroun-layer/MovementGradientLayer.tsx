@@ -7,12 +7,13 @@ import { useSharedValue, withTiming, useDerivedValue, withRepeat, Easing } from 
 interface MovementGradientLayerProps {
   width: number;
   height: number;
+  borderRadius?: number;
   colors?: string[];
   children?: React.ReactNode;
 }
 
 
-const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, height, colors, children }) => {
+const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, height, colors, children, borderRadius=0 }) => {
   // متغیر انیمیشن برای تغییر موقعیت گرادیان
   const gradientProgress = useSharedValue(0);
 
@@ -43,7 +44,7 @@ const MovementGradientLayer: React.FC<MovementGradientLayerProps> = ({ width, he
   }, [gradientProgress, width, height]);
 
   return (
-    <View style={[styles.container, { width, height }]}>
+    <View style={[styles.container, { width, height, borderRadius }]}>
       {/* رندر بک‌گراند با Skia */}
       <Canvas style={StyleSheet.absoluteFill}>
         <Rect x={0} y={0} width={width} height={height}>
@@ -65,7 +66,6 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     overflow: 'hidden',
-    borderRadius: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
   },

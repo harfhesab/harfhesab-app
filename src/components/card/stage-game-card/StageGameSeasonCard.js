@@ -24,8 +24,9 @@ import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 
 const { width, height } = Dimensions.get('window');
 
-export const STAGE_GAME_CARD_MARGIN = 15;
-const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION?(width - (STAGE_GAME_CARD_MARGIN * 3)) / 2: width - (STAGE_GAME_CARD_MARGIN * 2);
+export const STAGE_GAME_SEASON_CARD_MARGIN = 15;
+export const STAGE_GAME_SEASON_CARD_HEIGHT = height-185;
+const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION?(width - (STAGE_GAME_SEASON_CARD_MARGIN * 3)) / 2: width - (STAGE_GAME_SEASON_CARD_MARGIN * 2);
 
 function StageGameSeasonCard({
   title,
@@ -41,16 +42,17 @@ function StageGameSeasonCard({
   const colors = useAppTheme();
 
   return (
-    <View style={{width:STAGE_GAME_CARD_WIDTH, height:height-200, backgroundColor:"#120426", shadowColor:"#000", elevation:5, borderRadius:15}}>
-      <GalaxyTwinkle style={{ width: STAGE_GAME_CARD_WIDTH, height: height-200, borderRadius:15 }}>
+    <View style={{width:STAGE_GAME_CARD_WIDTH, height:STAGE_GAME_SEASON_CARD_HEIGHT, backgroundColor:"#120426", shadowColor:"#000", elevation:5, borderRadius:15, borderWidth:2, borderColor:colors.border.a1}}>
+      <GalaxyTwinkle style={{ width: STAGE_GAME_CARD_WIDTH-4, height: STAGE_GAME_SEASON_CARD_HEIGHT-4, borderRadius:15 }}>
         <View style={{width:"100%", flexDirection:'column', justifyContent:'space-between', height:"100%"}}>
           <View style={{width:"100%", alignItems:'center', paddingTop:10}}>
             <ImageComponent
               uri = {image}
               width={STAGE_GAME_CARD_WIDTH - 20}
-              height={(STAGE_GAME_CARD_WIDTH - 20)*0.5}
+              height={(STAGE_GAME_CARD_WIDTH - 20)*0.7}
               resizeMode={"cover"}
-              borderRadius={15}
+              borderRadius={13}
+              style={{borderWidth:1, borderColor:colors.border.a1}}
             />
           </View>
           <View style={{flex:1, width:"100%", justifyContent:'flex-start'}}>
@@ -58,7 +60,7 @@ function StageGameSeasonCard({
                 <MultiLineTextGradientSvg
                   text={title}
                   fontFamily={Font.bakh_black}
-                  fontSize={30}
+                  fontSize={35}
                   borderColor={"#795548"}
                   borderWidth={1}
                   glowBlur={50}
@@ -74,12 +76,16 @@ function StageGameSeasonCard({
             </View>
           </View>
           <View style={{width:"100%", alignItems:'flex-end', paddingBottom:10, paddingEnd:10}}>
-            <CapsuleButton
-                onPress={onPress}
+            
+            <ButtonGradient
                 text={"شروع بازی"}
-                width={150}
-                height={45}
-                gradientColors={['#d29179', '#401d11']}
+                textSize={16}
+                onPress={onPress}
+                width={180}
+                height={50}
+                borderRadius={10}
+                fontFamily={Font.bakh_black}
+                textSize={22}
             />
           </View>
         </View>

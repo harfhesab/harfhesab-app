@@ -51,20 +51,20 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   };
 
   const WIDTH = width > height?height:width
-  const PLACE_HOLDER_WIDTH = WIDTH - 40 > 200?200:WIDTH-40
+  const PLACE_HOLDER_WIDTH = WIDTH - 80 > 200?200:WIDTH-80
 
   return (
     <View style={[{ width, height, borderRadius, backgroundColor:colors.primary.a2 }, styles.container, style]}>
       {(error && !loaded && placeHolder == true) &&(
-        <MovementGradientLayer height={height} width={width}>
-          <View style={{width:width, height:height, alignItems:'center', justifyContent:'center'}}>
+        <MovementGradientLayer height={height} width={width} borderRadius={borderRadius}>
+          <View style={{width, height, alignItems:'center', justifyContent:'center'}}>
               <Image
                 source={require('../../assets/image/image-place-holder.png')}
-                style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius:15 }}
+                style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius }}
               />
               <View style={{ position: 'absolute', width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, alignItems: 'center', justifyContent: 'center' }}>
                 <WaveIndicator
-                  color={"#FFFFFF"}
+                  color={"#FFFFFF85"}
                   size={PLACE_HOLDER_WIDTH}
                   count={2}
                   waveMode="fill"

@@ -53,14 +53,16 @@ function StagesStageGameSeason(props){
         getData()
     }
 
-    const LIST_HEADER_COMPONENT_HEIGHT = info?.media?.length > 0?200:0
+   
 
+    const BANNER_WIDTH = width > 600?460:width - 30
+    const LIST_HEADER_COMPONENT_HEIGHT = info?.media?.length > 0?(BANNER_WIDTH*0.7) + 30:0
     const listHeaderComponent = ()=>{
         return(
             info?.media?.length > 0&&
-            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', marginBottom:10, paddingTop:10}}>
+            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', justifyContent:'center'}}>
                 <MediaSwiper
-                    items={info?.media.concat(info?.media)}
+                    items={info?.media}
                 /> 
             </View>
         )

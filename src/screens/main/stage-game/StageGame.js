@@ -14,7 +14,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import StageGameSeasonCard, { STAGE_GAME_CARD_MARGIN } from '../../../components/card/stage-game-card/StageGameSeasonCard';
+import StageGameSeasonCard, { STAGE_GAME_SEASON_CARD_HEIGHT, STAGE_GAME_SEASON_CARD_MARGIN } from '../../../components/card/stage-game-card/StageGameSeasonCard';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
@@ -187,7 +187,7 @@ function StageGame(props){
     const memoizedValue = useMemo(() => renderItem, [data]);
     const keyExtractor = (item,index)=>index.toString()
     const FLATLIST_PADDING_VERTICAL = 15
-    const itemHeight = height - 200
+    const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT
     const rowGap = 25
     const numColumns = IS_TABLET_CONDITION ? 2 : 1
     const snapInterval = itemHeight + rowGap
@@ -213,14 +213,16 @@ function StageGame(props){
                         <FlatList
                             showsVerticalScrollIndicator={false}
                             keyExtractor={keyExtractor}
-                            initialNumToRender={1}
+                            initialNumToRender={3}
+                            windowSize={5}
+                            maxToRenderPerBatch={3}
                             contentContainerStyle={{alignItems:'center', rowGap:rowGap, columnGap:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
                             renderItem={memoizedValue}
                             data={data}
                             numColumns={numColumns}
                             onEndReachedThreshold={0.5}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                            style={{width:width, paddingHorizontal:STAGE_GAME_CARD_MARGIN}}
+                            style={{width:width, paddingHorizontal:STAGE_GAME_SEASON_CARD_MARGIN}}
                             getItemLayout={(data, index) => ({
                                 length: itemHeight,
                                 offset: FLATLIST_PADDING_VERTICAL + Math.floor(index / numColumns) * snapInterval,
