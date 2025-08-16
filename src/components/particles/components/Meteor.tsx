@@ -32,11 +32,11 @@ interface MeteorProps {
 const Meteor: React.FC<MeteorProps> = ({ meteor, onAnimationEnd }) => {
   // طول نهایی دنباله (رندوم بین 150 تا 250)
   const maxTrailLength = useSharedValue(
-    Math.floor(Math.random() * (250 - 150 + 1)) + 150
+    Math.floor(Math.random() * (200 - 100 + 1)) + 100
   );
 
   const progress = useSharedValue(0);
-  const opacity = useDerivedValue(() => (1 - progress.value) * 0.8);
+  const opacity = useDerivedValue(() => (1 - progress.value) * 0.7);
 
   // طول دنباله به‌مرور با progress افزایش پیدا می‌کنه
   const trailLength = useDerivedValue(() => {
@@ -60,7 +60,7 @@ const Meteor: React.FC<MeteorProps> = ({ meteor, onAnimationEnd }) => {
       progress.value = 0;
       progress.value = withTiming(
         1,
-        { duration: 4000, easing: Easing.linear },
+        { duration: 3000, easing: Easing.linear },
         (finished) => {
           if (finished && onAnimationEnd) {
             runOnJS(onAnimationEnd)();

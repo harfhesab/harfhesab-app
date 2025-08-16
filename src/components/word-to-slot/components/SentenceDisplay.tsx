@@ -15,18 +15,16 @@ const SentenceDisplay = () => {
     const { slots, cards, completeCurrentPart, completedSentences, currentWords, currentPartIndex } = useDragDrop();
     const colors = useAppTheme();
     const [lastCompletedIndex, setLastCompletedIndex] = useState(-1);
-    const [currentSentenceStatusColor, setCurrentSentenceStatusColor] = useState<string[]>(['#4d2719', '#86442d']);
-    const [currentSentence, setCurrentSentence] = useState("")
+    const [currentSentenceStatusColor, setCurrentSentenceStatusColor] = useState<string[]>(['#86442d', '#4d2719']);
 
-    // بررسی صحت جمله فعلی
-    useEffect(() => {
-        setCurrentSentence(
-          Object.keys(slots)
+    const currentSentence = Object.keys(slots)
             .sort((a, b) => Number(a) - Number(b))
             .map(slotIndex => cards[slots[Number(slotIndex)]]?.word)
             .filter(word => word !== undefined)
             .join(' ')
-        )
+
+    // بررسی صحت جمله فعلی
+    useEffect(() => {
         if (Object.keys(slots).length === currentWords.length && lastCompletedIndex < currentPartIndex) {
             const slotWords = Object.keys(slots)
                 .sort((a, b) => Number(a) - Number(b))
@@ -38,11 +36,13 @@ const SentenceDisplay = () => {
                 console.log('Success: جمله به درستی ساخته شد!');
                 setLastCompletedIndex(currentPartIndex); // به‌روزرسانی ایندکس آخرین جمله کامل‌شده
                 completeCurrentPart();
-                setCurrentSentenceStatusColor(['#388e3c', '#4caf50', '#81c784'])
-                setCurrentSentence("")
+                setCurrentSentenceStatusColor(['#47cd8a', '#103220'])
+                setTimeout(()=>{
+                  setCurrentSentenceStatusColor(['#86442d', '#4d2719'])
+                }, 1500)
             } else {
                 console.log('Error: جمله نادرست است');
-                setCurrentSentenceStatusColor(['#b71c1c', '#d32f2f', '#f44336'])
+                setCurrentSentenceStatusColor(['#ff4444', '#CC0000'])
             }
         }
     }, [slots, currentWords, cards, completeCurrentPart, currentPartIndex, lastCompletedIndex]);
@@ -83,17 +83,18 @@ const SentenceDisplay = () => {
             <View style={{width:"100%", alignItems:'center', flexDirection :'column', gap:10, justifyContent:'center', paddingHorizontal:15}}>
                 {
                   completedSentences?.map((item, index)=>(
-                    <View key={index.toString()} style={{backgroundColor:"#388e3c50", paddingHorizontal:15, paddingVertical:1, borderRadius:5, alignItems:'center', justifyContent:'center'}}>
+                    <View key={index.toString()} style={{backgroundColor:"#9900ef", paddingHorizontal:15, paddingVertical:1, borderRadius:5, alignItems:'center', justifyContent:'center'}}>
                         <MultiLineTextGradientSvg
                             text={item}
                             fontFamily={Font.bakh_extra_bold}
-                            fontSize={20}
-                            borderColor={"#795548"}
-                            borderWidth={1}
-                            glowBlur={20}
+                            fontSize={24}
+                            dropShadow={true}
+                            shadowColor={'#000000'}
+                            shadowBlur={10}
+                            glowBlur={50}
                             glowColor={'#FFFFFF'}
                             glowShadow={true}
-                            colors={['#ffc107', '#ff9800', '#ff5722']}
+                            colors={['#47d994', '#0ea960']}
                         />
                     </View>
                   ))

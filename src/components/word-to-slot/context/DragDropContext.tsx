@@ -84,8 +84,14 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
       return prev;
     });
     if (currentPartIndex < parts.length - 1) {
-      setCurrentPartIndex(prev => prev + 1);
+      setTimeout(()=>{
+        setCurrentPartIndex(prev => prev + 1);
+        setSlots({})
+      }, 1500)
     } else {
+      setTimeout(()=>{
+        setSlots({})
+      }, 1500)
       // مرحله کامل شد
       console.log('Stage completed');
     }

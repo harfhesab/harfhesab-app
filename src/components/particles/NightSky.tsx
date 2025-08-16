@@ -7,16 +7,14 @@ import {
   Rect,
   LinearGradient,
   RadialGradient,
-  Blur,
   vec,
 } from '@shopify/react-native-skia';
 import Meteor from './components/Meteor';
+import Moon from './components/Moon';
 
 const { width, height } = Dimensions.get('window');
 
 const STAR_COUNT = 180;
-const MOON_RADIUS = 20;
-const MOON_GLOW_RADIUS = 55;
 
 const generateStars = () =>
   Array.from({ length: STAR_COUNT }, () => {
@@ -67,9 +65,6 @@ const getRandomAngle = () => {
 
 const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const stars = useMemo(generateStars, []);
-  const [moonX, setMoonX] = useState(width * 0.1);
-  const [moonY, setMoonY] = useState(height / 20);
-  const [clock, setClock] = useState(0);
   const [meteors, setMeteors] = useState<MeteorType[]>([]);
   const [twinklingStars, setTwinklingStars] = useState(stars);
 
@@ -98,7 +93,7 @@ const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
         ]);
 
         // شهاب دوم با تأخیر اختیاری
-        if (Math.random() < 0.3) {
+        if (Math.random() < 0.1) {
           const delay = 1000 + Math.random() * 500;
           setTimeout(() => {
             setMeteors((prev) => [
@@ -128,7 +123,6 @@ const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     let rafId: number;
     let twinkleTimeout: ReturnType<typeof setTimeout>;
-    let lastTime = Date.now();
 
     const scheduleTwinkle = () => {
       const delay = 1000 + Math.random() * 1000;
@@ -155,20 +149,6 @@ const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
 
     const animate = () => {
       const now = Date.now();
-      const deltaTime = now - lastTime;
-      lastTime = now;
-
-      setClock((prev) => prev + deltaTime / 1000);
-
-      setMoonX((prev) => {
-        const next = prev + 0.001 * deltaTime;
-        return next > width + MOON_GLOW_RADIUS ? -MOON_GLOW_RADIUS : next;
-      });
-      setMoonY((prev) => {
-        const next = prev + 0.00025 * deltaTime;
-        return next > width + MOON_GLOW_RADIUS ? -MOON_GLOW_RADIUS : next;
-      });
-
       setTwinklingStars((prevStars) => {
         const newStars = [...prevStars];
         newStars.forEach((star, index) => {
@@ -237,21 +217,7 @@ const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
               </Circle>
             );
           })}
-
-          <Group transform={[{ translateX: moonX }, { translateY: moonY }]}>
-            <Circle cx={0} cy={0} r={MOON_GLOW_RADIUS} color="rgba(255,245,200,0.2)">
-              <Blur blur={20} />
-            </Circle>
-            <Circle r={MOON_RADIUS} c={vec(0, 0)} color="rgba(255,245,200,1)">
-              <RadialGradient
-                c={vec(0, 0)}
-                r={MOON_RADIUS}
-                colors={['rgba(255,245,200,1)', 'rgba(255,245,200,0.9)', 'rgba(255,245,200,0.75)', 'rgba(255,255,255,0)']}
-                positions={[0, 0.8, 0.9, 1]}
-              />
-            </Circle>
-          </Group>
-
+          <Moon />
           {meteors.map((meteor) => (
             <Meteor
               key={meteor.id}
