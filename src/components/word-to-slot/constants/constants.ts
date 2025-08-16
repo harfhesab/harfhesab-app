@@ -38,4 +38,4 @@ export const FONT_SIZE_DRAGGING = CARD_SIZE_DRAGGING/3.9; // فونت سایز �
 export const FONT_SIZE_SLOTTED = CARD_SIZE_SLOTTED/3.9; // فونت سایز در حالت اسلات
 export const MAX_VELOCITY = 200;
 export const MIN_VELOCITY = 50;
-export const CARD_BORDER_RADIUS = 10;
+export const CARD_BORDER_RADIUS = 8;

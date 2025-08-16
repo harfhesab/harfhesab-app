@@ -37,7 +37,7 @@ const WordToSlot = ({id}:{id:string}) => {
             <View style={styles.dropZoneContainer}>
               <DropZoneList />
             </View>
-            <View style={[styles.boundaryContainer, {borderColor:colors.border.a1}]}>
+            <View style={[styles.boundaryContainer, {borderColor:colors.primary.a1}]}>
               <FloatingCardList />
             </View>
           </View>

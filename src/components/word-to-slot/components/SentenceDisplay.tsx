@@ -37,13 +37,12 @@ const SentenceDisplay = () => {
                 setLastCompletedIndex(currentPartIndex); // به‌روزرسانی ایندکس آخرین جمله کامل‌شده
                 completeCurrentPart();
                 setCurrentSentenceStatusColor(['#47cd8a', '#103220'])
-                setTimeout(()=>{
-                  setCurrentSentenceStatusColor(['#86442d', '#4d2719'])
-                }, 1500)
             } else {
                 console.log('Error: جمله نادرست است');
                 setCurrentSentenceStatusColor(['#ff4444', '#CC0000'])
             }
+        } else {
+          setCurrentSentenceStatusColor(['#86442d', '#4d2719'])
         }
     }, [slots, currentWords, cards, completeCurrentPart, currentPartIndex, lastCompletedIndex]);
 

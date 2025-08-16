@@ -30,7 +30,7 @@ const DropZone: React.FC<Props> = ({ index }) => {
   };
 
   return (
-    <View ref={ref} style={[styles.slot, {borderColor: colors.border.a1}]} onLayout={onLayout}>
+    <View ref={ref} style={[styles.slot, {borderColor: colors.primary.a1}]} onLayout={onLayout}>
       <Text style={styles.text}>{index + 1}</Text>
     </View>
   );
