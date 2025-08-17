@@ -48,7 +48,7 @@ interface Position {
 
 function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
   const colors = useAppTheme()
-  const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards } = useDragDrop();
+  const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards, lockedPan } = useDragDrop();
   const fontSizeScale = (word.length < 3)?1.5:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
@@ -164,6 +164,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   const pan = Gesture.Pan()
     .minDistance(0)
+    .enabled(lockedPan == false)
     .onStart(() => {
       'worklet';
       isDragging.value = true;

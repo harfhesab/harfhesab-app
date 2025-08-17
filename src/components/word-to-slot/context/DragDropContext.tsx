@@ -44,7 +44,7 @@ interface ContextProps {
   registerCard: (card: Card) => void;
   getSlotPosition: (index: number) => Position | undefined;
   assignCardToSlot: (cardId: string, slotIndex: number, fromSlot: number | null) => void;
-  unassignCardFromSlot: (slotIndex: number | null) => void;
+  unassignCardFromSlot: (slotIndex: any) => void;
   getSlotOfCard: (cardId: string) => number | null;
   cards: Record<string, Card>;
   slots: Record<number, string>;
@@ -54,17 +54,23 @@ interface ContextProps {
   currentPartIndex: number;
   completedSentences: string[];
   numberOfCards: number;
+  numberParts: number;
+  lockedPan: boolean;
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
 
-export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Realm.List<any>, realm: Realm, stageId: string }> = ({ children, parts, realm, stageId }) => {
+export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Realm.List<any> | any[], realm: Realm, stageId: string, type: string }> = ({ children, parts, realm, stageId, type }) => {
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [slots, setSlots] = useState<Record<number, string>>({});
   const [slotPositions, setSlotPositions] = useState<Record<number, Position>>({});
   const [cardSlotMap, setCardSlotMap] = useState<Record<string, number>>({});
-  const [currentPartIndex, setCurrentPartIndex] = useState(0);
+  const [currentPartIndex, setCurrentPartIndex] = useState(parts.findIndex((item) => item.sentence_builded !== true));
+  const [playingPartIndex, setPlayingIndex] = useState(parts.findIndex((item) => item.sentence_builded !== true))
   const [completedSentences, setCompletedSentences] = useState<string[]>([]);
+  const [lockedPan, setLockedPan] = useState<boolean>(false)
+  const numberParts = parts.length
+
 
   const currentWords = parts[currentPartIndex]?.words.map((w: any) => ({
     _id: w._id,
@@ -87,11 +93,12 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
       setTimeout(()=>{
         setCurrentPartIndex(prev => prev + 1);
         setSlots({})
-      }, 1500)
+      }, 1000)
     } else {
       setTimeout(()=>{
+        setLockedPan(true)
         setSlots({})
-      }, 1500)
+      }, 1000)
       // مرحله کامل شد
       console.log('Stage completed');
     }
@@ -417,6 +424,8 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
         currentPartIndex,
         completedSentences,
         numberOfCards,
+        numberParts,
+        lockedPan
       }}
     >
       {children}

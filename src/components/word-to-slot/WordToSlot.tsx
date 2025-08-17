@@ -1,5 +1,5 @@
-import React, { memo, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, Text, Dimensions } from 'react-native';
+import React, { memo } from 'react';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DragDropProvider } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
@@ -21,16 +21,21 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
 import { useRealm } from '../../realm';
 
-const {width, height} = Dimensions.get("window")
-const WordToSlot = ({id}:{id:string}) => {
+const WordToSlot = ({
+  id,
+  type
+}:{
+  id:string;
+  type:string; // "stage-game" | "package-game"
+}) => {
   const colors = useAppTheme();
   const realm = useRealm();
 
-  const data = getStageById(realm, id)
+  const data = type == "stage-game"? getStageById(realm, id)?.parts:[]
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <DragDropProvider parts={data?.parts || []} realm={realm} stageId={id}>
+      <DragDropProvider parts={data??[]} realm={realm} stageId={id} type={type}>
         <SafeAreaView style={styles.container}>
           <SentenceDisplay />
           <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
