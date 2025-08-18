@@ -17,6 +17,8 @@ import {
     FONT_SIZE_SLOTTED,
 } from "../constants/constants";
 import Realm from 'realm';
+import AlertHelper from '../../alert/AlertHelper';
+import { goBack } from '../../../main/navigationService';
 
 interface Position {
   x: number;
@@ -62,13 +64,13 @@ interface ContextProps {
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
 
-export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Realm.List<any> | any[], realm: Realm, stageId: string, type: string }> = ({ children, parts, realm, stageId, type }) => {
+export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Realm.List<any> | any[], stageNumber: number | undefined, realm: Realm, stageId: string, type: string }> = ({ children, parts, stageNumber, realm, stageId, type }) => {
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [slots, setSlots] = useState<Record<number, string>>({});
   const [slotPositions, setSlotPositions] = useState<Record<number, Position>>({});
   const [cardSlotMap, setCardSlotMap] = useState<Record<string, number>>({});
   const [currentPartIndex, setCurrentPartIndex] = useState(parts.findIndex((item) => item.sentence_builded !== true));
-  const [playingPartIndex, setPlayingIndex] = useState(parts.findIndex((item) => item.sentence_builded !== true))
+  const [playingPartIndex, setPlayingPartIndex] = useState(parts.findIndex((item) => item.sentence_builded !== true))
   const [completedSentences, setCompletedSentences] = useState<string[]>([]);
   const [lockedPan, setLockedPan] = useState<boolean>(false)
   const numberParts = parts.length
@@ -84,36 +86,68 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
   const numberOfCards = currentWords.length;
 
   const completeCurrentPart = useCallback(() => {
-    const currentSentence = parts[currentPartIndex].sentence;
-    setCompletedSentences(prev => {
-      if (!prev.includes(currentSentence)) {
-        return [...prev, currentSentence];
-      }
-      return prev;
-    });
-    if (currentPartIndex < parts.length - 1) {
+    if(playingPartIndex == currentPartIndex){
+      const currentSentence = parts[playingPartIndex].sentence;
+      setCompletedSentences(prev => {
+        if (!prev.includes(currentSentence)) {
+          return [...prev, currentSentence];
+        }
+        return prev;
+      });
+    }
+    setLockedPan(true)
+    if (playingPartIndex < parts.length - 1) {
       setTimeout(()=>{
         if(currentPartIndex == playingPartIndex){
           setCurrentPartIndex(prev => prev + 1);
-          setPlayingIndex(prev => prev + 1)
+          setPlayingPartIndex(prev => prev + 1)
         } else {
-          setPlayingIndex(currentPartIndex)
+          setPlayingPartIndex(prev => prev + 1)
         }
         setSlots({})
+        setCards({})
+        setSlotPositions({})
+        setCardSlotMap({})
+        setLockedPan(false)
       }, 1000)
     } else {
       setTimeout(()=>{
-        setLockedPan(true)
         setSlots({})
       }, 1000)
-      // مرحله کامل شد
+      setTimeout(()=>{
+        AlertHelper.showAlert({
+            body: `تبریک! مرحله ${stageNumber} با موفقیت کامل شد.`,
+            buttons: [
+                {
+                    text: 'ادامه',
+                    onPress: () => {
+                        goBack()
+                    },
+                    type:'bold'
+                },
+            ],
+            options : {
+                type: 'success',
+                cancelable: false,
+                bodyAlign:'center',
+                textAlign:'center'
+            },
+        });
+      }, 4000)
       console.log('Stage completed');
     }
-  }, [currentPartIndex, parts]);
+  }, [currentPartIndex, playingPartIndex, parts]);
 
   const changePlayingIndex = useCallback((index: number) => {
-    setPlayingIndex(index)
+    setPlayingPartIndex(index)
     setSlots({})
+    setCards({})
+    setSlotPositions({})
+    setCardSlotMap({})
+    setLockedPan(true)
+    setTimeout(()=>{
+      setLockedPan(false)
+    }, 2000)
   }, [playingPartIndex]);
 
   const getSlotOfCard = useCallback(

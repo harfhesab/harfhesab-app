@@ -18,6 +18,8 @@ import StageGameSeasonCard, { STAGE_GAME_SEASON_CARD_HEIGHT, STAGE_GAME_SEASON_C
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
+import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
+import { updateCurrentLanguageLastStageAndLastSeason } from '../../../redux/slices/stageGameSlice';
 
 const {width, height} = Dimensions.get("window")
 function StageGame(props){
@@ -140,6 +142,19 @@ function StageGame(props){
     }
     const getDataOperation = (selected)=>{
         const language = selected ?? stageGameLanguage
+        const progress = getCurrentLanguageLastStageAndLastSeason(realm, language)
+        if(progress){
+            const data = {
+                
+
+
+
+
+
+                
+            }
+            dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
+        }
         const seasons = getStageSeasonsByLanguage(realm, language)
         if(seasons && seasons.length > 0){
             setData(seasons)

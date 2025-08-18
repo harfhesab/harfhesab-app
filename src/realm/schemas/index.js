@@ -7,7 +7,7 @@ import { Language } from "./general/LanguageSchema";
 import { PackageSeason, SeasonNumberInPackage } from "./package-game/PackageSeasonSchema";
 import { PackageStage } from "./package-game/PackageStageSchema";
 import { Package, SeasonInPackage, TakenSource } from "./package-game/PackageSchema";
-import { SolvedPartsInUserStageGameProgress, UserStageGameProgress } from "./user/UserStageGameProgressSchema";
+import { UserStageGameProgress } from "./user/UserStageGameProgressSchema";
 
 export const realmSchemas = [
   StageGameVersionControl,
@@ -24,5 +24,4 @@ export const realmSchemas = [
   SeasonInPackage,
   TakenSource,
   UserStageGameProgress,
-  SolvedPartsInUserStageGameProgress
 ];

@@ -31,11 +31,12 @@ const WordToSlot = ({
   const colors = useAppTheme();
   const realm = useRealm();
 
-  const data = type == "stage-game"? getStageById(realm, id)?.parts:[]
+  const data = type == "stage-game"? getStageById(realm, id):undefined
+  const stageNumber = type == "stage-game"?data?.stage_number_in_language:undefined
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <DragDropProvider parts={data??[]} realm={realm} stageId={id} type={type}>
+      <DragDropProvider parts={data?.parts??[]} stageNumber={stageNumber} realm={realm} stageId={id} type={type}>
         <SafeAreaView style={styles.container}>
           <SentenceDisplay />
           <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>

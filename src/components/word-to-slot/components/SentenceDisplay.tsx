@@ -15,7 +15,7 @@ const {width} = Dimensions.get('window')
 const SentenceDisplay = () => {
     const { slots, cards, completeCurrentPart, changePlayingIndex, completedSentences, currentWords, currentPartIndex, playingPartIndex, numberParts } = useDragDrop();
     const colors = useAppTheme();
-    const [lastCompletedIndex, setLastCompletedIndex] = useState(-1);
+    const [check, setCheck] = useState(true);
     const [currentSentenceStatusColor, setCurrentSentenceStatusColor] = useState<string[]>(['#86442d', '#4d2719']);
 
     const currentSentence = Object.keys(slots)
@@ -26,7 +26,7 @@ const SentenceDisplay = () => {
 
     // بررسی صحت جمله فعلی
     useEffect(() => {
-        if (Object.keys(slots).length === currentWords.length && lastCompletedIndex < currentPartIndex && playingPartIndex == currentPartIndex) {
+        if (Object.keys(slots).length === currentWords.length && check == true) {
             const slotWords = Object.keys(slots)
                 .sort((a, b) => Number(a) - Number(b))
                 .map(slotIndex => cards[slots[Number(slotIndex)]]?.word);
@@ -37,7 +37,7 @@ const SentenceDisplay = () => {
                 console.log('Success: جمله به درستی ساخته شد!');
                 setCurrentSentenceStatusColor(['#47cd8a', '#103220'])
                 setTimeout(()=>{
-                    setLastCompletedIndex(currentPartIndex); // به‌روزرسانی ایندکس آخرین جمله کامل‌شده
+                    setCheck(false);
                     completeCurrentPart();
                 }, 1000)
             } else {
@@ -46,16 +46,19 @@ const SentenceDisplay = () => {
             }
         } else {
           setCurrentSentenceStatusColor(['#86442d', '#4d2719'])
+          setCheck(true);
         }
-    }, [slots, currentWords, cards, completeCurrentPart, currentPartIndex, lastCompletedIndex]);
+    }, [slots, currentWords, cards, completeCurrentPart]);
 
     const onChangePlayingIndex = (index:number)=>{
+      if(index == playingPartIndex) return
       if(index <= currentPartIndex){
         changePlayingIndex(index)
       } else {
         Toast.show({
           type: "error",
           text2 : "جملات باید به ترتیب کامل شود!",
+          topOffset:10
         })
       }
     }

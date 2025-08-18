@@ -30,7 +30,7 @@ export const themes = {
         inactive: '#AAAAAA',
       },
       button_gradient: {
-        background: ['#47cd8a', '#103220'],
+        background: ['#47cd8a', '#1f5b3b'],
         content_1: '#FFFFFF',
         content_2: '#EBEBEB',
       },
