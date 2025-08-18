@@ -3,13 +3,13 @@ import FloatingCard from './FloatingCard';
 import { useDragDrop } from '../context/DragDropContext';
 
 const FloatingCardList = () => {
-  const { currentWords, currentPartIndex } = useDragDrop();
+  const { currentWords, playingPartIndex } = useDragDrop();
 
   const renderedCards = useMemo(() => {
     console.log('Rendering cards for words:', currentWords);
     return currentWords.map((item, index) => (
       <FloatingCard
-        key={`${item.word}_${index}_${currentPartIndex}`}
+        key={`${item.word}_${index}_${playingPartIndex}`}
         _id={item._id}
         word={item.word}
         index={index}
@@ -17,7 +17,7 @@ const FloatingCardList = () => {
         unknown_word_completed={item.unknown_word_completed}
       />
     ));
-  }, [currentWords]);
+  }, [playingPartIndex]);
 
   return <>{renderedCards}</>;
 };

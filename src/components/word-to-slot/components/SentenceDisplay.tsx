@@ -9,10 +9,11 @@ import { index } from 'realm';
 import NumberCoins from '../../coin/NumberCoins';
 import Icon from '../../../utils/Icon';
 import { goBack, navigate } from '../../../main/navigationService';
+import Toast from 'react-native-toast-message';
 
 const {width} = Dimensions.get('window')
 const SentenceDisplay = () => {
-    const { slots, cards, completeCurrentPart, completedSentences, currentWords, currentPartIndex, numberParts } = useDragDrop();
+    const { slots, cards, completeCurrentPart, changePlayingIndex, completedSentences, currentWords, currentPartIndex, playingPartIndex, numberParts } = useDragDrop();
     const colors = useAppTheme();
     const [lastCompletedIndex, setLastCompletedIndex] = useState(-1);
     const [currentSentenceStatusColor, setCurrentSentenceStatusColor] = useState<string[]>(['#86442d', '#4d2719']);
@@ -25,7 +26,7 @@ const SentenceDisplay = () => {
 
     // بررسی صحت جمله فعلی
     useEffect(() => {
-        if (Object.keys(slots).length === currentWords.length && lastCompletedIndex < currentPartIndex) {
+        if (Object.keys(slots).length === currentWords.length && lastCompletedIndex < currentPartIndex && playingPartIndex == currentPartIndex) {
             const slotWords = Object.keys(slots)
                 .sort((a, b) => Number(a) - Number(b))
                 .map(slotIndex => cards[slots[Number(slotIndex)]]?.word);
@@ -47,6 +48,17 @@ const SentenceDisplay = () => {
           setCurrentSentenceStatusColor(['#86442d', '#4d2719'])
         }
     }, [slots, currentWords, cards, completeCurrentPart, currentPartIndex, lastCompletedIndex]);
+
+    const onChangePlayingIndex = (index:number)=>{
+      if(index <= currentPartIndex){
+        changePlayingIndex(index)
+      } else {
+        Toast.show({
+          type: "error",
+          text2 : "جملات باید به ترتیب کامل شود!",
+        })
+      }
+    }
 
     return (
         <View style={styles.sentenceContainer}>
@@ -85,16 +97,16 @@ const SentenceDisplay = () => {
               <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:10, justifyContent:'flex-start', paddingHorizontal:15, marginTop:5}}>
                   {
                     Array.from({length:numberParts}).map((_, index)=>(
-                      <TouchableOpacity key={index.toString()} activeOpacity={0.6}>
-                        <View style={{width:35, height:35, alignItems:'center', justifyContent:'center', borderRadius:8, backgroundColor:`#0088cc35`, borderColor:colors.border.a1, borderWidth:1}}>
+                      <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6}>
+                        <View style={{width:35, height:35, alignItems:'center', justifyContent:'center', borderRadius:8, backgroundColor:`#0088cc35`, borderColor:index == playingPartIndex?colors.primary.a1:colors.border.a1, borderWidth:1}}>
                           {
                             (completedSentences.length == numberParts || currentPartIndex > index)?
-                            (<Icon name={"lock-open"} type={"FontAwesome5"} style={{fontSize:20, color:colors.primary.a1}}/>)
+                            (<Icon name={"lock-open"} type={"FontAwesome5"} style={{fontSize:20, color:'#0088cc'}}/>)
                             :
                             currentPartIndex == index?
-                            (<Icon name={"unlock-alt"} type={"FontAwesome5"} style={{fontSize:20, color:'#0088cc'}}/>)
+                            (<Icon name={"unlock-alt"} type={"FontAwesome5"} style={{fontSize:20, color:colors.primary.a1}}/>)
                             :
-                            (<Icon name={"lock"} type={"FontAwesome5"} style={{fontSize:20, color:"#CC0000"}}/>)
+                            (<Icon name={"lock"} type={"FontAwesome5"} style={{fontSize:20, color:"#607d8b"}}/>)
                           }
                           </View>
                       </TouchableOpacity>

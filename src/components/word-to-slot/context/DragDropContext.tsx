@@ -51,7 +51,9 @@ interface ContextProps {
   registerSlot: (index: number, pos: Position) => void;
   currentWords: any[];
   completeCurrentPart: () => void;
+  changePlayingIndex: (index: number) => void;
   currentPartIndex: number;
+  playingPartIndex: number;
   completedSentences: string[];
   numberOfCards: number;
   numberParts: number;
@@ -72,7 +74,7 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
   const numberParts = parts.length
 
 
-  const currentWords = parts[currentPartIndex]?.words.map((w: any) => ({
+  const currentWords = parts[playingPartIndex]?.words.map((w: any) => ({
     _id: w._id,
     word: w.word,
     unknown_word: w.unknown_word,
@@ -91,7 +93,12 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
     });
     if (currentPartIndex < parts.length - 1) {
       setTimeout(()=>{
-        setCurrentPartIndex(prev => prev + 1);
+        if(currentPartIndex == playingPartIndex){
+          setCurrentPartIndex(prev => prev + 1);
+          setPlayingIndex(prev => prev + 1)
+        } else {
+          setPlayingIndex(currentPartIndex)
+        }
         setSlots({})
       }, 1000)
     } else {
@@ -103,6 +110,11 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
       console.log('Stage completed');
     }
   }, [currentPartIndex, parts]);
+
+  const changePlayingIndex = useCallback((index: number) => {
+    setPlayingIndex(index)
+    setSlots({})
+  }, [playingPartIndex]);
 
   const getSlotOfCard = useCallback(
     (cardId: string) => {
@@ -421,7 +433,9 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
         registerSlot,
         currentWords,
         completeCurrentPart,
+        changePlayingIndex,
         currentPartIndex,
+        playingPartIndex,
         completedSentences,
         numberOfCards,
         numberParts,
