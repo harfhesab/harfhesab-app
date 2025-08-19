@@ -9,9 +9,9 @@ interface StageGameState {
 
 const initialState: StageGameState = {
   lastStage: null,
-  lastStageNumber: null,
+  lastStageNumber: 1,
   lastSeason: null,
-  lastSeasonNumber: null,
+  lastSeasonNumber: 1,
 };
 
 const stageGameSlice = createSlice({

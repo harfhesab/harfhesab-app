@@ -23,6 +23,7 @@ function StagesStageGameSeason(props){
     const colors = useAppTheme()
     const realm = useRealm();
     const { stageGameLanguage, stageGameLanguageName } = useSelector((state) => state.stageGamePersist);
+    const { lastStageNumber } = useSelector((state) => state.stageGame);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)
@@ -71,10 +72,13 @@ function StagesStageGameSeason(props){
     const renderItem = ({item, index})=>{
         return(
             <StageNumber
-                currently={index == 1?true:false}
-                lock={index > 1?true:false}
+                currently={item.stage_number_in_language == lastStageNumber?true:false}
+                lock={item.stage_number_in_language > lastStageNumber?true:false}
                 number={item.stage_number_in_language}
-                onPress={()=>{props.navigation.navigate("WordToSlotStageGame", {stage:item?._id.toString()})}}
+                onPress={()=>{
+                    if(item.stage_number_in_language > lastStageNumber)return
+                    props.navigation.navigate("WordToSlotStageGame", {stage:item?._id.toString()})
+                }}
             />
         )
     }

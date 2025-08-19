@@ -28,6 +28,7 @@ function StageGame(props){
     const dispatch = useDispatch();
     const realm = useRealm();
     const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
+    const { lastSeasonNumber } = useSelector((state) => state.stageGame);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)
@@ -140,20 +141,17 @@ function StageGame(props){
         }
         
     }
-    const getDataOperation = (selected)=>{
+    const getDataOperation = async(selected)=>{
         const language = selected ?? stageGameLanguage
-        const progress = getCurrentLanguageLastStageAndLastSeason(realm, language)
+        const progress = await getCurrentLanguageLastStageAndLastSeason(realm, language)
         if(progress){
             const data = {
-                
-
-
-
-
-
-                
+                lastStage: progress?.last_stage,
+                lastStageNumber: progress?.last_stage_number,
+                lastSeason: progress?.last_season,
+                lastSeasonNumber: progress?.last_season_number  
             }
-            dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
+            await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
         }
         const seasons = getStageSeasonsByLanguage(realm, language)
         if(seasons && seasons.length > 0){
@@ -230,6 +228,7 @@ function StageGame(props){
                             keyExtractor={keyExtractor}
                             initialNumToRender={3}
                             windowSize={5}
+                            initialScrollIndex={lastSeasonNumber-1}
                             maxToRenderPerBatch={3}
                             contentContainerStyle={{alignItems:'center', rowGap:rowGap, columnGap:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
                             renderItem={memoizedValue}

@@ -7,7 +7,7 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   whitelist: ['auth', 'ui', 'stageGamePersist', 'coins'],
-  blacklist: ['stageGameDownload'],
+  blacklist: ['stageGameDownload', 'stageGame'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
