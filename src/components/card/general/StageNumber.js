@@ -46,7 +46,7 @@ function StageNumber({
     </TouchableOpacity>
     :currently == true?
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#388e3c", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
+      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:colors.primary.a1, alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
           <TextGradientSvg
               text={`${number}`}
               fontFamily={Font.bakh_extra_bold}
