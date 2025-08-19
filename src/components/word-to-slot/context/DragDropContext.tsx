@@ -19,6 +19,7 @@ import {
 import Realm from 'realm';
 import AlertHelper from '../../alert/AlertHelper';
 import { goBack } from '../../../main/navigationService';
+import { complatedOneStageInStageGmae } from '../functions/StageGameOperation';
 
 interface Position {
   x: number;
@@ -115,25 +116,13 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
         setSlots({})
       }, 1000)
       setTimeout(()=>{
-        AlertHelper.showAlert({
-            body: `تبریک! مرحله ${stageNumber} با موفقیت کامل شد.`,
-            buttons: [
-                {
-                    text: 'ادامه',
-                    onPress: () => {
-                        goBack()
-                    },
-                    type:'bold'
-                },
-            ],
-            options : {
-                type: 'success',
-                cancelable: false,
-                bodyAlign:'center',
-                textAlign:'center'
-            },
-        });
-      }, 4000)
+        setLockedPan(false)
+        if(type == "stage-game"){
+          complatedOneStageInStageGmae()
+        } else if(type == "package-game"){
+          
+        }
+      }, 2000)
       console.log('Stage completed');
     }
   }, [currentPartIndex, playingPartIndex, parts]);

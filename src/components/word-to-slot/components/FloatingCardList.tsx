@@ -29,10 +29,9 @@ const FloatingCardList = () => {
         lockedPan&&
         <View style={{position:"absolute", alignItems:'center', justifyContent:'center', width:"100%", height:"100%", zIndex:3000}}>
           <WaveIndicator
-            color={`#FFFFFF50`}
+            color={`#FFFFFF`}
             size={BOUNDARY_HEIGHT}
-            count={3}
-            animationDuration={2000}
+            count={1}
             waveMode="fill"
           />
         </View>

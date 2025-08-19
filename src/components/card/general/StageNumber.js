@@ -40,8 +40,8 @@ function StageNumber({
   return (
     lock == true?
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#abb8c3", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
-          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:STAGE_CARD_SIZE/2, color:"#2d5d86"}}/>
+      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#cccccc", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
+          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:STAGE_CARD_SIZE/2, color:"#607d8b"}}/>
       </View>
     </TouchableOpacity>
     :currently == true?

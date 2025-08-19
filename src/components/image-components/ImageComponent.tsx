@@ -64,10 +64,10 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
               />
               <View style={{ position: 'absolute', width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, alignItems: 'center', justifyContent: 'center' }}>
                 <WaveIndicator
-                  color={"#FFFFFF85"}
+                  color={"#FFFFFF65"}
                   size={PLACE_HOLDER_WIDTH}
                   count={2}
-                  waveMode="fill"
+                  waveMode="outline"
                 />
               </View>
           </View>
