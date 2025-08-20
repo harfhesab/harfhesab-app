@@ -20,6 +20,8 @@ import Realm from 'realm';
 import AlertHelper from '../../alert/AlertHelper';
 import { goBack } from '../../../main/navigationService';
 import { endOfAStageInStageGame } from '../functions/StageGameFunctions';
+import { useDispatch } from "react-redux";
+import { AppDispatch } from '../../../redux/store/Store';
 
 interface Position {
   x: number;
@@ -65,7 +67,28 @@ interface ContextProps {
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
 
-export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Realm.List<any> | any[], stageNumber: number | undefined, realm: Realm, stageId: string, type: string }> = ({ children, parts, stageNumber, realm, stageId, type }) => {
+export const DragDropProvider: React.FC<{
+  children: React.ReactNode;
+  parts: Realm.List<any> | any[];
+  stageNumber: number | undefined;
+  realm: Realm;
+  stageId: string;
+  currentStageId: string;
+  type: string;
+  languageId?:string;
+  packageId?:string;
+}> = ({
+  children,
+  parts,
+  stageNumber,
+  realm,
+  stageId,
+  currentStageId,
+  type,
+  languageId,
+  packageId
+}) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [slots, setSlots] = useState<Record<number, string>>({});
   const [slotPositions, setSlotPositions] = useState<Record<number, Position>>({});
@@ -118,7 +141,8 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
       setTimeout(()=>{
         setLockedPan(false)
         if(type == "stage-game"){
-          endOfAStageInStageGame()
+          const language_ref = languageId
+          endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId})
         } else if(type == "package-game"){
           
         }

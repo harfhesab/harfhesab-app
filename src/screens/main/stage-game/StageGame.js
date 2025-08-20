@@ -144,15 +144,14 @@ function StageGame(props){
     const getDataOperation = async(selected)=>{
         const language = selected ?? stageGameLanguage
         const progress = await getCurrentLanguageLastStageAndLastSeason(realm, language)
-        if(progress){
-            const data = {
-                lastStage: progress?.last_stage,
-                lastStageNumber: progress?.last_stage_number,
-                lastSeason: progress?.last_season,
-                lastSeasonNumber: progress?.last_season_number  
-            }
-            await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
+        console.log(progress)
+        const data = {
+            lastStage: progress?.last_stage,
+            lastStageNumber: progress?.last_stage_number,
+            lastSeason: progress?.last_season,
+            lastSeasonNumber: progress?.last_season_number  
         }
+        await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
         const seasons = getStageSeasonsByLanguage(realm, language)
         if(seasons && seasons.length > 0){
             setData(seasons)

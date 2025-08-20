@@ -1,6 +1,7 @@
 import Realm, { BSON } from "realm";
 import { UserStageGameProgress } from "../../schemas/user/UserStageGameProgressSchema";
 import { Stage } from "../../schemas/stage-game/StageSchema";
+import { StageSeason } from "../../schemas/stage-game/StageSeasonSchema";
 
 
 export const updateUserStageGameProgress = (
@@ -21,61 +22,79 @@ export const updateUserStageGameProgress = (
         const existingProgress = realm.objects<UserStageGameProgress>('UserStageGameProgress').filtered('language_ref == $0', languageRefId)[0];
 
         realm.write(() => {
-        if (existingProgress) {
-            // Check if input numbers are exactly one more than existing
-            if (
-            last_season_number === (existingProgress.last_season_number ?? 0) + 1 &&
-            last_stage_number === (existingProgress.last_stage_number ?? 0) + 1
-            ) {
-            // Update the existing document
-            existingProgress.last_season = lastSeasonId;
-            existingProgress.last_season_number = last_season_number;
-            existingProgress.last_stage = lastStageId;
-            existingProgress.last_stage_number = last_stage_number;
-            existingProgress.updatedAt = new Date();
+            if (existingProgress) {
+                if (last_stage_number === (existingProgress.last_stage_number ?? 0) + 1) {
+                    existingProgress.last_season = lastSeasonId;
+                    existingProgress.last_season_number = last_season_number;
+                    existingProgress.last_stage = lastStageId;
+                    existingProgress.last_stage_number = last_stage_number;
+                    existingProgress.updatedAt = new Date();
+                } else {
+                    throw new Error('Update conditions not satisfied');
+                }
             } else {
-            // Condition not met, throw to catch block
-            throw new Error('Update conditions not satisfied');
-            }
-        } else {
-            // Check if new document can be created only if both numbers are 1
-            if (last_season_number === 1 && last_stage_number === 1) {
-            // Create new document
-            realm.create<UserStageGameProgress>('UserStageGameProgress', {
-                _id: new BSON.ObjectId(),
-                language_ref: languageRefId,
-                last_season: lastSeasonId,
-                last_season_number: last_season_number,
-                last_stage: lastStageId,
-                last_stage_number: last_stage_number,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            });
-            } else {
-            // Condition not met, throw to catch block
-            throw new Error('Creation conditions not satisfied');
-            }
+                // Check if new document can be created only if both numbers are 1
+                if (last_season_number === 1 && last_stage_number === 1) {
+                    // Create new document
+                    realm.create<UserStageGameProgress>('UserStageGameProgress', {
+                        _id: new BSON.ObjectId(),
+                        language_ref: languageRefId,
+                        last_season: lastSeasonId,
+                        last_season_number: last_season_number,
+                        last_stage: lastStageId,
+                        last_stage_number: last_stage_number,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    });
+                } else {
+                    throw new Error('Creation conditions not satisfied');
+                }
         }
         });
-
         return true;
     } catch (e) {
         return false;
     }
 };
 
-type PlainUserStageGameProgress = Omit<UserStageGameProgress, keyof Realm.Object>; // این متدهای Realm رو حذف می‌کنه
+// type PlainUserStageGameProgress = Omit<UserStageGameProgress, keyof Realm.Object>; // این متدهای Realm رو حذف می‌کنه
 export const getCurrentLanguageLastStageAndLastSeason = (
     realm: Realm,
     language_ref: BSON.ObjectId | string,
-): PlainUserStageGameProgress | null => {
+): Object | null => {
     try {
         const languageRefId = typeof language_ref === 'string' ? new BSON.ObjectId(language_ref) : language_ref;
         const progress = realm.objects<UserStageGameProgress>('UserStageGameProgress').filtered('language_ref == $0', languageRefId)[0];
         if (progress) {
-            return progress.toJSON() as unknown as PlainUserStageGameProgress;
+            return {
+                last_stage: progress?.last_stage,
+                last_stage_number: progress?.last_stage_number?.toString(),
+                last_season: progress?.last_season?.toString(),
+                last_season_number: progress?.last_season_number  
+            }
         } else {
-            return null;
+            const firstStage = realm.objects<Stage>('Stage').filtered('language_ref == $0 AND stage_number_in_language == $1', languageRefId, 1)[0];
+            const firstSeason = realm.objects<StageSeason>('StageSeason').filtered('language_ref == $0 AND season_number == $1', languageRefId, 1)[0];
+            if(firstStage && firstSeason){
+                realm.write(()=>{
+                    realm.create<UserStageGameProgress>('UserStageGameProgress', {
+                        _id: new BSON.ObjectId(),
+                        language_ref: languageRefId,
+                        last_season: firstSeason._id,
+                        last_season_number: 1,
+                        last_stage: firstStage._id,
+                        last_stage_number: 1,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    });
+                })
+            }
+            return {
+                last_stage: firstStage?._id?.toString()??null,
+                last_stage_number: 1,
+                last_season: firstSeason?._id?.toString()??null,
+                last_season_number: 1 
+            }
         }
     } catch (e) {
         return null;
