@@ -1,5 +1,6 @@
 import Realm, { BSON } from "realm";
 import { UserStageGameProgress } from "../../schemas/user/UserStageGameProgressSchema";
+import { Stage } from "../../schemas/stage-game/StageSchema";
 
 
 export const updateUserStageGameProgress = (
@@ -80,3 +81,91 @@ export const getCurrentLanguageLastStageAndLastSeason = (
         return null;
     }
 };
+
+export const getCurrentLanguageNextStageInformation = (
+    realm: Realm,
+    language_ref: BSON.ObjectId | string,
+) : Object | null => {
+    try {
+        const languageRefId = typeof language_ref === 'string' ? new BSON.ObjectId(language_ref) : language_ref;
+        const current = realm.objects<UserStageGameProgress>('UserStageGameProgress').filtered('language_ref == $0', languageRefId)[0];
+        if (current) {
+            const currentStage = current.last_stage;
+            const currentStageNumber = current.last_stage_number;
+            const currentSeason = current.last_season;
+            const currentSeasonNumber = current.last_season_number;
+            const nextStageNumber = currentStageNumber ? currentStageNumber + 1 : 2;
+            const next = realm.objects<Stage>('Stage').filtered('language_ref == $0 AND stage_number_in_language == $1', languageRefId, nextStageNumber)[0];
+            if(next){
+                const nextDocument = next.toJSON()
+                const nextStage = next._id.toString()
+                if(currentSeason?.equals(next.season)){
+                    return {
+                        nextStage : nextStage.toString(),
+                        nextStageNumber : nextStageNumber,
+                        nextSeason : currentSeason.toString(),
+                        nextSeasonNumber : currentSeasonNumber,
+                        endCurrentSeason : false,
+                        endAllStage : false
+                    }
+                } else {
+                    return {
+                        nextStage : nextStage.toString(),
+                        nextStageNumber : nextStageNumber,
+                        nextSeason : next.season.toString(),
+                        nextSeasonNumber : currentSeasonNumber ? currentSeasonNumber + 1 : 2,
+                        endCurrentSeason : true,
+                        endAllStage : false
+                    }
+                }
+            } else {
+                return {
+                    nextStage : null,
+                    nextStageNumber : null,
+                    nextSeason : null,
+                    nextSeasonNumber : null,
+                    endCurrentSeason : false,
+                    endAllStage : true
+                }
+            }
+        } else {
+            const nextStageNumber = 2;
+            const next = realm.objects<Stage>('Stage').filtered('language_ref == $0 AND stage_number_in_language == $1', languageRefId, nextStageNumber)[0];
+            if(next){
+                const currentStageNumber = 1;
+                const currentStage = realm.objects<Stage>('Stage').filtered('language_ref == $0 AND stage_number_in_language == $1', languageRefId, currentStageNumber)[0];
+                if(next.season.equals(currentStage.season)){
+                    return {
+                        nextStage : next._id.toString(),
+                        nextStageNumber : nextStageNumber,
+                        nextSeason : next.season.toString(),
+                        nextSeasonNumber : 1,
+                        endCurrentSeason : false,
+                        endAllStage : false
+                    }
+                } else {
+                    return {
+                        nextStage : next._id.toString(),
+                        nextStageNumber : nextStageNumber,
+                        nextSeason : next.season.toString(),
+                        nextSeasonNumber : 2,
+                        endCurrentSeason : true,
+                        endAllStage : false
+                    }
+                }
+            } else {
+                return {
+                    nextStage : null,
+                    nextStageNumber : null,
+                    nextSeason : null,
+                    nextSeasonNumber : null,
+                    endCurrentSeason : false,
+                    endAllStage : true
+                }
+            }
+        }
+    } catch (e) {
+        return null;
+    }
+};
+

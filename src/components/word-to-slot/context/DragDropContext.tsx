@@ -19,7 +19,7 @@ import {
 import Realm from 'realm';
 import AlertHelper from '../../alert/AlertHelper';
 import { goBack } from '../../../main/navigationService';
-import { complatedOneStageInStageGmae } from '../functions/StageGameOperation';
+import { endOfAStageInStageGame } from '../functions/StageGameFunctions';
 
 interface Position {
   x: number;
@@ -118,7 +118,7 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode, parts: Real
       setTimeout(()=>{
         setLockedPan(false)
         if(type == "stage-game"){
-          complatedOneStageInStageGmae()
+          endOfAStageInStageGame()
         } else if(type == "package-game"){
           
         }
