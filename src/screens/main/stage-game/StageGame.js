@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useMemo, useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
@@ -27,6 +27,7 @@ function StageGame(props){
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const realm = useRealm();
+    const [activeIndexes, setActiveIndexes] = useState([]);
     const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
     const { lastSeasonNumber } = useSelector((state) => state.stageGame);
     const [loading, setLoading] = useState(true)
@@ -144,7 +145,6 @@ function StageGame(props){
     const getDataOperation = async(selected)=>{
         const language = selected ?? stageGameLanguage
         const progress = await getCurrentLanguageLastStageAndLastSeason(realm, language)
-        console.log(progress)
         const data = {
             lastStage: progress?.last_stage,
             lastStageNumber: progress?.last_stage_number,
@@ -184,6 +184,8 @@ function StageGame(props){
     const renderItem = ({item, index})=>{
         return(
             <StageGameSeasonCard
+                lock={item.season_number > lastSeasonNumber?true:false}
+                currentScroll={activeIndexes.includes(index)}
                 title={item.title}
                 description={item.description}
                 image={item.media[0].path}
@@ -192,17 +194,44 @@ function StageGame(props){
                 seasonNumber={item.season_number}
                 stageNumberFrom={item.stage_number_from}
                 stageNumberTo={item.stage_number_to}
-                onPress={()=>{props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString(), seasonName:item.title.toString()})}}
+                onPress={()=>{
+                    if(item.season_number > lastSeasonNumber)return
+                    props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString(), seasonName:item.title.toString()})
+                }}
             />
         )
     }
-    const memoizedValue = useMemo(() => renderItem, [data]);
+    const memoizedValue = useMemo(() => renderItem, [data, activeIndexes, lastSeasonNumber]);
     const keyExtractor = (item,index)=>index.toString()
     const FLATLIST_PADDING_VERTICAL = 15
     const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT
     const rowGap = 25
     const numColumns = IS_TABLET_CONDITION ? 2 : 1
     const snapInterval = itemHeight + rowGap
+
+    
+
+    // کانفیگ برای تشخیص آیتم‌های دیده‌شده
+    const viewabilityConfig = {
+        itemVisiblePercentThreshold: 90, // حداقل 90% آیتم دیده شود
+    };
+
+    // وقتی آیتم‌های دیده‌شده تغییر کنند
+    const onViewableItemsChanged = useRef(({ viewableItems }) => {
+        if (viewableItems.length > 0) {
+            if (numColumns === 1) {
+                // موبایل: فقط یک آیتم در مرکز فعال باشد
+                const currentIndex = viewableItems[0].index;
+                setActiveIndexes([currentIndex]);
+            } else {
+                // تبلت: هر ردیف شامل دو آیتم → هر دو فعال باشند
+                const currentRow = Math.floor(viewableItems[0].index / 2);
+                const firstIndex = currentRow * 2;
+                const secondIndex = firstIndex + 1;
+                setActiveIndexes([firstIndex, secondIndex]);
+            }
+        }
+    }).current;
     return(
         <View style={{flex:1}}>
             <GeneralHeader
@@ -246,6 +275,9 @@ function StageGame(props){
                             decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
                             disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
                             bounces={true}                // فنری بودن مانند iOS
+                            viewabilityConfig={viewabilityConfig}
+                            onViewableItemsChanged={onViewableItemsChanged}
+                            extraData={{ activeIndexes, lastSeasonNumber }}
                         />
                     }
                 </View>

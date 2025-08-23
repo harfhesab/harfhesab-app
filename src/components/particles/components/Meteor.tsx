@@ -101,5 +101,9 @@ const Meteor: React.FC<MeteorProps> = ({ meteor, onAnimationEnd }) => {
   );
 };
 
-const areEqual = () => true;
+const areEqual = (prevProps:any, nextProps:any) => {
+  if (prevProps.meteor !== nextProps.meteor) return false;
+  if (prevProps.onAnimationEnd !== nextProps.onAnimationEnd) return false;
+  return true;
+};
 export default memo(Meteor, areEqual);

@@ -26,7 +26,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                 }
                 await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
                 AlertHelper.showAlert({
-                    body: `تبریک! مرحله ${next?.nextStage - 1} با موفقیت کامل شد.`,
+                    body: `تبریک! مرحله ${next?.nextStageNumber - 1} با موفقیت کامل شد.`,
                     buttons: [
                         {
                             text: 'ادامه',
@@ -46,6 +46,23 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
             }
         }
     } else {
-        
+        AlertHelper.showAlert({
+            body: `درود بر شما! این مرحله با وجود اینکه شما از قبل آن را تکمیل کرده بودید دوباره کامل شد!`,
+            buttons: [
+                {
+                    text: 'ادامه',
+                    onPress: () => {
+                        goBack()
+                    },
+                    type:'bold'
+                },
+            ],
+            options : {
+                type: 'success',
+                cancelable: false,
+                bodyAlign:'center',
+                textAlign:'center'
+            },
+        });
     }
 }

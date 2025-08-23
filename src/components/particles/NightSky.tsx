@@ -231,5 +231,8 @@ const NightSky: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     </View>
   );
 };
-const areEqual = () => true;
+const areEqual = (prevProps:any, nextProps:any) => {
+  if (prevProps.children !== nextProps.children) return false;
+  return true;
+};
 export default memo(NightSky, areEqual);

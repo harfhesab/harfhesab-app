@@ -8,7 +8,7 @@ export const themes = {
     colors: {
       primary: {
         a1: '#0ea960',
-        a2: '#24536b'
+        a2: '#24536b',
       },
       background_gradient: ['#163241', '#193b4d', '#24536b'],
       text_gradient:{

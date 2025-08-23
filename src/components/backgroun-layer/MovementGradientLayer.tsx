@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, memo } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Canvas, LinearGradient, Rect, vec, SkPoint } from '@shopify/react-native-skia';
 import { useSharedValue, withTiming, useDerivedValue, withRepeat, Easing } from 'react-native-reanimated';
 
@@ -76,4 +76,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MovementGradientLayer;
+const areEqual = (prevProps:any, nextProps:any) => {
+  if (prevProps.children !== nextProps.children) return false;
+  if (prevProps.width !== nextProps.width) return false;
+  if (prevProps.height !== nextProps.height) return false;
+  if (prevProps.colors !== nextProps.colors) return false;
+  if (prevProps.borderRadius !== nextProps.borderRadius) return false;
+  return true;
+};
+export default memo(MovementGradientLayer, areEqual);

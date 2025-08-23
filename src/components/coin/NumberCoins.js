@@ -13,7 +13,7 @@ import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
 import { priceDigitSeperator } from "../../utils/PriceDigitSeperator";
 
-function NumberCoins({ onPress = () => {} }) {
+function NumberCoins({ onPress = () => {}, transparent = 40 }) {
   const colors = useAppTheme();
   const { numberCoins } = useSelector((state) => state.coins);
 
@@ -72,7 +72,7 @@ function NumberCoins({ onPress = () => {} }) {
           paddingStart: 10,
           paddingEnd: 5,
           width: 140,
-          backgroundColor: `${colors.primary.a1}40`,
+          backgroundColor: `${colors.primary.a1}${transparent}`,
           borderWidth: 1,
           borderRadius: 8,
           borderColor: colors.border.a1,

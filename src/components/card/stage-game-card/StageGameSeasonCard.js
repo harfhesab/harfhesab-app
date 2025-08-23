@@ -19,6 +19,7 @@ import MovementGradientLayer from '../../backgroun-layer/MovementGradientLayer';
 import GalaxyTwinkle from '../../backgroun-layer/GalaxyTwinkle';
 import CapsuleButton from '../../buttons/CapsuleButton';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import LockedSeasonAnimation from '../../LockedSeasonAnimation';
 
 
 
@@ -29,6 +30,8 @@ export const STAGE_GAME_SEASON_CARD_HEIGHT = height-185;
 const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION?(width - (STAGE_GAME_SEASON_CARD_MARGIN * 3)) / 2: width - (STAGE_GAME_SEASON_CARD_MARGIN * 2);
 
 function StageGameSeasonCard({
+  lock,
+  currentScroll,
   title,
   description,
   image,
@@ -40,11 +43,13 @@ function StageGameSeasonCard({
   onPress
 }) {
   const colors = useAppTheme();
+  
+  const Wrapper = currentScroll == true ? GalaxyTwinkle : View;
 
   return (
     <View style={{width:STAGE_GAME_CARD_WIDTH, height:STAGE_GAME_SEASON_CARD_HEIGHT, backgroundColor:"#120426", shadowColor:"#000", elevation:5, borderRadius:15, borderWidth:2, borderColor:colors.border.a1}}>
-      <GalaxyTwinkle style={{ width: STAGE_GAME_CARD_WIDTH-4, height: STAGE_GAME_SEASON_CARD_HEIGHT-4, borderRadius:15 }}>
-        <View style={{width:"100%", flexDirection:'column', justifyContent:'space-between', height:"100%"}}>
+      <Wrapper style={{ width: STAGE_GAME_CARD_WIDTH-4, height: STAGE_GAME_SEASON_CARD_HEIGHT-4, borderRadius:15 }}>
+        <View style={{width:STAGE_GAME_CARD_WIDTH-4, height:STAGE_GAME_SEASON_CARD_HEIGHT-4, flexDirection:'column', justifyContent:'space-between'}}>
           <View style={{width:"100%", alignItems:'center', paddingTop:10}}>
             <ImageComponent
               uri = {image}
@@ -56,14 +61,14 @@ function StageGameSeasonCard({
             />
           </View>
           <View style={{flex:1, width:"100%", justifyContent:'flex-start'}}>
-            <View style={{paddingHorizontal:10, paddingTop:20, paddingBottom:30}}>
+            <View style={{paddingHorizontal:10, paddingTop:20, paddingBottom:30, minHeight:120}}>
                 <MultiLineTextGradientSvg
                   text={title}
                   fontFamily={Font.bakh_black}
                   fontSize={35}
                   borderColor={"#795548"}
                   borderWidth={1}
-                  glowBlur={50}
+                  glowBlur={100}
                   glowColor={'#FFFFFF'}
                   glowShadow={true}
                   colors={['#ffc107', '#ff9800', '#ff5722']}
@@ -89,7 +94,16 @@ function StageGameSeasonCard({
             />
           </View>
         </View>
-      </GalaxyTwinkle>
+      </Wrapper>
+      {
+        lock == true&&
+        <View style={{width:"100%", height:"100%", alignItems:"center", justifyContent:"center", backgroundColor:"#b6c9d270", position:"absolute", top:0, left:0, borderRadius:13}}>
+            <LockedSeasonAnimation
+                animate={currentScroll}
+                lockFontSize={STAGE_GAME_CARD_WIDTH/1.7}
+            />
+        </View>
+      }
     </View>
   );
 }
@@ -98,6 +112,8 @@ const styles = StyleSheet.create({
 });
 
 const areEqual = (prevProps, nextProps) => {
+  if (prevProps.currentScroll !== nextProps.currentScroll) return false;
+  if (prevProps.lock !== nextProps.lock) return false;
   if (prevProps.title !== nextProps.title) return false;
   if (prevProps.description !== nextProps.description) return false;
   if (prevProps.image !== nextProps.image) return false;

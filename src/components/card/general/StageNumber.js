@@ -4,15 +4,16 @@ import {
   Text,
   TouchableNativeFeedback,
   Dimensions,
-  StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
-import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import TextGradientSvg from '../../text-components/TextGradientSvg';
+import StageNumberCurrently from './StageNumberCurrently';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 
 
@@ -39,59 +40,50 @@ function StageNumber({
 
   return (
     lock == true?
-    <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#cccccc", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
-          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:STAGE_CARD_SIZE/2, color:"#607d8b"}}/>
+    <LinearGradient colors={["#97baca", "#263d49"]} style={{borderRadius:15, width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, margin:STAGE_CARD_MARGIN}}>
+      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
+          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:fontSize/1.2, color:"#fcb900", textShadowColor: "#00000060", textShadowOffset: { width:0.5, height:0.5 }, textShadowRadius: 5}}/>
       </View>
-    </TouchableOpacity>
+    </LinearGradient>
     :currently == true?
-    <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:colors.primary.a1, alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
-          <TextGradientSvg
-              text={`${number}`}
-              fontFamily={Font.bakh_extra_bold}
-              fontSize={fontSize}
-              colors={["#ff9800", "#f57c00", "#e65100"]}
-              shadowColor={"#33333350"}
-              dropShadow={true}
-              glowShadow={true}
-              glowColor={"#555555"}
-              glowBlur={10}
-              borderColor={"#ae2900"}
-              borderWidth={0.8}
-          />
-      </View>
-    </TouchableOpacity>
+    <StageNumberCurrently
+        text={`${number}`}
+        boxSize={STAGE_CARD_SIZE}
+        onPress={onPress}
+        fontSize={fontSize}
+        margin={STAGE_CARD_MARGIN}
+    />
     :
-    <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
-      <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, backgroundColor:"#0288d1", alignItems:'center', justifyContent:'center', margin:STAGE_CARD_MARGIN}}>
-          <TextGradientSvg
-                text={`${number}`}
-                fontFamily={Font.bakh_extra_bold}
-                fontSize={fontSize}
-                colors={["#ff9800", "#f57c00", "#e65100"]}
-                shadowColor={"#33333350"}
-                dropShadow={true}
-                glowShadow={true}
-                glowColor={"#555555"}
-                glowBlur={10}
-                borderColor={"#ae2900"}
-                borderWidth={0.8}
-            />
-      </View>
+    <TouchableOpacity activeOpacity={0.85} onPress={onPress} style={{ margin:STAGE_CARD_MARGIN}}>
+      <LinearGradient colors={["#4fc3f7", "#004479"]} style={{borderRadius:15, width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE}}>
+        <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
+            <TextGradientSvg
+                  text={`${number}`}
+                  fontFamily={Font.bakh_extra_bold}
+                  fontSize={fontSize}
+                  colors={["#dce775", "#fcb900"]}
+                  shadowColor={"#00000090"}
+                  shadowBlur={5}
+                  dropShadow={true}
+                  borderColor={"#33333385"}
+                  borderWidth={0.5}
+                  glowBlur={100}
+                  glowColor={'#fff5c8'}
+                  glowShadow={true}
+              />
+        </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  
-});
 
 const areEqual = (prevProps, nextProps) => {
   if (prevProps.number !== nextProps.number) return false;
   if (prevProps.lock !== nextProps.lock) return false;
   if (prevProps.currently !== nextProps.currently) return false;
+  if (prevProps.onPress !== nextProps.onPress) return false;
   return true;
 };
-
 export default memo(StageNumber, areEqual);
+

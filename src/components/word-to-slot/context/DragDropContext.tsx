@@ -130,15 +130,13 @@ export const DragDropProvider: React.FC<{
         }
         setSlots({})
         setCards({})
-        setSlotPositions({})
+        // setSlotPositions({})
         setCardSlotMap({})
         setLockedPan(false)
       }, 1000)
     } else {
       setTimeout(()=>{
         setSlots({})
-      }, 1000)
-      setTimeout(()=>{
         setLockedPan(false)
         if(type == "stage-game"){
           const language_ref = languageId
@@ -146,7 +144,7 @@ export const DragDropProvider: React.FC<{
         } else if(type == "package-game"){
           
         }
-      }, 2000)
+      }, 1000)
       console.log('Stage completed');
     }
   }, [currentPartIndex, playingPartIndex, parts]);
@@ -155,7 +153,7 @@ export const DragDropProvider: React.FC<{
     setPlayingPartIndex(index)
     setSlots({})
     setCards({})
-    setSlotPositions({})
+    // setSlotPositions({})
     setCardSlotMap({})
     setLockedPan(true)
     setTimeout(()=>{

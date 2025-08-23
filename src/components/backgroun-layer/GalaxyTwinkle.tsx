@@ -1,4 +1,3 @@
-// GalaxyTwinkle.tsx (optimized with reanimated for performance)
 import React, { useEffect, useMemo, useRef, useState, memo, forwardRef } from "react";
 import { View, StyleSheet, LayoutChangeEvent } from "react-native";
 import {
@@ -84,7 +83,7 @@ const MemoStar = memo(StarComponent);
 
 function GalaxyTwinkle({
   children,
-  starCount = 140,
+  starCount = 150,
   nebula = true,
   backgroundColors = ["#05010f", "#0a0733", "#120426"],
   style,
@@ -274,5 +273,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const areEqual = () => true;
+const areEqual = (prevProps:any, nextProps:any) => {
+  if (prevProps.children !== nextProps.children) return false;
+  if (prevProps.starCount !== nextProps.starCount) return false;
+  if (prevProps.nebula !== nextProps.nebula) return false;
+  if (prevProps.backgroundColors !== nextProps.backgroundColors) return false;
+  if (prevProps.style !== nextProps.style) return false;
+  return true;
+};
 export default memo(GalaxyTwinkle, areEqual);
