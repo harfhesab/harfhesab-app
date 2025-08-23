@@ -10,6 +10,8 @@ import NumberCoins from '../../coin/NumberCoins';
 import Icon from '../../../utils/Icon';
 import { goBack, navigate } from '../../../main/navigationService';
 import Toast from 'react-native-toast-message';
+import GameAlert from './game-alert/GameAlert';
+import GameAlertHelper from './game-alert/GameAlertHelper';
 
 const {width} = Dimensions.get('window')
 const SentenceDisplay = () => {
@@ -57,8 +59,8 @@ const SentenceDisplay = () => {
       } else {
         Toast.show({
           type: "error",
-          text2 : "جملات باید به ترتیب کامل شود!",
-          topOffset:10
+          text1 : "جملات باید به ترتیب کامل شوند!",
+          topOffset : 10
         })
       }
     }
@@ -148,6 +150,7 @@ const SentenceDisplay = () => {
                 :<View/>
               }
             </View>
+            <GameAlert ref = {Ref => {GameAlertHelper.setRef(Ref)}}/>
         </View>
     );
 };

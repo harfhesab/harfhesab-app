@@ -1,11 +1,11 @@
 import axios from "axios";
-import AlertHelper from "../../alert/AlertHelper";
 import { goBack } from "../../../main/navigationService";
 import { getCurrentLanguageNextStageInformation, updateUserStageGameProgress } from "../../../realm/repositories/user/user-stage-game-progress.repository";
 import { updateCurrentLanguageLastStageAndLastSeason } from "../../../redux/slices/stageGameSlice";
+import GameAlertHelper from "../components/game-alert/GameAlertHelper";
 
 
-export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId})=>{
+export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})=>{
     if(stageId.toString() === currentStageId.toString()){
         const next = getCurrentLanguageNextStageInformation(realm, language_ref)
         if(next.endAllStage == true){
@@ -16,7 +16,6 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
             const last_stage = next?.nextStage;
             const last_stage_number = next?.nextStageNumber;
             const updateProgress = await updateUserStageGameProgress(realm, language_ref, last_season, last_season_number, last_stage, last_stage_number)
-            console.log("111111111111111111", updateProgress)
             if(updateProgress == true){
                 const data = {
                     lastStage: last_stage,
@@ -25,8 +24,11 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     lastSeasonNumber: last_season_number  
                 }
                 await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
-                AlertHelper.showAlert({
-                    body: `تبریک! مرحله ${next?.nextStageNumber - 1} با موفقیت کامل شد.`,
+                GameAlertHelper.showAlertGame({
+                    title:`پایان مرحله ${stageNumber}`,
+                    admiration: "درود بر شما!",
+                    description: `جملات مرحله ${stageNumber} با موفقیت ساخته شد.`,
+                    completedSentences: sentences,
                     buttons: [
                         {
                             text: 'ادامه',
@@ -35,19 +37,26 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                             },
                             type:'bold'
                         },
+                        {
+                            onPress: () => {
+                                goBack()
+                            },
+                            type:'ads'
+                        }
                     ],
                     options : {
                         type: 'success',
                         cancelable: false,
-                        bodyAlign:'center',
-                        textAlign:'center'
                     },
                 });
             }
         }
     } else {
-        AlertHelper.showAlert({
-            body: `درود بر شما! این مرحله با وجود اینکه شما از قبل آن را تکمیل کرده بودید دوباره کامل شد!`,
+        GameAlertHelper.showAlertGame({
+            title:`پایان مرحله ${stageNumber}`,
+            admiration: "درود بر شما!",
+            description: `جملات مرحله ${stageNumber} مجددا، با موفقیت ساخته شد.`,
+            completedSentences: sentences,
             buttons: [
                 {
                     text: 'ادامه',
@@ -56,12 +65,16 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     },
                     type:'bold'
                 },
+                {
+                    onPress: () => {
+                        goBack()
+                    },
+                    type:'ads'
+                }
             ],
             options : {
                 type: 'success',
                 cancelable: false,
-                bodyAlign:'center',
-                textAlign:'center'
             },
         });
     }

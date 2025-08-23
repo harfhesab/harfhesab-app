@@ -110,11 +110,13 @@ export const DragDropProvider: React.FC<{
   const numberOfCards = currentWords.length;
 
   const completeCurrentPart = useCallback(() => {
+    let sentences:any
     if(playingPartIndex == currentPartIndex){
       const currentSentence = parts[playingPartIndex].sentence;
       setCompletedSentences(prev => {
         if (!prev.includes(currentSentence)) {
-          return [...prev, currentSentence];
+          sentences = [...prev, currentSentence]
+          return sentences;
         }
         return prev;
       });
@@ -140,7 +142,7 @@ export const DragDropProvider: React.FC<{
         setLockedPan(false)
         if(type == "stage-game"){
           const language_ref = languageId
-          endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId})
+          endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})
         } else if(type == "package-game"){
           
         }
