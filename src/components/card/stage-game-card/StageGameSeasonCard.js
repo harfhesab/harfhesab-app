@@ -20,6 +20,7 @@ import GalaxyTwinkle from '../../backgroun-layer/GalaxyTwinkle';
 import CapsuleButton from '../../buttons/CapsuleButton';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import LockedSeasonAnimation from '../../LockedSeasonAnimation';
+import SoundPlayer from '../../../utils/SoundPlayer';
 
 
 
@@ -46,6 +47,22 @@ function StageGameSeasonCard({
   
   const Wrapper = currentScroll == true ? GalaxyTwinkle : View;
 
+  const onClick = async () => {
+    if (!lock) {
+      onPress()
+      try {
+        const player = await SoundPlayer.create('pop.wav', false, false, 0.02);
+        player.play((success) => {
+          if (success) {
+            player.release();
+          }
+        });
+      } catch (e) {
+        null
+      }
+    }
+  };
+
   return (
     <View style={{width:STAGE_GAME_CARD_WIDTH, height:STAGE_GAME_SEASON_CARD_HEIGHT, backgroundColor:"#120426", shadowColor:"#000", elevation:5, borderRadius:15, borderWidth:2, borderColor:colors.border.a1}}>
       <Wrapper style={{ width: STAGE_GAME_CARD_WIDTH-4, height: STAGE_GAME_SEASON_CARD_HEIGHT-4, borderRadius:15 }}>
@@ -59,10 +76,19 @@ function StageGameSeasonCard({
               borderRadius={13}
               style={{borderWidth:1, borderColor:colors.border.a1}}
             />
+            <View style={{width:"100%", alignItems:'center', paddingTop:10, paddingHorizontal:10}}>
+                <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:"100%", backgroundColor:`${colors.primary.a1}40`, paddingVertical:15, paddingHorizontal:10, borderRadius:10, marginHorizontal:10}}>
+                  <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:15  }}>{`فصل ${seasonNumber}`}</Text>
+                  {
+                    lock == true?
+                    <Icon name={"download-cloud"} type={"Feather"} style={{fontSize:20, color:colors.text.a1}}/>:
+                    <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:15  }}>{`${numberStage} مرحله ( ${stageNumberFrom} تا ${stageNumberTo} )`}</Text>
+                  }
+                </View>
+            </View>
           </View>
-          <View style={{flex:1, width:"100%", justifyContent:'flex-start'}}>
-            <View style={{paddingHorizontal:10, paddingTop:20, paddingBottom:30, minHeight:120}}>
-                <MultiLineTextGradientSvg
+          <View style={{flex:1, width:"100%", alignItems:'flex-start', justifyContent:'center', paddingHorizontal:10}}>
+            <MultiLineTextGradientSvg
                   text={title}
                   fontFamily={Font.bakh_black}
                   fontSize={35}
@@ -73,24 +99,21 @@ function StageGameSeasonCard({
                   glowShadow={true}
                   colors={['#ffc107', '#ff9800', '#ff5722']}
                 />
-            </View>
-            <View style={{alignSelf:'flex-start', backgroundColor:`${colors.primary.a1}50`, paddingVertical:15, paddingStart:10, paddingEnd:20, borderRadius:10, marginHorizontal:10}}>
-              <Text style={{ color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30}}>{`${title}`}</Text>
-              <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30  }}>{`فصل ${seasonNumber}`}</Text>
-              <Text style={ { color: colors.text.a1, fontFamily:Font.medium, fontSize:14, lineHeight:30  }}>{`${numberStage} مرحله ( ${stageNumberFrom} تا ${stageNumberTo} )`}</Text>
-            </View>
           </View>
           <View style={{width:"100%", alignItems:'flex-end', paddingBottom:10, paddingEnd:10}}>
             
             <ButtonGradient
-                text={"شروع بازی"}
+                text={lock == true ? undefined : "شروع بازی"}
                 textSize={16}
-                onPress={onPress}
+                onPress={onClick}
                 width={180}
                 height={50}
                 borderRadius={10}
                 fontFamily={Font.bakh_black}
                 textSize={22}
+                iconName={lock == true ? "shield-lock" : "gamepad"}
+                iconType={lock == true ? "MaterialCommunityIcons" : "FontAwesome5"}
+                iconSize={lock == true ? 35 : 30}
             />
           </View>
         </View>

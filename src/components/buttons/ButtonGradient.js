@@ -37,7 +37,7 @@ function ButtonGradient(
                         :
                         (iconName && iconType)?
                         (<View style={{flexDirection:flexDirection??'row', alignItems:'center', width:'100%', justifyContent:justifyContent??'center', paddingHorizontal:15, gap:15}}>
-                            <Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:colors.button_gradient.content_1}}>{text}</Text>
+                            {text&&<Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:colors.button_gradient.content_1}}>{text}</Text>}
                             <Icon name={iconName} type={iconType} style={{fontSize:iconSize??25, color:colors.button_gradient.content_1}}/>
                         </View>)
                         :

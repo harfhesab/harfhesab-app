@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo } from 'react';
+import React, { useRef, useState, memo } from 'react';
 import Svg, {
   Defs,
   LinearGradient,

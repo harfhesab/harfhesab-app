@@ -9,6 +9,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import LottieView from 'lottie-react-native';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import AdsButton from '../../../buttons/AdsButton';
+import MultiLineTextGradientSvg from '../../../text-components/MultiLineTextGradientSvg';
 
 const {width, height} = Dimensions.get('window');
 const GameAlert = React.forwardRef((props, ref)=>{
@@ -27,20 +28,26 @@ const GameAlert = React.forwardRef((props, ref)=>{
 
     const open = (dialog)=>{
         setVisible(true)
-        {dialog?.title&&setTitle(dialog?.title)}
-        {dialog?.admiration&&setAdmiration(dialog?.admiration)}
-        {dialog?.description&&setDescription(dialog?.description)}
-        {dialog?.completedSentences&&setCompletedSentences(dialog?.completedSentences)}
-        {dialog?.options?.cancelable&&setCancelable(dialog?.options?.cancelable)}
-        {dialog?.options?.type&&setType(dialog.options.type)}
-        setButtons(dialog?.buttons??null)
+        setTimeout(()=>{
+            {dialog?.title&&setTitle(dialog?.title)}
+            {dialog?.admiration&&setAdmiration(dialog?.admiration)}
+            {dialog?.description&&setDescription(dialog?.description)}
+            {dialog?.completedSentences&&setCompletedSentences(dialog?.completedSentences)}
+            {dialog?.options?.cancelable&&setCancelable(dialog?.options?.cancelable)}
+            {dialog?.options?.type&&setType(dialog.options.type)}
+            {dialog?.buttons?.length>0&&setButtons(dialog?.buttons)}
+        }, 200)
     }
     const close = () => {
         setVisible(false)
-        const time = (()=>{
+        setTimeout(() => {
             setCancelable(false)
             setType("success")
             setButtons(null)
+            setTitle(null)
+            setAdmiration(null)
+            setDescription(null)
+            setCompletedSentences(null)
         }, 400)
     }
     useImperativeHandle(ref, ()=>({
@@ -68,7 +75,7 @@ const GameAlert = React.forwardRef((props, ref)=>{
                     <View style={{width: contentWidth, backgroundColor:colors.alert_component.background, borderRadius: 15, alignItems: "center"}}>
                         {
                             title?.length > 0&&
-                            <View style={{alignItems:'center', width:"100%", justifyContent:'center', paddingHorizontal:20, paddingVertical:10, backgroundColor:"#FFFFFF10", borderTopStartRadius:15, borderTopEndRadius:15}}>
+                            <View style={{alignItems:'center', width:"100%", justifyContent:'center', paddingHorizontal:20, paddingVertical:10, backgroundColor:`${colors.primary.a1}20`, borderTopStartRadius:15, borderTopEndRadius:15}}>
                                 {title?.length > 0&&<Text style={{fontFamily:Font.bakh_extra_black, fontSize:22, color:colors.text.a1, textAlign:'center'}}>{title}</Text>}
                             </View>
                         }
@@ -96,7 +103,19 @@ const GameAlert = React.forwardRef((props, ref)=>{
                                     <View style={{width:"100%", alignItems:'center', gap:10, paddingVertical:60}}>
                                         {
                                             completedSentences.map((item, index)=>(
-                                                <Text key={index.toString()} style={{fontFamily:Font.medium, fontSize:18, color:colors.text.a1, textAlign:'center'}}>{item}</Text>
+                                                <MultiLineTextGradientSvg
+                                                    key={index.toString()}
+                                                    text={item}
+                                                    fontFamily={Font.bakh_black}
+                                                    glowBlur={10}
+                                                    glowColor={'#FFFFFF90'}
+                                                    glowShadow={true}
+                                                    fontSize={25}
+                                                    shadowBlur={5}
+                                                    dropShadow={true}
+                                                    shadowColor={'#00000095'}
+                                                    colors={['#ffc107', '#ff9800', '#ff5722']}
+                                                />
                                             ))
                                         }
                                     </View>
@@ -105,7 +124,7 @@ const GameAlert = React.forwardRef((props, ref)=>{
                         </View>
                         {
                             (buttons && buttons.length > 0)&&
-                            <View style={{width:"100%", flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, paddingVertical:10, paddingHorizontal:10, backgroundColor:"#FFFFFF10", borderBottomEndRadius:15, borderBottomStartRadius:15}}>
+                            <View style={{width:"100%", flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, paddingVertical:10, paddingHorizontal:10, backgroundColor:`${colors.primary.a1}20`, borderBottomEndRadius:15, borderBottomStartRadius:15}}>
                                 {
                                     buttons.map((item, index)=>(
                                         
@@ -139,4 +158,7 @@ const GameAlert = React.forwardRef((props, ref)=>{
             </Modal>
     )
 })
-export default memo(GameAlert)
+const areEqual = (prevProps, nextProps) => {
+  return true;
+};
+export default memo(GameAlert, areEqual)

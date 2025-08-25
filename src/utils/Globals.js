@@ -1,5 +1,5 @@
 // const url = "https://project.ir";
-const url = "http://192.168.50.146:4000";
+const url = "http://192.168.43.207:4000";
 export default {
     baseURL: `${url}/graphql`,
     uri: url,
