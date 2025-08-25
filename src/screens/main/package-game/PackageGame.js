@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import CollectionPackageList from '../../../components/list-view-items/CollectionPackageList';
-import BannerSwiper from '../../../components/BannerSwiper';
+import BannerSwiper from '../../../components/swiper/BannerSwiper';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import axios from 'axios';
@@ -210,8 +210,7 @@ function PackageGame(props){
         item?.banner == true?
         <View style={{width:width, alignItems:'center'}}>
             <BannerSwiper
-                banner={item}
-                navigation={props.navigation}
+                items={item}
             />
         </View>
         :
