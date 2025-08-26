@@ -13,6 +13,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import TextGradientSvg from '../../text-components/TextGradientSvg';
 import StageNumberCurrently from './StageNumberCurrently';
 import LinearGradient from 'react-native-linear-gradient';
+import { tabScreenSoundInOnClisk } from '../../../utils/sound/SoundFunctions';
 
 
 
@@ -34,6 +35,11 @@ function StageNumber({
 }) {
   const colors = useAppTheme();
 
+  const onClick = async () => {
+    tabScreenSoundInOnClisk()
+    onPress()
+  };
+
   const textLength = number.toString().length
   const fontSizeScale = textLength == 1?1.5:textLength == 2?1.8:textLength == 3?2.2:2.6
   const fontSize = STAGE_CARD_SIZE/fontSizeScale
@@ -49,12 +55,14 @@ function StageNumber({
     <StageNumberCurrently
         text={`${number}`}
         boxSize={STAGE_CARD_SIZE}
-        onPress={onPress}
+        onPress={onClick}
         fontSize={fontSize}
         margin={STAGE_CARD_MARGIN}
     />
     :
-    <TouchableOpacity activeOpacity={0.85} onPress={onPress} style={{ margin:STAGE_CARD_MARGIN}}>
+    <TouchableOpacity activeOpacity={0.85} onPress={onClick
+
+    } style={{ margin:STAGE_CARD_MARGIN}}>
       <LinearGradient colors={["#4fc3f7", "#004479"]} style={{borderRadius:15, width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE}}>
         <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
             <TextGradientSvg

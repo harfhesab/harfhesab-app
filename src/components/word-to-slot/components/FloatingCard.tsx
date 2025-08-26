@@ -28,6 +28,8 @@ import {
 } from "../constants/constants";
 import AnimatedSkiaText from '../../text-components/AnimatedSkiaText';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import { onDropWordToSlotCardInFloating, onDropWordToSlotCardInSlot, onStartDragWordToSlotCard } from '../../../utils/sound/SoundFunctions';
+import { vibrate } from '../../../utils/vibrationManager';
 
 // تنظیمات انیمیشن برای نرم‌تر شدن
 const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
@@ -67,6 +69,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   const dragFromSlot = useSharedValue<number | null>(null);
   const cardSize = useSharedValue(CARD_SIZE_FLOATING);
   const fontSize = useSharedValue(FONT_SIZE_FLOATING_SCALED);
+  const unknownwordFontSize = useSharedValue(FONT_SIZE_SLOTTED *4);
 
   useEffect(() => {
     registerCard({
@@ -143,6 +146,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
         SPRING_CONFIG_SOFT_SLOT
       );
       runOnJS(assignCardToSlot)(id, closestSlot, fromSlot);
+      runOnJS(onDropWordToSlotCardInSlot)();
     } else {
       cardSize.value = withSpring(CARD_SIZE_FLOATING, SPRING_CONFIG_SOFT);
       fontSize.value = withSpring(FONT_SIZE_FLOATING_SCALED, SPRING_CONFIG_SOFT);
@@ -159,15 +163,18 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
       if (fromSlot !== null) {
         runOnJS(unassignCardFromSlot)(fromSlot);
       }
+      runOnJS(onDropWordToSlotCardInFloating)();
     }
   };
 
   const pan = Gesture.Pan()
     .minDistance(0)
-    .enabled(lockedPan == false)
+    .enabled(!lockedPan && ((unknown_word && unknown_word_completed) || (!unknown_word)))
     .onStart(() => {
       'worklet';
       isDragging.value = true;
+      runOnJS(onStartDragWordToSlotCard)();
+      runOnJS(vibrate)();
       cardSize.value = withSpring(CARD_SIZE_DRAGGING, SPRING_CONFIG_SOFT);
       fontSize.value = withSpring(FONT_SIZE_DRAGGING_SCALED, SPRING_CONFIG_SOFT);
       // ذخیره موقعیت فعلی به عنوان افست
@@ -207,11 +214,12 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1}]}>
+      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?2:0, borderColor:unknown_word && !unknown_word_completed?'#fcb900':"transparent", borderStyle:'dotted'}]}>
         <AnimatedSkiaText
-          text={word}
-          fontSize={fontSize}
-          initialFontSize={FONT_SIZE_FLOATING_SCALED}
+          text={(unknown_word && !unknown_word_completed)?"?":word}
+          gradientColors={(unknown_word && !unknown_word_completed) ? ['#fcb900','#ff9800', '#ff5722', '#f44336'] : undefined}
+          fontSize={ (unknown_word && !unknown_word_completed) ? unknownwordFontSize : fontSize}
+          initialFontSize={ (unknown_word && !unknown_word_completed) ? FONT_SIZE_SLOTTED *4:FONT_SIZE_FLOATING_SCALED}
           initialWidth={CARD_SIZE_FLOATING}
           initialHeight={CARD_SIZE_FLOATING}
         />
