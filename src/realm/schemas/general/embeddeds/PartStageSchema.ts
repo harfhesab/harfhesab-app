@@ -3,13 +3,13 @@ import Realm from "realm";
 export class WordStage extends Realm.Object<WordStage> {
   _id!: string;
   word!: string;
-  // word_help_used?: boolean;
+  word_help_used?: boolean;
   word_builded?: boolean;
   word_hint?: string;
   unknown_word?: boolean;
   unknown_word_completed?: boolean;
   letters: string[] = [];
-  // letters_help_used?: number[] = [];
+  letters_help_used?: number[] = [];
   additional_words: string[] = [];
   additional_words_builded: string[] = [];
   hidden_words: string[] = [];
@@ -22,13 +22,13 @@ export class WordStage extends Realm.Object<WordStage> {
     properties: {
       _id: "string",
       word: "string",
-      // word_help_used: { type: "bool", default: false },
+      word_help_used: { type: "bool", default: false },
       word_builded: { type: "bool", default: false },
       word_hint: "string?",
       unknown_word: { type: "bool", default: false },
       unknown_word_completed: { type: "bool", default: false },
       letters: "string[]",
-      // letters_help_used: "int?",
+      letters_help_used: "int?",
       additional_words: "string[]",
       additional_words_builded: "string[]",
       hidden_words: "string[]",

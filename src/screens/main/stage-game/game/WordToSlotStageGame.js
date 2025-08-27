@@ -13,15 +13,17 @@ function WordToSlotStageGame(props){
    
     
     return(
-        <NightSky>
-            <SafeAreaView style={styles.container}>
-                <WordToSlot 
-                    id={stage}
-                    currentStageId={lastStage}
-                    type={"stage-game"}
-                />
-            </SafeAreaView>
-        </NightSky>
+        <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
+            <NightSky>
+                <SafeAreaView style={styles.container}>
+                    <WordToSlot 
+                        id={stage}
+                        currentStageId={lastStage}
+                        type={"stage-game"}
+                    />
+                </SafeAreaView>
+            </NightSky>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({

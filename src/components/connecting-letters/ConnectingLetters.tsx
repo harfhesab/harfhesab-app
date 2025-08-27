@@ -15,14 +15,29 @@ import {
 } from './constants/constants';
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
+import { useRealm } from '../../realm';
 
 const { width, height } = Dimensions.get('window');
 
 interface DataModel {
   
 }
-const ConnectingLetters = () => {
+interface Props {
+  type: string;
+  stageId: string;
+  partIndex: number;
+  wordId: string;
+}
+const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
   const colors = useAppTheme();
+  const realm = useRealm();
+  
+
+  // const partWords = type == "stage-game"? getStageById(realm, stageId)?.parts[partIndex]?.words:undefined
+  // const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
+  // const data = wordIndex !== undefined && wordIndex > -1 ? partWords?[wordIndex]:undefined
+
   const data = {
     game_type : "stage-game", // stage-geme | package-game
     stage : "_id",
@@ -37,7 +52,9 @@ const ConnectingLetters = () => {
   }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <DragDropProvider>
+      <DragDropProvider 
+
+      >
         <SafeAreaView style={styles.container}>
           <WordDisplay data={data}/>
           <View style={styles.boundaryContainer}>
