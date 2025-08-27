@@ -63,6 +63,8 @@ interface ContextProps {
   numberOfCards: number;
   numberParts: number;
   lockedPan: boolean;
+  type: string;
+  stageId: string;
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
@@ -486,7 +488,9 @@ export const DragDropProvider: React.FC<{
         completedSentences,
         numberOfCards,
         numberParts,
-        lockedPan
+        lockedPan,
+        type,
+        stageId
       }}
     >
       {children}

@@ -7,6 +7,9 @@ import NightSky from '../../../../components/particles/NightSky';
 const {width, height} = Dimensions.get("window")
 function ConnectingLettersStageGame(props){
     const colors = useAppTheme()
+    const stageId = props?.route?.params?.stageId
+    const partIndex = props?.route?.params?.partIndex
+    const wordId = props?.route?.params?.wordId
     const data = {
         word : "کوی",
         letters : ["ک", "و", "ی", "ب", "ل", "س"],
@@ -16,11 +19,18 @@ function ConnectingLettersStageGame(props){
    
     
     return(
-        <NightSky>
-            <SafeAreaView style={styles.container}>
-                <ConnectingLetters />
-            </SafeAreaView>
-        </NightSky>
+        <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
+            <NightSky>
+                <SafeAreaView style={styles.container}>
+                    <ConnectingLetters 
+                        type={"stage-game"}
+                        stageId={stageId}
+                        partIndex={partIndex}
+                        wordId={wordId}
+                    />
+                </SafeAreaView>
+            </NightSky>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({

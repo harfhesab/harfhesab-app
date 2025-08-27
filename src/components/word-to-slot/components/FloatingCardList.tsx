@@ -9,7 +9,6 @@ const FloatingCardList = () => {
   const { currentWords, playingPartIndex, lockedPan } = useDragDrop();
 
   const renderedCards = useMemo(() => {
-    console.log('Rendering cards for words:', currentWords);
     return currentWords.map((item, index) => (
       <FloatingCard
         key={`${item.word}_${index}_${playingPartIndex}`}

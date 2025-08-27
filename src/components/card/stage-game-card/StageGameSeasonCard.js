@@ -20,7 +20,7 @@ import GalaxyTwinkle from '../../backgroun-layer/GalaxyTwinkle';
 import CapsuleButton from '../../buttons/CapsuleButton';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import LockedSeasonAnimation from '../../LockedSeasonAnimation';
-import { tabScreenSoundInOnClisk } from '../../../utils/sound/SoundFunctions';
+import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 
 
 
@@ -49,7 +49,7 @@ function StageGameSeasonCard({
 
   const onClick = async () => {
     if (!lock) {
-      tabScreenSoundInOnClisk()
+      tabScreenSoundInOnClick()
       onPress()
     }
   };

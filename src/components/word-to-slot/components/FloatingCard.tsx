@@ -28,8 +28,9 @@ import {
 } from "../constants/constants";
 import AnimatedSkiaText from '../../text-components/AnimatedSkiaText';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
-import { onDropWordToSlotCardInFloating, onDropWordToSlotCardInSlot, onStartDragWordToSlotCard } from '../../../utils/sound/SoundFunctions';
+import { dropWordToSlotCardInFloatingSound, dropWordToSlotCardInSlotSound, onStartDragWordToSlotCardSound, tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import { vibrate } from '../../../utils/vibrationManager';
+import { navigate } from '../../../main/navigationService';
 
 // تنظیمات انیمیشن برای نرم‌تر شدن
 const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
@@ -50,7 +51,7 @@ interface Position {
 
 function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
   const colors = useAppTheme()
-  const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards, lockedPan } = useDragDrop();
+  const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards, lockedPan, type, stageId, playingPartIndex } = useDragDrop();
   const fontSizeScale = (word.length < 3)?1.5:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
@@ -146,7 +147,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
         SPRING_CONFIG_SOFT_SLOT
       );
       runOnJS(assignCardToSlot)(id, closestSlot, fromSlot);
-      runOnJS(onDropWordToSlotCardInSlot)();
+      runOnJS(dropWordToSlotCardInSlotSound)();
     } else {
       cardSize.value = withSpring(CARD_SIZE_FLOATING, SPRING_CONFIG_SOFT);
       fontSize.value = withSpring(FONT_SIZE_FLOATING_SCALED, SPRING_CONFIG_SOFT);
@@ -163,7 +164,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
       if (fromSlot !== null) {
         runOnJS(unassignCardFromSlot)(fromSlot);
       }
-      runOnJS(onDropWordToSlotCardInFloating)();
+      runOnJS(dropWordToSlotCardInFloatingSound)();
     }
   };
 
@@ -173,7 +174,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     .onStart(() => {
       'worklet';
       isDragging.value = true;
-      runOnJS(onStartDragWordToSlotCard)();
+      runOnJS(onStartDragWordToSlotCardSound)();
       runOnJS(vibrate)();
       cardSize.value = withSpring(CARD_SIZE_DRAGGING, SPRING_CONFIG_SOFT);
       fontSize.value = withSpring(FONT_SIZE_DRAGGING_SCALED, SPRING_CONFIG_SOFT);
@@ -212,12 +213,27 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     elevation: isDragging.value ? 12 : 5,
   }));
 
+  const handleNavigate = () => {
+    if(type == "stage-game"){
+      navigate('ConnectingLettersStageGame', {stageId:stageId, partIndex:playingPartIndex, wordId:_id});
+    }
+  };
+
+  const touch = Gesture.Tap()
+  .enabled(unknown_word == true && unknown_word_completed == false)
+  .onTouchesDown(() => {
+    'worklet';
+    runOnJS(tabScreenSoundInOnClick)()
+    runOnJS(vibrate)();
+    runOnJS(handleNavigate)()
+  });
+
   return (
-    <GestureDetector gesture={pan}>
-      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?2:0, borderColor:unknown_word && !unknown_word_completed?'#fcb900':"transparent", borderStyle:'dotted'}]}>
+    <GestureDetector gesture={Gesture.Simultaneous(pan, touch)}>
+      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?2:0, borderColor:unknown_word && !unknown_word_completed?'#ff9800':"transparent", borderStyle:'dotted'}]}>
         <AnimatedSkiaText
           text={(unknown_word && !unknown_word_completed)?"?":word}
-          gradientColors={(unknown_word && !unknown_word_completed) ? ['#fcb900','#ff9800', '#ff5722', '#f44336'] : undefined}
+          gradientColors={(unknown_word && !unknown_word_completed) ? ['#ff9800', '#ff5722', '#f44336'] : undefined}
           fontSize={ (unknown_word && !unknown_word_completed) ? unknownwordFontSize : fontSize}
           initialFontSize={ (unknown_word && !unknown_word_completed) ? FONT_SIZE_SLOTTED *4:FONT_SIZE_FLOATING_SCALED}
           initialWidth={CARD_SIZE_FLOATING}

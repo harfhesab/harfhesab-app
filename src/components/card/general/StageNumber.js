@@ -13,7 +13,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import TextGradientSvg from '../../text-components/TextGradientSvg';
 import StageNumberCurrently from './StageNumberCurrently';
 import LinearGradient from 'react-native-linear-gradient';
-import { tabScreenSoundInOnClisk } from '../../../utils/sound/SoundFunctions';
+import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 
 
 
@@ -36,7 +36,7 @@ function StageNumber({
   const colors = useAppTheme();
 
   const onClick = async () => {
-    tabScreenSoundInOnClisk()
+    tabScreenSoundInOnClick()
     onPress()
   };
 
