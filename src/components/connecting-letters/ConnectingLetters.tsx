@@ -34,31 +34,32 @@ const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
   const realm = useRealm();
   
 
-  // const partWords = type == "stage-game"? getStageById(realm, stageId)?.parts[partIndex]?.words:undefined
-  // const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
-  // const data = wordIndex !== undefined && wordIndex > -1 ? partWords?[wordIndex]:undefined
+  const partWords = type == "stage-game"? getStageById(realm, stageId)?.parts[partIndex]?.words:undefined
+  const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
+  const data = wordIndex !== undefined && wordIndex > -1  && partWords? partWords[wordIndex]:undefined
 
-  const data = {
-    game_type : "stage-game", // stage-geme | package-game
-    stage : "_id",
-    language : "_id",
-    package : "_id",
-    sentence : "_id",
-    word : "کوی",
-    word_builded : false,
-    letters : ["ک", "و", "ی", "ب", "ل", "س"],
-    additional_words : ["سیبوک", "کولی", "بیل", "سیب", "کولیبس"],
-    hidden_words : ["سیل", "بوس"]
-  }
+  // const data = {
+  //   game_type : "stage-game", // stage-geme | package-game
+  //   stage : "_id",
+  //   language : "_id",
+  //   package : "_id",
+  //   sentence : "_id",
+  //   word : "کوی",
+  //   word_builded : false,
+  //   letters : ["ک", "و", "ی", "ب", "ل", "س"],
+  //   additional_words : ["سیبوک", "کولی", "بیل", "سیب", "کولیبس"],
+  //   hidden_words : ["سیل", "بوس"]
+  // }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DragDropProvider 
-
+        realm={realm}
+        data={data}
       >
         <SafeAreaView style={styles.container}>
-          <WordDisplay data={data}/>
+          <WordDisplay />
           <View style={styles.boundaryContainer}>
-            <FloatingCardList letters={data?.letters} />
+            <FloatingCardList/>
           </View>
         </SafeAreaView>
       </DragDropProvider>

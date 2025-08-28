@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import FloatingCard from './FloatingCard';
+import { useDragDrop } from '../context/DragDropContext';
 
-interface Props {
-  letters: string[];
-}
 
-const FloatingCardList = ({ letters }: Props) => {
+const FloatingCardList = () => {
+  const { data } = useDragDrop();
+  const letters = data?.letters
   const renderedCards = useMemo(() => {
-    return letters.map((letter, index) => (
+    return letters.map((letter:string, index:number) => (
       <FloatingCard key={`${letter}_${index}`} letter={letter} index={index} />
     ));
   }, [letters]);

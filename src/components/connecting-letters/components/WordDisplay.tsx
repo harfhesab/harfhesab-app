@@ -16,19 +16,11 @@ import { WORD_DISPLAY_DURATION } from '../constants/constants';
 import LinearGradient from 'react-native-linear-gradient';
 import TextSkia from '../../text-components/TextSkia';
 
-interface Props {
-  data: {
-    word: string;
-    letters: string[];
-    additional_words: string[];
-    hidden_words: string[];
-  };
-}
 
 const { width } = Dimensions.get('window');
 
-const WordDisplay = ({ data }: Props) => {
-  const { word, draggedCardId, setWord } = useDragDrop();
+const WordDisplay = () => {
+  const { word, draggedCardId, setWord, data } = useDragDrop();
   const colors = useAppTheme();
   const [displayedWord, setDisplayedWord] = useState<string>('');
   const [isValidWord, setIsValidWord] = useState<boolean | null>(null);
@@ -56,9 +48,9 @@ const WordDisplay = ({ data }: Props) => {
     }>
   >(
     [
-      ...data.additional_words.map((w) => ({
+      ...data.additional_words.map((w:string) => ({
         word: w,
-        squares: w.split('').map((char) => ({
+        squares: w.split('').map(() => ({
           char: useSharedValue(''),
           scale: useSharedValue(1),
           backgroundColor: useSharedValue('transparent'),
@@ -66,7 +58,7 @@ const WordDisplay = ({ data }: Props) => {
       })),
       {
         word: data.word,
-        squares: data.word.split('').map((char) => ({
+        squares: data.word.split('').map(() => ({
           char: useSharedValue(''),
           scale: useSharedValue(1),
           backgroundColor: useSharedValue('transparent'),

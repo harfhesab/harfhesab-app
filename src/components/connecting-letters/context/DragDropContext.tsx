@@ -17,6 +17,7 @@ import {
   MAX_CARDS,
   FOLLOW_DELAY,
 } from '../constants/constants';
+import Realm from 'realm';
 
 interface Position {
   x: number;
@@ -51,12 +52,21 @@ interface ContextProps {
   cards: Record<string, Card>;
   word: string[];
   draggedCardId: string | null;
-  setWord: React.Dispatch<React.SetStateAction<string[]>>; // اضافه کردن setWord
+  setWord: React.Dispatch<React.SetStateAction<string[]>>;
+  data: any;
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
 
-export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DragDropProvider: React.FC<{
+  children: React.ReactNode;
+  realm: Realm;
+  data: any;
+}> = ({
+  children,
+  realm,
+  data,
+}) => {
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [word, setWord] = useState<string[]>([]);
   const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
@@ -405,7 +415,8 @@ export const DragDropProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         cards,
         word,
         draggedCardId,
-        setWord, // ارائه setWord در context
+        setWord,
+        data
       }}
     >
       {children}
