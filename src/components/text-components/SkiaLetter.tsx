@@ -2,9 +2,9 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Canvas, Text, useFont, Group, Skia, vec, TileMode, PaintStyle, Shadow } from '@shopify/react-native-skia';
 import Animated, { useDerivedValue, SharedValue } from 'react-native-reanimated';
-import { prepareRTLText } from '../../../utils/prepareRTLText';
+import { prepareRTLText } from '../../utils/prepareRTLText';
 
-interface AnimatedSkiaTextProps {
+interface SkiaLetterProps {
   text: string;
   fontSize: SharedValue<number>;
   initialFontSize: number;
@@ -17,7 +17,7 @@ interface AnimatedSkiaTextProps {
   borderWidth?: number;
 }
 
-const Letter: React.FC<AnimatedSkiaTextProps> = ({ 
+const SkiaLetter: React.FC<SkiaLetterProps> = ({ 
   text,
   fontSize,
   initialFontSize,
@@ -40,7 +40,7 @@ const Letter: React.FC<AnimatedSkiaTextProps> = ({
   const gradientPaint = Skia.Paint();
   gradientPaint.setShader(gradient);
 
-  const font = useFont(require('../../../assets/fonts/YekanBakhFaNum-ExtraBlack.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
+  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-ExtraBlack.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
   const scale = useDerivedValue(() => fontSize.value / initialFontSize, [fontSize]);
   const transform = useDerivedValue(() => [{ scale: scale.value }], [scale]);
 
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Letter;
+export default SkiaLetter;

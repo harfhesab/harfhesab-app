@@ -334,15 +334,29 @@ export const DragDropProvider: React.FC<{
 
   const frameCallback = useFrameCallback(() => {
     'worklet';
-    Object.keys(cards).forEach(cardId => {
-      const card = cards[cardId];
-      if (!card || card.isDragging.value || card.isAssigned.value) return;
+    const allCardIds = Object.keys(cards);
+    
+    // فقط کارت‌هایی که شناور هستند را برای فیزیک در نظر بگیرید
+    const floatingCardIds = allCardIds.filter(id => {
+      const card = cards[id];
+      return card && !card.isDragging.value && !card.isAssigned.value;
+    });
 
+    const numCards = floatingCardIds.length;
+    if (numCards < 2) { // اگر کمتر از ۲ کارت شناور داریم، نیازی به بررسی برخورد نیست
+        return;
+    }
+
+    // مرحله ۱: به‌روزرسانی اولیه موقعیت و برخورد با دیوارها برای همه کارت‌های شناور
+    for (let i = 0; i < numCards; i++) {
+      const cardId = floatingCardIds[i];
+      const card = cards[cardId];
+      
       const pos = card.position.value;
       const velocity = card.velocity.value;
 
       if (isNaN(pos.x) || isNaN(pos.y) || isNaN(velocity.vx) || isNaN(velocity.vy)) {
-        return;
+        continue;
       }
 
       // محدود کردن سرعت
@@ -358,108 +372,96 @@ export const DragDropProvider: React.FC<{
       }
 
       // محاسبه موقعیت جدید بر اساس سرعت
-      let newX = pos.x + velocity.vx * 0.012;
-      let newY = pos.y + velocity.vy * 0.012;
+      let newX = pos.x + velocity.vx * 0.016; // 0.016 for ~60fps
+      let newY = pos.y + velocity.vy * 0.016;
 
       // برخورد با دیواره‌ها
       if (newX < 0) {
         newX = 0;
-        velocity.vx = -velocity.vx;
+        velocity.vx *= -1;
       } else if (newX > BOUNDARY_WIDTH - CARD_SIZE_FLOATING) {
         newX = BOUNDARY_WIDTH - CARD_SIZE_FLOATING;
-        velocity.vx = -velocity.vx;
+        velocity.vx *= -1;
       }
       if (newY < 0) {
         newY = 0;
-        velocity.vy = -velocity.vy;
+        velocity.vy *= -1;
       } else if (newY > BOUNDARY_HEIGHT - CARD_SIZE_FLOATING) {
         newY = BOUNDARY_HEIGHT - CARD_SIZE_FLOATING;
-        velocity.vy = -velocity.vy;
+        velocity.vy *= -1;
       }
+      
+      card.position.value = { x: newX, y: newY };
+      card.velocity.value = velocity;
+    }
 
-      // برخورد مستطیلی با کارت‌های دیگر
-      Object.keys(cards).forEach(otherCardId => {
-        if (otherCardId === cardId || cards[otherCardId].isDragging.value || cards[otherCardId].isAssigned.value) return;
-        const otherPos = cards[otherCardId].position.value;
-        const otherVel = cards[otherCardId].velocity.value;
-        if (!otherPos || !otherVel) return;
+    // مرحله ۲: بررسی برخورد کارت‌ها با یکدیگر و اعمال واکنش فیزیکی
+    for (let i = 0; i < numCards; i++) {
+      const cardA = cards[floatingCardIds[i]];
+
+      for (let j = i + 1; j < numCards; j++) {
+        const cardB = cards[floatingCardIds[j]];
+
+        const posA = cardA.position.value;
+        const velA = cardA.velocity.value;
+        const posB = cardB.position.value;
+        const velB = cardB.velocity.value;
 
         // تعریف مستطیل‌های کارت‌ها
-        const cardRect = {
-          left: newX,
-          right: newX + CARD_SIZE_FLOATING,
-          top: newY,
-          bottom: newY + CARD_SIZE_FLOATING,
-        };
-        const otherRect = {
-          left: otherPos.x,
-          right: otherPos.x + CARD_SIZE_FLOATING,
-          top: otherPos.y,
-          bottom: otherPos.y + CARD_SIZE_FLOATING,
-        };
+        const rectA = { left: posA.x, right: posA.x + CARD_SIZE_FLOATING, top: posA.y, bottom: posA.y + CARD_SIZE_FLOATING };
+        const rectB = { left: posB.x, right: posB.x + CARD_SIZE_FLOATING, top: posB.y, bottom: posB.y + CARD_SIZE_FLOATING };
 
         // بررسی همپوشانی مستطیل‌ها
         const isColliding =
-          cardRect.left < otherRect.right &&
-          cardRect.right > otherRect.left &&
-          cardRect.top < otherRect.bottom &&
-          cardRect.bottom > otherRect.top;
+          rectA.left < rectB.right &&
+          rectA.right > rectB.left &&
+          rectA.top < rectB.bottom &&
+          rectA.bottom > rectB.top;
 
         if (isColliding) {
-          // محاسبه مقدار همپوشانی در محورهای x و y
-          const overlapX = Math.min(cardRect.right - otherRect.left, otherRect.right - cardRect.left);
-          const overlapY = Math.min(cardRect.bottom - otherRect.top, otherRect.bottom - cardRect.top);
+          // محاسبه مقدار همپوشانی
+          const overlapX = Math.min(rectA.right - rectB.left, rectB.right - rectA.left);
+          const overlapY = Math.min(rectA.bottom - rectB.top, rectB.bottom - rectA.top);
 
-          // پیدا کردن محور با کمترین همپوشانی برای جابه‌جایی
+          // جابه‌جایی برای رفع همپوشانی
           let dx = 0;
           let dy = 0;
           if (overlapX < overlapY) {
-            // جابه‌جایی در محور x
-            if (cardRect.left < otherRect.left) {
-              dx = -(overlapX / 2);
-            } else {
-              dx = overlapX / 2;
-            }
+            dx = rectA.left < rectB.left ? -(overlapX / 2) : overlapX / 2;
           } else {
-            // جابه‌جایی در محور y
-            if (cardRect.top < otherRect.top) {
-              dy = -(overlapY / 2);
-            } else {
-              dy = overlapY / 2;
-            }
+            dy = rectA.top < rectB.top ? -(overlapY / 2) : overlapY / 2;
           }
 
-          // محاسبه جهت برخورد
-          const collisionNormalX = dx !== 0 ? dx / Math.abs(dx) : 0;
-          const collisionNormalY = dy !== 0 ? dy / Math.abs(dy) : 0;
+          posA.x += dx;
+          posA.y += dy;
+          posB.x -= dx;
+          posB.y -= dy;
+          
+          // محاسبه جهت برخورد (نرمال)
+          const collisionNormalX = dx !== 0 ? (dx > 0 ? 1 : -1) : 0;
+          const collisionNormalY = dy !== 0 ? (dy > 0 ? 1 : -1) : 0;
 
           // به‌روزرسانی سرعت‌ها (برخورد الاستیک)
-          const relativeVx = velocity.vx - otherVel.vx;
-          const relativeVy = velocity.vy - otherVel.vy;
+          const relativeVx = velA.vx - velB.vx;
+          const relativeVy = velA.vy - velB.vy;
           const dotProduct = relativeVx * collisionNormalX + relativeVy * collisionNormalY;
 
           if (dotProduct < 0) {
-            // فقط اگر کارت‌ها به سمت هم حرکت می‌کنن، سرعت رو تغییر بده
-            velocity.vx -= dotProduct * collisionNormalX;
-            velocity.vy -= dotProduct * collisionNormalY;
-            otherVel.vx += dotProduct * collisionNormalX;
-            otherVel.vy += dotProduct * collisionNormalY;
+            const impulse = dotProduct; // Assuming mass of 1 for both
+            velA.vx -= impulse * collisionNormalX;
+            velA.vy -= impulse * collisionNormalY;
+            velB.vx += impulse * collisionNormalX;
+            velB.vy += impulse * collisionNormalY;
           }
 
-          // جابه‌جایی کارت‌ها برای رفع همپوشانی
-          newX += dx;
-          newY += dy;
-          otherPos.x -= dx;
-          otherPos.y -= dy;
-
-          cards[otherCardId].position.value = { x: otherPos.x, y: otherPos.y };
-          cards[otherCardId].velocity.value = { vx: otherVel.vx, vy: otherVel.vy };
+          // به‌روزرسانی مقادیر در shared value ها
+          cardA.position.value = { x: posA.x, y: posA.y };
+          cardB.position.value = { x: posB.x, y: posB.y };
+          cardA.velocity.value = { vx: velA.vx, vy: velA.vy };
+          cardB.velocity.value = { vx: velB.vx, vy: velB.vy };
         }
-      });
-
-      card.position.value = { x: newX, y: newY };
-      card.velocity.value = { vx: velocity.vx, vy: velocity.vy };
-    });
+      }
+    }
   }, false);
 
   useEffect(() => {

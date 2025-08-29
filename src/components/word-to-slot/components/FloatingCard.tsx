@@ -230,10 +230,10 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   return (
     <GestureDetector gesture={Gesture.Simultaneous(pan, touch)}>
-      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?2:0, borderColor:unknown_word && !unknown_word_completed?'#ff9800':"transparent", borderStyle:'dotted'}]}>
+      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?3:0, borderColor:unknown_word && !unknown_word_completed?'#fcb900':"transparent", borderStyle:'dotted'}]}>
         <AnimatedSkiaText
           text={(unknown_word && !unknown_word_completed)?"?":word}
-          gradientColors={(unknown_word && !unknown_word_completed) ? ['#ff9800', '#ff5722', '#f44336'] : undefined}
+          gradientColors={(unknown_word && !unknown_word_completed) ? ['#FF8800',  '#ff0f0f'] : undefined}
           fontSize={ (unknown_word && !unknown_word_completed) ? unknownwordFontSize : fontSize}
           initialFontSize={ (unknown_word && !unknown_word_completed) ? FONT_SIZE_SLOTTED *4:FONT_SIZE_FLOATING_SCALED}
           initialWidth={CARD_SIZE_FLOATING}

@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
-import { LettersProvider } from './context/LettersContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { DragDropProvider } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
 import WordDisplay from './components/WordDisplay';
 import {
@@ -12,6 +13,7 @@ import {
   BOUNDARY_BORDER_WIDTH,
   BOUNDARY_BOTTOM_OFFSET,
 } from './constants/constants';
+import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
 import { useRealm } from '../../realm';
@@ -35,10 +37,22 @@ const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
   const partWords = type == "stage-game"? getStageById(realm, stageId)?.parts[partIndex]?.words:undefined
   const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
   const data = wordIndex !== undefined && wordIndex > -1  && partWords? partWords[wordIndex]:undefined
-  
+
+  // const data = {
+  //   game_type : "stage-game", // stage-geme | package-game
+  //   stage : "_id",
+  //   language : "_id",
+  //   package : "_id",
+  //   sentence : "_id",
+  //   word : "کوی",
+  //   word_builded : false,
+  //   letters : ["ک", "و", "ی", "ب", "ل", "س"],
+  //   additional_words : ["سیبوک", "کولی", "بیل", "سیب", "کولیبس"],
+  //   hidden_words : ["سیل", "بوس"]
+  // }
   return (
-    <View style={{ flex: 1 }}>
-      <LettersProvider 
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <DragDropProvider 
         realm={realm}
         data={data}
       >
@@ -48,8 +62,8 @@ const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
             <FloatingCardList/>
           </View>
         </SafeAreaView>
-      </LettersProvider>
-    </View>
+      </DragDropProvider>
+    </GestureHandlerRootView>
   );
 };
 

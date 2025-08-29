@@ -21,14 +21,14 @@ function ConnectingLettersStageGame(props){
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
             <NightSky>
-                <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
                     <ConnectingLetters 
                         type={"stage-game"}
                         stageId={stageId}
                         partIndex={partIndex}
                         wordId={wordId}
                     />
-                </SafeAreaView>
+                </View>
             </NightSky>
         </SafeAreaView>
     )

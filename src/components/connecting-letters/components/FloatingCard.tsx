@@ -1,267 +1,112 @@
-import React, { memo, useEffect } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  runOnJS,
-  useFrameCallback,
+  useAnimatedReaction,
 } from 'react-native-reanimated';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { useDragDrop } from '../context/DragDropContext';
-import Font from '../../../utils/Font';
+import { useLetters } from '../context/LettersContext';
 import {
-  BOUNDARY_WIDTH,
-  BOUNDARY_HEIGHT,
-  BOUNDARY_X,
-  BOUNDARY_Y,
-  CARD_BORDER_RADIUS,
   CARD_SIZE_FLOATING,
-  CARD_SIZE_DRAGGING,
-  CARD_SIZE_ATTACHED,
   FONT_SIZE_FLOATING,
-  FONT_SIZE_DRAGGING,
-  FONT_SIZE_ATTACHED,
-  MAGNET_OVERLAP_THRESHOLD,
-  MAGNET_DELAY,
-  SPRING_CONFIG_MAGNET,
-  MAX_CARDS,
-  ZINDEX_BASE_ATTACHED,
-  ZINDEX_BASE_FLOATING,
-  ZINDEX_DRAGGING,
+  CARD_SIZE_SELECTED,
+  CARD_ZINDEX_SELECTED,
+  CARD_ZINDEX_NORMAL,
+  CARD_BORDER_RADIUS,
+  FONT_SIZE_SELECTED,
 } from '../constants/constants';
-import Letter from './Letter';
+import SkiaLetter from '../../text-components/SkiaLetter';
+import { selectCardSoundInLettersConnecting } from '../../../utils/sound/SoundFunctions';
+
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 interface Props {
   letter: string;
   index: number;
 }
 
-interface Position {
-  x: number;
-  y: number;
-}
-
 function FloatingCard({ letter, index }: Props) {
   const id = `${letter}_${index}`;
-  const initialX = BOUNDARY_X + Math.random() * (BOUNDARY_WIDTH - CARD_SIZE_FLOATING);
-  const initialY = BOUNDARY_Y + Math.random() * (BOUNDARY_HEIGHT - CARD_SIZE_FLOATING);
+
+  // موقعیت اولیه (مثل کد قبلی‌ات)
+  const initialX = Math.random() * (/* use BOUNDARY_WIDTH - CARD_SIZE_FLOATING or keep your calc */ 200);
+  const initialY = Math.random() * 200;
+
   const position = useSharedValue({ x: initialX, y: initialY });
-  const velocity = useSharedValue({
-    vx: (Math.random() - 0.5) * 200,
-    vy: (Math.random() - 0.5) * 200,
-  });
-  const offset = useSharedValue({ x: 0, y: 0 });
-  const isDragging = useSharedValue(false);
-  const isAttached = useSharedValue(false);
-  const attachedTo = useSharedValue<string | null>(null);
-  const attachIndex = useSharedValue(0);
+  const velocity = useSharedValue({ vx: (Math.random() - 0.5) * 200, vy: (Math.random() - 0.5) * 200 });
   const cardSize = useSharedValue(CARD_SIZE_FLOATING);
   const fontSize = useSharedValue(FONT_SIZE_FLOATING);
-  const overlapDuration = useSharedValue<Record<string, number>>({});
 
-  const { registerCard, attachCard, detachCards, checkWord, startDragging, cards } = useDragDrop();
+  // selected: 0 یا 1
+  const selected = useSharedValue<number>(0);
+
+  const { registerCard, selectCard } = useLetters();
 
   useEffect(() => {
     registerCard({
       id,
       letter,
-      homePosition: { x: initialX, y: initialY },
+      startPosition: { x: initialX, y: initialY },
       position,
       velocity,
-      isDragging,
-      isAttached,
       cardSize,
       fontSize,
-      attachedTo,
-      attachIndex,
+      selected,
     });
-    return () => {};
+    // cleanup ندارد چون کارت‌ها در context ممکن است برای بعضی سناریوها حذف نشوند
   }, [id, registerCard]);
 
-  const calculateOverlap = (cardPos: Position, otherPos: Position) => {
-    'worklet';
-    const currentSize = cardSize.value;
-    const cardRect = {
-      left: cardPos.x,
-      right: cardPos.x + currentSize,
-      top: cardPos.y,
-      bottom: cardPos.y + currentSize,
-    };
-    const otherRect = {
-      left: otherPos.x,
-      right: otherPos.x + CARD_SIZE_FLOATING,
-      top: otherPos.y,
-      bottom: otherPos.y + CARD_SIZE_FLOATING,
-    };
-
-    const overlapX = Math.min(cardRect.right, otherRect.right) - Math.max(cardRect.left, otherRect.left);
-    const overlapY = Math.min(cardRect.bottom, otherRect.bottom) - Math.max(cardRect.top, otherRect.top);
-    const overlapArea = overlapX <= 0 || overlapY <= 0 ? 0 : overlapX * overlapY;
-    const otherArea = CARD_SIZE_FLOATING * CARD_SIZE_FLOATING;
-    return overlapArea / otherArea;
-  };
-
-  const checkMagnet = () => {
-    'worklet';
-    if (!isDragging.value) return;
-
-    const currentPos = position.value;
-    if (!currentPos) return;
-
-    // Find the last attached card in the chain
-    let lastAttachedId = id;
-    let currentId = id;
-    while (currentId) {
-      const nextCard = Object.values(cards).find(
-        (c) => c.attachedTo.value === currentId && c.id !== id
-      );
-      if (nextCard) {
-        lastAttachedId = nextCard.id;
-        currentId = nextCard.id;
+  // واکنش به تغییر selected (انیمیشن با spring)
+  useAnimatedReaction(
+    () => selected.value,
+    (sel) => {
+      if (sel === 1) {
+        cardSize.value = withSpring(CARD_SIZE_SELECTED, { stiffness: 300, damping: 18 });
+        fontSize.value = withSpring(FONT_SIZE_SELECTED, { stiffness: 300, damping: 18 });
       } else {
-        break;
+        cardSize.value = withSpring(CARD_SIZE_FLOATING, { stiffness: 300, damping: 18 });
+        fontSize.value = withSpring(FONT_SIZE_FLOATING, { stiffness: 300, damping: 18 });
       }
-    }
-
-    // Update overlap durations
-    Object.keys(cards).forEach((otherId) => {
-      if (otherId === id || cards[otherId]?.isAttached?.value || cards[otherId]?.isDragging?.value) return;
-      const otherPos = cards[otherId]?.position?.value;
-      if (!otherPos) return;
-
-      const overlapRatio = calculateOverlap(currentPos, otherPos);
-
-      if (overlapRatio > MAGNET_OVERLAP_THRESHOLD) {
-        // Increment overlap duration (assuming 60 FPS, 1/60 seconds per frame)
-        overlapDuration.value[otherId] = (overlapDuration.value[otherId] || 0) + 1000 / 60;
-        if (overlapDuration.value[otherId] >= MAGNET_DELAY) {
-          runOnJS(attachCard)(otherId, lastAttachedId);
-          overlapDuration.value[otherId] = 0; // Reset duration after attaching
-        }
-      } else {
-        // Reset duration if overlap is broken
-        overlapDuration.value[otherId] = 0;
-      }
-    });
-
-    // Update overlapDuration shared value
-    overlapDuration.value = { ...overlapDuration.value };
-  };
-
-  const frameCallback = useFrameCallback(() => {
-    'worklet';
-    checkMagnet();
-  });
-
-  useEffect(() => {
-    frameCallback.setActive(true);
-    return () => {
-      frameCallback.setActive(false);
-    };
-  }, [frameCallback]);
-
-  const pan = Gesture.Pan()
-    .minDistance(0)
-    .onStart(() => {
-      'worklet';
-      try {
-        isDragging.value = true;
-        cardSize.value = withSpring(CARD_SIZE_DRAGGING, SPRING_CONFIG_MAGNET);
-        fontSize.value = withSpring(FONT_SIZE_DRAGGING, SPRING_CONFIG_MAGNET);
-        offset.value = { x: position.value.x, y: position.value.y };
-        position.value = {
-          x: position.value.x - (CARD_SIZE_FLOATING - cardSize.value) / 2,
-          y: position.value.y - (CARD_SIZE_FLOATING - cardSize.value) / 2,
-        };
-        velocity.value = { vx: 0, vy: 0 };
-        if (isAttached.value && attachedTo.value !== id) {
-          runOnJS(detachCards)(id);
-        }
-        runOnJS(startDragging)(id);
-        runOnJS(attachCard)(id, id, true);
-        // Reset overlap durations
-        overlapDuration.value = {};
-      } catch (error) {
-        runOnJS(console.error)('Error in pan onStart:', error);
-      }
-    })
-    .onUpdate((e) => {
-      'worklet';
-      try {
-        position.value = {
-          x: offset.value.x + e.translationX - (cardSize.value - CARD_SIZE_FLOATING) / 2,
-          y: offset.value.y + e.translationY - (cardSize.value - CARD_SIZE_FLOATING) / 2,
-        };
-      } catch (error) {
-        runOnJS(console.error)('Error in pan onUpdate:', error);
-      }
-    })
-    .onEnd(() => {
-      'worklet';
-      try {
-        isDragging.value = false;
-        overlapDuration.value = {};
-        runOnJS(checkWord)(id);
-      } catch (error) {
-        runOnJS(console.error)('Error in pan onEnd:', error);
-      }
-    });
+    },
+    []
+  );
 
   const cardStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: position.value.x }, { translateY: position.value.y }],
     width: cardSize.value,
     height: cardSize.value,
-    zIndex: isDragging.value
-      ? ZINDEX_DRAGGING
-      : isAttached.value
-      ? ZINDEX_BASE_ATTACHED + (MAX_CARDS - attachIndex.value)
-      : ZINDEX_BASE_FLOATING,
-    elevation: isDragging.value
-      ? 12
-      : isAttached.value
-      ? 8 + (MAX_CARDS - attachIndex.value)
-      : 5,
-  }));
+    zIndex: selected.value === 1 ? CARD_ZINDEX_SELECTED : CARD_ZINDEX_NORMAL,
+    backgroundColor: selected.value === 1 ? '#fcb90099' : '#fcb900',
+    elevation: selected.value === 1 ? 1 : 10,
+  }), []);
 
-  const textStyle = useAnimatedStyle(() => ({
-    fontSize: fontSize.value,
-  }));
+  const onClick = () => {
+    selectCard(id);
+    selectCardSoundInLettersConnecting()
+  };
 
   return (
-    <GestureDetector gesture={pan}>
-      <Animated.View style={[styles.card, cardStyle]}>
-        <Letter
-          text={letter}
-          fontSize={fontSize}
-          initialFontSize={FONT_SIZE_FLOATING}
-          initialWidth={CARD_SIZE_FLOATING}
-          initialHeight={CARD_SIZE_FLOATING}
-        />
-      </Animated.View>
-    </GestureDetector>
+    <AnimatedTouchableOpacity activeOpacity={0.8} onPress={onClick} style={[styles.card, cardStyle]}>
+      <SkiaLetter
+        text={letter}
+        fontSize={fontSize}
+        initialFontSize={FONT_SIZE_FLOATING}
+        initialWidth={CARD_SIZE_FLOATING}
+        initialHeight={CARD_SIZE_FLOATING}
+      />
+    </AnimatedTouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
     position: 'absolute',
-    borderRadius: CARD_BORDER_RADIUS,
-    backgroundColor: '#fcb900',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
     overflow: 'visible',
-  },
-  text: {
-    color: '#333',
-    fontFamily: Font.bakh_extra_black,
-    textAlign: 'center',
+    borderRadius: CARD_BORDER_RADIUS,
   },
 });
 
-export default memo(FloatingCard);
+export default FloatingCard;
