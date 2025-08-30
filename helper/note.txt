@@ -1,1 +1,9 @@
+gradlew --refresh-dependencies
+
 gradlew clean build --refresh-dependencies
+
+gradlew clean --refresh-dependencies
+
+gradlew build --refresh-dependencies --debug
+
+gradlew.bat assembleDebug --stacktrace

@@ -32,6 +32,7 @@ interface ContextProps {
   cards: Record<string, Card>;
   data: any;
   selectCard: (id: string) => void;
+  connectedLetters: string[];
 }
 
 const LettersContext = createContext<ContextProps>({} as ContextProps);
@@ -42,6 +43,7 @@ export const LettersProvider: React.FC<{
   data: any;
 }> = ({ children, realm, data }) => {
   const [cards, setCards] = useState<Record<string, Card>>({});
+  const [connectedLetters, setConnectedLetters] = useState<string[]>([])
   // یک ref برای دسترسی بدون رندر به کارت‌ها (برای تایمر و select)
   const cardsRef = useRef<Record<string, Card>>({});
   const selectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -80,7 +82,8 @@ export const LettersProvider: React.FC<{
     if (!card) return;
     // فقط همان کارت را انتخاب کن (selected = 1)
     card.selected.value = 1;
-
+    const newLetter = card.letter
+    setConnectedLetters(prev => [...prev, newLetter]);
     // ریست/استارت تایمر مشترک
     clearSelectionTimer();
     selectionTimerRef.current = setTimeout(() => {
@@ -240,6 +243,7 @@ export const LettersProvider: React.FC<{
         cards,
         data,
         selectCard,
+        connectedLetters
       }}
     >
       {children}
