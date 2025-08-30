@@ -63,7 +63,7 @@ export const LettersProvider: React.FC<{
   }, []);
 
   const deselectAll = useCallback(() => {
-    // همه کارت‌های انتخاب‌شده را unselect کن
+    setConnectedLetters([])
     const all = Object.values(cardsRef.current);
     for (const c of all) {
       try {

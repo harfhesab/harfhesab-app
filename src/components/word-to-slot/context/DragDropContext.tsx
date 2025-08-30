@@ -343,10 +343,7 @@ export const DragDropProvider: React.FC<{
     });
 
     const numCards = floatingCardIds.length;
-    if (numCards < 2) { // اگر کمتر از ۲ کارت شناور داریم، نیازی به بررسی برخورد نیست
-        return;
-    }
-
+    
     // مرحله ۱: به‌روزرسانی اولیه موقعیت و برخورد با دیوارها برای همه کارت‌های شناور
     for (let i = 0; i < numCards; i++) {
       const cardId = floatingCardIds[i];
@@ -393,6 +390,10 @@ export const DragDropProvider: React.FC<{
       
       card.position.value = { x: newX, y: newY };
       card.velocity.value = velocity;
+    }
+
+    if (numCards < 2) { // اگر کمتر از ۲ کارت شناور داریم، نیازی به بررسی برخورد نیست
+        return;
     }
 
     // مرحله ۲: بررسی برخورد کارت‌ها با یکدیگر و اعمال واکنش فیزیکی
