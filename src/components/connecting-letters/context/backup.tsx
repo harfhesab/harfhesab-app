@@ -16,11 +16,6 @@ import { deselectCardSoundInLettersConnecting } from '../../../utils/sound/Sound
 interface Position { x: number; y: number; }
 interface Velocity { vx: number; vy: number; }
 
-interface SubmittedInfo {
-  word: string;
-  letters: string[];
-}
-
 interface Card {
   id: string;
   letter: string;
@@ -35,11 +30,9 @@ interface Card {
 interface ContextProps {
   registerCard: (card: Card) => void;
   cards: Record<string, Card>;
-  data: any; // تایپ دیتا را مشخص می‌کنیم
+  data: any;
   selectCard: (id: string) => void;
   connectedLetters: string[];
-  submittedInfo: SubmittedInfo | null; // <-- از string به آبجکت تغییر کرد
-  setSubmittedInfo: (info: SubmittedInfo | null) => void; // <-- آپدیت تابع
 }
 
 const LettersContext = createContext<ContextProps>({} as ContextProps);
@@ -50,16 +43,10 @@ export const LettersProvider: React.FC<{
   data: any;
 }> = ({ children, realm, data }) => {
   const [cards, setCards] = useState<Record<string, Card>>({});
-  const [connectedLetters, setConnectedLetters] = useState<string[]>([]);
-  const [submittedInfo, setSubmittedInfo] = useState<SubmittedInfo | null>(null); // <-- پیاده‌سازی استیت جدید
-
+  const [connectedLetters, setConnectedLetters] = useState<string[]>([])
+  // یک ref برای دسترسی بدون رندر به کارت‌ها (برای تایمر و select)
   const cardsRef = useRef<Record<string, Card>>({});
   const selectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const connectedLettersRef = useRef<string[]>([]);
-
-  useEffect(() => {
-    connectedLettersRef.current = connectedLetters;
-  }, [connectedLetters]);
 
   const registerCard = useCallback((card: Card) => {
     // اگر کارت قبلاً ثبت شده بود از ثبت مجدد اجتناب کن
@@ -76,46 +63,35 @@ export const LettersProvider: React.FC<{
   }, []);
 
   const deselectAll = useCallback(() => {
-    const currentLetters = connectedLettersRef.current;
-    if (currentLetters.length > 0) {
-      // حالا هم کلمه و هم آرایه حروف را ارسال می‌کنیم
-      setSubmittedInfo({
-        word: currentLetters.join(''),
-        letters: currentLetters,
-      });
-    }
-    // 2. سپس لیست حروف را خالی کن
-    setConnectedLetters([]);
-
+    setConnectedLetters([])
     const all = Object.values(cardsRef.current);
     for (const c of all) {
       try {
         if (c && c.selected && c.selected.value === 1) {
           c.selected.value = 0;
         }
-      } catch (e) {}
+      } catch (e) {
+        // ایمن‌سازی در صورت خطا
+      }
     }
-    deselectCardSoundInLettersConnecting();
+    deselectCardSoundInLettersConnecting()
   }, []);
 
   const selectCard = useCallback((id: string) => {
-    // وقتی کاربر شروع به تایپ کلمه جدید می‌کند، کلمه ارسال شده قبلی را null می‌کنیم
-    if (submittedInfo) {
-      setSubmittedInfo(null);
-    }
-
     const card = cardsRef.current[id];
     if (!card) return;
+    // فقط همان کارت را انتخاب کن (selected = 1)
     card.selected.value = 1;
-    const newLetter = card.letter;
+    const newLetter = card.letter
     setConnectedLetters(prev => [...prev, newLetter]);
-
+    // ریست/استارت تایمر مشترک
     clearSelectionTimer();
     selectionTimerRef.current = setTimeout(() => {
+      // وقتی تایمر تمام شد، همه انتخاب‌ها را پاک کن
       deselectAll();
       selectionTimerRef.current = null;
     }, CARD_SELECTION_DURATION);
-  }, [clearSelectionTimer, deselectAll, submittedInfo]);
+  }, [clearSelectionTimer, deselectAll]);
 
   // ---------- frameCallback: حرکت و برخورد ----------
   const frameCallback = useFrameCallback(() => {
@@ -267,9 +243,7 @@ export const LettersProvider: React.FC<{
         cards,
         data,
         selectCard,
-        connectedLetters,
-        submittedInfo,
-        setSubmittedInfo,
+        connectedLetters
       }}
     >
       {children}
