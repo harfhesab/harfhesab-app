@@ -20,7 +20,7 @@ export const CARD_BORDER_RADIUS = 5;
 export const MAX_VELOCITY = 200;
 export const MIN_VELOCITY = 50;
 
-export const CARD_SELECTION_DURATION = 4000;
+export const CARD_SELECTION_DURATION = 3000;
 export const CARD_SIZE_SELECTED = CARD_SIZE_FLOATING / 3;
 export const FONT_SIZE_SELECTED = FONT_SIZE_FLOATING / 3;
 export const CARD_ZINDEX_SELECTED = 1;

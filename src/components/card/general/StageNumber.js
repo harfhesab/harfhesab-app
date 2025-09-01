@@ -87,10 +87,8 @@ function StageNumber({
 
 
 const areEqual = (prevProps, nextProps) => {
-  if (prevProps.number !== nextProps.number) return false;
   if (prevProps.lock !== nextProps.lock) return false;
   if (prevProps.currently !== nextProps.currently) return false;
-  if (prevProps.onPress !== nextProps.onPress) return false;
   return true;
 };
 export default memo(StageNumber, areEqual);

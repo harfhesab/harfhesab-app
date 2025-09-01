@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     width: BOUNDARY_WIDTH,
     marginBottom: BOUNDARY_BOTTOM_OFFSET,
     borderWidth: BOUNDARY_BORDER_WIDTH,
-    borderColor: '#fcb900',
+    borderColor: '#0693e3',
     borderRadius: BOUNDARY_BORDER_RADIUS,
     zIndex: 0,
     overflow: 'visible',

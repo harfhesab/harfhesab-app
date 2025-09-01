@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from 'react';
-import { Text, StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -230,7 +230,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   return (
     <GestureDetector gesture={Gesture.Simultaneous(pan, touch)}>
-      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?3:0, borderColor:unknown_word && !unknown_word_completed?'#fcb900':"transparent", borderStyle:'dotted'}]}>
+      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?3:0, borderColor:unknown_word && !unknown_word_completed?'#0693e3':"transparent", borderStyle:'dotted'}]}>
         <AnimatedSkiaText
           text={(unknown_word && !unknown_word_completed)?"?":word}
           gradientColors={(unknown_word && !unknown_word_completed) ? ['#FF8800',  '#ff0f0f'] : undefined}

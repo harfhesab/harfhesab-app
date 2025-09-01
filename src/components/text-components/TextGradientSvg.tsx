@@ -199,10 +199,5 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
     </View>
   );
 };
-const areEqual = (prevProps:any, nextProps:any) => {
-  if (prevProps.text !== nextProps.text) return false;
-  if (prevProps.fontSize !== nextProps.fontSize) return false;
-  if (prevProps.fontFamily !== nextProps.fontFamily) return false;
-  return true;
-};
-export default memo(TextGradientSvg, areEqual);
+
+export default memo(TextGradientSvg);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Svg, {
   Defs,
   LinearGradient,
@@ -196,4 +196,4 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
   );
 };
 
-export default TextGradientSvg;
+export default memo(TextGradientSvg);

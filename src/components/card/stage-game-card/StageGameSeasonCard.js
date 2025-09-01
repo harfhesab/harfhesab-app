@@ -128,15 +128,6 @@ const styles = StyleSheet.create({
 const areEqual = (prevProps, nextProps) => {
   if (prevProps.currentScroll !== nextProps.currentScroll) return false;
   if (prevProps.lock !== nextProps.lock) return false;
-  if (prevProps.title !== nextProps.title) return false;
-  if (prevProps.description !== nextProps.description) return false;
-  if (prevProps.image !== nextProps.image) return false;
-  if (prevProps.seasonNumber !== nextProps.seasonNumber) return false;
-  if (prevProps.stageNumberFrom !== nextProps.stageNumberFrom) return false;
-  if (prevProps.stageNumberTo !== nextProps.stageNumberTo) return false;
-  if (prevProps.numberStage !== nextProps.numberStage) return false;
-  if (prevProps.isActive !== nextProps.isActive) return false;
-  if (prevProps.onPress !== nextProps.onPress) return false;
   return true;
 };
 

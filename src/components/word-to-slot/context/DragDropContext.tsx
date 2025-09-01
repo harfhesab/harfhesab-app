@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { Dimensions } from 'react-native';
-import Animated, { useFrameCallback, withSpring, SharedValue } from 'react-native-reanimated';
-import { runOnJS } from 'react-native-reanimated';
+import { useFrameCallback, withSpring, SharedValue } from 'react-native-reanimated';
 import {
     BOUNDARY_TOP_OFFSET,
     BOUNDARY_HORIZONTAL_OFFSET,
@@ -17,8 +15,6 @@ import {
     FONT_SIZE_SLOTTED,
 } from "../constants/constants";
 import Realm from 'realm';
-import AlertHelper from '../../alert/AlertHelper';
-import { goBack } from '../../../main/navigationService';
 import { endOfAStageInStageGame } from '../functions/StageGameFunctions';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from '../../../redux/store/Store';

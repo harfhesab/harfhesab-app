@@ -94,11 +94,6 @@ function StageNumberCurrently({
 }
 
 const areEqual = (prevProps, nextProps) => {
-  if (prevProps.text !== nextProps.text) return false;
-  if (prevProps.boxSize !== nextProps.boxSize) return false;
-  if (prevProps.onPress !== nextProps.onPress) return false;
-  if (prevProps.fontSize !== nextProps.fontSize) return false;
-  if (prevProps.margin !== nextProps.margin) return false;
   return true;
 };
 export default memo(StageNumberCurrently, areEqual);

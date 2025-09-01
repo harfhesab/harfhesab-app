@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {memo, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -77,7 +77,7 @@ function FloatingCard({ letter, index }: Props) {
     width: cardSize.value,
     height: cardSize.value,
     zIndex: selected.value === 1 ? CARD_ZINDEX_SELECTED : CARD_ZINDEX_NORMAL,
-    backgroundColor: selected.value === 1 ? '#fcb90099' : '#fcb900',
+    backgroundColor: selected.value === 1 ? '#0693e399' : '#0693e3',
     elevation: selected.value === 1 ? 1 : 10,
   }), []);
 
@@ -109,4 +109,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FloatingCard;
+export default memo(FloatingCard);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Canvas, Text, useFont, Group, Skia, vec, TileMode, PaintStyle, Shadow } from '@shopify/react-native-skia';
 import Animated, { useDerivedValue, SharedValue } from 'react-native-reanimated';
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SkiaLetter;
+export default memo(SkiaLetter);

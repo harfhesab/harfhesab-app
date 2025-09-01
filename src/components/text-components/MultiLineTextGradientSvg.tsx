@@ -179,33 +179,4 @@ const MultiLineTextGradientSvg: React.FC<MultiLineTextGradientSvgProps> = ({
   );
 };
 
-const areEqual = (prevProps: MultiLineTextGradientSvgProps, nextProps: MultiLineTextGradientSvgProps) => {
-  if (prevProps.text !== nextProps.text) return false;
-  if (prevProps.fontSize !== nextProps.fontSize) return false;
-  if (prevProps.fontFamily !== nextProps.fontFamily) return false;
-  if (prevProps.colors?.length !== nextProps.colors?.length) return false;
-  for (let i = 0; i < (prevProps.colors?.length || 0); i++) {
-    if (prevProps.colors?.[i] !== nextProps.colors?.[i]) return false;
-  }
-  if (prevProps.height !== nextProps.height) return false;
-  if (prevProps.x !== nextProps.x) return false;
-  if (prevProps.y !== nextProps.y) return false;
-  if (prevProps.rtl !== nextProps.rtl) return false;
-  if (prevProps.ltr !== nextProps.ltr) return false;
-  if (prevProps.paddingHorizontal !== nextProps.paddingHorizontal) return false;
-  if (prevProps.paddingVertical !== nextProps.paddingVertical) return false;
-  if (prevProps.borderWidth !== nextProps.borderWidth) return false;
-  if (prevProps.borderColor !== nextProps.borderColor) return false;
-  if (prevProps.dropShadow !== nextProps.dropShadow) return false;
-  if (prevProps.shadowColor !== nextProps.shadowColor) return false;
-  if (prevProps.shadowDx !== nextProps.shadowDx) return false;
-  if (prevProps.shadowDy !== nextProps.shadowDy) return false;
-  if (prevProps.shadowBlur !== nextProps.shadowBlur) return false;
-  if (prevProps.glowShadow !== nextProps.glowShadow) return false;
-  if (prevProps.glowColor !== nextProps.glowColor) return false;
-  if (prevProps.glowBlur !== nextProps.glowBlur) return false;
-  if (prevProps.width !== nextProps.width) return false;
-  return true;
-};
-
-export default memo(MultiLineTextGradientSvg, areEqual);
+export default memo(MultiLineTextGradientSvg);
