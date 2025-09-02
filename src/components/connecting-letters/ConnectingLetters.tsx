@@ -42,6 +42,9 @@ const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
         realm={realm}
         data={data}
         type={type}
+        stageId={stageId}
+        partIndex={partIndex}
+        wordId={wordId}
       >
         <SafeAreaView style={styles.container}>
           <WordDisplay />

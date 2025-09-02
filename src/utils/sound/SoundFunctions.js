@@ -90,9 +90,9 @@ export const deselectCardSoundInLettersConnecting = async (volume=0.8) => {
 // ===================================================================================================================
 // ============================= Coin Sound ==========================================================================
 // ===================================================================================================================
-export const coinCountUpdateSound = async (volume=0.8) => {
+export const coinCountUpdateSound = async (volume=0.4) => {
     try {
-        const player = await SoundPlayer.create('pop.wav', false, false, volume);
+        const player = await SoundPlayer.create('coin.wav', false, false, volume);
         player.play((success) => {
             if (success) {
                 player.release();

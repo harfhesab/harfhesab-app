@@ -44,7 +44,7 @@ const COLORS = {
 // =================================================================
 const WordDisplay = () => {
   const colors = useAppTheme();
-  const { connectedLetters, data, submittedInfo, setSubmittedInfo, lettersHelpUsed, foundWords, handleNewWordFound } = useLetters();
+  const { connectedLetters, data, submittedInfo, setSubmittedInfo, lettersHelpUsed, foundWords, handleMainWordFound, handleNewAdditionalWordFound, handleNewHiddenWordFound } = useLetters();
 
   const feedbackProgress = useSharedValue(FEEDBACK_STATE.NORMAL);
   const selectedCardsOpacity = useSharedValue(1);
@@ -58,16 +58,27 @@ const WordDisplay = () => {
     let state = FEEDBACK_STATE.ERROR;
 
     if (word === data.word) {
-      state = foundWords.main ? FEEDBACK_STATE.DUPLICATE : FEEDBACK_STATE.SUCCESS;
+      if(foundWords.main){
+        state = FEEDBACK_STATE.DUPLICATE
+      } else {
+        handleMainWordFound()
+        state = FEEDBACK_STATE.SUCCESS
+      }
     } else if (data.additional_words.includes(word)) {
-      state = foundWords.additional.has(word) ? FEEDBACK_STATE.DUPLICATE : FEEDBACK_STATE.SUCCESS;
+      if(foundWords.additional.has(word)){
+        state = FEEDBACK_STATE.DUPLICATE
+      } else {
+        handleNewAdditionalWordFound(word)
+        state = FEEDBACK_STATE.SUCCESS
+      }
+    } else if (data.hidden_words.includes(word)) {
+      if(foundWords.hidden.has(word)){
+        state = FEEDBACK_STATE.DUPLICATE
+      } else {
+        handleNewHiddenWordFound(word)
+        state = FEEDBACK_STATE.SUCCESS
+      }
     }
-    
-    // اگر کلمه جدید و صحیح بود، استیت محلی را فوراً آپدیت کن
-    if (state === FEEDBACK_STATE.SUCCESS) {
-      handleNewWordFound(word); // <-- فراخوانی مستقیم و فوری
-    }
-
     let newGradientColors = COLORS.GRADIENT_NORMAL;
     if (state === FEEDBACK_STATE.SUCCESS) newGradientColors = COLORS.GRADIENT_SUCCESS;
     else if (state === FEEDBACK_STATE.ERROR) newGradientColors = COLORS.GRADIENT_ERROR;

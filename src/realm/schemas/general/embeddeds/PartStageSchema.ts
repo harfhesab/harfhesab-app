@@ -28,7 +28,7 @@ export class WordStage extends Realm.Object<WordStage> {
       unknown_word: { type: "bool", default: false },
       unknown_word_completed: { type: "bool", default: false },
       letters: "string[]",
-      letters_help_used: "int?",
+      letters_help_used: "int[]",
       additional_words: "string[]",
       additional_words_builded: "string[]",
       hidden_words: "string[]",

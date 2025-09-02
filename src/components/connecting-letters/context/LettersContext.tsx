@@ -13,6 +13,7 @@ import {
 } from '../constants/constants';
 import { deselectCardSoundInLettersConnecting } from '../../../utils/sound/SoundFunctions';
 import Toast from 'react-native-toast-message';
+import { saveMainWordBuildedInStageGame, saveNewAdditionalWordsBuildedInStageGame, saveNewHiddenWordsBuildedInStageGame, saveUserHelpRequestsInStageGame } from '../../../realm/repositories/user/user-stage-game-progress.repository';
 
 interface Position { x: number; y: number; }
 interface Velocity { vx: number; vy: number; }
@@ -46,8 +47,10 @@ interface ContextProps {
   lettersHelpUsed: number[];
   type: string;
   applyForHelp: () => void;
-  foundWords: {main: boolean; additional: any};
-  handleNewWordFound: (word: string) => void;
+  foundWords: {main: boolean; additional: any; hidden: any;};
+  handleMainWordFound: () => void;
+  handleNewAdditionalWordFound: (word: string) => void;
+  handleNewHiddenWordFound: (word: string) => void;
 }
 
 const LettersContext = createContext<ContextProps>({} as ContextProps);
@@ -57,10 +60,13 @@ export const LettersProvider: React.FC<{
   realm: Realm;
   data: any;
   type: string;
-}> = ({ children, realm, data, type }) => {
+  stageId: string;
+  partIndex: number;
+  wordId: string;
+}> = ({ children, realm, data, type, stageId, partIndex, wordId }) => {
   const [connectedLetters, setConnectedLetters] = useState<string[]>([]);
   const [submittedInfo, setSubmittedInfo] = useState<SubmittedInfo | null>(null);
-  const [lettersHelpUsed, setLettersHelpUsed] = useState<number[]>([])
+  const [lettersHelpUsed, setLettersHelpUsed] = useState<number[]>(data.letters_help_used || [])
 
   const connectedLettersRef = useRef<string[]>([]);
   const selectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -73,18 +79,38 @@ export const LettersProvider: React.FC<{
 
   const [foundWords, setFoundWords] = useState({
     main: data.word_builded || false,
-    additional: new Set(data.additional_words_builded || [])
+    additional: new Set(data.additional_words_builded || []),
+    hidden: new Set(data.hidden_words_builded || [])
   });
-  const handleNewWordFound = (word: string) => {
+  const handleMainWordFound = () => {
     setFoundWords(prevState => {
-      if (word === data.word) {
-        return { ...prevState, main: true };
-      }
+      return { ...prevState, main: true };
+    });
+    if(type == "stage-game"){
+      saveMainWordBuildedInStageGame( realm, stageId, partIndex, wordId );
+    }
+  };
+  const handleNewAdditionalWordFound = (word: string) => {
+    setFoundWords(prevState => {
       const newAdditional = new Set(prevState.additional);
       newAdditional.add(word);
       return { ...prevState, additional: newAdditional };
     });
+    if(type == "stage-game"){
+      saveNewAdditionalWordsBuildedInStageGame( realm, stageId, partIndex, wordId, word );
+    }
   };
+  const handleNewHiddenWordFound = (word: string) => {
+    setFoundWords(prevState => {
+      const newHidden = new Set(prevState.hidden);
+      newHidden.add(word);
+      return { ...prevState, hidden: newHidden };
+    });
+    if(type == "stage-game"){
+      saveNewHiddenWordsBuildedInStageGame( realm, stageId, partIndex, wordId, word );
+    }
+  };
+
   function applyForHelp() {
     const { additional_words, word } = data;
     const allWords = [...additional_words, word];
@@ -93,7 +119,6 @@ export const LettersProvider: React.FC<{
       const w = allWords[i];
       const start = currentIndex;
       const end = currentIndex + w.length - 1;
-
       // شرط برای رد کردن کلمات پیدا شده
       if (i < additional_words.length) {
         // کلمات اضافه
@@ -104,18 +129,30 @@ export const LettersProvider: React.FC<{
       } else {
         // کلمه اصلی
         if (foundWords.main) {
+          Toast.show({
+            type: "error",
+            text1 : "هیچ آیتمی برای راهنمایی یافت نشد!",
+            topOffset : 10
+          })
           break; // کل word پیدا شده، دیگه کاری نکن
         }
       }
-
       // پیدا کردن اولین ایندکس آزاد در این کلمه
       for (let idx = start; idx <= end; idx++) {
         if (!lettersHelpUsed.includes(idx)) {
           setLettersHelpUsed([...lettersHelpUsed, idx]);
+          if(type == "stage-game"){
+            saveUserHelpRequestsInStageGame( realm, stageId, partIndex, wordId, [...lettersHelpUsed, idx] );
+          }
           return true; // فقط یکی اضافه می‌کنیم
+        } else {
+          Toast.show({
+            type: "error",
+            text1 : "هیچ آیتمی برای راهنمایی یافت نشد!",
+            topOffset : 10
+          })
         }
       }
-
       currentIndex = end + 1;
     }
   }
@@ -322,7 +359,9 @@ export const LettersProvider: React.FC<{
         type,
         applyForHelp,
         foundWords,
-        handleNewWordFound
+        handleMainWordFound,
+        handleNewAdditionalWordFound,
+        handleNewHiddenWordFound,
       }}
     >
       {children}
