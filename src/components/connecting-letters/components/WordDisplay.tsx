@@ -16,6 +16,7 @@ import SelectedCardWithAnumation from './word-display/SelectedCardWithAnumation'
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import WordPlaceholderRow from './word-display/WordPlaceholderRow';
 import SelectionProgressCircle from './word-display/SelectionProgressCircle';
+import TopHeader from './word-display/TopHeader';
 
 const { width } = Dimensions.get('window');
 
@@ -43,29 +44,12 @@ const COLORS = {
 // =================================================================
 const WordDisplay = () => {
   const colors = useAppTheme();
-  const { connectedLetters, data, submittedInfo, setSubmittedInfo } = useLetters();
-
-  // 1. استیت محلی برای مدیریت کلمات پیدا شده در این مرحله
-  const [foundWords, setFoundWords] = useState({
-    main: data.word_builded || false,
-    additional: new Set(data.additional_words_builded || [])
-  });
+  const { connectedLetters, data, submittedInfo, setSubmittedInfo, lettersHelpUsed, foundWords, handleNewWordFound } = useLetters();
 
   const feedbackProgress = useSharedValue(FEEDBACK_STATE.NORMAL);
   const selectedCardsOpacity = useSharedValue(1);
   const [gradientColors, setGradientColors] = useState<string[]>(COLORS.GRADIENT_NORMAL);
 
-  // این تابع استیت محلی را برای نمایش فوری آپدیت می‌کند
-  const handleNewWordFound = (word: string) => {
-    setFoundWords(prevState => {
-      if (word === data.word) {
-        return { ...prevState, main: true };
-      }
-      const newAdditional = new Set(prevState.additional);
-      newAdditional.add(word);
-      return { ...prevState, additional: newAdditional };
-    });
-  };
 
   useEffect(() => {
     if (!submittedInfo) return;
@@ -137,21 +121,48 @@ const WordDisplay = () => {
     };
   }, [data?.letters?.length]);
   
+  function handleExistNumberHelpedWord() {
+    const { additional_words, word } = data;
 
+    const allWords = [...additional_words, word];
+    const results = new Array(allWords.length).fill(0);
+
+    let startIndexes: number[] = [];
+    let currentIndex = 0;
+    for (const w of allWords) {
+      startIndexes.push(currentIndex);
+      currentIndex += w.length;
+    }
+
+    for (const idx of lettersHelpUsed) {
+      // پیدا کردن اینکه idx متعلق به کدوم کلمه است
+      for (let i = 0; i < allWords.length; i++) {
+        const start = startIndexes[i];
+        const end = start + allWords[i].length - 1;
+        if (idx >= start && idx <= end) {
+          results[i]++;
+          break;
+        }
+      }
+    }
+    return results;
+  }
+
+  // استفاده در JSX
+  const numberHelped = handleExistNumberHelpedWord();
   return (
     <View style={styles.container}>
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', justifyContent:'space-between'}}>
-        <View>
-
-        </View>
+        <TopHeader />
         <View style={styles.placeholdersContainer}>
-            {data.additional_words.map((word:any) => (
+            {data.additional_words.map((word:any, index:number) => (
                 <WordPlaceholderRow
-                    key={word}
+                    key={index.toString()}
                     word={word}
                     isWordFound={foundWords.additional.has(word)}
                     size={WORD_SQUARE_WIDTH-20}
                     mainWord={false}
+                    numberHelped={numberHelped[index]}
                 />
             ))}
             <View style={{marginTop:5}}>
@@ -160,6 +171,7 @@ const WordDisplay = () => {
                   isWordFound={foundWords.main}
                   size={WORD_SQUARE_WIDTH}
                   mainWord={true}
+                  numberHelped={numberHelped[data.additional_words.length]}
               />
             </View>
         </View>

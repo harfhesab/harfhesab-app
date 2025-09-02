@@ -8,8 +8,9 @@ interface WordPlaceholderRowProps {
   isWordFound: boolean;
   size: number;
   mainWord: boolean;
+  numberHelped?: number;
 }
-const WordPlaceholderRow = ({ word, isWordFound, size, mainWord }: WordPlaceholderRowProps) => {
+const WordPlaceholderRow = ({ word, isWordFound, size, mainWord, numberHelped = 0 }: WordPlaceholderRowProps) => {
     return (
         <View style={styles.placeholderRow}>
           {word.split('').map((char, index) => (
@@ -19,6 +20,7 @@ const WordPlaceholderRow = ({ word, isWordFound, size, mainWord }: WordPlacehold
               isRevealed={isWordFound}
               size={size}
               mainWord={mainWord}
+              helped={index + 1 <= numberHelped?true:false }
             />
           ))}
         </View>

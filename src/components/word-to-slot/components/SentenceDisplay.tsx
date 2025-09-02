@@ -1,21 +1,19 @@
 import React, { memo, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Dimensions, Image } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import LinearGradient from 'react-native-linear-gradient';
 import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
-import { index } from 'realm';
-import NumberCoins from '../../coin/NumberCoins';
 import Icon from '../../../utils/Icon';
-import { goBack, navigate } from '../../../main/navigationService';
 import Toast from 'react-native-toast-message';
 import GameAlert from './game-alert/GameAlert';
 import GameAlertHelper from './game-alert/GameAlertHelper';
+import TopHeader from './TopHeader';
 
 const {width} = Dimensions.get('window')
 const SentenceDisplay = () => {
-    const { slots, cards, completeCurrentPart, changePlayingIndex, completedSentences, currentWords, currentPartIndex, playingPartIndex, numberParts } = useDragDrop();
+    const { slots, cards, completeCurrentPart, completedSentences, currentWords } = useDragDrop();
     const colors = useAppTheme();
     const [check, setCheck] = useState(true);
     const [currentSentenceStatusColor, setCurrentSentenceStatusColor] = useState<string[]>(['#86442d', '#4d2719']);
@@ -52,73 +50,9 @@ const SentenceDisplay = () => {
         }
     }, [slots, currentWords, cards, completeCurrentPart]);
 
-    const onChangePlayingIndex = (index:number)=>{
-      if(index == playingPartIndex) return
-      if(index <= currentPartIndex){
-        changePlayingIndex(index)
-      } else {
-        Toast.show({
-          type: "error",
-          text1 : "جملات باید به ترتیب کامل شوند!",
-          topOffset : 10
-        })
-      }
-    }
-
     return (
         <View style={styles.sentenceContainer}>
-            <View>
-              <View style={styles.header}>
-                  <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-                      <TouchableOpacity onPress={()=>navigate("ConnectingLettersStageGame")} activeOpacity={0.8}>
-                          <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}40`}}>
-                              <Icon name={"settings-outline"} type='Ionicons' style={{color:colors.text.a1, fontSize:25}}/>
-                          </View>
-                      </TouchableOpacity>
-                      <View style={{direction:'rtl'}}>
-                        <NumberCoins />
-                      </View>
-                  </View>
-                  <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-                    <TouchableOpacity activeOpacity={0.8}>
-                        <View style={{justifyContent:'center', alignItems:'center', height:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}40`}}>
-                            <Text style={{fontFamily:Font.medium, fontSize:13, color:colors.text.a1, paddingHorizontal:15}}>{"راهنما"}</Text>
-                            <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
-                              <Image
-                                  style={{height:13, width:13}}
-                                  source={require('../../../assets/image/coin.png')}
-                              />
-                              <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a1}}>{"20"}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{goBack()}} activeOpacity={0.8}>
-                        <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}40`}}>
-                            <Icon name={"arrow-right"} type='Feather' style={{color:colors.text.a1, fontSize:25}}/>
-                        </View>
-                    </TouchableOpacity>
-                  </View>
-              </View>
-              <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:10, justifyContent:'flex-start', paddingHorizontal:15, marginTop:5}}>
-                  {
-                    Array.from({length:numberParts}).map((_, index)=>(
-                      <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6}>
-                        <View style={{width:35, height:35, alignItems:'center', justifyContent:'center', borderRadius:8, backgroundColor:`#0088cc35`, borderColor:index == playingPartIndex?colors.primary.a1:colors.border.a1, borderWidth:1}}>
-                          {
-                            (completedSentences.length == numberParts || currentPartIndex > index)?
-                            (<Icon name={"lock-open"} type={"FontAwesome5"} style={{fontSize:20, color:'#0088cc'}}/>)
-                            :
-                            currentPartIndex == index?
-                            (<Icon name={"unlock-alt"} type={"FontAwesome5"} style={{fontSize:20, color:colors.primary.a1}}/>)
-                            :
-                            (<Icon name={"lock"} type={"FontAwesome5"} style={{fontSize:20, color:"#607d8b"}}/>)
-                          }
-                          </View>
-                      </TouchableOpacity>
-                    ))
-                  }
-              </View>
-            </View>
+            <TopHeader/>
             <View style={{width:"100%", alignItems:'center', flexDirection :'column', gap:10, justifyContent:'center', paddingHorizontal:15}}>
                 {
                   completedSentences?.map((item, index)=>(
@@ -166,14 +100,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: Font.black,
     textAlign: 'center',
-  },
-  header: {
-    height:65,
-    width:width,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between',
-    paddingHorizontal:15,
   },
 });
 

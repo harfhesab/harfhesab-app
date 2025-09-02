@@ -12,6 +12,7 @@ import {
   MIN_VELOCITY,
 } from '../constants/constants';
 import { deselectCardSoundInLettersConnecting } from '../../../utils/sound/SoundFunctions';
+import Toast from 'react-native-toast-message';
 
 interface Position { x: number; y: number; }
 interface Velocity { vx: number; vy: number; }
@@ -42,6 +43,11 @@ interface ContextProps {
   selectionProgressRN: SharedValue<number>;
   manualDeselectAll: () => void;
   manualStartProgressTimer: () => void;
+  lettersHelpUsed: number[];
+  type: string;
+  applyForHelp: () => void;
+  foundWords: {main: boolean; additional: any};
+  handleNewWordFound: (word: string) => void;
 }
 
 const LettersContext = createContext<ContextProps>({} as ContextProps);
@@ -50,9 +56,11 @@ export const LettersProvider: React.FC<{
   children: React.ReactNode;
   realm: Realm;
   data: any;
-}> = ({ children, realm, data }) => {
+  type: string;
+}> = ({ children, realm, data, type }) => {
   const [connectedLetters, setConnectedLetters] = useState<string[]>([]);
   const [submittedInfo, setSubmittedInfo] = useState<SubmittedInfo | null>(null);
+  const [lettersHelpUsed, setLettersHelpUsed] = useState<number[]>([])
 
   const connectedLettersRef = useRef<string[]>([]);
   const selectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -62,6 +70,55 @@ export const LettersProvider: React.FC<{
   const cardsMapRef = useRef<Record<string, Card>>({}); // برای دسترسی سریع بر اساس id
 
   const selectionProgressRN = useSharedValue(0);
+
+  const [foundWords, setFoundWords] = useState({
+    main: data.word_builded || false,
+    additional: new Set(data.additional_words_builded || [])
+  });
+  const handleNewWordFound = (word: string) => {
+    setFoundWords(prevState => {
+      if (word === data.word) {
+        return { ...prevState, main: true };
+      }
+      const newAdditional = new Set(prevState.additional);
+      newAdditional.add(word);
+      return { ...prevState, additional: newAdditional };
+    });
+  };
+  function applyForHelp() {
+    const { additional_words, word } = data;
+    const allWords = [...additional_words, word];
+    let currentIndex = 0;
+    for (let i = 0; i < allWords.length; i++) {
+      const w = allWords[i];
+      const start = currentIndex;
+      const end = currentIndex + w.length - 1;
+
+      // شرط برای رد کردن کلمات پیدا شده
+      if (i < additional_words.length) {
+        // کلمات اضافه
+        if (foundWords.additional.has(w)) {
+          currentIndex = end + 1;
+          continue; // بریم سراغ کلمه بعدی
+        }
+      } else {
+        // کلمه اصلی
+        if (foundWords.main) {
+          break; // کل word پیدا شده، دیگه کاری نکن
+        }
+      }
+
+      // پیدا کردن اولین ایندکس آزاد در این کلمه
+      for (let idx = start; idx <= end; idx++) {
+        if (!lettersHelpUsed.includes(idx)) {
+          setLettersHelpUsed([...lettersHelpUsed, idx]);
+          return true; // فقط یکی اضافه می‌کنیم
+        }
+      }
+
+      currentIndex = end + 1;
+    }
+  }
 
   const startSelectionProgress = useCallback(() => {
     selectionProgressRN.value = 0;
@@ -260,7 +317,12 @@ export const LettersProvider: React.FC<{
         setSubmittedInfo,
         selectionProgressRN,
         manualDeselectAll,
-        manualStartProgressTimer
+        manualStartProgressTimer,
+        lettersHelpUsed,
+        type,
+        applyForHelp,
+        foundWords,
+        handleNewWordFound
       }}
     >
       {children}

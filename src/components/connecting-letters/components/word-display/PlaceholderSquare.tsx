@@ -15,8 +15,9 @@ interface PlaceholderSquareProps {
   isRevealed: boolean;
   size: number;
   mainWord: boolean;
+  helped?: boolean;
 }
-const PlaceholderSquare = ({ letter, isRevealed, size, mainWord }: PlaceholderSquareProps) => {
+const PlaceholderSquare = ({ letter, isRevealed, size, mainWord, helped = false }: PlaceholderSquareProps) => {
     const colors = useAppTheme();
     const backgroundColor1 = mainWord ? `rgba(14, 169, 96, 0.2)` : `rgba(6, 147, 227, 0.2)`;
     const backgroundColor2 = mainWord ? `rgba(14, 169, 96, 0.8)` : `rgba(6, 147, 227, 0.8)`;
@@ -36,11 +37,11 @@ const PlaceholderSquare = ({ letter, isRevealed, size, mainWord }: PlaceholderSq
     return (
         <Animated.View style={[styles.placeholderBase, {width: size, height: size, borderColor, borderWidth, backgroundColor: backgroundColor2}, animatedStyle]}>
           {
-            isRevealed&&
+            (isRevealed || helped)&&
             <TextGradientSvg
                 text={letter}
                 fontFamily={Font.bakh_extra_black}
-                fontSize={size/1.5}
+                fontSize={size/1.55}
                 colors={mainWord?['#9900ef',  '#662d86', '#3a194d']:['#FF8800',  '#ff0f0f']}
                 shadowColor={"#FFFFFF90"}
                 shadowBlur={5}

@@ -5,6 +5,7 @@ import stageGameReducer from '../slices/stageGameSlice';
 import stageGamePersistReducer from '../slices/stageGamePersistSlice';
 import stageGameDownloadReducer from '../slices/stageGameDownloadSlice';
 import coinReducer from '../slices/coinSlice';
+import constantsReducer from '../slices/constantsSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   stageGame: stageGameReducer,
   stageGamePersist: stageGamePersistReducer,
   stageGameDownload: stageGameDownloadReducer,
-  coins: coinReducer
+  coins: coinReducer,
+  constants: constantsReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
