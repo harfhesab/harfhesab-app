@@ -2,6 +2,22 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "src/assets/fonts/Dana-Black.ttf",
+      "sha1": "54727b94e0ac2f08edc5bc1ba987f5eb9974ec03"
+    },
+    {
+      "path": "src/assets/fonts/Dana-Bold.ttf",
+      "sha1": "718def4012d9caa8d0a072c506d2207dddf9a8e5"
+    },
+    {
+      "path": "src/assets/fonts/DanaFaNum-Black.ttf",
+      "sha1": "50f77d4a7c796374f97ffa891a02aa69dde3fc02"
+    },
+    {
+      "path": "src/assets/fonts/DanaFaNum-Bold.ttf",
+      "sha1": "4c2cb0d40fbe0831a7573b9e4c7f53cc4e61b6db"
+    },
+    {
       "path": "src/assets/fonts/IRANSans(FaNum).ttf",
       "sha1": "830c3bbddc74d5cf3f5dceedcdc25d25864622be"
     },
@@ -48,6 +64,82 @@
     {
       "path": "src/assets/fonts/IRANSans_UltraLight.ttf",
       "sha1": "947714a0e097e9c8a5001b1acc466baa1a33fd65"
+    },
+    {
+      "path": "src/assets/fonts/IRANYekanWebBlack.ttf",
+      "sha1": "7214f7c127065dc3d41fa7e26f549e4b92f63cd0"
+    },
+    {
+      "path": "src/assets/fonts/IRANYekanWebBlackFaNum.ttf",
+      "sha1": "d833b4791c9b587f770e5485a9df80c2a17c346f"
+    },
+    {
+      "path": "src/assets/fonts/IRANYekanWebExtraBlack.ttf",
+      "sha1": "3d94cdf3cdf78b50c914f09935e679981e78529d"
+    },
+    {
+      "path": "src/assets/fonts/IRANYekanWebExtraBlackFaNum.ttf",
+      "sha1": "4ef62b83997f0c41edaa27433efedeea48d04400"
+    },
+    {
+      "path": "src/assets/fonts/IRANYekanWebExtraBold.ttf",
+      "sha1": "e4fb8d3aca8db99698dadc81fa02587d8b548230"
+    },
+    {
+      "path": "src/assets/fonts/IRANYekanX-Bold.ttf",
+      "sha1": "a8c90b2de115b24fcc9221c8ddaabfa6d6630b36"
+    },
+    {
+      "path": "src/assets/fonts/KalamehWeb_Black.ttf",
+      "sha1": "1cc12d45b4f7840faeea95482266e6ea48eb8768"
+    },
+    {
+      "path": "src/assets/fonts/KalamehWeb_Bold.ttf",
+      "sha1": "002c6eca44bc24c57fe4625c43c46cd20a90fb4d"
+    },
+    {
+      "path": "src/assets/fonts/Peyda-Black.ttf",
+      "sha1": "43fbb49d64c142be6b874396dda4ab5b4b99bc16"
+    },
+    {
+      "path": "src/assets/fonts/Peyda-Bold.ttf",
+      "sha1": "12492daa8e954ec24b9c9197e2b60af9a8a70a26"
+    },
+    {
+      "path": "src/assets/fonts/Peyda-ExtraBold.ttf",
+      "sha1": "20650c930b58023e0075414cc235e385a6bcc054"
+    },
+    {
+      "path": "src/assets/fonts/PeydaFaNum-Black.ttf",
+      "sha1": "392d99caa3e7d7dbf91435f1f47289bce7e035df"
+    },
+    {
+      "path": "src/assets/fonts/PeydaFaNum-Bold.ttf",
+      "sha1": "f5468aaa294a20c7fb2a7e64ba9b31dcfb429f60"
+    },
+    {
+      "path": "src/assets/fonts/PeydaFaNum-ExtraBold.ttf",
+      "sha1": "9e7ea8bdc02dd11f854e13c56c429d5b32905e79"
+    },
+    {
+      "path": "src/assets/fonts/Roboto-Bold.ttf",
+      "sha1": "0a1793926e2ee724cf2ff3fc7adc745348659f82"
+    },
+    {
+      "path": "src/assets/fonts/Rokh-Black.ttf",
+      "sha1": "586af3e7a42c08dd7e73dd92c9c1a02af15c8e62"
+    },
+    {
+      "path": "src/assets/fonts/Rokh-ExtraBold.ttf",
+      "sha1": "94ec70713322647d1910a8acb66e1c8f4047f3da"
+    },
+    {
+      "path": "src/assets/fonts/RokhFaNum-Black.ttf",
+      "sha1": "bf5e99e5d52b574d27ee9b5d27605bdacbbe2daa"
+    },
+    {
+      "path": "src/assets/fonts/RokhFaNum-ExtraBold.ttf",
+      "sha1": "b6a4f9b2f5df1b6cb353a849c82377f932075665"
     },
     {
       "path": "src/assets/fonts/YekanBakhFaNum-Black.ttf",

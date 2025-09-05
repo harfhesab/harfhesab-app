@@ -56,8 +56,31 @@ export const updateUserStageGameProgress = (
         return false;
     }
 };
+export const makingStageContentReplayableInStageGame = (
+    realm: Realm,
+    stageId: BSON.ObjectId | string,
+): boolean => {
+    try {
+        const stageObjectId = typeof stageId === "string" ? new BSON.ObjectId(stageId) : stageId;
+        const stage = realm.objectForPrimaryKey<Stage>("Stage", stageObjectId);
+        if (!stage) throw new Error("Stage not found");
+        realm.write(() => {
+            stage.parts.forEach((part) => {
+                part.words.forEach((word) => {
+                    if (word.unknown_word) {
+                        word.word_builded = false;
+                        word.unknown_word_completed = false;
+                        word.additional_words_builded = [];
+                    }
+                });
+            });
+        });
 
-// type PlainUserStageGameProgress = Omit<UserStageGameProgress, keyof Realm.Object>; // این متدهای Realm رو حذف می‌کنه
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
 export const getCurrentLanguageLastStageAndLastSeason = (
     realm: Realm,
     language_ref: BSON.ObjectId | string,
@@ -335,6 +358,87 @@ export const saveMainWordBuildedInStageGame = (
             wordStage.word_builded = true;
         });
 
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+export const saveUnknownWordCompletedInStageGame = (
+    realm: Realm,
+    stageId: BSON.ObjectId | string,
+    partIndex: number,
+    wordId: BSON.ObjectId | string,
+): boolean => {
+    try {
+        // اطمینان از اینکه stageId و wordId درست هستند
+        const stageObjectId =
+            typeof stageId === "string" ? new BSON.ObjectId(stageId) : stageId;
+        const wordIdStr =
+            typeof wordId === "string" ? wordId : wordId.toHexString();
+
+        // پیدا کردن stage
+        const stage = realm.objectForPrimaryKey<Stage>("Stage", stageObjectId);
+        if (!stage) throw new Error("Stage not found");
+
+        // گرفتن part
+        const part = stage.parts[partIndex];
+        if (!part) throw new Error("Part not found");
+
+        // پیدا کردن word
+        const wordStage = part.words.find((w) => w._id === wordIdStr);
+        if (!wordStage) throw new Error("Word not found");
+
+        // آپدیت word_builded داخل write
+        realm.write(() => {
+            wordStage.unknown_word_completed = true;
+        });
+
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+export const saveWordHelpUsedInStageGame = (
+    realm: Realm,
+    stageId: BSON.ObjectId | string,
+    partIndex: number,
+    wordId: BSON.ObjectId | string,
+): boolean => {
+    try {
+        const stageObjectId =
+            typeof stageId === "string" ? new BSON.ObjectId(stageId) : stageId;
+        const wordIdStr =
+            typeof wordId === "string" ? wordId : wordId.toHexString();
+        const stage = realm.objectForPrimaryKey<Stage>("Stage", stageObjectId);
+        if (!stage) throw new Error("Stage not found");
+        const part = stage.parts[partIndex];
+        if (!part) throw new Error("Part not found");
+        const wordStage = part.words.find((w) => w._id === wordIdStr);
+        if (!wordStage) throw new Error("Word not found");
+        realm.write(() => {
+            wordStage.word_help_used = true;
+        });
+
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+export const saveCompletedPartAndSentenceBuilded = (
+    realm: Realm,
+    stageId: BSON.ObjectId | string,
+    partIndex: number,
+): boolean => {
+    try {
+        const stageObjectId =
+            typeof stageId === "string" ? new BSON.ObjectId(stageId) : stageId;
+        const stage = realm.objectForPrimaryKey<Stage>("Stage", stageObjectId);
+        if (!stage) throw new Error("Stage not found");
+        const part = stage.parts[partIndex];
+        if (!part) throw new Error("Part not found");
+        realm.write(() => {
+            part.sentence_builded = true;
+        });
         return true;
     } catch (e) {
         return false;

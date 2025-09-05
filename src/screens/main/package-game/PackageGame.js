@@ -72,7 +72,6 @@ function PackageGame(props){
             }
         }).then(async(response)=>{
             const dataReceived = response.data.data?.paginatePackageGameCollectionAndOther
-            console.log(dataReceived)
             const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setLoading(false)
@@ -94,7 +93,6 @@ function PackageGame(props){
             }
             setRefreshing(false)
         }).catch((e)=>{
-            console.log(e)
             setFooterLoading(false)
             setLoading(true)
             setFooterTry(false)

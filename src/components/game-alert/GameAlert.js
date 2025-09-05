@@ -1,15 +1,15 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView, I18nManager} from 'react-native';
 import Modal from "react-native-modal";
-import Font from '../../../../utils/Font';
+import Font from '../../utils/Font';
 import Toast from 'react-native-toast-message';
-import Icon from '../../../../utils/Icon';
-import ButtonGradient from '../../../buttons/ButtonGradient';
+import Icon from '../../utils/Icon';
+import ButtonGradient from '../buttons/ButtonGradient';
 import LinearGradient from 'react-native-linear-gradient';
 import LottieView from 'lottie-react-native';
-import useAppTheme from '../../../../hooks/theme/useAppTheme';
-import AdsButton from '../../../buttons/AdsButton';
-import MultiLineTextGradientSvg from '../../../text-components/MultiLineTextGradientSvg';
+import useAppTheme from '../../hooks/theme/useAppTheme';
+import AdsButton from '../buttons/AdsButton';
+import MultiLineTextGradientSvg from '../text-components/MultiLineTextGradientSvg';
 
 const {width, height} = Dimensions.get('window');
 const GameAlert = React.forwardRef((props, ref)=>{
@@ -36,7 +36,7 @@ const GameAlert = React.forwardRef((props, ref)=>{
             {dialog?.options?.cancelable&&setCancelable(dialog?.options?.cancelable)}
             {dialog?.options?.type&&setType(dialog.options.type)}
             {dialog?.buttons?.length>0&&setButtons(dialog?.buttons)}
-        }, 200)
+        }, 100)
     }
     const close = () => {
         setVisible(false)
@@ -83,9 +83,9 @@ const GameAlert = React.forwardRef((props, ref)=>{
                             <LottieView
                                 style={{width:contentWidth, height: 120}}
                                 source={type === 'success' ?
-                                    require('../../../../assets/lottie/successful.json')
+                                    require('../../assets/lottie/successful.json')
                                     :type === 'warning' &&
-                                    require('../../../../assets/lottie/warn.json')
+                                    require('../../assets/lottie/warn.json')
                                 }
                                 autoPlay
                                 loop={false}
@@ -106,11 +106,11 @@ const GameAlert = React.forwardRef((props, ref)=>{
                                                 <MultiLineTextGradientSvg
                                                     key={index.toString()}
                                                     text={item}
-                                                    fontFamily={Font.bakh_black}
+                                                    fontFamily={Font.iran_yekan_extra_bold}
                                                     glowBlur={10}
                                                     glowColor={'#FFFFFF90'}
                                                     glowShadow={true}
-                                                    fontSize={25}
+                                                    fontSize={18}
                                                     shadowBlur={5}
                                                     dropShadow={true}
                                                     shadowColor={'#00000095'}
@@ -158,7 +158,4 @@ const GameAlert = React.forwardRef((props, ref)=>{
             </Modal>
     )
 })
-const areEqual = (prevProps, nextProps) => {
-  return true;
-};
-export default memo(GameAlert, areEqual)
+export default memo(GameAlert)

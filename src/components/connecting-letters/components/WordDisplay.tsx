@@ -11,12 +11,12 @@ import Animated, {
 import { useLetters } from '../context/LettersContext';
 import Font from '../../../utils/Font';
 import LinearGradient from 'react-native-linear-gradient';
-import { IWordStage } from '../../../realm/interfaces/general/embeddes/part-stage.interface';
 import SelectedCardWithAnumation from './word-display/SelectedCardWithAnumation';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import WordPlaceholderRow from './word-display/WordPlaceholderRow';
 import SelectionProgressCircle from './word-display/SelectionProgressCircle';
 import TopHeader from './word-display/TopHeader';
+import { connectingLetterDuplicateSound, connectingLetterErrorSound, connectingLetterSucccessSound } from '../../../utils/sound/SoundFunctions';
 
 const { width } = Dimensions.get('window');
 
@@ -60,24 +60,32 @@ const WordDisplay = () => {
     if (word === data.word) {
       if(foundWords.main){
         state = FEEDBACK_STATE.DUPLICATE
+        connectingLetterDuplicateSound()
       } else {
         handleMainWordFound()
         state = FEEDBACK_STATE.SUCCESS
+        connectingLetterSucccessSound()
       }
     } else if (data.additional_words.includes(word)) {
       if(foundWords.additional.has(word)){
         state = FEEDBACK_STATE.DUPLICATE
+        connectingLetterDuplicateSound()
       } else {
         handleNewAdditionalWordFound(word)
         state = FEEDBACK_STATE.SUCCESS
+        connectingLetterSucccessSound()
       }
     } else if (data.hidden_words.includes(word)) {
       if(foundWords.hidden.has(word)){
         state = FEEDBACK_STATE.DUPLICATE
+        connectingLetterDuplicateSound()
       } else {
         handleNewHiddenWordFound(word)
         state = FEEDBACK_STATE.SUCCESS
+        connectingLetterSucccessSound()
       }
+    } else {
+      connectingLetterErrorSound()
     }
     let newGradientColors = COLORS.GRADIENT_NORMAL;
     if (state === FEEDBACK_STATE.SUCCESS) newGradientColors = COLORS.GRADIENT_SUCCESS;

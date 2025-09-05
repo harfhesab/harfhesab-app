@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
-import { useRealm } from '../../../realm';
+import { useQuery, useRealm } from '../../../realm';
 import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-game/stage-season.repository';
 import BottomDrawer from '../../../components/bottom-drawer/BottomDrawer';
 import BottomDrawerHelper from '../../../components/bottom-drawer/BottomDrawerHelper';
@@ -20,28 +20,69 @@ import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
 import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
 import { updateCurrentLanguageLastStageAndLastSeason } from '../../../redux/slices/stageGameSlice';
+import { BSON } from 'realm';
+import { StageSeason } from '../../../realm/schemas/stage-game/StageSeasonSchema';
+import { useIsFocused } from '@react-navigation/native';
 
 const {width, height} = Dimensions.get("window")
+const FLATLIST_PADDING_VERTICAL = 15
+const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT
+const rowGap = 25
+const numColumns = IS_TABLET_CONDITION ? 2 : 1
+const snapInterval = itemHeight + rowGap
+function useStageSeasonsByLanguage(languageId) {
+  const all = useQuery(StageSeason);
+
+  if (!languageId) return [];
+
+  const id = typeof languageId === 'string' ? new BSON.ObjectId(languageId) : languageId;
+
+  return all.filtered("language_ref == $0 AND is_visible == true", id).sorted("season_number");
+}
 function StageGame(props){
+    const isFocused = useIsFocused();
     const colors = useAppTheme()
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const realm = useRealm();
+    const flatListRef = useRef(null);
     const [activeIndexes, setActiveIndexes] = useState([]);
     const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
     const { lastSeasonNumber } = useSelector((state) => state.stageGame);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)
-    const [data, setData] = useState([])
+    const data = useStageSeasonsByLanguage(stageGameLanguage)
 
     useEffect(() => {
-        startFirst()
-    }, []);
-    const startFirst = async() =>{
-        if(stageGameLanguage){
-            getData()
+        if(isFocused){
+            startFirst()
         }
+    }, [isFocused]);
+    useEffect(()=>{
+        getProgressOperation()
+    }, [stageGameLanguage])
+    useEffect(()=>{
+        if (data.length > 0) {
+            flatListRef.current?.scrollToIndex({
+                index: Math.max(0, lastSeasonNumber - 1),
+                animated: false,
+                viewOffset: FLATLIST_PADDING_VERTICAL
+            });
+        }
+    }, [stageGameLanguage, data?.length, lastSeasonNumber])
+    const getProgressOperation = async(selected)=>{
+        const language = selected ?? stageGameLanguage
+        const progress = await getCurrentLanguageLastStageAndLastSeason(realm, language)
+        const data = {
+            lastStage: progress?.last_stage,
+            lastStageNumber: progress?.last_stage_number,
+            lastSeason: progress?.last_season,
+            lastSeasonNumber: progress?.last_season_number  
+        }
+        await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
+    }
+    const startFirst = async() =>{
         if(versionCreatedContent == 0){
             AlertHelper.showAlert({
                 body: "برای شروع بازی، محتوای بازی مرحله‌ای را دریافت کنید.",
@@ -98,10 +139,9 @@ function StageGame(props){
                         language:selected.toString(),
                         languageName:selectedName.toString(),
                     }))
-                    getData(selected)
                 },
                 text: 'انتخاب زبان',
-                loading: true,
+                loading: false,
                 type: "bold"
             },
         ]
@@ -128,47 +168,6 @@ function StageGame(props){
             }
         })
     }
-    const getData = async (selected)=>{
-        if(data?.length > 0){
-            setData([])
-            setLoading(true)
-            setGetError(false)
-            setNoItem(false)
-            const time = setTimeout(()=>{
-                getDataOperation(selected)
-            }, 100)
-        } else {
-            getDataOperation(selected)
-        }
-        
-    }
-    const getDataOperation = async(selected)=>{
-        const language = selected ?? stageGameLanguage
-        const progress = await getCurrentLanguageLastStageAndLastSeason(realm, language)
-        const data = {
-            lastStage: progress?.last_stage,
-            lastStageNumber: progress?.last_stage_number,
-            lastSeason: progress?.last_season,
-            lastSeasonNumber: progress?.last_season_number  
-        }
-        await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
-        const seasons = getStageSeasonsByLanguage(realm, language)
-        if(seasons && seasons.length > 0){
-            setData(seasons)
-            setLoading(false)
-        } else if(seasons?.length == 0){
-            setNoItem(true)
-        } else {
-            setGetError(true)
-        }
-        BottomDrawerHelper.hideBottomDrawer()
-    }
-    const tryAgain = ()=>{
-        setLoading(true)
-        setGetError(false)
-        getData()
-    }
-
     const headerRigthComponent = ()=>{
         return(
             (stageGameLanguage)&&
@@ -203,11 +202,7 @@ function StageGame(props){
     }
     const memoizedValue = useMemo(() => renderItem, [data, activeIndexes, lastSeasonNumber]);
     const keyExtractor = (item,index)=>index.toString()
-    const FLATLIST_PADDING_VERTICAL = 15
-    const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT
-    const rowGap = 25
-    const numColumns = IS_TABLET_CONDITION ? 2 : 1
-    const snapInterval = itemHeight + rowGap
+    
 
     
 
@@ -232,6 +227,16 @@ function StageGame(props){
             }
         }
     }).current;
+    const ListEmptyComponent = ()=>{
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <ScreenLoading
+                loading={false}
+                getError={false}
+                noItem={true}
+                tryAgain={()=>{}}
+            />
+        </View>
+    }
     return(
         <View style={{flex:1}}>
             <GeneralHeader
@@ -242,44 +247,40 @@ function StageGame(props){
             />
             <LinearGradient colors={colors.background_gradient} style={{flex:1}}>
                 <View style={styles.container}>
-                    {
-                        loading == true?
-                        <ScreenLoading
-                            loading={loading}
-                            getError={getError}
-                            noItem={noItem}
-                            tryAgain={tryAgain}
-                        />
-                        :
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            keyExtractor={keyExtractor}
-                            initialNumToRender={3}
-                            windowSize={5}
-                            initialScrollIndex={lastSeasonNumber-1}
-                            maxToRenderPerBatch={3}
-                            contentContainerStyle={{alignItems:'center', rowGap:rowGap, columnGap:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
-                            renderItem={memoizedValue}
-                            data={data}
-                            numColumns={numColumns}
-                            onEndReachedThreshold={0.5}
-                            removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                            style={{width:width, paddingHorizontal:STAGE_GAME_SEASON_CARD_MARGIN}}
-                            getItemLayout={(data, index) => ({
+                    <FlatList
+                        ref={flatListRef}
+                        key={stageGameLanguage}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={keyExtractor}
+                        initialNumToRender={3}
+                        windowSize={5}
+                        initialScrollIndex={Math.max(0, lastSeasonNumber - 1)}
+                        maxToRenderPerBatch={3}
+                        contentContainerStyle={{alignItems:'center', rowGap:rowGap, h:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
+                        renderItem={memoizedValue}
+                        data={data}
+                        numColumns={numColumns}
+                        onEndReachedThreshold={0.5}
+                        removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                        style={{width:width, paddingHorizontal:STAGE_GAME_SEASON_CARD_MARGIN}}
+                        getItemLayout={(data, index) => {
+                            const row = Math.floor(index / numColumns); // هر ردیف
+                            return {
                                 length: itemHeight,
-                                offset: FLATLIST_PADDING_VERTICAL + Math.floor(index / numColumns) * snapInterval,
+                                offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
                                 index,
-                            })}
-                            snapToInterval={snapInterval} // ارتفاع هر ردیف
-                            snapToAlignment="start"       // آیتم از بالا چفت شود
-                            decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
-                            disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
-                            bounces={true}                // فنری بودن مانند iOS
-                            viewabilityConfig={viewabilityConfig}
-                            onViewableItemsChanged={onViewableItemsChanged}
-                            extraData={{ activeIndexes, lastSeasonNumber }}
-                        />
-                    }
+                            };
+                        }}
+                        snapToInterval={snapInterval} // ارتفاع هر ردیف
+                        snapToAlignment="start"       // آیتم از بالا چفت شود
+                        decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
+                        disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                        bounces={true}                // فنری بودن مانند iOS
+                        viewabilityConfig={viewabilityConfig}
+                        onViewableItemsChanged={onViewableItemsChanged}
+                        ListEmptyComponent={ListEmptyComponent}
+                        extraData={{ activeIndexes, lastSeasonNumber }}
+                    />
                 </View>
             </LinearGradient>
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>

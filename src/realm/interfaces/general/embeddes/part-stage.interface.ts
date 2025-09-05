@@ -7,7 +7,7 @@ export interface IWordStage {
   unknown_word?: boolean;
   unknown_word_completed?: boolean;
   letters: string[]; 
-  letters_help_used: number[];
+  letters_help_used?: number[];
   additional_words: string[];
   additional_words_builded?: string[];
   hidden_words: string[];

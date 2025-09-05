@@ -8,18 +8,25 @@ import {
   SLOT_BORDER_RADIUS,
   SLOT_TEXT_FONT_SIZE,
   DISTANCE_BOUNDARY_AND_SLOT,
-  BOUNDARY_BOTTOM_OFFSET
+  BOUNDARY_BOTTOM_OFFSET,
+  FONT_SIZE_SLOTTED
 } from "../constants/constants";
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import Icon from '../../../utils/Icon';
 
 interface Props {
   index: number;
+  word: string;
+  word_help_used: boolean;
+  unknown_word: boolean;
+  unknown_word_completed: boolean;
 }
 
-const DropZone: React.FC<Props> = ({ index }) => {
+const DropZone: React.FC<Props> = ({ index, word_help_used, word , unknown_word, unknown_word_completed}) => {
   const colors = useAppTheme();
   const ref = useRef<View>(null);
   const { registerSlot } = useDragDrop();
+  const fontSizeScale = (word.length < 3)?1.6:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
 
   const onLayout = () => {
     ref.current?.measure((x, y, width, height, pageX, pageY) => {
@@ -30,8 +37,18 @@ const DropZone: React.FC<Props> = ({ index }) => {
   };
 
   return (
-    <View ref={ref} style={[styles.slot, {borderColor: colors.primary.a1}]} onLayout={onLayout}>
-      <Text style={styles.text}>{index + 1}</Text>
+    <View ref={ref} style={[styles.slot, {borderColor:word_help_used?"#ff9800":colors.primary.a1, backgroundColor:`${colors.primary.a1}30`}]} onLayout={onLayout}>
+      {
+        !word_help_used?
+        <Text style={styles.text}>{index + 1}</Text>
+        :(word_help_used &&(!unknown_word || (unknown_word && unknown_word_completed)))?
+        <Text style={{color:"#ff9800", fontFamily:Font.iran_yekan_black_fa, fontSize:FONT_SIZE_SLOTTED*fontSizeScale}}>{word}</Text>
+        :(word_help_used && unknown_word && !unknown_word_completed)&&
+        <View style={{width:SLOT_SIZE-10, height:SLOT_SIZE-10, borderColor:"#b71c1c", borderWidth:2, borderRadius:SLOT_SIZE/2, alignItems:'center', justifyContent:'center'}}>
+          <Icon name={"question"} type={"Fontisto"} style={{color:"#b71c1c", fontSize:SLOT_SIZE-25}}/>
+        </View>
+
+      }
     </View>
   );
 };
@@ -44,7 +61,6 @@ const styles = StyleSheet.create({
     borderRadius: SLOT_BORDER_RADIUS,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e1f5fe50',
     zIndex: -1,
     elevation: 0,
   },

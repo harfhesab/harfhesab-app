@@ -183,7 +183,7 @@ function FloatingCard({ letter, index }: Props) {
         // Reset overlap durations
         overlapDuration.value = {};
       } catch (error) {
-        runOnJS(console.error)('Error in pan onStart:', error);
+        null
       }
     })
     .onUpdate((e) => {
@@ -194,7 +194,7 @@ function FloatingCard({ letter, index }: Props) {
           y: offset.value.y + e.translationY - (cardSize.value - CARD_SIZE_FLOATING) / 2,
         };
       } catch (error) {
-        runOnJS(console.error)('Error in pan onUpdate:', error);
+        null
       }
     })
     .onEnd(() => {
@@ -204,7 +204,7 @@ function FloatingCard({ letter, index }: Props) {
         overlapDuration.value = {};
         runOnJS(checkWord)(id);
       } catch (error) {
-        runOnJS(console.error)('Error in pan onEnd:', error);
+        null
       }
     });
 

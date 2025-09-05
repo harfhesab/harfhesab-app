@@ -19,7 +19,7 @@ const veryIntensiveTask = async (taskDataArguments) => {
     try {
         await updateStageGameContent({ dispatch, realm, state, versionContent });
     } catch (e) {
-        console.error("خطا در بروزرسانی:", e);
+        null
     }
 };
 

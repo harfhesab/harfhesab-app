@@ -72,7 +72,6 @@ function StageGameUpdateScreen(props){
                 }
             }
         }).then((response)=>{
-            console.log("1111111", response)
             const data = response.data?.data?.checkStageGameContentVersion
             if(data){
                 dispatch(setDataCheck({data:data}))
@@ -88,7 +87,6 @@ function StageGameUpdateScreen(props){
                 setFirstCheckGetError(true)
             }
         }).catch((err)=>{
-            console.log("22222222", err)
             setFirstCheckGetError(true)
         })
     }

@@ -19,7 +19,7 @@ const FloatingCardList = () => {
         unknown_word_completed={item.unknown_word_completed}
       />
     ));
-  }, [playingPartIndex]);
+  }, [currentWords, playingPartIndex]);
 
   return (
     <View style={{width:"100%", height:"100%"}}>

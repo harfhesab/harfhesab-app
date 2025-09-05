@@ -69,6 +69,29 @@
 		<string>YekanBakhFaNum-Regular.ttf</string>
 		<string>YekanBakhFaNum-SemiBold.ttf</string>
 		<string>YekanBakhFaNum-Thin.ttf</string>
+		<string>Dana-Black.ttf</string>
+		<string>Dana-Bold.ttf</string>
+		<string>DanaFaNum-Black.ttf</string>
+		<string>DanaFaNum-Bold.ttf</string>
+		<string>IRANYekanWebBlack.ttf</string>
+		<string>IRANYekanWebBlackFaNum.ttf</string>
+		<string>IRANYekanWebExtraBlack.ttf</string>
+		<string>IRANYekanWebExtraBlackFaNum.ttf</string>
+		<string>IRANYekanWebExtraBold.ttf</string>
+		<string>IRANYekanX-Bold.ttf</string>
+		<string>KalamehWeb_Black.ttf</string>
+		<string>KalamehWeb_Bold.ttf</string>
+		<string>Peyda-Black.ttf</string>
+		<string>Peyda-Bold.ttf</string>
+		<string>Peyda-ExtraBold.ttf</string>
+		<string>PeydaFaNum-Black.ttf</string>
+		<string>PeydaFaNum-Bold.ttf</string>
+		<string>PeydaFaNum-ExtraBold.ttf</string>
+		<string>Roboto-Bold.ttf</string>
+		<string>Rokh-Black.ttf</string>
+		<string>Rokh-ExtraBold.ttf</string>
+		<string>RokhFaNum-Black.ttf</string>
+		<string>RokhFaNum-ExtraBold.ttf</string>
 	</array>
 </dict>
 </plist>

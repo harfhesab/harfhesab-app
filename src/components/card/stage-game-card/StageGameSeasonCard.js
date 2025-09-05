@@ -81,8 +81,8 @@ function StageGameSeasonCard({
           <View style={{flex:1, width:"100%", alignItems:'flex-start', justifyContent:'center', paddingHorizontal:10}}>
             <MultiLineTextGradientSvg
                   text={title}
-                  fontFamily={Font.bakh_black}
-                  fontSize={35}
+                  fontFamily={Font.iran_yekan_extra_black_fa}
+                  fontSize={30}
                   borderColor={"#795548"}
                   borderWidth={1}
                   glowBlur={100}
@@ -100,7 +100,7 @@ function StageGameSeasonCard({
                 width={180}
                 height={50}
                 borderRadius={10}
-                fontFamily={Font.bakh_black}
+                fontFamily={Font.iran_yekan_black_fa}
                 textSize={22}
                 iconName={lock == true ? "shield-lock" : "gamepad"}
                 iconType={lock == true ? "MaterialCommunityIcons" : "FontAwesome5"}
@@ -114,7 +114,7 @@ function StageGameSeasonCard({
         <View style={{width:"100%", height:"100%", alignItems:"center", justifyContent:"center", backgroundColor:"#b6c9d270", position:"absolute", top:0, left:0, borderRadius:13}}>
             <LockedSeasonAnimation
                 animate={currentScroll}
-                lockFontSize={STAGE_GAME_CARD_WIDTH/1.7}
+                lockFontSize={STAGE_GAME_CARD_WIDTH/2}
             />
         </View>
       }

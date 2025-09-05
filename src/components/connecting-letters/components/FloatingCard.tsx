@@ -18,6 +18,7 @@ import {
 } from '../constants/constants';
 import SkiaLetter from '../../text-components/SkiaLetter';
 import { selectCardSoundInLettersConnecting } from '../../../utils/sound/SoundFunctions';
+import { vibrate } from '../../../utils/vibrationManager';
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -83,6 +84,7 @@ function FloatingCard({ letter, index }: Props) {
 
   const onClick = () => {
     selectCard(id);
+    vibrate()
     selectCardSoundInLettersConnecting()
   };
 

@@ -31,6 +31,29 @@
 		EB76F023AC38462A8377EE7D /* YekanBakhFaNum-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 32A399B4C7B54FB38B4853DD /* YekanBakhFaNum-Regular.ttf */; };
 		238607C96DA24CBC84141DC8 /* YekanBakhFaNum-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1F4B5B5EBF1644359A94070C /* YekanBakhFaNum-SemiBold.ttf */; };
 		90BDC5823EA94E269A65350B /* YekanBakhFaNum-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D744AAB1966949F78ADECA8A /* YekanBakhFaNum-Thin.ttf */; };
+		C6C2B0EDE95E415D92DF48DD /* Dana-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A89D7CA33E374B1BB8F5A925 /* Dana-Black.ttf */; };
+		CA8110E7D2EC4633B8162893 /* Dana-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20F079DBA42546619927A604 /* Dana-Bold.ttf */; };
+		72A061B419A14CF487124CD2 /* DanaFaNum-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1696E0FE78F74DB6B81C869A /* DanaFaNum-Black.ttf */; };
+		93F7D3C22DB5449487C5F6B7 /* DanaFaNum-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF734DD08DC143949CB40C99 /* DanaFaNum-Bold.ttf */; };
+		B5846BCBB3824D4B8698F67C /* IRANYekanWebBlack.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E89F7E89869C4E5088AEDDF0 /* IRANYekanWebBlack.ttf */; };
+		DAE5609B2ACF43C3AD826513 /* IRANYekanWebBlackFaNum.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D10928F3F28041FA9282D062 /* IRANYekanWebBlackFaNum.ttf */; };
+		A9191A45BB50428D84B391F3 /* IRANYekanWebExtraBlack.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AF32A6917A414BA1B2A74DD8 /* IRANYekanWebExtraBlack.ttf */; };
+		D6938628CEB8418F83F399B2 /* IRANYekanWebExtraBlackFaNum.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0CB9D63AA8684282A3965306 /* IRANYekanWebExtraBlackFaNum.ttf */; };
+		F3C3FEF702154201985C5EC9 /* IRANYekanWebExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 87963F1080054415B9A5110D /* IRANYekanWebExtraBold.ttf */; };
+		DAE9EDF5077D4F56B0A4B7B8 /* IRANYekanX-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4162A183901046F1A7795466 /* IRANYekanX-Bold.ttf */; };
+		19DFD4BF5B1A4A8E889E4D60 /* KalamehWeb_Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAA8B735DCD2415C9A637AC4 /* KalamehWeb_Black.ttf */; };
+		EF6B47A5E3E5484DB1B88D82 /* KalamehWeb_Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 691A7AE2DB3B4656A4372F33 /* KalamehWeb_Bold.ttf */; };
+		131F5FD2E64D430FBB852398 /* Peyda-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F701954BBF6A4B4E9BEA6B46 /* Peyda-Black.ttf */; };
+		DA67207721CE446786083D73 /* Peyda-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B3F207382C548AFBA691618 /* Peyda-Bold.ttf */; };
+		7F6898E3E59B45F9A7E85042 /* Peyda-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EF09EB044BF44F2CBD2BAD0E /* Peyda-ExtraBold.ttf */; };
+		355AA6875A87457CB36D6B63 /* PeydaFaNum-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAB533D282764190BCA609C5 /* PeydaFaNum-Black.ttf */; };
+		B923B8CFE6CC45E8AF472706 /* PeydaFaNum-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42D32AEBC87E4DF2B4F99C1F /* PeydaFaNum-Bold.ttf */; };
+		46A4D04751B340A6A297CF99 /* PeydaFaNum-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA22E337CD814484BE9DCF19 /* PeydaFaNum-ExtraBold.ttf */; };
+		C3E070604834432FBD3CD7C6 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B245CC50E1434F3386830A5C /* Roboto-Bold.ttf */; };
+		D4DDD1AAD04640B5AC537F0E /* Rokh-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E1BE003A60494F53B03A2443 /* Rokh-Black.ttf */; };
+		9216632D37BE44B3A40F82A6 /* Rokh-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D961481186284EC286A5853C /* Rokh-ExtraBold.ttf */; };
+		1C76F8008A8C45759A827FA4 /* RokhFaNum-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA35E2F6DB3C4DF3A00B18A9 /* RokhFaNum-Black.ttf */; };
+		B520E034F37F4799953E753B /* RokhFaNum-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8960CB996D8048F590501B3A /* RokhFaNum-ExtraBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +98,29 @@
 		32A399B4C7B54FB38B4853DD /* YekanBakhFaNum-Regular.ttf */ = {isa = PBXFileReference; name = "YekanBakhFaNum-Regular.ttf"; path = "../src/assets/fonts/YekanBakhFaNum-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		1F4B5B5EBF1644359A94070C /* YekanBakhFaNum-SemiBold.ttf */ = {isa = PBXFileReference; name = "YekanBakhFaNum-SemiBold.ttf"; path = "../src/assets/fonts/YekanBakhFaNum-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D744AAB1966949F78ADECA8A /* YekanBakhFaNum-Thin.ttf */ = {isa = PBXFileReference; name = "YekanBakhFaNum-Thin.ttf"; path = "../src/assets/fonts/YekanBakhFaNum-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A89D7CA33E374B1BB8F5A925 /* Dana-Black.ttf */ = {isa = PBXFileReference; name = "Dana-Black.ttf"; path = "../src/assets/fonts/Dana-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		20F079DBA42546619927A604 /* Dana-Bold.ttf */ = {isa = PBXFileReference; name = "Dana-Bold.ttf"; path = "../src/assets/fonts/Dana-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1696E0FE78F74DB6B81C869A /* DanaFaNum-Black.ttf */ = {isa = PBXFileReference; name = "DanaFaNum-Black.ttf"; path = "../src/assets/fonts/DanaFaNum-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		EF734DD08DC143949CB40C99 /* DanaFaNum-Bold.ttf */ = {isa = PBXFileReference; name = "DanaFaNum-Bold.ttf"; path = "../src/assets/fonts/DanaFaNum-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E89F7E89869C4E5088AEDDF0 /* IRANYekanWebBlack.ttf */ = {isa = PBXFileReference; name = "IRANYekanWebBlack.ttf"; path = "../src/assets/fonts/IRANYekanWebBlack.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D10928F3F28041FA9282D062 /* IRANYekanWebBlackFaNum.ttf */ = {isa = PBXFileReference; name = "IRANYekanWebBlackFaNum.ttf"; path = "../src/assets/fonts/IRANYekanWebBlackFaNum.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AF32A6917A414BA1B2A74DD8 /* IRANYekanWebExtraBlack.ttf */ = {isa = PBXFileReference; name = "IRANYekanWebExtraBlack.ttf"; path = "../src/assets/fonts/IRANYekanWebExtraBlack.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0CB9D63AA8684282A3965306 /* IRANYekanWebExtraBlackFaNum.ttf */ = {isa = PBXFileReference; name = "IRANYekanWebExtraBlackFaNum.ttf"; path = "../src/assets/fonts/IRANYekanWebExtraBlackFaNum.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		87963F1080054415B9A5110D /* IRANYekanWebExtraBold.ttf */ = {isa = PBXFileReference; name = "IRANYekanWebExtraBold.ttf"; path = "../src/assets/fonts/IRANYekanWebExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4162A183901046F1A7795466 /* IRANYekanX-Bold.ttf */ = {isa = PBXFileReference; name = "IRANYekanX-Bold.ttf"; path = "../src/assets/fonts/IRANYekanX-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FAA8B735DCD2415C9A637AC4 /* KalamehWeb_Black.ttf */ = {isa = PBXFileReference; name = "KalamehWeb_Black.ttf"; path = "../src/assets/fonts/KalamehWeb_Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		691A7AE2DB3B4656A4372F33 /* KalamehWeb_Bold.ttf */ = {isa = PBXFileReference; name = "KalamehWeb_Bold.ttf"; path = "../src/assets/fonts/KalamehWeb_Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F701954BBF6A4B4E9BEA6B46 /* Peyda-Black.ttf */ = {isa = PBXFileReference; name = "Peyda-Black.ttf"; path = "../src/assets/fonts/Peyda-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1B3F207382C548AFBA691618 /* Peyda-Bold.ttf */ = {isa = PBXFileReference; name = "Peyda-Bold.ttf"; path = "../src/assets/fonts/Peyda-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		EF09EB044BF44F2CBD2BAD0E /* Peyda-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Peyda-ExtraBold.ttf"; path = "../src/assets/fonts/Peyda-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FAB533D282764190BCA609C5 /* PeydaFaNum-Black.ttf */ = {isa = PBXFileReference; name = "PeydaFaNum-Black.ttf"; path = "../src/assets/fonts/PeydaFaNum-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		42D32AEBC87E4DF2B4F99C1F /* PeydaFaNum-Bold.ttf */ = {isa = PBXFileReference; name = "PeydaFaNum-Bold.ttf"; path = "../src/assets/fonts/PeydaFaNum-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CA22E337CD814484BE9DCF19 /* PeydaFaNum-ExtraBold.ttf */ = {isa = PBXFileReference; name = "PeydaFaNum-ExtraBold.ttf"; path = "../src/assets/fonts/PeydaFaNum-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B245CC50E1434F3386830A5C /* Roboto-Bold.ttf */ = {isa = PBXFileReference; name = "Roboto-Bold.ttf"; path = "../src/assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E1BE003A60494F53B03A2443 /* Rokh-Black.ttf */ = {isa = PBXFileReference; name = "Rokh-Black.ttf"; path = "../src/assets/fonts/Rokh-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D961481186284EC286A5853C /* Rokh-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Rokh-ExtraBold.ttf"; path = "../src/assets/fonts/Rokh-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AA35E2F6DB3C4DF3A00B18A9 /* RokhFaNum-Black.ttf */ = {isa = PBXFileReference; name = "RokhFaNum-Black.ttf"; path = "../src/assets/fonts/RokhFaNum-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8960CB996D8048F590501B3A /* RokhFaNum-ExtraBold.ttf */ = {isa = PBXFileReference; name = "RokhFaNum-ExtraBold.ttf"; path = "../src/assets/fonts/RokhFaNum-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +226,29 @@
 				32A399B4C7B54FB38B4853DD /* YekanBakhFaNum-Regular.ttf */,
 				1F4B5B5EBF1644359A94070C /* YekanBakhFaNum-SemiBold.ttf */,
 				D744AAB1966949F78ADECA8A /* YekanBakhFaNum-Thin.ttf */,
+				A89D7CA33E374B1BB8F5A925 /* Dana-Black.ttf */,
+				20F079DBA42546619927A604 /* Dana-Bold.ttf */,
+				1696E0FE78F74DB6B81C869A /* DanaFaNum-Black.ttf */,
+				EF734DD08DC143949CB40C99 /* DanaFaNum-Bold.ttf */,
+				E89F7E89869C4E5088AEDDF0 /* IRANYekanWebBlack.ttf */,
+				D10928F3F28041FA9282D062 /* IRANYekanWebBlackFaNum.ttf */,
+				AF32A6917A414BA1B2A74DD8 /* IRANYekanWebExtraBlack.ttf */,
+				0CB9D63AA8684282A3965306 /* IRANYekanWebExtraBlackFaNum.ttf */,
+				87963F1080054415B9A5110D /* IRANYekanWebExtraBold.ttf */,
+				4162A183901046F1A7795466 /* IRANYekanX-Bold.ttf */,
+				FAA8B735DCD2415C9A637AC4 /* KalamehWeb_Black.ttf */,
+				691A7AE2DB3B4656A4372F33 /* KalamehWeb_Bold.ttf */,
+				F701954BBF6A4B4E9BEA6B46 /* Peyda-Black.ttf */,
+				1B3F207382C548AFBA691618 /* Peyda-Bold.ttf */,
+				EF09EB044BF44F2CBD2BAD0E /* Peyda-ExtraBold.ttf */,
+				FAB533D282764190BCA609C5 /* PeydaFaNum-Black.ttf */,
+				42D32AEBC87E4DF2B4F99C1F /* PeydaFaNum-Bold.ttf */,
+				CA22E337CD814484BE9DCF19 /* PeydaFaNum-ExtraBold.ttf */,
+				B245CC50E1434F3386830A5C /* Roboto-Bold.ttf */,
+				E1BE003A60494F53B03A2443 /* Rokh-Black.ttf */,
+				D961481186284EC286A5853C /* Rokh-ExtraBold.ttf */,
+				AA35E2F6DB3C4DF3A00B18A9 /* RokhFaNum-Black.ttf */,
+				8960CB996D8048F590501B3A /* RokhFaNum-ExtraBold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -274,6 +343,29 @@
 				EB76F023AC38462A8377EE7D /* YekanBakhFaNum-Regular.ttf in Resources */,
 				238607C96DA24CBC84141DC8 /* YekanBakhFaNum-SemiBold.ttf in Resources */,
 				90BDC5823EA94E269A65350B /* YekanBakhFaNum-Thin.ttf in Resources */,
+				C6C2B0EDE95E415D92DF48DD /* Dana-Black.ttf in Resources */,
+				CA8110E7D2EC4633B8162893 /* Dana-Bold.ttf in Resources */,
+				72A061B419A14CF487124CD2 /* DanaFaNum-Black.ttf in Resources */,
+				93F7D3C22DB5449487C5F6B7 /* DanaFaNum-Bold.ttf in Resources */,
+				B5846BCBB3824D4B8698F67C /* IRANYekanWebBlack.ttf in Resources */,
+				DAE5609B2ACF43C3AD826513 /* IRANYekanWebBlackFaNum.ttf in Resources */,
+				A9191A45BB50428D84B391F3 /* IRANYekanWebExtraBlack.ttf in Resources */,
+				D6938628CEB8418F83F399B2 /* IRANYekanWebExtraBlackFaNum.ttf in Resources */,
+				F3C3FEF702154201985C5EC9 /* IRANYekanWebExtraBold.ttf in Resources */,
+				DAE9EDF5077D4F56B0A4B7B8 /* IRANYekanX-Bold.ttf in Resources */,
+				19DFD4BF5B1A4A8E889E4D60 /* KalamehWeb_Black.ttf in Resources */,
+				EF6B47A5E3E5484DB1B88D82 /* KalamehWeb_Bold.ttf in Resources */,
+				131F5FD2E64D430FBB852398 /* Peyda-Black.ttf in Resources */,
+				DA67207721CE446786083D73 /* Peyda-Bold.ttf in Resources */,
+				7F6898E3E59B45F9A7E85042 /* Peyda-ExtraBold.ttf in Resources */,
+				355AA6875A87457CB36D6B63 /* PeydaFaNum-Black.ttf in Resources */,
+				B923B8CFE6CC45E8AF472706 /* PeydaFaNum-Bold.ttf in Resources */,
+				46A4D04751B340A6A297CF99 /* PeydaFaNum-ExtraBold.ttf in Resources */,
+				C3E070604834432FBD3CD7C6 /* Roboto-Bold.ttf in Resources */,
+				D4DDD1AAD04640B5AC537F0E /* Rokh-Black.ttf in Resources */,
+				9216632D37BE44B3A40F82A6 /* Rokh-ExtraBold.ttf in Resources */,
+				1C76F8008A8C45759A827FA4 /* RokhFaNum-Black.ttf in Resources */,
+				B520E034F37F4799953E753B /* RokhFaNum-ExtraBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

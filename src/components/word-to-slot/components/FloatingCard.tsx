@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -31,6 +31,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import { dropWordToSlotCardInFloatingSound, dropWordToSlotCardInSlotSound, onStartDragWordToSlotCardSound, tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import { vibrate } from '../../../utils/vibrationManager';
 import { navigate } from '../../../main/navigationService';
+import Icon from '../../../utils/Icon';
 
 // تنظیمات انیمیشن برای نرم‌تر شدن
 const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
@@ -52,7 +53,7 @@ interface Position {
 function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
   const colors = useAppTheme()
   const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards, lockedPan, type, stageId, playingPartIndex } = useDragDrop();
-  const fontSizeScale = (word.length < 3)?1.5:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
+  const fontSizeScale = (word.length < 3)?1.6:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
   const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;
@@ -70,7 +71,6 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   const dragFromSlot = useSharedValue<number | null>(null);
   const cardSize = useSharedValue(CARD_SIZE_FLOATING);
   const fontSize = useSharedValue(FONT_SIZE_FLOATING_SCALED);
-  const unknownwordFontSize = useSharedValue(FONT_SIZE_SLOTTED *4);
 
   useEffect(() => {
     registerCard({
@@ -230,15 +230,22 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   return (
     <GestureDetector gesture={Gesture.Simultaneous(pan, touch)}>
-      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?3:0, borderColor:unknown_word && !unknown_word_completed?'#0693e3':"transparent", borderStyle:'dotted'}]}>
-        <AnimatedSkiaText
-          text={(unknown_word && !unknown_word_completed)?"?":word}
-          gradientColors={(unknown_word && !unknown_word_completed) ? ['#FF8800',  '#ff0f0f'] : undefined}
-          fontSize={ (unknown_word && !unknown_word_completed) ? unknownwordFontSize : fontSize}
-          initialFontSize={ (unknown_word && !unknown_word_completed) ? FONT_SIZE_SLOTTED *4:FONT_SIZE_FLOATING_SCALED}
-          initialWidth={CARD_SIZE_FLOATING}
-          initialHeight={CARD_SIZE_FLOATING}
-        />
+      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?2:0, borderColor:unknown_word && !unknown_word_completed?'#FFFFFF':"transparent", borderStyle:'dotted'}]}>
+        {
+          (unknown_word && !unknown_word_completed)?
+          <View style={{width:CARD_SIZE_FLOATING-20, height:CARD_SIZE_FLOATING-20, borderColor:"#b71c1c", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
+            <Icon name={"question"} type={"Fontisto"} style={{color:"#b71c1c", fontSize:CARD_SIZE_FLOATING-35}}/>
+          </View>
+          :
+          <AnimatedSkiaText
+            text={word}
+            gradientColors={unknown_word ? ['#FF8800',  '#ff0f0f'] : undefined}
+            fontSize={fontSize}
+            initialFontSize={ (unknown_word && !unknown_word_completed) ? FONT_SIZE_SLOTTED *4:FONT_SIZE_FLOATING_SCALED}
+            initialWidth={CARD_SIZE_FLOATING}
+            initialHeight={CARD_SIZE_FLOATING}
+          />
+        }
       </Animated.View>
     </GestureDetector>
   );

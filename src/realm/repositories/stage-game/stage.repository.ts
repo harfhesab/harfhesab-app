@@ -91,7 +91,6 @@ export const createManyStages = (
 
     return true;
   } catch (error) {
-    console.log("realm error", error)
     return false;
   }
 };

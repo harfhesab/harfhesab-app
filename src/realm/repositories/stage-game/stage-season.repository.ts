@@ -215,7 +215,6 @@ export const getStageSeasonById = (
 
     return plainStageSeason as StageSeason;
   } catch (error) {
-    console.error('Error in getStageSeasonById:', error);
     return null;
   }
 };

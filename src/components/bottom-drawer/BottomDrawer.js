@@ -49,7 +49,7 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
             setRadioSelected(dialog?.options?.radioSelected??null)
             setSelectRequired(dialog?.options?.selectRequired??false)
             clearTimeout(time)
-        }, 200)
+        }, 100)
     }
     const close = () => {
         setVisible(false)
@@ -66,7 +66,7 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
             setListItemRadioButtonSize(null)
             setRadioSelected(null)
             clearTimeout(time)
-        }, 500)
+        }, 400)
     }
     useImperativeHandle(ref, ()=>({
         open,

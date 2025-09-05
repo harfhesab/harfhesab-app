@@ -16,7 +16,7 @@ const {width} = Dimensions.get("window");
 const TopHeader = () => {
   const colors = useAppTheme();
   const {coins_for_word_to_slot_help_stage_game, coins_for_word_to_slot_help_package_game} = useSelector((state: RootState) => state.constants);
-  const { changePlayingIndex, completedSentences, currentPartIndex, playingPartIndex, numberParts, type } = useDragDrop();
+  const { changePlayingIndex, completedSentences, currentPartIndex, playingPartIndex, numberParts, type, applyForHelp } = useDragDrop();
 
   const onChangePlayingIndex = (index:number)=>{
     if(index == playingPartIndex) return
@@ -46,7 +46,7 @@ const TopHeader = () => {
             <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
             <NumberCoinsHelp
               numberCoinsHelp={type == "stage-game"?coins_for_word_to_slot_help_stage_game:type == "package-game"&&coins_for_word_to_slot_help_package_game}
-              onPress={()=>{}}
+              onPress={applyForHelp}
             />
             <TouchableOpacity onPress={()=>{goBack()}} activeOpacity={0.8}>
                 <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}40`}}>

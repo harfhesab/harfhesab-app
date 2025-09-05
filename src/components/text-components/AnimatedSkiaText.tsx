@@ -40,7 +40,7 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
   const gradientPaint = Skia.Paint();
   gradientPaint.setShader(gradient);
 
-  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-Black.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
+  const font = useFont(require('../../assets/fonts/IRANYekanWebBlackFaNum.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
   const scale = useDerivedValue(() => fontSize.value / initialFontSize, [fontSize]);
   const transform = useDerivedValue(() => [{ scale: scale.value }], [scale]);
 

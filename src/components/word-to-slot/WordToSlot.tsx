@@ -19,7 +19,6 @@ import {
 import SentenceDisplay from './components/SentenceDisplay';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
-import { useRealm } from '../../realm';
 
 const WordToSlot = ({
   id,
@@ -31,23 +30,15 @@ const WordToSlot = ({
   type:string; // "stage-game" | "package-game"
 }) => {
   const colors = useAppTheme();
-  const realm = useRealm();
 
-  const data = type == "stage-game"? getStageById(realm, id):undefined
-  const stageNumber = type == "stage-game"?data?.stage_number_in_language:undefined
-  const languageId = type == "stage-game"?data?.language_ref?.toString():undefined
+  
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DragDropProvider
-        parts={data?.parts??[]}
-        stageNumber={stageNumber}
-        realm={realm}
         stageId={id}
         currentStageId={currentStageId}
         type={type}
-        languageId={languageId}
-        packageId={undefined}
       >
         <SafeAreaView style={styles.container}>
           <SentenceDisplay />

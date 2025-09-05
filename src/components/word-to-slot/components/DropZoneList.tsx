@@ -3,13 +3,20 @@ import DropZone from './DropZone';
 import { useDragDrop } from '../context/DragDropContext';
 
 const DropZoneList = () => {
-  const { numberOfCards } = useDragDrop();
+  const { currentWords } = useDragDrop();
 
   const renderedZones = useMemo(() => {
-    return Array.from({ length: numberOfCards }).map((_, index) => (
-      <DropZone key={index} index={index} />
+    return currentWords?.map((item, index) => (
+      <DropZone
+        key={index}
+        index={index}
+        word_help_used={item.word_help_used}
+        word={item.word}
+        unknown_word={item.unknown_word}
+        unknown_word_completed={item.unknown_word_completed}
+      />
     ));
-  }, [numberOfCards]);
+  }, [currentWords]);
 
   return <>{renderedZones}</>;
 };

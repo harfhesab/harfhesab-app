@@ -18,6 +18,14 @@ import Realm from 'realm';
 import { endOfAStageInStageGame } from '../functions/StageGameFunctions';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from '../../../redux/store/Store';
+import { useRealm } from '../../../realm';
+import { getStageById } from '../../../realm/repositories/stage-game/stage.repository';
+
+import { useObject } from '../../../realm';
+import { BSON } from 'realm';
+import { Stage } from '../../../realm/schemas/stage-game/StageSchema';
+import { saveCompletedPartAndSentenceBuilded, saveWordHelpUsedInStageGame } from '../../../realm/repositories/user/user-stage-game-progress.repository';
+import Toast from 'react-native-toast-message';
 
 interface Position {
   x: number;
@@ -61,38 +69,38 @@ interface ContextProps {
   lockedPan: boolean;
   type: string;
   stageId: string;
+  applyForHelp: () => void;
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
 
 export const DragDropProvider: React.FC<{
   children: React.ReactNode;
-  parts: Realm.List<any> | any[];
-  stageNumber: number | undefined;
-  realm: Realm;
   stageId: string;
   currentStageId: string;
   type: string;
-  languageId?:string;
-  packageId?:string;
 }> = ({
   children,
-  parts,
-  stageNumber,
-  realm,
   stageId,
   currentStageId,
   type,
-  languageId,
-  packageId
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const realm = useRealm();
+  const objectId = typeof stageId === 'string' ? new BSON.ObjectId(stageId) : stageId;
+  const data = type == "stage-game"&&useObject<Stage>('Stage', objectId);
+  const stageNumber = (type == "stage-game" && data)?data?.stage_number_in_language:undefined
+  const languageId = (type == "stage-game" && data)?data?.language_ref?.toString():undefined
+  const parts = data?data?.parts:[]
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [slots, setSlots] = useState<Record<number, string>>({});
   const [slotPositions, setSlotPositions] = useState<Record<number, Position>>({});
   const [cardSlotMap, setCardSlotMap] = useState<Record<string, number>>({});
-  const [currentPartIndex, setCurrentPartIndex] = useState(parts.findIndex((item) => item.sentence_builded !== true));
-  const [playingPartIndex, setPlayingPartIndex] = useState(parts.findIndex((item) => item.sentence_builded !== true))
+  const [currentPartIndex, setCurrentPartIndex] = useState(() => {
+    const idx = parts.findIndex(item => item.sentence_builded !== true);
+    return idx !== -1 ? idx : parts.length - 1;
+  });
+  const [playingPartIndex, setPlayingPartIndex] = useState(Math.max(0, parts.findIndex(item => item.sentence_builded !== true)))
   const [completedSentences, setCompletedSentences] = useState<string[]>([]);
   const [lockedPan, setLockedPan] = useState<boolean>(false)
   const numberParts = parts.length
@@ -103,9 +111,35 @@ export const DragDropProvider: React.FC<{
     word: w.word,
     unknown_word: w.unknown_word,
     unknown_word_completed: w.unknown_word_completed,
+    word_help_used: w.word_help_used
   })) || [];
 
   const numberOfCards = currentWords.length;
+
+  function applyForHelp() {
+    for (let index = 0; index < currentWords.length; index++) {
+      const element = currentWords[index];
+      if(element.word_help_used == true){
+        if(index == currentWords.length - 1){
+          Toast.show({
+            type: "error",
+            text1 : "آیتمی برای راهنمایی موجود نیست!",
+            topOffset : 10
+          })
+          return false
+        }
+        continue
+      } else {
+        const partIndex = playingPartIndex
+        const wordId = element._id
+        if(type == "stage-game"){
+          saveWordHelpUsedInStageGame( realm, stageId, partIndex, wordId);
+          return true
+        }
+        break
+      }
+    }
+  }
 
   const completeCurrentPart = useCallback(() => {
     let sentences:any
@@ -120,6 +154,10 @@ export const DragDropProvider: React.FC<{
       });
     }
     setLockedPan(true)
+    if(type == "stage-game"){
+      const partIndex = playingPartIndex
+      saveCompletedPartAndSentenceBuilded( realm, stageId, partIndex);
+    }
     if (playingPartIndex < parts.length - 1) {
       setTimeout(()=>{
         if(currentPartIndex == playingPartIndex){
@@ -145,7 +183,6 @@ export const DragDropProvider: React.FC<{
           
         }
       }, 1000)
-      console.log('Stage completed');
     }
   }, [currentPartIndex, playingPartIndex, parts]);
 
@@ -489,7 +526,8 @@ export const DragDropProvider: React.FC<{
         numberParts,
         lockedPan,
         type,
-        stageId
+        stageId,
+        applyForHelp
       }}
     >
       {children}

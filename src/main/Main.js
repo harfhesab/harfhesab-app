@@ -13,6 +13,8 @@ import axios from 'axios';
 import { navigationRef } from './navigationService';
 import Alert from '../components/alert/Alert';
 import AlertHelper from '../components/alert/AlertHelper';
+import GameAlert from '../components/game-alert/GameAlert';
+import GameAlertHelper from '../components/game-alert/GameAlertHelper';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.auth);
@@ -34,6 +36,7 @@ const Main = (props) => {
         </NavigationContainer>
         <Toast config={ToastConfig}/>
         <Alert ref = {Ref => {AlertHelper.setRef(Ref)}}/>
+        <GameAlert ref={ref => GameAlertHelper.setRef(ref)} />
     </SafeAreaView>
   );
 };

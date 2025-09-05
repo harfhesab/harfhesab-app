@@ -25,17 +25,12 @@ class SoundPlayer {
     // بارگذاری صدا با مدیریت خطا
     this.sound = new Sound(soundName, basePath, (error) => {
       if (error) {
-        console.error('Failed to load the sound:', error);
         this.error = error;
         return;
       }
       this.isLoaded = true;
-      console.log(`Sound loaded successfully. Duration: ${this.sound.getDuration()} seconds`);
-
       // تنظیم حجم صدا
       this.sound.setVolume(volume);
-      console.log(`Volume set to ${volume}.`);
-
       // تنظیم لوپ اگر درخواست شده باشد
       if (loop) {
         this.setLoop(true);
@@ -84,14 +79,11 @@ class SoundPlayer {
    */
   play(onEndCallback = null) {
     if (!this.isLoaded) {
-      console.error('Sound is not loaded yet or failed to load.');
       return;
     }
     this.sound.play((success) => {
       if (success) {
-        console.log('Sound played successfully.');
       } else {
-        console.error('Playback failed due to audio decoding errors.');
       }
       if (onEndCallback) {
         onEndCallback(success);
@@ -105,9 +97,6 @@ class SoundPlayer {
   pause() {
     if (this.sound) {
       this.sound.pause();
-      console.log('Sound paused.');
-    } else {
-      console.error('No sound instance to pause.');
     }
   }
 
@@ -117,10 +106,7 @@ class SoundPlayer {
   stop() {
     if (this.sound) {
       this.sound.stop(() => {
-        console.log('Sound stopped and reset.');
       });
-    } else {
-      console.error('No sound instance to stop.');
     }
   }
 
@@ -131,9 +117,6 @@ class SoundPlayer {
   setLoop(enable) {
     if (this.sound) {
       this.sound.setNumberOfLoops(enable ? -1 : 0);
-      console.log(`Loop ${enable ? 'enabled' : 'disabled'}.`);
-    } else {
-      console.error('No sound instance to set loop.');
     }
   }
 
@@ -146,7 +129,6 @@ class SoundPlayer {
       this.sound.release();
       this.sound = null;
       this.isLoaded = false;
-      console.log('Sound resources released.');
     }
   }
 }
@@ -180,7 +162,7 @@ export default SoundPlayer;
 //       const loadedPlayer = await SoundPlayer.create('pop.wav', false, false, 1.0); // پارامترها رو تنظیم کن
 //       setPlayer(loadedPlayer);
 //     } catch (error) {
-//       console.error('Error preloading sound:', error);
+//       null
 //     }
 //   };
 //   preloadSound();
@@ -201,6 +183,6 @@ export default SoundPlayer;
 //       }
 //     });
 //   } else {
-//     console.log('Sound not loaded yet.');
+//     
 //   }
 // };

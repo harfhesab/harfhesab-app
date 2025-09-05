@@ -1,15 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import LinearGradient from 'react-native-linear-gradient';
 import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
-import Icon from '../../../utils/Icon';
-import Toast from 'react-native-toast-message';
-import GameAlert from './game-alert/GameAlert';
-import GameAlertHelper from './game-alert/GameAlertHelper';
 import TopHeader from './TopHeader';
+import { typingSentenceErrorSound, typingSentenceSucccessSound } from '../../../utils/sound/SoundFunctions';
 
 const {width} = Dimensions.get('window')
 const SentenceDisplay = () => {
@@ -34,15 +31,15 @@ const SentenceDisplay = () => {
             const isCorrect = slotWords.every((word, index) => word === currentWords[index].word);
             
             if (isCorrect) {
-                console.log('Success: جمله به درستی ساخته شد!');
                 setCurrentSentenceStatusColor(['#47cd8a', '#103220'])
+                typingSentenceSucccessSound()
                 setTimeout(()=>{
                     setCheck(false);
                     completeCurrentPart();
                 }, 1000)
             } else {
-                console.log('Error: جمله نادرست است');
                 setCurrentSentenceStatusColor(['#ff4444', '#CC0000'])
+                typingSentenceErrorSound()
             }
         } else {
           setCurrentSentenceStatusColor(['#86442d', '#4d2719'])
@@ -59,7 +56,7 @@ const SentenceDisplay = () => {
                     <View key={index.toString()} style={{backgroundColor:"#9900ef", paddingHorizontal:15, borderRadius:5, alignItems:'center', justifyContent:'center'}}>
                         <MultiLineTextGradientSvg
                             text={item}
-                            fontFamily={Font.bakh_extra_bold}
+                            fontFamily={Font.iran_yekan_bold}
                             fontSize={20}
                             dropShadow={true}
                             shadowColor={'#000000'}
@@ -84,7 +81,6 @@ const SentenceDisplay = () => {
                 :<View/>
               }
             </View>
-            <GameAlert ref = {Ref => {GameAlertHelper.setRef(Ref)}}/>
         </View>
     );
 };

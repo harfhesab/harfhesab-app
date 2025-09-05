@@ -1,8 +1,9 @@
 import axios from "axios";
 import { goBack } from "../../../main/navigationService";
-import { getCurrentLanguageNextStageInformation, updateUserStageGameProgress } from "../../../realm/repositories/user/user-stage-game-progress.repository";
+import { getCurrentLanguageNextStageInformation, updateUserStageGameProgress, makingStageContentReplayableInStageGame } from "../../../realm/repositories/user/user-stage-game-progress.repository";
 import { updateCurrentLanguageLastStageAndLastSeason } from "../../../redux/slices/stageGameSlice";
-import GameAlertHelper from "../components/game-alert/GameAlertHelper";
+import GameAlertHelper from "../../game-alert/GameAlertHelper";
+import { successfulCompletionOfStageSound } from "../../../utils/sound/SoundFunctions";
 
 
 export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})=>{
@@ -34,12 +35,18 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                             text: 'ادامه',
                             onPress: () => {
                                 goBack()
+                                if(next.endCurrentSeason == true){
+                                    goBack()
+                                }
                             },
                             type:'bold'
                         },
                         {
                             onPress: () => {
                                 goBack()
+                                if(next.endCurrentSeason == true){
+                                    goBack()
+                                }
                             },
                             type:'ads'
                         }
@@ -78,4 +85,8 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
             },
         });
     }
+    makingStageContentReplayableInStageGame(realm, stageId)
+    setTimeout(()=>{
+        successfulCompletionOfStageSound()
+    }, 1000)
 }
