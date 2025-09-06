@@ -7,9 +7,9 @@ import { successfulCompletionOfConnectingLetterSound } from "../../../utils/soun
 
 export const unknownWordCompletedInStageGame = async()=>{
     GameAlertHelper.showAlertGame({
-        title: "تعیین کلمه نامعلوم",
+        title: "تعیین کلمه نامشخص",
         admiration: "درود بر شما!",
-        description: `کلمه نامعلوم با موفقیت ساخته شد.`,
+        description: `کلمه نامشخص با موفقیت ساخته شد.`,
         buttons: [
             {
                 text: 'ادامه',
@@ -22,7 +22,8 @@ export const unknownWordCompletedInStageGame = async()=>{
                 onPress: () => {
                     goBack()
                 },
-                type:'ads'
+                type:'ads',
+                reward: 10
             }
         ],
         options : {

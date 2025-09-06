@@ -45,7 +45,7 @@ const SentenceDisplay = () => {
           setCurrentSentenceStatusColor(['#86442d', '#4d2719'])
           setCheck(true);
         }
-    }, [slots, currentWords, cards, completeCurrentPart]);
+    }, [slots]);
 
     return (
         <View style={styles.sentenceContainer}>
@@ -53,7 +53,7 @@ const SentenceDisplay = () => {
             <View style={{width:"100%", alignItems:'center', flexDirection :'column', gap:10, justifyContent:'center', paddingHorizontal:15}}>
                 {
                   completedSentences?.map((item, index)=>(
-                    <View key={index.toString()} style={{backgroundColor:"#9900ef", paddingHorizontal:15, borderRadius:5, alignItems:'center', justifyContent:'center'}}>
+                    <View key={index.toString()} style={{backgroundColor:"#9900ef90", paddingHorizontal:15, borderRadius:5, alignItems:'center', justifyContent:'center'}}>
                         <MultiLineTextGradientSvg
                             text={item}
                             fontFamily={Font.iran_yekan_bold}

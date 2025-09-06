@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
-import { View, Dimensions, TouchableOpacity, Text, ScrollView, I18nManager} from 'react-native';
+import { View, Dimensions, TouchableOpacity, Text, ScrollView, I18nManager, Image} from 'react-native';
 import Modal from "react-native-modal";
 import Font from '../../utils/Font';
 import Toast from 'react-native-toast-message';
@@ -10,10 +10,13 @@ import LottieView from 'lottie-react-native';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import AdsButton from '../buttons/AdsButton';
 import MultiLineTextGradientSvg from '../text-components/MultiLineTextGradientSvg';
+import { increaseNumberCoins } from '../../redux/slices/coinSlice';
+import { useDispatch } from "react-redux";
 
 const {width, height} = Dimensions.get('window');
 const GameAlert = React.forwardRef((props, ref)=>{
     const colors = useAppTheme();
+    const dispatch = useDispatch();
     const contentWidth = width-50;
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(false)
@@ -23,6 +26,7 @@ const GameAlert = React.forwardRef((props, ref)=>{
     const [admiration, setAdmiration] = useState(null)
     const [description, setDescription] = useState(null)
     const [completedSentences, setCompletedSentences] = useState(null)
+    const [reward, setReward] = useState(null)
     
 
 
@@ -36,7 +40,11 @@ const GameAlert = React.forwardRef((props, ref)=>{
             {dialog?.options?.cancelable&&setCancelable(dialog?.options?.cancelable)}
             {dialog?.options?.type&&setType(dialog.options.type)}
             {dialog?.buttons?.length>0&&setButtons(dialog?.buttons)}
-        }, 100)
+            if(dialog.options?.reward){
+                setReward(dialog.options?.reward)
+                dispatch(increaseNumberCoins({number:dialog.options?.reward}))
+            }
+        }, 200)
     }
     const close = () => {
         setVisible(false)
@@ -48,6 +56,7 @@ const GameAlert = React.forwardRef((props, ref)=>{
             setAdmiration(null)
             setDescription(null)
             setCompletedSentences(null)
+            setReward(null)
         }, 400)
     }
     useImperativeHandle(ref, ()=>({
@@ -74,18 +83,28 @@ const GameAlert = React.forwardRef((props, ref)=>{
                 <View style={{direction:I18nManager.isRTL?'rtl':'ltr', flex: 1, alignItems: "center", justifyContent: "center"}}>
                     <View style={{width: contentWidth, backgroundColor:colors.alert_component.background, borderRadius: 15, alignItems: "center"}}>
                         {
-                            title?.length > 0&&
-                            <View style={{alignItems:'center', width:"100%", justifyContent:'center', paddingHorizontal:20, paddingVertical:10, backgroundColor:`${colors.primary.a1}20`, borderTopStartRadius:15, borderTopEndRadius:15}}>
-                                {title?.length > 0&&<Text style={{fontFamily:Font.bakh_extra_black, fontSize:22, color:colors.text.a1, textAlign:'center'}}>{title}</Text>}
+                            title&&
+                            <View style={{flexDirection:'row', alignItems:'center', width:"100%", justifyContent:reward?'space-between':'center', paddingHorizontal:15, paddingVertical:10, backgroundColor:`${colors.primary.a1}20`, borderTopStartRadius:15, borderTopEndRadius:15}}>
+                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:20, color:colors.text.a1}}>{title}</Text>
+                                {
+                                    reward&&
+                                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:5}}>
+                                        <Image
+                                            style={{width:20, height:20}}
+                                            source={require('../../assets/image/coin.png')}
+                                        />
+                                        <Text style={{fontSize:20, fontFamily:Font.iran_yekan_black_fa, color:colors.text.a1}}>{`${reward}+`}</Text>
+                                    </View>
+                                }
                             </View>
                         }
-                        <View style={{width:contentWidth, alignItems:'center'}}>
+                        <View style={{width:contentWidth, alignItems:'center', paddingTop:20}}>
                             <LottieView
-                                style={{width:contentWidth, height: 120}}
+                                style={{width:contentWidth, height: 150}}
                                 source={type === 'success' ?
                                     require('../../assets/lottie/successful.json')
-                                    :type === 'warning' &&
-                                    require('../../assets/lottie/warn.json')
+                                    :type === 'unlocked' &&
+                                    require('../../assets/lottie/unlocked.json')
                                 }
                                 autoPlay
                                 loop={false}
@@ -97,10 +116,10 @@ const GameAlert = React.forwardRef((props, ref)=>{
                                 contentContainerStyle={{width:"100%", alignItems:'center'}}
                             >
                                 {admiration?.length > 0&&<Text style={{fontFamily:Font.bakh_bold, fontSize:18, color:colors.text.a2, textAlign:'center'}}>{admiration}</Text>}
-                                {description?.length > 0&&<Text style={{fontFamily:Font.bakh_regular, fontSize:12, color:colors.text.a3, textAlign:'center'}}>{description}</Text>}
+                                {description?.length > 0&&<Text style={{fontFamily:Font.bakh_regular, fontSize:14, color:colors.text.a3, textAlign:'center', marginTop:5}}>{description}</Text>}
                                 {
                                     completedSentences?.length > 0&&
-                                    <View style={{width:"100%", alignItems:'center', gap:10, paddingVertical:60}}>
+                                    <View style={{width:"100%", alignItems:'center', gap:10, paddingVertical:30}}>
                                         {
                                             completedSentences.map((item, index)=>(
                                                 <MultiLineTextGradientSvg
@@ -148,6 +167,7 @@ const GameAlert = React.forwardRef((props, ref)=>{
                                             key={index.toString()}
                                             width={180}
                                             fontFamily={Font.bakh_extra_bold}
+                                            reward={item?.reward}
                                         />)
                                     ))
                                 }

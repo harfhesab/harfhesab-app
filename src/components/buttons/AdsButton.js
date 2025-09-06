@@ -6,7 +6,7 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 import LinearGradient from 'react-native-linear-gradient';
 
 function AdsButton(
-    { onPress, width=160, height=55, fontSize=16, fontFamily=Font.medium, textColor="#FFFFFF", backgorundGradinte=['#bf360c', '#ff6900'], borderRadius=10}
+    { onPress, reward, width=160, height=55, fontSize=16, fontFamily=Font.medium, textColor="#FFFFFF", backgorundGradinte=['#bf360c', '#ff6900'], borderRadius=10}
 ){
     const colors = useAppTheme();
     return(
@@ -15,7 +15,7 @@ function AdsButton(
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:15, height:"100%", paddingHorizontal:10}}>
                     <Text style={{fontSize, fontFamily, color:textColor}}>{"مشاهدهٔ تبلیغ"}</Text>
                     <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:2}}>
-                        <Text style={{fontSize, fontFamily, color:textColor}}>{"10+"}</Text>
+                        <Text style={{fontSize, fontFamily, color:textColor}}>{`${reward}+`}</Text>
                         <Image
                             style={{width:fontSize*1.5, height:fontSize*1.5}}
                             source={require('../../assets/image/coin.png')}

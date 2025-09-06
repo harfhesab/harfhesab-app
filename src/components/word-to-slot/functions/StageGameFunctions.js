@@ -36,7 +36,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                             onPress: () => {
                                 goBack()
                                 if(next.endCurrentSeason == true){
-                                    goBack()
+                                    endOfASeasonInStageGame({seasonNumber:last_season-1})
                                 }
                             },
                             type:'bold'
@@ -45,14 +45,18 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                             onPress: () => {
                                 goBack()
                                 if(next.endCurrentSeason == true){
-                                    goBack()
+                                    setTimeout(()=>{
+                                        endOfASeasonInStageGame({seasonNumber:last_season-1})
+                                    }, 400)
                                 }
                             },
-                            type:'ads'
+                            type:'ads',
+                            reward: 12,
                         }
                     ],
                     options : {
                         type: 'success',
+                        reward : 10,
                         cancelable: false,
                     },
                 });
@@ -76,7 +80,8 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     onPress: () => {
                         goBack()
                     },
-                    type:'ads'
+                    type:'ads',
+                    reward: 7
                 }
             ],
             options : {
@@ -89,4 +94,25 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
     setTimeout(()=>{
         successfulCompletionOfStageSound()
     }, 1000)
+}
+const endOfASeasonInStageGame = ({seasonNumber})=>{
+    GameAlertHelper.showAlertGame({
+        title:`پایان فصل ${seasonNumber}`,
+        admiration: "تبریک!",
+        description: `مراحل فصل ${seasonNumber} با موفقیت به اتمام رسید.`,
+        buttons: [
+            {
+                text: "شروع فصل جدید",
+                onPress: () => {
+                    goBack()
+                },
+                type:'bold'
+            }
+        ],
+        options : {
+            type: 'unlocked',
+            reward : 20,
+            cancelable: false,
+        },
+    });
 }

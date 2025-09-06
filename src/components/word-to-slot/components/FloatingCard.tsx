@@ -230,10 +230,10 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   return (
     <GestureDetector gesture={Gesture.Simultaneous(pan, touch)}>
-      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1, borderWidth:unknown_word && !unknown_word_completed?2:0, borderColor:unknown_word && !unknown_word_completed?'#FFFFFF':"transparent", borderStyle:'dotted'}]}>
+      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1}]}>
         {
           (unknown_word && !unknown_word_completed)?
-          <View style={{width:CARD_SIZE_FLOATING-20, height:CARD_SIZE_FLOATING-20, borderColor:"#b71c1c", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
+          <View style={{width:CARD_SIZE_FLOATING-25, height:CARD_SIZE_FLOATING-25, borderColor:"#b71c1c", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
             <Icon name={"question"} type={"Fontisto"} style={{color:"#b71c1c", fontSize:CARD_SIZE_FLOATING-35}}/>
           </View>
           :
@@ -241,7 +241,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
             text={word}
             gradientColors={unknown_word ? ['#FF8800',  '#ff0f0f'] : undefined}
             fontSize={fontSize}
-            initialFontSize={ (unknown_word && !unknown_word_completed) ? FONT_SIZE_SLOTTED *4:FONT_SIZE_FLOATING_SCALED}
+            initialFontSize={FONT_SIZE_FLOATING_SCALED}
             initialWidth={CARD_SIZE_FLOATING}
             initialHeight={CARD_SIZE_FLOATING}
           />

@@ -12,20 +12,20 @@ function InputText({
         maxLength,
         placeholder,
         placeholderTextColor,
-        keyboardType,
-        fontFamily,
-        fontSize,
+        keyboardType = "default",
+        fontFamily = Font.medium,
+        fontSize = 16,
         clearText,
         multiline,
-        numberOfLines,
+        numberOfLines = 1,
         autoFocus,
         secureTextEntry,
         onSubmitEditing,
-        returnKeyType,
-        borderWidth,
-        borderRadius,
+        returnKeyType = "default",
+        borderWidth = 1,
+        borderRadius = 5,
         checkValue,
-        height,
+        height = 65,
         maxHeight,
         search,
         loading,
@@ -53,7 +53,7 @@ function InputText({
                 </View>
                 )
             }
-            <View style={{backgroundColor:`${colors.primary.a1}40`, width:"100%", flexDirection:'row', alignItems:'center', borderWidth:borderWidth??1, borderRadius:borderRadius??5, borderColor:focused == true?colors.primary.a1:checkValueState == true?colors.alert.a1:colors.border.a1, paddingHorizontal:10}}>
+            <View style={{backgroundColor:`${colors.primary.a1}40`, width:"100%", flexDirection:'row', alignItems:'center', borderWidth:borderWidth, borderRadius:borderRadius, borderColor:focused == true?colors.primary.a1:checkValueState == true?colors.alert.a1:colors.border.a1, paddingHorizontal:10}}>
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={placeholderTextColor??colors.text.a5}
@@ -68,19 +68,19 @@ function InputText({
                     onChangeText={onChangeText}
                     maxLength={maxLength}
                     multiline={multiline}
-                    numberOfLines={numberOfLines??1}
+                    numberOfLines={numberOfLines}
                     autoFocus={autoFocus}
                     secureTextEntry={secureTextEntryState}
-                    keyboardType={keyboardType??"default"}
-                    returnKeyType={returnKeyType??"default"}
+                    keyboardType={keyboardType}
+                    returnKeyType={returnKeyType}
                     onSubmitEditing={onSubmitEditing}
                     style={{
                         flex:1,
                         color:colors.text.a1,
-                        fontFamily:fontFamily??Font.medium,
-                        fontSize:fontSize??16,
+                        fontFamily:fontFamily,
+                        fontSize:fontSize,
                         alignSelf:'center',
-                        height:height??65,
+                        height:height,
                         maxHeight:maxHeight,
                         paddingHorizontal:5,
                     }}

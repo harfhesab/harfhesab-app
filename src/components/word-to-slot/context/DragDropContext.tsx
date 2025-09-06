@@ -96,12 +96,11 @@ export const DragDropProvider: React.FC<{
   const [slots, setSlots] = useState<Record<number, string>>({});
   const [slotPositions, setSlotPositions] = useState<Record<number, Position>>({});
   const [cardSlotMap, setCardSlotMap] = useState<Record<string, number>>({});
-  const [currentPartIndex, setCurrentPartIndex] = useState(() => {
-    const idx = parts.findIndex(item => item.sentence_builded !== true);
-    return idx !== -1 ? idx : parts.length - 1;
-  });
+  const [currentPartIndex, setCurrentPartIndex] = useState(Math.max(0, parts.findIndex(item => item.sentence_builded !== true)));
   const [playingPartIndex, setPlayingPartIndex] = useState(Math.max(0, parts.findIndex(item => item.sentence_builded !== true)))
-  const [completedSentences, setCompletedSentences] = useState<string[]>([]);
+  const [completedSentences, setCompletedSentences] = useState<string[]>(
+    () => parts.filter(p => p.sentence_builded).map(p => p.sentence)
+  );
   const [lockedPan, setLockedPan] = useState<boolean>(false)
   const numberParts = parts.length
 
@@ -292,7 +291,7 @@ export const DragDropProvider: React.FC<{
         const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
         occupyingCard.isAssigned.value = false;
         occupyingCard.position.value = withSpring(
-          occupyingCard.homePosition,
+          { x: occupyingCard.homePosition.x, y: occupyingCard.homePosition.y },
           { stiffness: 180, damping: 18 }
         );
         occupyingCard.velocity.value = {

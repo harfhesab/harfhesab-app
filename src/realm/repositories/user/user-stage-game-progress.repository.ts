@@ -73,6 +73,7 @@ export const makingStageContentReplayableInStageGame = (
                         word.additional_words_builded = [];
                     }
                 });
+                part.sentence_builded = false
             });
         });
 
