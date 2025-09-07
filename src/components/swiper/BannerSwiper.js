@@ -1,42 +1,44 @@
 import React, {memo} from "react";
-import {StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Dimensions, TouchableOpacity, FlatList} from 'react-native';
 import Swiper from 'react-native-swiper';
 import useAppTheme from "../../hooks/theme/useAppTheme";
 import ImageComponent from "../image-components/ImageComponent";
 
 const width = Dimensions.get('window').width;
-const bannerWidth = width > 600?460:width - 30
+const bannerWidth = width > 600?460:width - 50
 function BannerSwiper({items}){
     const colors = useAppTheme();
     const onClickItem = (item)=>{
         
     }
+    const renderItem = ({item, index})=>{
+        return(
+            <TouchableOpacity onPress={()=>{onClickItem(item)}} key={index.toString()} activeOpacity={0.8}>
+                <ImageComponent
+                    uri={item?.path}
+                    width={bannerWidth}
+                    height={bannerWidth/2}
+                    resizeMode="cover"
+                    borderRadius={15}
+                />
+            </TouchableOpacity>
+        )
+    }
+    const memoizedValue = useMemo(() => renderItem, [items]);
+    const keyExtractor = (item,index)=>index.toString()
     return(
-        <View style={{width:bannerWidth, height:bannerWidth * 0.7, alignItems:'center', justifyContent:'center', borderRadius:20, alignSelf:'center'}}>
-            <Swiper
-                style={styles.swiper}
-                showsButtons={false}
-                index={items.length - 1}
-                activeDotColor={colors.primary.a1}
-                dotColor={'#ffffff95'}
-                autoplay={true}
-                autoplayTimeout={4}
-                autoplayDirection={false}
-            >
-                {
-                    items.map((item, index)=>(
-                        <TouchableOpacity onPress={()=>{onClickItem(item)}} key={index.toString()} activeOpacity={0.8}>
-                            <ImageComponent
-                                uri={item?.path}
-                                width={bannerWidth}
-                                height={bannerWidth * 0.7}
-                                resizeMode="cover"
-                                borderRadius={15}
-                            />
-                        </TouchableOpacity>
-                    ))
-                }
-            </Swiper>
+        <View style={{width:width, alignItems:'center', justifyContent:'center'}}>
+            <FlatList
+                keyExtractor={keyExtractor}
+                data={items}
+                horizontal={true}
+                renderItem={memoizedValue}
+                onEndReachedThreshold={0.5}
+                snapToAlignment="start"       // آیتم از بالا چفت شود
+                decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
+                disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                bounces={true}                // فنری بودن مانند iOS
+            />
         </View>
     )
 }
@@ -47,8 +49,4 @@ const styles = StyleSheet.create({
         flexDirection: 'row-reverse',
     },
 });
-const areEqual = (prevProps, nextProps) => {
-    if (prevProps.items !== nextProps.items) return false;
-    return true;
-};
-export default memo(BannerSwiper, areEqual)
+export default memo(BannerSwiper)

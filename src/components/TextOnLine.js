@@ -8,7 +8,7 @@ function TextOnLine(props){
 
     return(
         <View style={[styles.container, {marginTop:props.top, marginBottom:props.bottom}]}>
-            <View style={{height:props.height, width:width - props.horizontal * 2, alignSelf:'center', backgroundColor:colors.border}}/>
+            <View style={{height:props.height, width:width - props.horizontal * 2, alignSelf:'center', backgroundColor:colors.border.a1}}/>
             <View style={{position:'absolute', alignItems:props.align, width:width - props.horizontal * 2, alignSelf:'center'}}>
                 <Text style={props.style}>{props.text}</Text>
             </View>

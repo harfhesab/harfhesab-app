@@ -220,7 +220,16 @@ function PackageGame(props){
     ), [])
     const memoizedValue = useMemo(() => renderItem, [collection]);
     const keyExtractor = (item,index)=>index.toString()
-    
+    const ListEmptyComponent = ()=>{
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <ScreenLoading
+                loading={loading}
+                getError={getError}
+                noItem={noItem}
+                tryAgain={tryAgain}
+            />
+        </View>
+    }
     return(
          <View style={{flex:1}}>
             <GeneralHeader
@@ -230,28 +239,19 @@ function PackageGame(props){
             />
             <LinearGradient colors={colors.background_gradient} style={{flex:1}}>
                 <View style={styles.container}>
-                    {
-                        loading == true?
-                        <ScreenLoading
-                            loading={loading}
-                            getError={getError}
-                            noItem={noItem}
-                            tryAgain={tryAgain}
-                        />
-                        :
-                        <FlatList
-                            style={{flex:1}}
-                            showsVerticalScrollIndicator={true}
-                            data={collection}
-                            keyExtractor={keyExtractor}
-                            renderItem={memoizedValue}
-                            ListFooterComponent={renderFooter}
-                            onEndReached={fetchMoreData}
-                            onEndReachedThreshold={0.5}
-                            initialNumToRender={20}
-                            removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                        />
-                    } 
+                    <FlatList
+                        style={{flex:1}}
+                        showsVerticalScrollIndicator={true}
+                        data={collection}
+                        keyExtractor={keyExtractor}
+                        renderItem={memoizedValue}
+                        ListFooterComponent={renderFooter}
+                        onEndReached={fetchMoreData}
+                        onEndReachedThreshold={0.5}
+                        initialNumToRender={20}
+                        removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                        ListEmptyComponent={ListEmptyComponent}
+                    /> 
                 </View>
             </LinearGradient> 
         </View>

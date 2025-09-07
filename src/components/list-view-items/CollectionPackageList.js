@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {View, Text, TouchableNativeFeedback, Dimensions, ScrollView} from 'react-native';
+import {Platform, View, Text, TouchableNativeFeedback, Dimensions, FlatList} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import FastImage from '@d11/react-native-fast-image';
@@ -16,6 +16,17 @@ function CollectionPackageList({_id, title, arrowText, list}){
         onPress();
     };
 
+    const renderItem = ({item, index})=>{
+        return(
+            <PackageCollectionItem
+                _id={item?._id}
+                image={item?.icon_image}
+            />
+        )
+    }
+    const memoizedValue = useMemo(() => renderItem, [items]);
+    const keyExtractor = (item,index)=>index.toString()
+
     return (
         <View>
             {
@@ -30,16 +41,14 @@ function CollectionPackageList({_id, title, arrowText, list}){
                     </View>
                 </TouchableNativeFeedback>)
             }
-            <ScrollView horizontal={true}>
-                {
-                    list?.map((item, index)=>(
-                        <PackageCollectionItem
-                            _id={item?._id}
-                            image={item?.icon_image}
-                        />
-                    ))
-                }
-            </ScrollView>
+            <FlatList
+                keyExtractor={keyExtractor}
+                data={list}
+                horizontal={true}
+                renderItem={memoizedValue}
+                onEndReachedThreshold={0.5}
+                removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+            />
         </View>
     );
 };

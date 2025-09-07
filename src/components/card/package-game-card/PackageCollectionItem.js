@@ -7,26 +7,26 @@ import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
+const itemWidth = (width - 80)/3
 function PackageCollectionItem({_id, title, image, click}){
     const colors = useAppTheme();
 
     return (
         <View style={{width:150, height:180, alignItems:'center', justifyContent:'center'}}>
-            <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border,false)}>
+            <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                 <View style={{flexDirection:'column', gap:15, alignItems:'center', justifyContent:'flex-start', padding:10}}>
-                    <View style={{width:100, height:100, alignItems:'center', justifyContent:'center', borderRadius:10}}>
+                    <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', borderRadius:10}}>
                         {
                             image?
-                            <FastImage
-                                style={{width:100, height:100, borderTopStartRadius:10, borderTopEndRadius:10}}
-                                source={{
-                                    uri: image,
-                                    priority: FastImage.priority.normal,
-                                }}
-                                resizeMode={FastImage.resizeMode.cover}
+                            <ImageComponent
+                                uri={image}
+                                width={itemWidth}
+                                height={itemWidth}
+                                resizeMode="cover"
+                                borderRadius={10}
                             />
                             :
-                            <Icon name={'camera-off'} type={'Feather'} style={{fontSize:50, color:colors.border.a1}}/>
+                            <Icon name={'camera-off'} type={'Feather'} style={{fontSize:itemWidth*0.7, color:colors.border.a1}}/>
                         }
                     </View>
                     <View>
@@ -37,11 +37,4 @@ function PackageCollectionItem({_id, title, image, click}){
         </View>
     );
 };
-
-
-const areEqual = (prevProps, nextProps) => {
-    if (prevProps.label !== nextProps.label) return false;
-    return true;
-};
-
-export default memo(PackageCollectionItem, areEqual)
+export default memo(PackageCollectionItem)
