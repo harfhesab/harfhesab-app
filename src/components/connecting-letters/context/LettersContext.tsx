@@ -145,38 +145,43 @@ export const LettersProvider: React.FC<{
       const w = allWords[i];
       const start = currentIndex;
       const end = currentIndex + w.length - 1;
-      // شرط برای رد کردن کلمات پیدا شده
       if (i < additional_words.length) {
-        // کلمات اضافه
         if (foundWords.additional.has(w)) {
           currentIndex = end + 1;
-          continue; // بریم سراغ کلمه بعدی
+          continue;
         }
       } else {
-        // کلمه اصلی
         if (foundWords.main) {
-          break; // کل word پیدا شده، دیگه کاری نکن
+          break;
         }
       }
-      // پیدا کردن اولین ایندکس آزاد در این کلمه
       for (let idx = start; idx <= end; idx++) {
         if (!lettersHelpUsed.includes(idx)) {
-          setLettersHelpUsed([...lettersHelpUsed, idx]);
-          if(type == "stage-game"){
-            saveUserHelpRequestsInStageGame( realm, stageId, partIndex, wordId, [...lettersHelpUsed, idx] );
+          const newLettersHelpUsed = [...lettersHelpUsed, idx];
+          setLettersHelpUsed(newLettersHelpUsed);
+
+          if (type === "stage-game") {
+            saveUserHelpRequestsInStageGame(
+              realm,
+              stageId,
+              partIndex,
+              wordId,
+              newLettersHelpUsed
+            );
           }
-          return true; // فقط یکی اضافه می‌کنیم
-        } else {
-          Toast.show({
-            type: "error",
-            text1 : "آیتمی برای راهنمایی موجود نیست!",
-            topOffset : 10
-          })
+          return true;
         }
       }
       currentIndex = end + 1;
     }
+    Toast.show({
+      type: "error",
+      text1: "آیتمی برای راهنمایی موجود نیست!",
+      topOffset: 10,
+    });
+    return false;
   }
+
 
   const startSelectionProgress = useCallback(() => {
     selectionProgressRN.value = 0;

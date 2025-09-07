@@ -31,11 +31,11 @@ function PackageGame(props){
             method:'post',
             data: {
                 query : `
-                    query paginatePackageGameCollectionAndOther(
+                    query paginatePackageGameCollection(
                         $page : Int,
                         $limit : Int,
                     ){
-                        paginatePackageGameCollectionAndOther(
+                        paginatePackageGameCollection(
                             page : $page,
                             limit : $limit,
                         ) {
@@ -71,7 +71,8 @@ function PackageGame(props){
                 }
             }
         }).then(async(response)=>{
-            const dataReceived = response.data.data?.paginatePackageGameCollectionAndOther
+            const dataReceived = response.data.data?.paginatePackageGameCollection
+            console.log(response)
             const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setLoading(false)
@@ -107,11 +108,11 @@ function PackageGame(props){
             method:'post',
             data: {
                 query : `
-                    query paginatePackageGameCollectionAndOther(
+                    query paginatePackageGameCollection(
                         $page : Int,
                         $limit : Int,
                     ){
-                        paginatePackageGameCollectionAndOther(
+                        paginatePackageGameCollection(
                             page : $page,
                             limit : $limit,
                         ) {
@@ -147,7 +148,7 @@ function PackageGame(props){
                 }
             }
         }).then(async(response)=>{
-            const dataReceived = response.data.data?.paginatePackageGameCollectionAndOther
+            const dataReceived = response.data.data?.paginatePackageGameCollection
             const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setCollection([...collection, ...newData])
@@ -221,14 +222,16 @@ function PackageGame(props){
     const memoizedValue = useMemo(() => renderItem, [collection]);
     const keyExtractor = (item,index)=>index.toString()
     const ListEmptyComponent = ()=>{
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <ScreenLoading
-                loading={loading}
-                getError={getError}
-                noItem={noItem}
-                tryAgain={tryAgain}
-            />
-        </View>
+        return(
+            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+                <ScreenLoading
+                    loading={loading}
+                    getError={getError}
+                    noItem={noItem}
+                    tryAgain={tryAgain}
+                />
+            </View>
+        )
     }
     return(
          <View style={{flex:1}}>
@@ -241,6 +244,7 @@ function PackageGame(props){
                 <View style={styles.container}>
                     <FlatList
                         style={{flex:1}}
+                        contentContainerStyle={{width:width, flex:1}}
                         showsVerticalScrollIndicator={true}
                         data={collection}
                         keyExtractor={keyExtractor}
