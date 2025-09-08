@@ -22,7 +22,7 @@ import Icon from '../../utils/Icon';import {
 } from 'react-native-otp-verify';
 import Globals from '../../utils/Globals';
 import { useDispatch } from "react-redux";
-import { login } from '../../redux/slices/authSlice';
+import { login } from '../../redux/slices/accountSlice';
 import useAppTheme from '../../hooks/theme/useAppTheme';
   
   
@@ -188,7 +188,8 @@ function VerifyWithOTP(props){
                         ) {
                             status,
                             message,
-                            token
+                            token,
+                            user{first_name, last_name, phone, number_coins}
                         }
                     }
                     `,
@@ -212,7 +213,9 @@ function VerifyWithOTP(props){
                 const data = response?.data?.data?.verifyUserLoginWithOTP
                 if(data?.status == 200) {
                     const token = data?.token
-                    dispatch(login({token}))
+                    const firstName = data?.user?.firstName ?? null
+                    const lastName = data?.user?.lastName ?? null
+                    dispatch(login({token, phone, firstName, lastName}))
                     axios.defaults.headers.post['token'] = token;
                     Toast.show({
                         type: "success",

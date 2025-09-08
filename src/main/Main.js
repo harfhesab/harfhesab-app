@@ -17,7 +17,7 @@ import GameAlert from '../components/game-alert/GameAlert';
 import GameAlertHelper from '../components/game-alert/GameAlertHelper';
 
 const Main = (props) => {
-  const { token, isLoggedIn } = useSelector((state) => state.auth);
+  const { token, isLoggedIn } = useSelector((state) => state.account);
 
   axios.defaults.headers.post['token'] = token;
   

@@ -20,7 +20,7 @@ function SeasonHeader({height=65, paddingHorizontal=15, back=true, coin=true, ti
                     back&&
                     <TouchableOpacity onPress={goBackOnClick} activeOpacity={0.8}>
                         <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}50`}}>
-                            <Icon name={"arrow-right"} type='Feather' style={{color:colors.text.a1, fontSize:25}}/>
+                            <Icon name={"arrow-right"} type={"Feather"} style={{color:colors.text.a1, fontSize:25}}/>
                         </View>
                     </TouchableOpacity>
                 }
@@ -40,7 +40,7 @@ function SeasonHeader({height=65, paddingHorizontal=15, back=true, coin=true, ti
                     setting&&
                     <TouchableOpacity onPress={()=>navigate("ConnectingLettersStageGame")} activeOpacity={0.8}>
                         <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}50`}}>
-                            <Icon name={"settings-outline"} type='Ionicons' style={{color:colors.text.a1, fontSize:25}}/>
+                            <Icon name={"settings-outline"} type={"Ionicons"} style={{color:colors.text.a1, fontSize:25}}/>
                         </View>
                     </TouchableOpacity>
                 }

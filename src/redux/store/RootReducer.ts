@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import authReducer from '../slices/authSlice';
+import accountReducer from '../slices/accountSlice';
 import uiReducer from '../slices/uiSlice';
 import stageGameReducer from '../slices/stageGameSlice';
 import stageGamePersistReducer from '../slices/stageGamePersistSlice';
@@ -8,7 +8,7 @@ import coinReducer from '../slices/coinSlice';
 import constantsReducer from '../slices/constantsSlice';
 
 const rootReducer = combineReducers({
-  auth: authReducer,
+  account: accountReducer,
   ui: uiReducer,
   stageGame: stageGameReducer,
   stageGamePersist: stageGamePersistReducer,
