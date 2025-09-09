@@ -16,7 +16,7 @@ import { RootState } from '../../../../redux/store/RootReducer';
 const {width} = Dimensions.get("window");
 const TopHeader = () => {
   const colors = useAppTheme();
-  const {coins_for_letter_connecting_help_stage_game, coins_for_letter_connecting_help_package_game} = useSelector((state: RootState) => state.constants);
+  const {coins_for_get_help_letter_connecting_stage_game, coins_for_get_help_letter_connecting_package_game} = useSelector((state: RootState) => state.constants);
   const { type, applyForHelp } = useLetters();
 
   return (
@@ -33,7 +33,7 @@ const TopHeader = () => {
         </View>
         <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
         <NumberCoinsHelp
-            numberCoinsHelp={type == "stage-game"?coins_for_letter_connecting_help_stage_game:type == "package-game"&&coins_for_letter_connecting_help_package_game}
+            numberCoinsHelp={type == "stage-game"?coins_for_get_help_letter_connecting_stage_game:type == "package-game"&&coins_for_get_help_letter_connecting_package_game}
             onPress={applyForHelp}
         />
         <TouchableOpacity onPress={()=>{goBack()}} activeOpacity={0.8}>

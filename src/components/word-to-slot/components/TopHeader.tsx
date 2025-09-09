@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 const {width} = Dimensions.get("window");
 const TopHeader = () => {
   const colors = useAppTheme();
-  const {coins_for_word_to_slot_help_stage_game, coins_for_word_to_slot_help_package_game} = useSelector((state: RootState) => state.constants);
+  const {coins_for_get_help_word_to_slot_stage_game, coins_for_get_help_word_to_slot_package_game} = useSelector((state: RootState) => state.constants);
   const { changePlayingIndex, completedSentences, currentPartIndex, playingPartIndex, numberParts, type, applyForHelp } = useDragDrop();
 
   const onChangePlayingIndex = (index:number)=>{
@@ -45,7 +45,7 @@ const TopHeader = () => {
             </View>
             <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
             <NumberCoinsHelp
-              numberCoinsHelp={type == "stage-game"?coins_for_word_to_slot_help_stage_game:type == "package-game"&&coins_for_word_to_slot_help_package_game}
+              numberCoinsHelp={type == "stage-game"?coins_for_get_help_word_to_slot_stage_game:type == "package-game"&&coins_for_get_help_word_to_slot_package_game}
               onPress={applyForHelp}
             />
             <TouchableOpacity onPress={()=>{goBack()}} activeOpacity={0.8}>

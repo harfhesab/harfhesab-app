@@ -4,9 +4,11 @@ import { getCurrentLanguageNextStageInformation, updateUserStageGameProgress, ma
 import { updateCurrentLanguageLastStageAndLastSeason } from "../../../redux/slices/stageGameSlice";
 import GameAlertHelper from "../../game-alert/GameAlertHelper";
 import { successfulCompletionOfStageSound } from "../../../utils/sound/SoundFunctions";
+import { store } from "../../../redux/store/Store";
 
 
 export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})=>{
+    const state = store.getState()
     if(stageId.toString() === currentStageId.toString()){
         const next = getCurrentLanguageNextStageInformation(realm, language_ref)
         if(next.endAllStage == true){
@@ -24,6 +26,9 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     lastSeason: last_season,
                     lastSeasonNumber: last_season_number  
                 }
+                const numberCoins = state.coins.numberCoins;
+                const coinsReward = state.constants.coins_reward_from_stage_completed_stage_game
+                const totalCoins = numberCoins + coinsReward
                 await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
                 GameAlertHelper.showAlertGame({
                     title:`پایان مرحله ${stageNumber}`,
@@ -51,15 +56,18 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                                 }
                             },
                             type:'ads',
-                            reward: 12,
+                            reward: state.constants.coins_reward_from_play_video_ads_current_stage,
                         }
                     ],
                     options : {
                         type: 'success',
-                        reward : 10,
+                        reward : coinsReward,
                         cancelable: false,
                     },
                 });
+                setTimeout(()=>{
+                    updateUserStageGameProgressInServer(data, language_ref, totalCoins)
+                }, 1000)
             }
         }
     } else {
@@ -81,7 +89,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                         goBack()
                     },
                     type:'ads',
-                    reward: 7
+                    reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
                 }
             ],
             options : {
@@ -96,6 +104,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
     }, 1000)
 }
 const endOfASeasonInStageGame = ({seasonNumber})=>{
+    const state = store.getState()
     GameAlertHelper.showAlertGame({
         title:`پایان فصل ${seasonNumber}`,
         admiration: "تبریک!",
@@ -111,8 +120,50 @@ const endOfASeasonInStageGame = ({seasonNumber})=>{
         ],
         options : {
             type: 'unlocked',
-            reward : 20,
+            reward : state.constants.coins_reward_from_season_completed_stage_game,
             cancelable: false,
         },
     });
+}
+const updateUserStageGameProgressInServer = async(data, language_ref, totalCoins)=>{
+    await axios({
+        url:'/',
+        method:'post',
+        data: {
+            query : `
+            mutation updateUserStageGameProgress(
+                $number_coin : Int,
+                $language_ref : ID!,
+                $last_season : ID!,
+                $last_season_number : Int!,
+                $last_stage : ID!,
+                $last_stage_number : Int!,
+            ){
+                updateUserStageGameProgress(
+                    number_coin : $number_coin,
+                    language_ref : $language_ref,
+                    last_season : $last_season,
+                    last_season_number : $last_season_number,
+                    last_stage : $last_stage,
+                    last_stage_number : $last_stage_number,
+                ) {
+                    status,
+                    message,
+                }
+            }
+            `,
+            variables : {
+                "number_coin" : totalCoins,
+                "language_ref" : language_ref,
+                "last_season" : data.lastSeason,
+                "last_season_number" : data.lastSeasonNumber,
+                "last_stage" : data.lastStage,
+                "last_stage_number" : data.lastStageNumber,
+            }
+        }
+    }).then(async(response)=>{
+        null
+    }).catch(()=>{
+        null
+    })
 }

@@ -24,11 +24,17 @@ import Globals from '../../utils/Globals';
 import { useDispatch } from "react-redux";
 import { login } from '../../redux/slices/accountSlice';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { updateConstantsVersion } from '../../redux/slices/constantsSlice';
+import { updateNumberCoins } from '../../redux/slices/coinSlice';
+import { useRealm } from '../../realm';
+import { updateUserStageGameProgressInLogin } from '../../realm/repositories/user/user-stage-game-progress.repository';
   
   
 const {width, height} = Dimensions.get('window');
 function VerifyWithOTP(props){
+    const realm = useRealm();
     const dispatch = useDispatch();
+    const { constants_version } = useSelector((state) => state.constants);
     const colors = useAppTheme()
     const [value, setValue] = useState('');
     const [hash, setHash] = useState("")
@@ -161,6 +167,7 @@ function VerifyWithOTP(props){
                     mutation verifyUserLoginWithOTP(
                         $phone : String!,
                         $code : String!,
+                        $constants_version : Int,
                         $firebase_token : String,
                         $app_version : String,
                         $os : String,
@@ -175,6 +182,7 @@ function VerifyWithOTP(props){
                         verifyUserLoginWithOTP(
                             phone : $phone,
                             code : $code,
+                            constants_version : $constants_version,
                             firebase_token : $firebase_token,
                             app_version : $app_version,
                             os : $os,
@@ -189,13 +197,28 @@ function VerifyWithOTP(props){
                             status,
                             message,
                             token,
-                            user{first_name, last_name, phone, number_coins}
+                            user{first_name, last_name, number_coins},
+                            user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
+                            application_constants{
+                                constants_version,
+                                coins_for_get_help_word_to_slot_stage_game,
+                                coins_for_get_help_word_to_slot_package_game,
+                                coins_for_get_help_letter_connecting_stage_game,
+                                coins_for_get_help_letter_connecting_package_game,
+                                coins_reward_from_play_video_ads_current_stage,
+                                coins_reward_from_play_video_ads_previous_stage,
+                                coins_reward_from_stage_completed_stage_game,
+                                coins_reward_from_season_completed_stage_game,
+                                coins_reward_from_stage_completed_package_game,
+                                coins_reward_from_season_completed_package_game,
+                            }
                         }
                     }
                     `,
                     variables : {
                         "phone" : phone,
                         "code" : otp,
+                        "constants_version" : constants_version,
                         "firebase_token" : "",
                         "app_version" : app_version,
                         "os" : os,
@@ -215,6 +238,18 @@ function VerifyWithOTP(props){
                     const token = data?.token
                     const firstName = data?.user?.firstName ?? null
                     const lastName = data?.user?.lastName ?? null
+                    if(data?.application_constants){
+                        const variables = data.application_constants
+                        dispatch(updateConstantsVersion(variables))
+                    }
+                    const numberCoins = data?.user?.number_coins
+                    if(typeof numberCoins === "number"){
+                        dispatch(updateNumberCoins({number:numberCoins}))
+                    }
+                    const progressData = data?.user_stage_game_progress?.stage_game
+                    if(progressData?.length > 0){
+                        updateUserStageGameProgressInLogin(realm, progressData)
+                    }
                     dispatch(login({token, phone, firstName, lastName}))
                     axios.defaults.headers.post['token'] = token;
                     Toast.show({

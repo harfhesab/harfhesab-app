@@ -3,7 +3,49 @@ import { UserStageGameProgress } from "../../schemas/user/UserStageGameProgressS
 import { Stage } from "../../schemas/stage-game/StageSchema";
 import { StageSeason } from "../../schemas/stage-game/StageSeasonSchema";
 
+type ProgressInput = {
+  language_ref: BSON.ObjectId | string;
+  last_season: BSON.ObjectId | string;
+  last_season_number: number;
+  last_stage: BSON.ObjectId | string;
+  last_stage_number: number;
+};
+export const updateUserStageGameProgressInLogin = (
+  realm: Realm,
+  data: ProgressInput[]
+): boolean => {
+  try {
+    realm.write(() => {
+      // پاک کردن همه‌ی اسناد قبلی
+      const allDocs = realm.objects<UserStageGameProgress>("UserStageGameProgress");
+      realm.delete(allDocs);
 
+      // ساختن اسناد جدید
+      data.forEach(item => {
+        const languageRefId = typeof item.language_ref === "string"? new BSON.ObjectId(item.language_ref): item.language_ref;
+
+        const lastSeasonId =typeof item.last_season === "string"? new BSON.ObjectId(item.last_season): item.last_season;
+
+        const lastStageId =typeof item.last_stage === "string"? new BSON.ObjectId(item.last_stage): item.last_stage;
+
+        realm.create<UserStageGameProgress>("UserStageGameProgress", {
+          _id: new BSON.ObjectId(),
+          language_ref: languageRefId,
+          last_season: lastSeasonId,
+          last_season_number: item.last_season_number,
+          last_stage: lastStageId,
+          last_stage_number: item.last_stage_number,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      });
+    });
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 export const updateUserStageGameProgress = (
     realm: Realm,
     language_ref: BSON.ObjectId | string,
@@ -124,7 +166,6 @@ export const getCurrentLanguageLastStageAndLastSeason = (
         return null;
     }
 };
-
 export const getCurrentLanguageNextStageInformation = (
     realm: Realm,
     language_ref: BSON.ObjectId | string,
@@ -211,7 +252,6 @@ export const getCurrentLanguageNextStageInformation = (
         return null;
     }
 };
-
 export const saveUserHelpRequestsInStageGame = (
     realm: Realm,
     stageId: BSON.ObjectId | string,
@@ -445,4 +485,5 @@ export const saveCompletedPartAndSentenceBuilded = (
         return false;
     }
 };
+
 
