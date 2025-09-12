@@ -11,7 +11,7 @@ import {
   MAX_VELOCITY,
   MIN_VELOCITY,
 } from '../constants/constants';
-import { deselectCardSoundInLettersConnecting } from '../../../utils/sound/SoundFunctions';
+import { deselectCardSoundInLettersConnecting, tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import Toast from 'react-native-toast-message';
 import {
   saveMainWordBuildedInStageGame,
@@ -237,6 +237,7 @@ export const LettersProvider: React.FC<{
       clearTimeout(selectionTimerRef.current);
       selectionTimerRef.current = null;
     }
+    tabScreenSoundInOnClick()
   }, []);
 
   const manualStartProgressTimer = useCallback(()=>{
@@ -247,6 +248,7 @@ export const LettersProvider: React.FC<{
       deselectAll();
       selectionTimerRef.current = null;
     }, CARD_SELECTION_DURATION);
+    tabScreenSoundInOnClick()
   }, []);
 
   const selectCard = useCallback((id: string) => {

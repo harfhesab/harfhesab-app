@@ -25,7 +25,7 @@ const SkiaLetter: React.FC<SkiaLetterProps> = ({
   initialHeight,
   rtl = true,
   ltr = false,
-  gradientColors = ['#FF8800',  '#ff0f0f'],
+  gradientColors = ['#512da8',  '#7b1fa2'],
   borderColor = '#FFFFFF',
   borderWidth = 2,
  }) => {

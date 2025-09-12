@@ -28,6 +28,7 @@ import { updateConstantsVersion } from '../../redux/slices/constantsSlice';
 import { updateNumberCoins } from '../../redux/slices/coinSlice';
 import { useRealm } from '../../realm';
 import { updateUserStageGameProgressInLogin } from '../../realm/repositories/user/user-stage-game-progress.repository';
+import { useSelector } from 'react-redux';
   
   
 const {width, height} = Dimensions.get('window');

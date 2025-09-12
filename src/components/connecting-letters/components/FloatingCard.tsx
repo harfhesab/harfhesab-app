@@ -1,5 +1,5 @@
 import React, {memo, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -78,7 +78,6 @@ function FloatingCard({ letter, index }: Props) {
     width: cardSize.value,
     height: cardSize.value,
     zIndex: selected.value === 1 ? CARD_ZINDEX_SELECTED : CARD_ZINDEX_NORMAL,
-    backgroundColor: selected.value === 1 ? '#0693e399' : '#0693e3',
     elevation: selected.value === 1 ? 1 : 10,
   }), []);
 
@@ -90,13 +89,19 @@ function FloatingCard({ letter, index }: Props) {
 
   return (
     <AnimatedTouchableOpacity activeOpacity={0.8} onPress={onClick} style={[styles.card, cardStyle]}>
-      <SkiaLetter
-        text={letter}
-        fontSize={fontSize}
-        initialFontSize={FONT_SIZE_FLOATING}
-        initialWidth={CARD_SIZE_FLOATING}
-        initialHeight={CARD_SIZE_FLOATING}
-      />
+      <ImageBackground
+        source={require("../../../assets/image/letter-card.png")}
+        resizeMode="stretch"
+        style={{ width: '100%', height: '100%', alignItems:'center', justifyContent:'center' }}
+      >
+        <SkiaLetter
+          text={letter}
+          fontSize={fontSize}
+          initialFontSize={FONT_SIZE_FLOATING}
+          initialWidth={CARD_SIZE_FLOATING}
+          initialHeight={CARD_SIZE_FLOATING}
+        />
+      </ImageBackground>
     </AnimatedTouchableOpacity>
   );
 }

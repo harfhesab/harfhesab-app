@@ -39,6 +39,13 @@ const COLORS = {
   GRADIENT_DUPLICATE: ['#0099CC', '#33b5e5'],
   GRADIENT_NORMAL: ['#86442d', '#4d2719'],
 };
+const chunkArray = (arr: any[], size: number) => {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+};
 // =================================================================
 // کامپوننت اصلی WordDisplay
 // =================================================================
@@ -49,7 +56,7 @@ const WordDisplay = () => {
   const feedbackProgress = useSharedValue(FEEDBACK_STATE.NORMAL);
   const selectedCardsOpacity = useSharedValue(1);
   const [gradientColors, setGradientColors] = useState<string[]>(COLORS.GRADIENT_NORMAL);
-
+  const chunks = chunkArray(data.additional_words, 5);
 
   useEffect(() => {
     if (!submittedInfo) return;
@@ -174,23 +181,31 @@ const WordDisplay = () => {
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', justifyContent:'space-between'}}>
         <TopHeader />
         <View style={styles.placeholdersContainer}>
-            {data.additional_words.map((word:any, index:number) => (
-                <WordPlaceholderRow
+          <View style={styles.rowContainer}>
+            {chunks.map((chunk, colIndex) => (
+              <View key={colIndex} style={styles.columnContainer}>
+                {chunk.map((word: any, index: number) => (
+                  <WordPlaceholderRow
                     key={index.toString()}
                     word={word}
                     isWordFound={foundWords.additional.has(word)}
-                    size={WORD_SQUARE_WIDTH-20}
+                    size={WORD_SQUARE_WIDTH - 20}
                     mainWord={false}
-                    numberHelped={numberHelped[index]}
-                />
+                    numberHelped={numberHelped[colIndex * 5 + index]}
+                  />
+                ))}
+              </View>
             ))}
-            <View style={{marginTop:5}}>
+          </View>
+          
+            {/* کلمه اصلی */}
+            <View style={{width:'100%', marginTop: 20, alignSelf:'center', alignItems:'center' }}>
               <WordPlaceholderRow
-                  word={data.word}
-                  isWordFound={foundWords.main}
-                  size={WORD_SQUARE_WIDTH}
-                  mainWord={true}
-                  numberHelped={numberHelped[data.additional_words.length]}
+                word={data.word}
+                isWordFound={foundWords.main}
+                size={WORD_SQUARE_WIDTH}
+                mainWord={true}
+                numberHelped={numberHelped[data.additional_words.length]}
               />
             </View>
         </View>
@@ -232,9 +247,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   placeholdersContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  rowContainer: {
     width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
+    alignItems:'flex-end',
+    flexDirection: "row", // ستون‌ها کنار هم
+    gap: 20,
+  },
+  columnContainer: {
+    flexDirection: "column", // هر ستون عمودی
+    alignItems: "center",
     gap: 8,
   },
   displayArea: {

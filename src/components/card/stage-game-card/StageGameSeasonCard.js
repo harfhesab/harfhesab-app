@@ -21,6 +21,7 @@ import CapsuleButton from '../../buttons/CapsuleButton';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import LockedSeasonAnimation from '../../LockedSeasonAnimation';
 import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
+import ButtonImgSrc from '../../buttons/ButtonImgSrc';
 
 
 
@@ -93,15 +94,13 @@ function StageGameSeasonCard({
           </View>
           <View style={{width:"100%", alignItems:'flex-end', paddingBottom:10, paddingEnd:10}}>
             
-            <ButtonGradient
-                text={lock == true ? undefined : "شروع بازی"}
-                textSize={16}
+            <ButtonImgSrc
                 onPress={onClick}
-                width={180}
-                height={50}
-                borderRadius={10}
+                fontSize={16}
                 fontFamily={Font.iran_yekan_black_fa}
-                textSize={22}
+                text={lock == true ? undefined : "شروع بازی"}
+                height={50}
+                width={180}
                 iconName={lock == true ? "shield-lock" : "gamepad"}
                 iconType={lock == true ? "MaterialCommunityIcons" : "FontAwesome5"}
                 iconSize={lock == true ? 35 : 30}

@@ -3,14 +3,14 @@ import { Dimensions } from "react-native";
 const {width, height} = Dimensions.get("window")
 
 
-export const SLOT_GAP = 10; // فاصله اسلات ها از هم
+export const SLOT_GAP = 6; // فاصله اسلات ها از هم
 export const SLOT_HORIZONTAL = 15; // فاصله اسلات از کنار صفحه
-export const SLOT_NUMBER_IN_ROW = 6; // تعداد اسلات در یک ردیف
+export const SLOT_NUMBER_IN_ROW = 7; // تعداد اسلات در یک ردیف
 const PRECAUTION = 10 // برای احتیاط در محاسبه ی اندازه اسلات
 const SLUT_SIZE_CALCULATION = (width - ((SLOT_HORIZONTAL*2)+((SLOT_NUMBER_IN_ROW-1)*SLOT_GAP)+PRECAUTION)) / SLOT_NUMBER_IN_ROW;
 export const SLOT_SIZE = SLUT_SIZE_CALCULATION > 60?60:SLUT_SIZE_CALCULATION;
-export const SLOT_SENSITIVITY_SIZE = 120;
-export const SLOT_BORDER_RADIUS = 10;
+export const SLOT_SENSITIVITY_SIZE = 100;
+export const SLOT_BORDER_RADIUS = 8;
 export const SLOT_TEXT_FONT_SIZE = SLOT_SIZE/2.2;
 export const SLOT_BOTTOM_OFFSET = 50;
 
@@ -38,4 +38,4 @@ export const FONT_SIZE_DRAGGING = CARD_SIZE_DRAGGING/3.9; // فونت سایز �
 export const FONT_SIZE_SLOTTED = CARD_SIZE_SLOTTED/3.9; // فونت سایز در حالت اسلات
 export const MAX_VELOCITY = 200;
 export const MIN_VELOCITY = 50;
-export const CARD_BORDER_RADIUS = 8;
+export const CARD_BORDER_RADIUS = 15;

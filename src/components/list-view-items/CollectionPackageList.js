@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, {useMemo, memo} from 'react';
 import {Platform, View, Text, TouchableNativeFeedback, Dimensions, FlatList} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
@@ -24,7 +24,7 @@ function CollectionPackageList({_id, title, arrowText, list}){
             />
         )
     }
-    const memoizedValue = useMemo(() => renderItem, [items]);
+    const memoizedValue = useMemo(() => renderItem, [list]);
     const keyExtractor = (item,index)=>index.toString()
 
     return (

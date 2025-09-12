@@ -73,7 +73,7 @@ function PackageGame(props){
         }).then(async(response)=>{
             const dataReceived = response.data.data?.paginatePackageGameCollection
             console.log(response)
-            const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
+            const newData = dataReceived?.banner?.length>0?[{banner:true, list:dataReceived?.banner}, ...dataReceived.collection]:dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setLoading(false)
                 setCollection(newData)
@@ -149,7 +149,7 @@ function PackageGame(props){
             }
         }).then(async(response)=>{
             const dataReceived = response.data.data?.paginatePackageGameCollection
-            const newData = dataReceived?.banner?.length>0?dataReceived.collection.unshift({banner:true, list:dataReceived?.banner}):dataReceived.collection
+            const newData = dataReceived?.banner?.length>0?[{banner:true, list:dataReceived?.banner}, ...dataReceived.collection]:dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setCollection([...collection, ...newData])
                 setPage(dataReceived.nextPage)
@@ -209,7 +209,7 @@ function PackageGame(props){
         item?.banner == true?
         <View style={{width:width, alignItems:'center'}}>
             <BannerSwiper
-                items={item}
+                items={item.list}
             />
         </View>
         :

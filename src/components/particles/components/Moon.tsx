@@ -14,8 +14,8 @@ const MOON_RADIUS = 20;
 const MOON_GLOW_RADIUS = 55;
 
 const Moon: React.FC = () => {
-  const moonX = useSharedValue(60);
-  const moonY = useSharedValue(80);
+  const moonX = useSharedValue(Math.random() * width);
+  const moonY = useSharedValue(Math.random() * height);
   useFrameCallback((frameInfo) => {
     const delta = frameInfo.timeSincePreviousFrame ?? 0;
     moonX.value += 0.001 * delta;

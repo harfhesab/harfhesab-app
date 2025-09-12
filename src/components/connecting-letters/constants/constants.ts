@@ -16,7 +16,7 @@ export const CARD_SIZE_FLOATING = CARD_SIZE_FLOATING_CALCULATION > 55 ? 55 : CAR
 export const BOUNDARY_X = 0;
 export const BOUNDARY_Y = 0;
 export const FONT_SIZE_FLOATING = CARD_SIZE_FLOATING / 1.55;
-export const CARD_BORDER_RADIUS = 5;
+export const CARD_BORDER_RADIUS = 15;
 export const MAX_VELOCITY = 200;
 export const MIN_VELOCITY = 50;
 

@@ -5,6 +5,7 @@ import Font from '../../../utils/Font';
 import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import ImageComponent from '../../image-components/ImageComponent';
 
 const width = Dimensions.get('window').width
 const itemWidth = (width - 80)/3

@@ -1,4 +1,4 @@
-import React, {memo} from "react";
+import React, {useMemo, memo} from "react";
 import {StyleSheet, View, Dimensions, TouchableOpacity, FlatList} from 'react-native';
 import Swiper from 'react-native-swiper';
 import useAppTheme from "../../hooks/theme/useAppTheme";

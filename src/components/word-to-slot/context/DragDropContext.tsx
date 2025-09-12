@@ -220,7 +220,7 @@ export const DragDropProvider: React.FC<{
         if (otherCardId === cardId || getSlotOfCard(otherCardId) !== null) continue;
         const otherPos = cards[otherCardId].position.value;
         if (!otherPos) continue;
-        const dx = newPos.x + CARD_SIZE_FLOATING / 2 - (otherPos.x + CARD_SIZE_FLOATING / 2);
+        const dx = newPos.x + (CARD_SIZE_FLOATING*1.3) / 2 - (otherPos.x + (CARD_SIZE_FLOATING*1.3) / 2);
         const dy = newPos.y + CARD_SIZE_FLOATING / 2 - (otherPos.y + CARD_SIZE_FLOATING / 2);
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < CARD_SIZE_FLOATING) return true;
@@ -239,7 +239,7 @@ export const DragDropProvider: React.FC<{
       let attempts = 0;
       while (isOverlapping(newPos, card.id) && attempts < 100) {
         newPos = {
-          x: Math.random() * (BOUNDARY_WIDTH - CARD_SIZE_FLOATING),
+          x: Math.random() * (BOUNDARY_WIDTH - (CARD_SIZE_FLOATING*1.3)),
           y: Math.random() * (BOUNDARY_HEIGHT - CARD_SIZE_FLOATING),
         };
         attempts++;
@@ -315,7 +315,7 @@ export const DragDropProvider: React.FC<{
           // انتقال کارت موجود به اسلات مبدا
           occupyingCard.position.value = withSpring(
             {
-              x: posToReturn.x - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+              x: posToReturn.x - (CARD_SIZE_SLOTTED*1.3 + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
               y: posToReturn.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
             },
             { stiffness: 200, damping: 18 }
@@ -338,7 +338,7 @@ export const DragDropProvider: React.FC<{
     if (target) {
       cards[cardId].position.value = withSpring(
         {
-          x: target.x - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+          x: target.x - (CARD_SIZE_SLOTTED*1.3 + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
           y: target.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
         },
         { stiffness: 200, damping: 18 }
@@ -408,8 +408,8 @@ export const DragDropProvider: React.FC<{
       if (newX < 0) {
         newX = 0;
         velocity.vx *= -1;
-      } else if (newX > BOUNDARY_WIDTH - CARD_SIZE_FLOATING) {
-        newX = BOUNDARY_WIDTH - CARD_SIZE_FLOATING;
+      } else if (newX > BOUNDARY_WIDTH - (CARD_SIZE_FLOATING*1.3)) {
+        newX = BOUNDARY_WIDTH - (CARD_SIZE_FLOATING*1.3);
         velocity.vx *= -1;
       }
       if (newY < 0) {
@@ -441,8 +441,8 @@ export const DragDropProvider: React.FC<{
         const velB = cardB.velocity.value;
 
         // تعریف مستطیل‌های کارت‌ها
-        const rectA = { left: posA.x, right: posA.x + CARD_SIZE_FLOATING, top: posA.y, bottom: posA.y + CARD_SIZE_FLOATING };
-        const rectB = { left: posB.x, right: posB.x + CARD_SIZE_FLOATING, top: posB.y, bottom: posB.y + CARD_SIZE_FLOATING };
+        const rectA = { left: posA.x, right: posA.x + (CARD_SIZE_FLOATING*1.3), top: posA.y, bottom: posA.y + CARD_SIZE_FLOATING };
+        const rectB = { left: posB.x, right: posB.x + (CARD_SIZE_FLOATING*1.3), top: posB.y, bottom: posB.y + CARD_SIZE_FLOATING };
 
         // بررسی همپوشانی مستطیل‌ها
         const isColliding =

@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, View } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -58,7 +58,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
   const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;
   const id = `${word}_${index}`;
-  const initialX = BOUNDARY_X + Math.random() * (BOUNDARY_WIDTH - CARD_SIZE_FLOATING);
+  const initialX = BOUNDARY_X + Math.random() * (BOUNDARY_WIDTH - (CARD_SIZE_FLOATING*1.3));
   const initialY = BOUNDARY_Y + Math.random() * (BOUNDARY_HEIGHT - CARD_SIZE_FLOATING);
   const position = useSharedValue({ x: initialX, y: initialY });
   const velocity = useSharedValue({
@@ -141,7 +141,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
       const slotPos = getSlotPosition(closestSlot)!;
       position.value = withSpring(
         {
-          x: slotPos.x - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
+          x: slotPos.x - ((CARD_SIZE_SLOTTED*1.3) + (SLOT_SIZE*1.3)) / 4,
           y: slotPos.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
         },
         SPRING_CONFIG_SOFT_SLOT
@@ -152,7 +152,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
       cardSize.value = withSpring(CARD_SIZE_FLOATING, SPRING_CONFIG_SOFT);
       fontSize.value = withSpring(FONT_SIZE_FLOATING_SCALED, SPRING_CONFIG_SOFT);
       const newPos = {
-        x: BOUNDARY_X + Math.random() * (BOUNDARY_WIDTH - CARD_SIZE_FLOATING),
+        x: BOUNDARY_X + Math.random() * (BOUNDARY_WIDTH - (CARD_SIZE_FLOATING*1.3)),
         y: BOUNDARY_Y + Math.random() * (BOUNDARY_HEIGHT - CARD_SIZE_FLOATING),
       };
       position.value = withSpring(newPos, SPRING_CONFIG_SOFT);
@@ -182,7 +182,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
       offset.value = { x: position.value.x, y: position.value.y };
       // جبران موقعیت برای حفظ مرکز کارت هنگام تغییر اندازه
       position.value = {
-        x: position.value.x - (CARD_SIZE_DRAGGING - cardSize.value) / 2,
+        x: position.value.x - ((CARD_SIZE_DRAGGING*1.3) - (cardSize.value*1.3)) / 2,
         y: position.value.y - (CARD_SIZE_DRAGGING - cardSize.value) / 2,
       };
       velocity.value = { vx: 0, vy: 0 };
@@ -196,7 +196,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     .onUpdate(e => {
       'worklet';
       position.value = {
-        x: offset.value.x + e.translationX - (cardSize.value - CARD_SIZE_SLOTTED) / 2,
+        x: offset.value.x + e.translationX - ((cardSize.value*1.3) - (CARD_SIZE_SLOTTED*1.3)) / 2,
         y: offset.value.y + e.translationY - (cardSize.value - CARD_SIZE_SLOTTED) / 2,
       };
     })
@@ -207,7 +207,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   const cardStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: position.value.x }, { translateY: position.value.y }],
-    width: cardSize.value,
+    width: cardSize.value*1.3,
     height: cardSize.value,
     zIndex: isDragging.value ? 2000 : 1,
     elevation: isDragging.value ? 12 : 5,
@@ -230,22 +230,28 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   return (
     <GestureDetector gesture={Gesture.Simultaneous(pan, touch)}>
-      <Animated.View style={[styles.card, cardStyle, {backgroundColor:colors.primary.a1}]}>
-        {
-          (unknown_word && !unknown_word_completed)?
-          <View style={{width:CARD_SIZE_FLOATING-25, height:CARD_SIZE_FLOATING-25, borderColor:"#b71c1c", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
-            <Icon name={"question"} type={"Fontisto"} style={{color:"#b71c1c", fontSize:CARD_SIZE_FLOATING-35}}/>
-          </View>
-          :
-          <AnimatedSkiaText
-            text={word}
-            gradientColors={unknown_word ? ['#FF8800',  '#ff0f0f'] : undefined}
-            fontSize={fontSize}
-            initialFontSize={FONT_SIZE_FLOATING_SCALED}
-            initialWidth={CARD_SIZE_FLOATING}
-            initialHeight={CARD_SIZE_FLOATING}
-          />
-        }
+      <Animated.View style={[styles.card, cardStyle]}>
+        <ImageBackground
+          source={require("../../../assets/image/word-card.png")}
+          resizeMode="stretch"
+          style={{ width: '100%', height: '100%', alignItems:'center', justifyContent:'center' }}
+        >
+          {
+            (unknown_word && !unknown_word_completed)?
+            <View style={{width:CARD_SIZE_FLOATING-25, height:CARD_SIZE_FLOATING-25, borderColor:"#b71c1c", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
+              <Icon name={"question"} type={"Fontisto"} style={{color:"#b71c1c", fontSize:CARD_SIZE_FLOATING-35}}/>
+            </View>
+            :
+            <AnimatedSkiaText
+              text={word}
+              gradientColors={unknown_word ? ['#FF8800',  '#ff0f0f'] : undefined}
+              fontSize={fontSize}
+              initialFontSize={FONT_SIZE_FLOATING_SCALED}
+              initialWidth={CARD_SIZE_FLOATING*1.3}
+              initialHeight={CARD_SIZE_FLOATING}
+            />
+          }
+        </ImageBackground>
       </Animated.View>
     </GestureDetector>
   );
