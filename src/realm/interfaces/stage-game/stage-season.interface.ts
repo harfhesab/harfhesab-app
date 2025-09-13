@@ -9,10 +9,10 @@ export interface IStageSeason {
   media: IMedia[];
   music?: IMedia;
   badg?: string;
-  season_number?: number;
-  stage_number_from?: number;
-  stage_number_to?: number;
-  number_stage?: number;
+  season_number: number;
+  stage_number_from: number;
+  stage_number_to: number;
+  number_stage: number;
   is_visible?: boolean;
   is_active?: boolean;
   version_created?: number;
