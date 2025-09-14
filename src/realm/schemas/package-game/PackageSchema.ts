@@ -1,53 +1,13 @@
 import Realm, { BSON } from "realm";
 import { Media } from "../general/embeddeds/MediaSchema";
 
-export class SeasonInPackage extends Realm.Object<SeasonInPackage> {
-  package_season!: BSON.ObjectId;
-  season_number!: number;
-  stage_number_from!: number;
-  stage_number_to!: number;
-
-  static schema: Realm.ObjectSchema = {
-    name: "SeasonInPackage",
-    embedded: true,
-    properties: {
-      package_season: "objectId",
-      season_number: "int",
-      stage_number_from: "int",
-      stage_number_to: "int",
-    },
-  };
-}
-
-export class TakenSource extends Realm.Object<TakenSource> {
-  title?: string;
-  poet?: string;
-  author?: string;
-  literary_form?: string;
-
-  static schema: Realm.ObjectSchema = {
-    name: "TakenSource",
-    embedded: true,
-    properties: {
-      title: "string?",
-      poet: "string?",
-      author: "string?",
-      literary_form: "string?",
-    },
-  };
-}
-
 export class Package extends Realm.Object<Package> {
   _id!: BSON.ObjectId;
   title!: string;
   description?: string;
   subject?: string;
   badg?: string;
-  seasons!: SeasonInPackage[];
-  taken_source?: TakenSource;
   language_ref?: BSON.ObjectId;
-  topic_category!: BSON.ObjectId[];
-  package_collection!: BSON.ObjectId[];
   icon_image?: string;
   banner_image?: string;
   music?: Media;
@@ -68,6 +28,7 @@ export class Package extends Realm.Object<Package> {
 
   static schema: Realm.ObjectSchema = {
     name: "Package",
+    embedded: true,
     primaryKey: "_id",
     properties: {
       _id: "objectId",
@@ -75,11 +36,7 @@ export class Package extends Realm.Object<Package> {
       description: "string?",
       subject: "string?",
       badg: "string?",
-      seasons: "SeasonInPackage[]",
-      taken_source: "TakenSource?",
       language_ref: "objectId?",
-      topic_category: "objectId[]",
-      package_collection: "objectId[]",
       icon_image: "string?",
       banner_image: "string?",
       music: "Media?",

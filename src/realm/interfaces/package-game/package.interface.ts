@@ -1,28 +1,12 @@
 import { BSON } from "realm";
 import { IMedia } from "../general/embeddes/media.interface";
 
-export interface ISeasonInPackage {
-  package_season: BSON.ObjectId;
-  season_number: number;
-  stage_number_from: number;
-  stage_number_to: number;
-}
-
-export interface ITakenSource {
-  title?: string;
-  poet?: string;
-  author?: string;
-  literary_form?: string;
-}
-
 export interface IPackage {
   _id: BSON.ObjectId;
   title: string;
   description?: string;
   subject?: string;
   badg?: string;
-  seasons: ISeasonInPackage[];
-  taken_source?: ITakenSource;
   language_ref?: BSON.ObjectId;
   topic_category: BSON.ObjectId[];
   package_collection: BSON.ObjectId[];

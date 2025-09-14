@@ -8,9 +8,11 @@ export class PackageStage extends Realm.Object<PackageStage> {
   media!: Media[];
   voice!: Media[];
   stage_hint?: string;
+  package!: BSON.ObjectId;
   season!: BSON.ObjectId;
   language_ref?: BSON.ObjectId;
-  stage_number!: number;
+  stage_number_in_package!: number;
+  stage_number_in_season!: number;
   is_visible?: boolean;
   is_active?: boolean;
   version_created?: number;
@@ -28,9 +30,11 @@ export class PackageStage extends Realm.Object<PackageStage> {
       media: "Media[]",
       voice: "Media[]",
       stage_hint: "string?",
+      package: "objectId",
       season: "objectId",
       language_ref: "objectId?",
-      stage_number: "int",
+      stage_number_in_package: "int",
+      stage_number_in_season: "int",
       is_visible: { type: "bool", default: true },
       is_active: { type: "bool", default: true },
       version_created: "int?",

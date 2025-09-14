@@ -25,6 +25,7 @@ function PackageGame(props){
     useEffect(()=>{
         getDataForFirst()
     }, [])
+    
     const getDataForFirst = async()=>{
         await axios({
             url:'/',

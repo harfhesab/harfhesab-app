@@ -4,6 +4,7 @@ export class Language extends Realm.Object<Language> {
   _id!: BSON.ObjectId;
   name!: string;
   badg?: string;
+  icon_image?: string;
   stage_game?: boolean;
   package_game?: boolean;
   code!: string;
@@ -23,11 +24,12 @@ export class Language extends Realm.Object<Language> {
     primaryKey: "_id",
     properties: {
       _id: "objectId",
-      name: { type: "string" },
+      name: "string",
       badg: "string?",
+      icon_image: "string?",
       stage_game: { type: "bool", optional: true },
       package_game: { type: "bool", optional: true },
-      code: { type: "string" },
+      code: "string",
       rtl: { type: "bool", default: true },
       ltr: { type: "bool", default: false },
       is_visible: { type: "bool", default: false },

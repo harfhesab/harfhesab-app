@@ -1,0 +1,28 @@
+import Realm, { BSON } from "realm";
+import { Package } from "../package-game/PackageSchema";
+
+export class UserPackages extends Realm.Object<UserPackages> {
+  _id!: BSON.ObjectId;
+  package!: Package;
+  last_season?: BSON.ObjectId;
+  last_season_number?: number;
+  last_stage?: BSON.ObjectId;
+  last_stage_number?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+
+  static schema: Realm.ObjectSchema = {
+    name: "UserPackages",
+    primaryKey: "_id",
+    properties: {
+      _id: "objectId",
+      package: "Package",
+      last_season: "objectId?",
+      last_season_number: "int?",
+      last_stage: "objectId?",
+      last_stage_number: "int?",
+      createdAt: "date?",
+      updatedAt: "date?",
+    },
+  };
+}

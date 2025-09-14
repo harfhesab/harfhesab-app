@@ -1,8 +1,8 @@
 import { BSON } from "realm";
 
-export interface IUserStageGameProgress {
+export interface IUserPackages {
   _id: BSON.ObjectId;
-  language_ref: BSON.ObjectId;
+  package: BSON.ObjectId;
   last_season: BSON.ObjectId;
   last_season_number?: number;
   last_stage: BSON.ObjectId;

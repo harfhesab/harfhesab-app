@@ -8,6 +8,7 @@ export interface IPackageStage {
   media: IMedia[];
   voice: IMedia[];
   stage_hint?: string;
+  package: BSON.ObjectId;
   season: BSON.ObjectId;
   language_ref?: BSON.ObjectId;
   stage_number: number;
