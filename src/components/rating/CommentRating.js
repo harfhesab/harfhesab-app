@@ -1,6 +1,5 @@
 import React, { useState, useEffect} from 'react';
 import {View, Text, TouchableNativeFeedback, Dimensions, TouchableOpacity} from 'react-native';
-import {useTheme} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import GradeNumber from './GradeNumber';
@@ -11,6 +10,7 @@ import BottomDrawer from '../bottomDrawer/BottomDrawerHelper';
 import ModalInput from '../modalInput/ModalInputHelper';
 import FastImage from 'react-native-fast-image';
 import Globals from '../../utils/Globals';
+import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
 function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt, answerNumbers, consultant}){
@@ -246,15 +246,14 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
             })
         })
     }
-
-    const colors = useTheme().colors;
+    const colors = useAppTheme();
     return (
         <View style={{width:width, flexDirection:'column', marginVertical:40}}>
             <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'space-between'}}>
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginStart:15}}>
-                    <Icon name={'person'} type={'Ionicons'} style={{color:colors.color, fontSize:30}}/>
+                    <Icon name={'person'} type={'Ionicons'} style={{color:colors.primary.a1, fontSize:30}}/>
                     <View style={{flexDirection:'column', alignItems:'flex-start', marginStart:5}}>
-                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text6}}>{name?name:'کاربر منوملک'}</Text>
+                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a4}}>{name?name:'کاربر منوملک'}</Text>
                         <GradeNumber
                             size={12}
                             grade={grade}
@@ -262,10 +261,10 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                     </View>
                 </View>
                 <View style={{flexDirection:'row', alignItems:'center', marginEnd:2}}>
-                    <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text5, marginEnd:10}}>{convertDate(date)}</Text>
-                    <TouchableNativeFeedback onPress={reportModal} background={TouchableNativeFeedback.Ripple(colors.border,false)}>
+                    <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a4, marginEnd:10}}>{convertDate(date)}</Text>
+                    <TouchableNativeFeedback onPress={reportModal} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                         <View pointerEvents='box-only' style={{justifyContent:'center', alignItems:'center', padding:10}}>
-                            <Icon name={'dots-three-vertical'} type={'Entypo'} style={{color:colors.text6, fontSize:15}}/>
+                            <Icon name={'dots-three-vertical'} type={'Entypo'} style={{color:colors.text.a5, fontSize:15}}/>
                         </View>
                     </TouchableNativeFeedback>
                 </View>
@@ -285,12 +284,12 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                                 resizeMode={FastImage.resizeMode.cover}
                             />
                             :
-                            <Icon name='user-tie' type='FontAwesome5' style={{color:colors.text4, fontSize:13}}/>
+                            <Icon name='user-tie' type='FontAwesome5' style={{color:colors.text.a4, fontSize:13}}/>
                         }
-                        <Text style={{color:colors.text4, fontFamily:Font.medium, fontSize:11, marginStart:5}}>{`${consultant.f_name} ${consultant.l_name}`}</Text>
+                        <Text style={{color:colors.text.a4, fontFamily:Font.medium, fontSize:11, marginStart:5}}>{`${consultant.f_name} ${consultant.l_name}`}</Text>
                     </View>
                 }
-                <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text6}}>{comment}</Text>
+                <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a5}}>{comment}</Text>
             </View>
             <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'space-between', paddingHorizontal:15}}>
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start'}}>
@@ -298,39 +297,39 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                         {
                             liked == true?
                             <TouchableOpacity>
-                                <Icon name={'like1'} type={'AntDesign'}  style={{color:colors.color, fontSize:25}}/>
+                                <Icon name={'like1'} type={'AntDesign'}  style={{color:colors.primary.a1, fontSize:25}}/>
                             </TouchableOpacity>
                             :
                             <TouchableOpacity onPress={like}>
-                                <Icon name={'like2'} type={'AntDesign'}  style={{color:colors.text4, fontSize:25}}/>
+                                <Icon name={'like2'} type={'AntDesign'}  style={{color:colors.text.a4, fontSize:25}}/>
                             </TouchableOpacity>
                         }
-                        <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text5, marginStart:5}}>{likeNumber}</Text>
+                        <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a5, marginStart:5}}>{likeNumber}</Text>
                     </View>
                     <View style={{flexDirection:'row', alignItems:'center', marginStart:15}}>
                         {
                             disLiked == true?
                             <TouchableOpacity>
-                                <Icon name={'dislike1'} type={'AntDesign'}  style={{color:colors.color, fontSize:25}}/>
+                                <Icon name={'dislike1'} type={'AntDesign'}  style={{color:colors.primary.a1, fontSize:25}}/>
                             </TouchableOpacity>
                             :
                             <TouchableOpacity onPress={disLike}>
-                                <Icon name={'dislike2'} type={'AntDesign'}  style={{color:colors.text4, fontSize:25}}/>
+                                <Icon name={'dislike2'} type={'AntDesign'}  style={{color:colors.text.a4, fontSize:25}}/>
                             </TouchableOpacity>
                         }
-                        <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text5, marginStart:5}}>{disLikeNumber}</Text>
+                        <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a5, marginStart:5}}>{disLikeNumber}</Text>
                     </View>
                 </View>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                     {
                         answerNumber > 0&&
                         <TouchableOpacity style={{flexDirection:'row', alignItems:'center', marginEnd:25}}>
-                            <Text style={{fontFamily:Font.medium, fontSize:11, color:colors.text4}}>{`مشاهده (${answerNumber}) پاسخ`}</Text>
+                            <Text style={{fontFamily:Font.medium, fontSize:11, color:colors.text.a4}}>{`مشاهده (${answerNumber}) پاسخ`}</Text>
                         </TouchableOpacity>
                     }
                     <TouchableOpacity onPress={setAnswerForRating} style={{flexDirection:'row', alignItems:'center'}}>
-                        <Text style={{fontFamily:Font.medium, fontSize:11, color:colors.text4, marginEnd:5}}>{'ارسال پاسخ'}</Text>
-                        <Icon name={'reply'} type={'Entypo'}  style={{color:colors.text4, fontSize:20}}/>
+                        <Text style={{fontFamily:Font.medium, fontSize:11, color:colors.text.a4, marginEnd:5}}>{'ارسال پاسخ'}</Text>
+                        <Icon name={'reply'} type={'Entypo'}  style={{color:colors.text.a4, fontSize:20}}/>
                     </TouchableOpacity>
                 </View>
             </View>
