@@ -19,7 +19,7 @@ function BannerSwiper({items}){
                     width={bannerWidth}
                     height={bannerWidth/2}
                     resizeMode="cover"
-                    borderRadius={15}
+                    borderRadius={10}
                 />
             </TouchableOpacity>
         )
@@ -31,9 +31,11 @@ function BannerSwiper({items}){
             <FlatList
                 keyExtractor={keyExtractor}
                 data={items}
+                showsHorizontalScrollIndicator={false}
                 horizontal={true}
                 renderItem={memoizedValue}
                 onEndReachedThreshold={0.5}
+                contentContainerStyle={{paddingHorizontal:15, gap:15}}
                 snapToAlignment="start"       // آیتم از بالا چفت شود
                 decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
                 disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ

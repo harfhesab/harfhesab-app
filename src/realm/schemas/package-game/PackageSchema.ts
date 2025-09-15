@@ -28,7 +28,6 @@ export class Package extends Realm.Object<Package> {
 
   static schema: Realm.ObjectSchema = {
     name: "Package",
-    embedded: true,
     primaryKey: "_id",
     properties: {
       _id: "objectId",

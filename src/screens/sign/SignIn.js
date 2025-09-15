@@ -14,6 +14,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import Globals from '../../utils/Globals';
 import { updateConstantsVersion } from '../../redux/slices/constantsSlice';
 import { updateNumberCoins } from '../../redux/slices/coinSlice';
+import ButtonBorder from '../../components/buttons/ButtonBorder';
+import { loginAsGuest } from '../../redux/slices/accountSlice';
 
 const {width, height} = Dimensions.get('window');
 function SignIn(props){
@@ -25,7 +27,7 @@ function SignIn(props){
     const login =() =>{
         props.navigation.navigate("Login")
     }
-    const loginAsGuest = async() => {
+    const loginAsGuestOperation = async() => {
         setLoading(true)
         // const firebase_token = await messaging().getToken()
         const os = await DeviceInfo.getSystemName()
@@ -101,6 +103,7 @@ function SignIn(props){
                 }
             }
         }).then(async(response)=>{
+                console.log(response)
             setLoading(false)
             const data = response?.data?.data?.loginAsGuestByUser
             if(data?.status == 200) {
@@ -115,7 +118,7 @@ function SignIn(props){
                 if(typeof numberCoins === "number"){
                     dispatch(updateNumberCoins({number:numberCoins}))
                 }
-                dispatch(login({token, phone, firstName, lastName}))
+                dispatch(loginAsGuest({token}))
                 axios.defaults.headers.post['token'] = token;
                 Toast.show({
                     type: "success",
@@ -130,7 +133,8 @@ function SignIn(props){
                     visibilityTime: 6000
                 })
             }
-        }).catch(()=>{
+        }).catch((error)=>{
+                console.log(error)
             setLoading(false)
             Toast.show({
                 type: "error",
@@ -145,33 +149,31 @@ function SignIn(props){
             <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
                 <View style={styles.container}>
                     <View style={styles.container2}>
-                        <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
-                            <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
-                            <View style={{gap:10}}>
-                                <View style={{width:width, alignItems:'center'}}>
-                                    <ButtonGradient
-                                        height={65}
-                                        width={width - 40}
-                                        text={"ورود به حساب یا ثبت نام"}
-                                        onPress={login}
-                                        loading={false}
-                                        textSize={16}
-                                        borderRadius={10}
-                                    />
-                                </View>
-                                <View style={{width:width, alignItems:'center'}}>
-                                    <ButtonGradient
-                                        height={65}
-                                        width={width - 40}
-                                        text={"ورود به عنوان میهمان"}
-                                        onPress={loginAsGuest}
-                                        loading={loading}
-                                        textSize={16}
-                                        borderRadius={10}
-                                    />
-                                </View>
+                        <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
+                        <View style={{gap:15}}>
+                            <View style={{width:width, alignItems:'center'}}>
+                                <ButtonGradient
+                                    height={65}
+                                    width={width - 40}
+                                    text={"ورود به حساب یا ثبت نام"}
+                                    onPress={login}
+                                    loading={false}
+                                    textSize={16}
+                                    borderRadius={10}
+                                />
                             </View>
-                        </KeyboardAvoidingView>
+                            <View style={{width:width, alignItems:'center'}}>
+                                <ButtonBorder
+                                    text={"ورود به عنوان میهمان"}
+                                    height={65}
+                                    width={width - 40}
+                                    loading={loading}
+                                    onPress={loginAsGuestOperation}
+                                    borderRadius={10}
+                                    textSize={16}
+                                />
+                            </View>
+                        </View>
                     </View>
                 </View>
             </LinearGradient>
@@ -186,29 +188,9 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between'
     },
     container2: {
+        flex:1,
         alignItems:'center',
-        justifyContent:'center',
-        height:Dimensions.get('window').height - 55
-    },
-    loginBtn:{
-        width:width - 60,
-        height:50,
-        alignSelf:'center',
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:5,
-    },
-    loginBtnTxt: {
-        fontFamily:Font.medium,
-        fontSize:14
-    },
-    loginTxt: {
-        fontFamily:Font.medium,
-        fontSize:12,
-    },
-    requstRegister: {
-        fontFamily:Font.medium,
-        fontSize:14,
+        justifyContent:'space-around',
     },
 });
 export default SignIn

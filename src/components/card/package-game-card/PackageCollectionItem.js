@@ -13,10 +13,10 @@ function PackageCollectionItem({_id, title, image, click}){
     const colors = useAppTheme();
 
     return (
-        <View style={{width:150, height:180, alignItems:'center', justifyContent:'center'}}>
+        <View style={{alignItems:'center', justifyContent:'center'}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{flexDirection:'column', gap:15, alignItems:'center', justifyContent:'flex-start', padding:10}}>
-                    <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', borderRadius:10}}>
+                <View style={{flexDirection:'column', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:10, height:itemWidth + 70}}>
+                    <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderRadius:15}}>
                         {
                             image?
                             <ImageComponent
@@ -24,14 +24,14 @@ function PackageCollectionItem({_id, title, image, click}){
                                 width={itemWidth}
                                 height={itemWidth}
                                 resizeMode="cover"
-                                borderRadius={10}
+                                borderRadius={15}
                             />
                             :
-                            <Icon name={'camera-off'} type={'Feather'} style={{fontSize:itemWidth*0.7, color:colors.border.a1}}/>
+                            <Icon name={'camera-off'} type={'Feather'} style={{fontSize:itemWidth*0.45, color:colors.text.a5}}/>
                         }
                     </View>
                     <View>
-                        <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14, textAlign:"center"}}>{title}</Text>
+                        <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:13, textAlign:"center", width:itemWidth, lineHeight:21}}>{title}</Text>
                     </View>
                 </View>
             </TouchableNativeFeedback>

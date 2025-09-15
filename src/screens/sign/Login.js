@@ -100,7 +100,7 @@ function Login(props){
                     <View style={styles.container2}>
                         <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
                             <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
-                            <View style={{gap:10}}>
+                            <View style={{gap:15}}>
                                 <View style={{marginTop:100, width:width, paddingHorizontal:20}}>
                                     <InputText
                                         title={"شماره موبایل"}
@@ -143,29 +143,9 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between'
     },
     container2: {
+        flex:1,
         alignItems:'center',
-        justifyContent:'center',
-        height:Dimensions.get('window').height - 55
-    },
-    loginBtn:{
-        width:width - 60,
-        height:50,
-        alignSelf:'center',
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:5,
-    },
-    loginBtnTxt: {
-        fontFamily:Font.medium,
-        fontSize:14
-    },
-    loginTxt: {
-        fontFamily:Font.medium,
-        fontSize:12,
-    },
-    requstRegister: {
-        fontFamily:Font.medium,
-        fontSize:14,
+        justifyContent:'space-around',
     },
 });
 export default Login
