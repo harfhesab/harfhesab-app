@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AccountState {
   isLoggedIn: boolean;
+  loginType: "registered" | "guest" | null; 
   token: string | null;
   phone: string | null;
   firstName: string | null;
@@ -10,6 +11,7 @@ interface AccountState {
 
 const initialState: AccountState = {
   isLoggedIn: false,
+  loginType: null,
   token: null,
   phone: null,
   firstName: null,
@@ -20,6 +22,14 @@ const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
+    loginAsGuest(
+      state,
+      action: PayloadAction<{ token: string; }>
+    ) {
+      state.isLoggedIn = true;
+      state.token = action.payload.token;
+      state.loginType = "guest";
+    },
     login(
       state,
       action: PayloadAction<{ token: string, phone: string, firstName: string | null; lastName: string | null; }>
@@ -29,6 +39,7 @@ const accountSlice = createSlice({
       state.phone = action.payload.phone;
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
+      state.loginType = "registered";
     },
     logout(state) {
       state.isLoggedIn = false;
@@ -36,6 +47,7 @@ const accountSlice = createSlice({
       state.phone = null;
       state.firstName = null;
       state.lastName = null;
+      state.loginType = null;
     },
   },
 });
