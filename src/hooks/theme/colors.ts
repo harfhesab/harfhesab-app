@@ -10,7 +10,7 @@ export const themes = {
         a1: '#0ea960',
         a2: '#24536b',
       },
-      background_gradient: ['#163241', '#193b4d', '#24536b'],
+      background_gradient: ['#091a17', '#0b201c', '#0c2621'],
       text_gradient:{
         a1: ['#1b0b63', '#311b92', '#512da8'],
       },
@@ -20,12 +20,12 @@ export const themes = {
         content_2: '#c4d2e5',
       },
       header: {
-        background: '#0e202a',
+        background: '#050e0c',
         content_1: '#F0F0F0',
         content_2: '#d1d1d1',
       },
       bottom_tab: {
-        background: '#163241',
+        background: '#050e0c',
         active: '#FFFFFF',
         inactive: '#AAAAAA',
       },

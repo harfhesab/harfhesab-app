@@ -58,7 +58,7 @@ const BottomTab = (props) => {
               <Text style={[styles.lable, {color:color}]}>{"بسته‌های بازی"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
-              <Icon name={focused?'apps':'apps-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
+              <Icon name={focused?'grid':'grid-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
             )
           }}
         />
@@ -70,7 +70,7 @@ const BottomTab = (props) => {
               <Text style={[styles.lable, {color:color}]}>{"بازی آنلاین"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
-              <Icon name={focused?'grid':'grid-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
+              <Icon name={focused?'trail-sign':'trail-sign-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
             )
           }}
         />
@@ -91,7 +91,7 @@ const BottomTab = (props) => {
 };
 const styles = StyleSheet.create({
   lable: {
-    fontSize:12,
+    fontSize:11,
     fontFamily:Font.medium,
   },
 });
