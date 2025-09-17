@@ -91,7 +91,7 @@ const BottomTab = (props) => {
 };
 const styles = StyleSheet.create({
   lable: {
-    fontSize:11,
+    fontSize:10,
     fontFamily:Font.medium,
   },
 });

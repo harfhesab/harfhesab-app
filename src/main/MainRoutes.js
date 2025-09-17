@@ -5,6 +5,8 @@ import StageGameUpdateScreen from '../screens/main/update-center/StageGameUpdate
 import WordToSlotStageGame from '../screens/main/stage-game/game/WordToSlotStageGame';
 import ConnectingLettersStageGame from '../screens/main/stage-game/game/ConnectingLettersStageGame';
 import StagesStageGameSeason from '../screens/main/stage-game/StagesStageGameSeason';
+import LoginToAccount from '../screens/main/account/login/LoginToAccount';
+import VerifyLoginToAccount from '../screens/main/account/login/VerifyLoginToAccount';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +19,8 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"WordToSlotStageGame"} component={WordToSlotStageGame} />
       <Stack.Screen name={"ConnectingLettersStageGame"} component={ConnectingLettersStageGame} />
       <Stack.Screen name={"StagesStageGameSeason"} component={StagesStageGameSeason} />
+      <Stack.Screen name={"LoginToAccount"} component={LoginToAccount} />
+      <Stack.Screen name={"VerifyLoginToAccount"} component={VerifyLoginToAccount} />
     </Stack.Navigator>
   )
 }

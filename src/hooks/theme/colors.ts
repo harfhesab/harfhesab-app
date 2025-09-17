@@ -10,7 +10,7 @@ export const themes = {
         a1: '#0ea960',
         a2: '#24536b',
       },
-      background_gradient: ['#091a17', '#0b201c', '#0c2621'],
+      background_gradient: ['#001818', '#001800'],
       text_gradient:{
         a1: ['#1b0b63', '#311b92', '#512da8'],
       },
@@ -20,17 +20,17 @@ export const themes = {
         content_2: '#c4d2e5',
       },
       header: {
-        background: '#050e0c',
+        background: '#001010',
         content_1: '#F0F0F0',
         content_2: '#d1d1d1',
       },
       bottom_tab: {
-        background: '#050e0c',
+        background: '#001010',
         active: '#FFFFFF',
         inactive: '#AAAAAA',
       },
       button_gradient: {
-        background: ['#47cd8a', '#1f5b3b'],
+        background: ['#0ea960', '#1ea90e'],
         content_1: '#FFFFFF',
         content_2: '#EBEBEB',
       },
@@ -49,8 +49,8 @@ export const themes = {
         a5: 'rgba(14,169,96,0.20)',
       },
       border: {
-        a1: '#546874',
-        a2: '#425762',
+        a1: '#4a5858',
+        a2: '#222d2d',
       },
       alert: {
         a1: '#CC0000',
