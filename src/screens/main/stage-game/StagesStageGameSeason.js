@@ -20,7 +20,11 @@ import GeneralHeader from '../../../components/header/GeneralHeader';
 import MultiLineTextGradientSvg from '../../../components/text-components/MultiLineTextGradientSvg';
 import SeasonHeader from '../../../components/header/SeasonHeader';
 
-const {width, height} = Dimensions.get("screen")
+const screenHeight = Dimensions.get("screen").height;
+const {width} = Dimensions.get("screen");
+const statusBarHeight = StatusBar.currentHeight ?? 0;
+const height = screenHeight - statusBarHeight;
+
 const { NavigationBar } = NativeModules;
 function StagesStageGameSeason(props){
     const colors = useAppTheme()

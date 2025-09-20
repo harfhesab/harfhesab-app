@@ -35,7 +35,7 @@ const TopHeader = () => {
         <View style={styles.header}>
             <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
                 <TouchableOpacity onPress={()=>navigate("ConnectingLettersStageGame")} activeOpacity={0.8}>
-                    <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}40`}}>
+                    <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}25`}}>
                         <Icon name={"settings-outline"} type='Ionicons' style={{color:colors.text.a1, fontSize:25}}/>
                     </View>
                 </TouchableOpacity>
@@ -49,7 +49,7 @@ const TopHeader = () => {
               onPress={applyForHelp}
             />
             <TouchableOpacity onPress={()=>{goBack()}} activeOpacity={0.8}>
-                <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}40`}}>
+                <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}25`}}>
                     <Icon name={"arrow-right"} type='Feather' style={{color:colors.text.a1, fontSize:25}}/>
                 </View>
             </TouchableOpacity>

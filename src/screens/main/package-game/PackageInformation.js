@@ -10,19 +10,25 @@ import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import axios from 'axios';
 import Font from '../../../utils/Font';
 import { checkExistUserPackageWithPakcageId } from '../../../realm/repositories/user/user-package-game-progress.repository';
+import { useRealm } from '../../../realm';
+import ButtonGradient from '../../../components/buttons/ButtonGradient';
 
 const {width, height} = Dimensions.get("window")
 function PackageInformation(props){
+    const realm = useRealm();
     const colors = useAppTheme()
     const [data, setData] = useState(null)
+    const [localData, setLocalData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
+    const packageId = props?.route?.params?._id
 
     useEffect(()=>{
         getData()
     }, [])
     const getData = async()=>{
-        const checkExist = await checkExistUserPackageWithPakcageId()
+        const checkExist = await checkExistUserPackageWithPakcageId(realm, packageId)
+        setLocalData(checkExist)
         await axios({
             url:'/',
             method:'post',
@@ -42,7 +48,7 @@ function PackageInformation(props){
                                 description,
                                 subject,
                                 badg,
-                                language_ref{name},
+                                language_info{name},
                                 icon_image,
                                 banner_image,
                                 free,
@@ -79,8 +85,8 @@ function PackageInformation(props){
                     }
                 `,
                 variables : {
-                    "_id" : props?.route?.params?._id,
-                    "user_package" : chekcExist?.user_package?._id??null,
+                    "_id" : packageId,
+                    "user_package" : checkExist?.user_package?._id??null,
                 }
             }
         }).then(async(response)=>{
@@ -119,7 +125,7 @@ function PackageInformation(props){
                     <ScrollView>
                         <View style={{width:width, alignItems:'center'}}>
                             <ImageComponent
-                                uri={data?.banner_image}
+                                uri={data?.package?.banner_image}
                                 width={IS_TABLET_CONDITION?500:width}
                                 height={IS_TABLET_CONDITION?225:width * 0.45}
                                 resizeMode="cover"
@@ -129,7 +135,7 @@ function PackageInformation(props){
                         <View style={{width:width, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginTop:15, gap:10, paddingHorizontal:15}}>
                             <View style={{borderWidth:1, borderColor:colors.border.a1, borderRadius:15, backgroundColor:colors.border.a1}}>
                                 <ImageComponent
-                                    uri={data?.icon_image}
+                                    uri={data?.package?.icon_image}
                                     width={60}
                                     height={60}
                                     resizeMode="cover"
@@ -137,14 +143,54 @@ function PackageInformation(props){
                                 />
                             </View>
                             <View style={{flexDirection:'column', alignItems:'flex-start', gap:5}}>
-                                <Text style={{fontFamily:Font.medium, fontSize:16, color:colors.text.a1}}>{data?.title}</Text>
-                                <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a5}}>{data?.subject}</Text>
+                                <Text style={{fontFamily:Font.medium, fontSize:16, color:colors.text.a1}}>{data?.package?.title}</Text>
+                                <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a5}}>{data?.package?.subject}</Text>
                             </View>
                         </View>
-                        
+                        <View style={{flexDirection:'row', alignItems:'center', paddingHorizontal:15, paddingTop:20, gap:5}}>
+                            <InfoBox
+                                title="تعداد فصل‌ها"
+                                value={`${data?.package?.number_season} فصل`}
+                                width={(width - 45)/4}
+                            />
+                            <InfoBox
+                                title="تعداد مراحل"
+                                value={`${data?.package?.number_stage} مرحله`}
+                                width={(width - 45)/4}
+                            />
+                            <InfoBox
+                                title="زبان"
+                                value={data?.package?.language_info?.name}
+                                width={(width - 45)/4}
+                            />
+                            <InfoBox
+                                title="قیمت"
+                                value={`${data?.package?.price} سکه`}
+                                width={(width - 45)/4}
+                            />
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', paddingHorizontal:15, paddingTop:20}}>
+                            <ButtonGradient
+                                text={data?.user_package_status?.button_text}
+                                textSize={14}
+                                onPress={()=>{}}
+                                width={width - 30}
+                                height={50}
+                                borderRadius={5}
+                            />
+                        </View>
                     </ScrollView>
                 }
             </View>
+        </View>
+    )
+}
+const InfoBox = ({title, value, width})=>{
+    const colors = useAppTheme()
+    return(
+        <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center', gap:5, width:width, paddingVertical:10, backgroundColor:"#00101299", borderRadius:10, borderColor:colors.border.a1, borderWidth:1}}>
+            <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a2}}>{value}</Text>
+            <Text style={{fontFamily:Font.medium, fontSize:8, color:colors.text.a5}}>{title}</Text>
         </View>
     )
 }

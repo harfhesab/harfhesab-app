@@ -1,6 +1,9 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, StatusBar } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const screenHeight = Dimensions.get("screen").height;
+const {width} = Dimensions.get("screen");
+const statusBarHeight = StatusBar.currentHeight ?? 0;
+const height = screenHeight - statusBarHeight;
 
 export const BOUNDARY_HORIZONTAL_OFFSET = 40;
 export const BOUNDARY_BOTTOM_OFFSET = 20;

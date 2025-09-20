@@ -175,7 +175,7 @@ function StageGame(props){
         return(
             (stageGameLanguage)&&
             <View style={{height:'100%', alignItems:'center', justifyContent:'center'}}>
-                <TouchableOpacity onPress={getLanguages} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:8, paddingHorizontal: 10, backgroundColor:`${colors.primary.a1}40`, height:40}}>
+                <TouchableOpacity onPress={getLanguages} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:8, paddingHorizontal: 10, backgroundColor:`${colors.primary.a1}25`, height:40}}>
                     <Icon name={'layers-outline'} type={'Ionicons'} style={{fontSize:25, color:colors.text.a3}}/>
                     <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:14}}>{`زبان ${stageGameLanguageName}`}</Text>
                 </TouchableOpacity>

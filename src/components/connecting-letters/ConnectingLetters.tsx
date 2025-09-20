@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, SafeAreaView, Dimensions, StatusBar } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { LettersProvider } from './context/LettersContext';
 import FloatingCardList from './components/FloatingCardList';
 import WordDisplay from './components/WordDisplay';
@@ -16,11 +16,6 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
 import { useRealm } from '../../realm';
 
-const { width, height } = Dimensions.get('window');
-
-interface DataModel {
-  
-}
 interface Props {
   type: string;
   stageId: string;

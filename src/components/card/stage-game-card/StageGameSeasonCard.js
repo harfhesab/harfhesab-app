@@ -123,7 +123,7 @@ const CardContent = memo(({
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            backgroundColor: `${colors.primary.a1}40`,
+            backgroundColor: `${colors.primary.a1}25`,
             paddingVertical: 15,
             paddingHorizontal: 10,
             borderRadius: 10,

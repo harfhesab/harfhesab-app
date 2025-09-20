@@ -153,7 +153,7 @@ function Account(props){
                         <View style={{ width:width-30, borderWidth:1, borderColor:colors.border.a1, borderRadius:15, paddingHorizontal:10, paddingVertical:15, gap:20}}>
                             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%"}}>
                                 <View style={{ flexDirection:'row', alignItems:'center', gap:10}}>
-                                    <View style={{alignItems:'center', justifyContent:'center', padding:10, borderColor:colors.border.a1, borderWidth:0.5, borderRadius:50, backgroundColor:`${colors.primary.a1}40`}}>
+                                    <View style={{alignItems:'center', justifyContent:'center', padding:10, borderColor:colors.border.a1, borderWidth:0.5, borderRadius:50, backgroundColor:`${colors.primary.a1}25`}}>
                                         <Icon name={"person"} type={"Ionicons"} style={{fontSize:25, color:colors.text.a5}}/>
                                     </View>
                                     <View style={{ flexDirection:'column', alignItems:'flex-start'}}>
@@ -177,7 +177,7 @@ function Account(props){
                         <View style={{ width:width-30, borderWidth:1, borderColor:colors.border.a1, borderRadius:15, paddingHorizontal:10, paddingVertical:15, gap:20}}>
                             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%"}}>
                                 <View style={{ flexDirection:'row', alignItems:'center', gap:10}}>
-                                    <View style={{alignItems:'center', justifyContent:'center', padding:10, borderColor:colors.border.a1, borderWidth:0.5, borderRadius:50, backgroundColor:`${colors.primary.a1}40`}}>
+                                    <View style={{alignItems:'center', justifyContent:'center', padding:10, borderColor:colors.border.a1, borderWidth:0.5, borderRadius:50, backgroundColor:`${colors.primary.a1}25`}}>
                                         <Icon name={"person"} type={"Ionicons"} style={{fontSize:25, color:colors.text.a5}}/>
                                     </View>
                                     <View style={{ flexDirection:'column', alignItems:'flex-start'}}>

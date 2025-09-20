@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -8,7 +8,7 @@ import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradien
 import TopHeader from './TopHeader';
 import { typingSentenceErrorSound, typingSentenceSucccessSound } from '../../../utils/sound/SoundFunctions';
 
-const {width} = Dimensions.get('window')
+
 const SentenceDisplay = () => {
     const { slots, cards, completeCurrentPart, completedSentences, currentWords } = useDragDrop();
     const colors = useAppTheme();

@@ -18,7 +18,7 @@ import SelectionProgressCircle from './word-display/SelectionProgressCircle';
 import TopHeader from './word-display/TopHeader';
 import { connectingLetterDuplicateSound, connectingLetterErrorSound, connectingLetterSucccessSound } from '../../../utils/sound/SoundFunctions';
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('screen');
 
 // --- تعریف وضعیت‌های بازخورد ---
 const FEEDBACK_STATE = {
