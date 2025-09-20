@@ -95,65 +95,54 @@ function LoginToAccount(props){
         }
     }
     return(
-        <View>
+        <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 paddingHorizontal={15}
                 height={60}
                 back={true}
                 title={"ورود به حساب کاربری"}
             />
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
-                    <View style={styles.container2}>
-                        <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
-                            <View style={{width:width, paddingHorizontal:20, paddingTop:20}}>
-                                <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a3, lineHeight:28, textAlign:'justify'}}>{"با ورود به حساب کاربری خود، اطلاعات و پیشرفت بازی‌هایتان را ثبت و قابل بازیابی کنید."}</Text>
-                            </View>
-                            <View style={{gap:15}}>
-                                <View style={{marginTop:50, width:width, paddingHorizontal:20}}>
-                                    <InputText
-                                        title={"شماره موبایل"}
-                                        placeholder={"شماره موبایل"}
-                                        value={phone}
-                                        maxLength={11}
-                                        height={60}
-                                        onChangeText={(text)=>setPhone(text)}
-                                        keyboardType={'numeric'}
-                                        borderWidth={1}
-                                        fontSize={16}
-                                        autoFocus={true}
-                                        borderRadius={10}
-                                        clearText={()=>setPhone("")}
-                                        onSubmitEditing={loginWithOtp}
-                                    />
-                                </View>
-                                <View style={{width:width, alignItems:'center'}}>
-                                    <ButtonGradient
-                                        height={60}
-                                        width={width - 40}
-                                        text={"ورود"}
-                                        onPress={loginWithOtp}
-                                        loading={loading}
-                                        textSize={18}
-                                        borderRadius={10}
-                                    />
-                                </View>
-                            </View>
-                        </KeyboardAvoidingView>
-                    </View>
+            <View style={styles.container}>
+                <View style={{width:width, paddingHorizontal:20, paddingTop:20}}>
+                    <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a3, lineHeight:28, textAlign:'justify'}}>{"با ورود به حساب کاربری خود، اطلاعات و پیشرفت بازی‌هایتان را ثبت و قابل بازیابی کنید."}</Text>
                 </View>
-            </LinearGradient>
+                <View style={{gap:15}}>
+                    <View style={{marginTop:50, width:width, paddingHorizontal:20}}>
+                        <InputText
+                            title={"شماره موبایل"}
+                            placeholder={"شماره موبایل"}
+                            value={phone}
+                            maxLength={11}
+                            height={60}
+                            onChangeText={(text)=>setPhone(text)}
+                            keyboardType={'numeric'}
+                            borderWidth={1}
+                            fontSize={16}
+                            autoFocus={true}
+                            borderRadius={10}
+                            clearText={()=>setPhone("")}
+                            onSubmitEditing={loginWithOtp}
+                        />
+                    </View>
+                    <View style={{width:width, alignItems:'center'}}>
+                        <ButtonGradient
+                            height={60}
+                            width={width - 40}
+                            text={"ورود"}
+                            onPress={loginWithOtp}
+                            loading={loading}
+                            textSize={18}
+                            borderRadius={10}
+                        />
+                    </View>
+                    </View>
+            </View>
         </View>
         
     )
 }
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'space-between'
-    },
-    container2: {
         flex:1,
         alignItems:'center',
         justifyContent:'flex-start',

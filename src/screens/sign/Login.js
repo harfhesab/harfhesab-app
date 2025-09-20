@@ -94,45 +94,42 @@ function Login(props){
         }
     }
     return(
-        <SafeAreaView>
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
-                    <View style={styles.container2}>
-                        <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
-                            <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
-                            <View style={{gap:15}}>
-                                <View style={{marginTop:100, width:width, paddingHorizontal:20}}>
-                                    <InputText
-                                        title={"شماره موبایل"}
-                                        placeholder={"شماره موبایل"}
-                                        value={phone}
-                                        maxLength={11}
-                                        onChangeText={(text)=>setPhone(text)}
-                                        keyboardType={'numeric'}
-                                        borderWidth={1.5}
-                                        fontSize={18}
-                                        borderRadius={10}
-                                        clearText={()=>setPhone("")}
-                                        onSubmitEditing={loginWithOtp}
-                                    />
-                                </View>
-                                <View style={{width:width, alignItems:'center'}}>
-                                    <ButtonGradient
-                                        height={65}
-                                        width={width - 40}
-                                        text={"ورود"}
-                                        onPress={loginWithOtp}
-                                        loading={loading}
-                                        textSize={18}
-                                        borderRadius={10}
-                                    />
-                                </View>
-                            </View>
-                        </KeyboardAvoidingView>
+        <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
+            <View style={styles.container2}>
+                <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
+                    <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
+                    <View style={{gap:15}}>
+                        <View style={{marginTop:100, width:width, paddingHorizontal:20}}>
+                            <InputText
+                                title={"شماره موبایل"}
+                                placeholder={"شماره موبایل"}
+                                value={phone}
+                                maxLength={11}
+                                onChangeText={(text)=>setPhone(text)}
+                                keyboardType={'numeric'}
+                                borderWidth={1.5}
+                                fontSize={18}
+                                height={60}
+                                borderRadius={10}
+                                clearText={()=>setPhone("")}
+                                onSubmitEditing={loginWithOtp}
+                            />
+                        </View>
+                        <View style={{width:width, alignItems:'center'}}>
+                            <ButtonGradient
+                                height={60}
+                                width={width - 40}
+                                text={"ورود"}
+                                onPress={loginWithOtp}
+                                loading={loading}
+                                textSize={18}
+                                borderRadius={10}
+                            />
+                        </View>
                     </View>
-                </View>
-            </LinearGradient>
-        </SafeAreaView>
+                </KeyboardAvoidingView>
+            </View>
+        </View>
         
     )
 }

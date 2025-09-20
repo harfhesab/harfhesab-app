@@ -23,13 +23,9 @@ function OnlineGame(props){
     }
     
     return(
-        <SafeAreaView>
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
 
-                </View>
-            </LinearGradient>
-        </SafeAreaView>
+        </View>
     )
 }
 const styles = StyleSheet.create({

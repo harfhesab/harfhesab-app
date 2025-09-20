@@ -145,39 +145,35 @@ function SignIn(props){
         })
     }
     return(
-        <SafeAreaView>
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
-                    <View style={styles.container2}>
-                        <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
-                        <View style={{gap:15}}>
-                            <View style={{width:width, alignItems:'center'}}>
-                                <ButtonGradient
-                                    height={65}
-                                    width={width - 40}
-                                    text={"ورود به حساب یا ثبت نام"}
-                                    onPress={login}
-                                    loading={false}
-                                    textSize={16}
-                                    borderRadius={10}
-                                />
-                            </View>
-                            <View style={{width:width, alignItems:'center'}}>
-                                <ButtonBorder
-                                    text={"ورود به عنوان میهمان"}
-                                    height={65}
-                                    width={width - 40}
-                                    loading={loading}
-                                    onPress={loginAsGuestOperation}
-                                    borderRadius={10}
-                                    textSize={16}
-                                />
-                            </View>
-                        </View>
+        <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
+            <View style={styles.container2}>
+                <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
+                <View style={{gap:15}}>
+                    <View style={{width:width, alignItems:'center'}}>
+                        <ButtonGradient
+                            height={65}
+                            width={width - 40}
+                            text={"ورود به حساب یا ثبت نام"}
+                            onPress={login}
+                            loading={false}
+                            textSize={16}
+                            borderRadius={10}
+                        />
+                    </View>
+                    <View style={{width:width, alignItems:'center'}}>
+                        <ButtonBorder
+                            text={"ورود به عنوان میهمان"}
+                            height={65}
+                            width={width - 40}
+                            loading={loading}
+                            onPress={loginAsGuestOperation}
+                            borderRadius={10}
+                            textSize={16}
+                        />
                     </View>
                 </View>
-            </LinearGradient>
-        </SafeAreaView>
+            </View>
+        </View>
         
     )
 }

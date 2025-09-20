@@ -15,15 +15,17 @@ import Alert from '../components/alert/Alert';
 import AlertHelper from '../components/alert/AlertHelper';
 import GameAlert from '../components/game-alert/GameAlert';
 import GameAlertHelper from '../components/game-alert/GameAlertHelper';
+import useAppTheme from '../hooks/theme/useAppTheme';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.account);
+  const colors = useAppTheme();
 
   axios.defaults.headers.post['token'] = token;
   
   return (
     <SafeAreaView style={{flex:1}}>
-        <StatusBar backgroundColor={"#000000"} barStyle={"light-content"}/>
+        <StatusBar backgroundColor={colors.status_bar.background} barStyle={colors.status_bar.bar_style}/>
         <NavigationContainer 
           ref={navigationRef}
         >

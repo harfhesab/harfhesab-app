@@ -9,6 +9,8 @@ import BannerSwiper from '../../../components/swiper/BannerSwiper';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import axios from 'axios';
+import ButtonGradient from '../../../components/buttons/ButtonGradient';
+import MyPackageButton from '../../../components/buttons/MyPackageButton';
 
 const {width, height} = Dimensions.get("window")
 function PackageGame(props){
@@ -42,13 +44,13 @@ function PackageGame(props){
                         ) {
                             banner{
                                 path,
+                                package{_id, title, icon_image}
                                 file_type,
                                 duration,
                                 click_type,
                                 link,
                                 navigate,
-                                params_id,
-                                params_other,
+                                navigate_params,
                                 order,
                                 page,
                                 is_visible,
@@ -73,7 +75,6 @@ function PackageGame(props){
             }
         }).then(async(response)=>{
             const dataReceived = response.data.data?.paginatePackageGameCollection
-            console.log(response)
             const newData = dataReceived?.banner?.length>0?[{banner:true, list:dataReceived?.banner}, ...dataReceived.collection]:dataReceived.collection
             if(dataReceived.hasNextPage == true){
                 setLoading(false)
@@ -119,13 +120,13 @@ function PackageGame(props){
                         ) {
                             banner{
                                 path,
+                                package{_id, title, icon_image}
                                 file_type,
                                 duration,
                                 click_type,
                                 link,
                                 navigate,
-                                params_id,
-                                params_other,
+                                navigate_params,
                                 order,
                                 page,
                                 is_visible,
@@ -235,30 +236,36 @@ function PackageGame(props){
         )
     }
     return(
-         <View style={{flex:1}}>
+         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 title={"بسته‌های بازی"}
                 height={60}
                 coin={true}
             />
-            <LinearGradient colors={colors.background_gradient} style={{flex:1}}>
-                <View style={styles.container}>
-                    <FlatList
-                        style={{flex:1}}
-                        contentContainerStyle={{width:width, flex:1}}
-                        showsVerticalScrollIndicator={true}
-                        data={collection}
-                        keyExtractor={keyExtractor}
-                        renderItem={memoizedValue}
-                        ListFooterComponent={renderFooter}
-                        onEndReached={fetchMoreData}
-                        onEndReachedThreshold={0.5}
-                        initialNumToRender={20}
-                        removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                        ListEmptyComponent={ListEmptyComponent}
-                    /> 
-                </View>
-            </LinearGradient> 
+            <View style={styles.container}>
+                <FlatList
+                    style={{flex:1}}
+                    contentContainerStyle={[
+                        {width: width, gap: 5, paddingBottom:70},
+                        collection.length === 0 && {flex: 1}
+                    ]}
+                    showsVerticalScrollIndicator={false}
+                    data={collection}
+                    keyExtractor={keyExtractor}
+                    renderItem={memoizedValue}
+                    ListFooterComponent={renderFooter}
+                    onEndReached={fetchMoreData}
+                    onEndReachedThreshold={0.5}
+                    initialNumToRender={20}
+                    removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                    ListEmptyComponent={ListEmptyComponent}
+                /> 
+            </View>
+            <View style={{position:'absolute', width:width, alignItems:'flex-start', bottom:15, paddingHorizontal:15}}>
+                <MyPackageButton
+                    onPress={()=>{}}
+                />
+            </View>
         </View>
     )
 }

@@ -6,16 +6,21 @@ import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import ImageComponent from '../../image-components/ImageComponent';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { navigate } from '../../../main/navigationService';
 
 const width = Dimensions.get('window').width
-const itemWidth = (width - 80)/3
-function PackageCollectionItem({_id, title, image, click}){
+const itemWidth = IS_TABLET_CONDITION?(width - 160)/6:(width - 80)/3
+function PackageCollectionItem({_id, title, image}){
     const colors = useAppTheme();
 
+    const click = ()=>{
+        navigate("PackageInformation", {_id})
+    }
     return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{flexDirection:'column', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:10, height:itemWidth + 70}}>
+                <View style={{flexDirection:'column', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:8, height:itemWidth + 65}}>
                     <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderRadius:15}}>
                         {
                             image?

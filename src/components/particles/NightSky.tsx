@@ -12,7 +12,7 @@ import {
 import Meteor from './components/Meteor';
 import Moon from './components/Moon';
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 const STAR_COUNT = 180;
 

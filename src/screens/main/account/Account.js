@@ -3,7 +3,6 @@ import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, Scro
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store/RootReducer';
 import { login, logout } from '../../../redux/slices/accountSlice';
-import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
@@ -11,6 +10,7 @@ import Font from '../../../utils/Font';
 import SimpleItem from '../../../components/list-view-items/SimpleItem';
 import Border from '../../../components/Border';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
+import LinearGradient from 'react-native-linear-gradient';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
@@ -67,7 +67,7 @@ function Account(props){
             icon_size: 25,
             icon_backgroun_color:"#2196f399",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")}
         },
         {
             title: "تنظیمات",
@@ -121,7 +121,7 @@ function Account(props){
             icon_size: 25,
             icon_backgroun_color:"#2196f399",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")}
         },
         {
             title: "تنظیمات",
@@ -149,7 +149,7 @@ function Account(props){
             <View style={{width:width, alignItems:'center', paddingVertical:15}}>
                 {
                     loginType == "guest"?
-                    <LinearGradient colors={['#00055599', '#28005599']} style={{width:width-30, borderRadius:15}}>
+                    <LinearGradient colors={['#1b0b6395', '#311b9295', '#512da895']} style={{width:width-30, borderRadius:15}}>
                         <View style={{ width:width-30, borderWidth:1, borderColor:colors.border.a1, borderRadius:15, paddingHorizontal:10, paddingVertical:15, gap:20}}>
                             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%"}}>
                                 <View style={{ flexDirection:'row', alignItems:'center', gap:10}}>
@@ -173,7 +173,7 @@ function Account(props){
                         </View>
                     </LinearGradient>
                     :loginType == "registered" &&
-                    <LinearGradient colors={['#00055599', '#28005599']} style={{width:width-30, borderRadius:15}}>
+                    <LinearGradient colors={['#1b0b6399', '#311b9299', '#512da899']}  style={{width:width-30, borderRadius:15}}>
                         <View style={{ width:width-30, borderWidth:1, borderColor:colors.border.a1, borderRadius:15, paddingHorizontal:10, paddingVertical:15, gap:20}}>
                             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%"}}>
                                 <View style={{ flexDirection:'row', alignItems:'center', gap:10}}>
@@ -202,45 +202,43 @@ function Account(props){
     }
     
     return(
-        <View>
+        <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 paddingHorizontal={15}
                 height={60}
                 coin={true}
             />
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
-                    <ScrollView>
-                        {account()}
-                        {
-                            AccountOptions.map((item, index)=>(
-                                <View key={index.toString()}>
-                                    <SimpleItem
-                                        iconBackColor={item.icon_backgroun_color}
-                                        title={item.title}
-                                        titleColor={item?.title_color??colors.text.a2}
-                                        arrow={item.arrow}
-                                        height={55}
-                                        horizontal={15}
-                                        icon_name={item?.icon_name}
-                                        icon_type={item?.icon_type}
-                                        image_icon={item?.image_icon}
-                                        icon_size={item.icon_size}
-                                        textSize={14}
-                                        click={item.onPress}
-                                    />
-                                    <Border
-                                        height={0.5}
-                                        end={15}
-                                        start={60}
-                                        color={colors.border.a1}
-                                    />
-                                </View>
-                            ))
-                        }
-                    </ScrollView>
-                </View>
-            </LinearGradient>
+            <View style={{flex:1, alignItems:'center'}}>
+                <ScrollView>
+                    {account()}
+                    {
+                        AccountOptions.map((item, index)=>(
+                            <View key={index.toString()}>
+                                <SimpleItem
+                                    iconBackColor={item.icon_backgroun_color}
+                                    title={item.title}
+                                    titleColor={item?.title_color??colors.text.a2}
+                                    arrow={item.arrow}
+                                    height={55}
+                                    horizontal={15}
+                                    icon_name={item?.icon_name}
+                                    icon_type={item?.icon_type}
+                                    image_icon={item?.image_icon}
+                                    icon_size={item.icon_size}
+                                    textSize={14}
+                                    click={item.onPress}
+                                />
+                                <Border
+                                    height={0.5}
+                                    end={15}
+                                    start={60}
+                                    color={colors.border.a1}
+                                />
+                            </View>
+                        ))
+                    }
+                </ScrollView>
+            </View>
         </View>
     )
 }

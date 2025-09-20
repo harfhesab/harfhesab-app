@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar, NativeModules} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -20,7 +20,8 @@ import GeneralHeader from '../../../components/header/GeneralHeader';
 import MultiLineTextGradientSvg from '../../../components/text-components/MultiLineTextGradientSvg';
 import SeasonHeader from '../../../components/header/SeasonHeader';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get("screen")
+const { NavigationBar } = NativeModules;
 function StagesStageGameSeason(props){
     const colors = useAppTheme()
     const realm = useRealm();
@@ -36,7 +37,13 @@ function StagesStageGameSeason(props){
 
     useEffect(() => {
         getData()
+        NavigationBar.hide();
+        return () => {
+            NavigationBar.show();
+        }
     }, []);
+
+    
 
     const operationHeaderTransparent = (i)=>{
         if(i < 101){
@@ -99,15 +106,17 @@ function StagesStageGameSeason(props){
     const keyExtractor = (item,index)=>index.toString()
     const FLATLIST_PADDING_TOP = 15
     return(
-        loading?
-        <View style={{flex:1}}>
-            <GeneralHeader
-                height={60}
-                back={true}
-                coin={true}
-            />
-            <LinearGradient colors={colors.background_gradient} style={{flex:1}}>
-                <View style={styles.container}>
+        <>
+        <StatusBar hidden={true} />
+        {
+            loading?
+            <View style={{flex:1}}>
+                <GeneralHeader
+                    height={60}
+                    back={true}
+                    coin={true}
+                />
+                <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
                     <ScreenLoading
                         loading={loading}
                         getError={getError}
@@ -115,38 +124,39 @@ function StagesStageGameSeason(props){
                         tryAgain={tryAgain}
                     />
                 </View>
-            </LinearGradient>
-        </View>
-        :
-        <View style={{flex:1, backgroundColor:"#120426"}}>
-            <GalaxyTwinkle style={{width:width, height:height }}>
-                <SeasonHeader
-                    transparent={headerTransparent}
-                />
-                <View style={styles.container}>
-                    <FlatList
-                        onScroll={(i)=>operationHeaderTransparent(i.nativeEvent.contentOffset.y)}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={keyExtractor}
-                        initialNumToRender={20}
-                        ListHeaderComponent={listHeaderComponent}
-                        contentContainerStyle={{direction:'ltr'}}
-                        renderItem={memoizedValue}
-                        data={data}
-                        style={{paddingHorizontal:15}}
-                        numColumns={LIST_STAGE_CARD_NUMBER_COLUMN}
-                        onEndReachedThreshold={0.5}
-                        removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                        getItemLayout={(data, index) => ({
-                            length: STAGE_CARD_SIZE + (STAGE_CARD_MARGIN*2),
-                            offset: FLATLIST_PADDING_TOP + (STAGE_CARD_MARGIN*2) + LIST_HEADER_COMPONENT_HEIGHT + (STAGE_CARD_SIZE* index),  // 15 پدینگ بالای کل لیست
-                            index,
-                        })}
-                        extraData={{lastStage, lastStageNumber}}
+            </View>
+            :
+            <View style={{flex:1, backgroundColor:"#120426"}}>
+                <GalaxyTwinkle style={{width:width, height:height }}>
+                    <SeasonHeader
+                        transparent={headerTransparent}
                     />
-                </View>
-            </GalaxyTwinkle>
-        </View>
+                    <View style={styles.container}>
+                        <FlatList
+                            onScroll={(i)=>operationHeaderTransparent(i.nativeEvent.contentOffset.y)}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={keyExtractor}
+                            initialNumToRender={20}
+                            ListHeaderComponent={listHeaderComponent}
+                            contentContainerStyle={{direction:'ltr'}}
+                            renderItem={memoizedValue}
+                            data={data}
+                            style={{paddingHorizontal:15}}
+                            numColumns={LIST_STAGE_CARD_NUMBER_COLUMN}
+                            onEndReachedThreshold={0.5}
+                            removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                            getItemLayout={(data, index) => ({
+                                length: STAGE_CARD_SIZE + (STAGE_CARD_MARGIN*2),
+                                offset: FLATLIST_PADDING_TOP + (STAGE_CARD_MARGIN*2) + LIST_HEADER_COMPONENT_HEIGHT + (STAGE_CARD_SIZE* index),  // 15 پدینگ بالای کل لیست
+                                index,
+                            })}
+                            extraData={{lastStage, lastStageNumber}}
+                        />
+                    </View>
+                </GalaxyTwinkle>
+            </View>
+        }
+        </>
     )
 }
 const styles = StyleSheet.create({

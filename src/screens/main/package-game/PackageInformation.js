@@ -6,6 +6,9 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import ImageComponent from '../../../components/image-components/ImageComponent';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
+import axios from 'axios';
+import Font from '../../../utils/Font';
 
 const {width, height} = Dimensions.get("window")
 function PackageInformation(props){
@@ -24,10 +27,16 @@ function PackageInformation(props){
             data: {
                 query : `
                     query getPackageInformation(
-                        $_id : ID,
+                        $_id : ID!,
+                        $version_created : Int,
+                        $version_updated : Int,
+                        $version_deleted : Int,
                     ){
                         getPackageInformation(
                             _id : $_id,
+                            version_created : $version_created,
+                            version_updated : $version_updated,
+                            version_deleted : $version_deleted,
                         ) {
                             _id,
                             title,
@@ -67,12 +76,16 @@ function PackageInformation(props){
                 `,
                 variables : {
                     "_id" : props?.route?.params?._id,
+                    "version_created" : null,
+                    "version_updated" : null,
+                    "version_deleted" : null,
                 }
             }
         }).then(async(response)=>{
             const data = response.data.data?.getPackageInformation
             if(data){
                 setData(data)
+                setLoading(false)
             }
         }).catch((e)=>{
             setGetError(true)
@@ -85,49 +98,51 @@ function PackageInformation(props){
     }
     
     return(
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                title={"بسته‌های بازی"}
                 height={60}
                 coin={true}
+                back={true}
             />
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
-                    {
-                        loading?
-                        <ScreenLoading
-                            loading={loading}
-                            getError={getError}
-                            noItem={noItem}
-                            tryAgain={tryAgain}
-                        />
-                        :
-                        <ScrollView>
-                            <View style={{width:width, alignItems:'center'}}>
-                                <ImageComponent
-                                    uri={data?.banner_image}
-                                    width={IS_TABLET_CONDITION?500:width}
-                                    height={IS_TABLET_CONDITION?225:width * 0.45}
-                                    resizeMode="cover"
-                                    borderRadius={0}
-                                />
-                            </View>
-                            <View style={{width:width, alignItems:'center', position:'absolute'}}>
+            <View style={styles.container}>
+                {
+                    loading?
+                    <ScreenLoading
+                        loading={loading}
+                        getError={getError}
+                        noItem={false}
+                        tryAgain={tryAgain}
+                    />
+                    :
+                    <ScrollView>
+                        <View style={{width:width, alignItems:'center'}}>
+                            <ImageComponent
+                                uri={data?.banner_image}
+                                width={IS_TABLET_CONDITION?500:width}
+                                height={IS_TABLET_CONDITION?225:width * 0.45}
+                                resizeMode="cover"
+                                borderRadius={0}
+                            />
+                        </View>
+                        <View style={{width:width, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginTop:15, gap:10, paddingHorizontal:15}}>
+                            <View style={{borderWidth:1, borderColor:colors.border.a1, borderRadius:15, backgroundColor:colors.border.a1}}>
                                 <ImageComponent
                                     uri={data?.icon_image}
-                                    width={IS_TABLET_CONDITION?400/3:(width - 100) / 3}
-                                    height={IS_TABLET_CONDITION?400/3:(width - 100) / 3}
+                                    width={60}
+                                    height={60}
                                     resizeMode="cover"
-                                    borderRadius={0}
+                                    borderRadius={13}
                                 />
                             </View>
-                            <View style={{width:width, alignItems:'center'}}>
-                                <Text>{data?.title}</Text>
+                            <View style={{flexDirection:'column', alignItems:'flex-start', gap:5}}>
+                                <Text style={{fontFamily:Font.medium, fontSize:16, color:colors.text.a1}}>{data?.title}</Text>
+                                <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a5}}>{data?.subject}</Text>
                             </View>
-                        </ScrollView>
-                    }
-                </View>
-            </LinearGradient>
+                        </View>
+                        
+                    </ScrollView>
+                }
+            </View>
         </View>
     )
 }

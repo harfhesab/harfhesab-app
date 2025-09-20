@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Dimensions, StatusBar } from 'react-native';
 import { LettersProvider } from './context/LettersContext';
 import FloatingCardList from './components/FloatingCardList';
 import WordDisplay from './components/WordDisplay';
@@ -38,6 +38,7 @@ const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
   
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar hidden={true} />
       <LettersProvider 
         realm={realm}
         data={data}

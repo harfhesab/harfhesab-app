@@ -241,78 +241,74 @@ function StageGame(props){
         </View>
     }
     return(
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 paddingHorizontal={15}
                 height={60}
                 coin={true}
                 RightComponent={headerRigthComponent}
             />
-            <LinearGradient colors={colors.background_gradient} style={{flex:1}}>
-                <View style={styles.container}>
-                    <FlatList
-                        ref={flatListRef}
-                        key={stageGameLanguage}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={keyExtractor}
-                        initialNumToRender={3}
-                        windowSize={5}
-                        initialScrollIndex={
-                            data.length > 0
-                            ? Math.min(Math.max(0, lastSeasonNumber - 1), data.length - 1)
-                            : 0
-                        }
-                        maxToRenderPerBatch={3}
-                        contentContainerStyle={{alignItems:'center', rowGap:rowGap, h:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
-                        renderItem={memoizedValue}
-                        data={data}
-                        numColumns={numColumns}
-                        onEndReachedThreshold={0.5}
-                        removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                        style={{width:width, paddingHorizontal:STAGE_GAME_SEASON_CARD_MARGIN}}
-                        getItemLayout={(data, index) => {
-                            const row = Math.floor(index / numColumns); // هر ردیف
-                            return {
-                                length: itemHeight,
-                                offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
-                                index,
-                            };
-                        }}
-                        snapToInterval={snapInterval} // ارتفاع هر ردیف
-                        snapToAlignment="start"       // آیتم از بالا چفت شود
-                        decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
-                        disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
-                        bounces={true}                // فنری بودن مانند iOS
-                        viewabilityConfig={viewabilityConfig}
-                        onViewableItemsChanged={onViewableItemsChanged}
-                        ListEmptyComponent={ListEmptyComponent}
-                        extraData={{ activeIndexes, lastSeasonNumber }}
-                        onScrollToIndexFailed={(info) => {
-                            console.warn("scrollToIndex failed", info);
+            <View style={styles.container}>
+                <FlatList
+                    ref={flatListRef}
+                    key={stageGameLanguage}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={keyExtractor}
+                    initialNumToRender={3}
+                    windowSize={5}
+                    initialScrollIndex={
+                        data.length > 0
+                        ? Math.min(Math.max(0, lastSeasonNumber - 1), data.length - 1)
+                        : 0
+                    }
+                    maxToRenderPerBatch={3}
+                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, h:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
+                    renderItem={memoizedValue}
+                    data={data}
+                    numColumns={numColumns}
+                    onEndReachedThreshold={0.5}
+                    removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                    style={{width:width, paddingHorizontal:STAGE_GAME_SEASON_CARD_MARGIN}}
+                    getItemLayout={(data, index) => {
+                        const row = Math.floor(index / numColumns); // هر ردیف
+                        return {
+                            length: itemHeight,
+                            offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
+                            index,
+                        };
+                    }}
+                    snapToInterval={snapInterval} // ارتفاع هر ردیف
+                    snapToAlignment="start"       // آیتم از بالا چفت شود
+                    decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
+                    disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                    bounces={true}                // فنری بودن مانند iOS
+                    viewabilityConfig={viewabilityConfig}
+                    onViewableItemsChanged={onViewableItemsChanged}
+                    ListEmptyComponent={ListEmptyComponent}
+                    extraData={{ activeIndexes, lastSeasonNumber }}
+                    onScrollToIndexFailed={(info) => {
+                        console.warn("scrollToIndex failed", info);
 
-                            // تلاش دوباره با نزدیک‌ترین ایندکس معتبر
-                            flatListRef.current?.scrollToIndex({
-                                index: Math.max(0, data.length - 1),
-                                animated: false,
-                                viewOffset: FLATLIST_PADDING_VERTICAL,
-                            });
-                        }}
+                        // تلاش دوباره با نزدیک‌ترین ایندکس معتبر
+                        flatListRef.current?.scrollToIndex({
+                            index: Math.max(0, data.length - 1),
+                            animated: false,
+                            viewOffset: FLATLIST_PADDING_VERTICAL,
+                        });
+                    }}
+                />
+            </View>
+            {
+                loading == true&&
+                <View style={{width:"100%", height:"100%", backgroundColor:colors.background.a1, alignItems:'center', justifyContent:'center', position:'absolute'}}>
+                    <ScreenLoading
+                        loading={true}
+                        getError={false}
+                        noItem={false}
+                        tryAgain={()=>{}}
                     />
                 </View>
-                {
-                    loading == true&&
-                    <View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center', position:'absolute'}}>
-                        <LinearGradient colors={colors.background_gradient} style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
-                            <ScreenLoading
-                                loading={true}
-                                getError={false}
-                                noItem={false}
-                                tryAgain={()=>{}}
-                            />
-                        </LinearGradient>
-                    </View>
-                }
-            </LinearGradient>
+            }
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>
         </View>
     )

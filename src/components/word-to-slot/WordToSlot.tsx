@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DragDropProvider } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
@@ -34,25 +34,28 @@ const WordToSlot = ({
   
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <DragDropProvider
-        stageId={id}
-        currentStageId={currentStageId}
-        type={type}
-      >
-        <SafeAreaView style={styles.container}>
-          <SentenceDisplay />
-          <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
-            <View style={styles.dropZoneContainer}>
-              <DropZoneList />
+    <>
+      <StatusBar hidden={true} />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <DragDropProvider
+          stageId={id}
+          currentStageId={currentStageId}
+          type={type}
+        >
+          <SafeAreaView style={styles.container}>
+            <SentenceDisplay />
+            <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
+              <View style={styles.dropZoneContainer}>
+                <DropZoneList />
+              </View>
+              <View style={[styles.boundaryContainer, {borderColor:colors.primary.a1}]}>
+                <FloatingCardList />
+              </View>
             </View>
-            <View style={[styles.boundaryContainer, {borderColor:colors.primary.a1}]}>
-              <FloatingCardList />
-            </View>
-          </View>
-        </SafeAreaView>
-      </DragDropProvider>
-    </GestureHandlerRootView>
+          </SafeAreaView>
+        </DragDropProvider>
+      </GestureHandlerRootView>
+    </>
   );
 };
 

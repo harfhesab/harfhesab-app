@@ -6,15 +6,14 @@ import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import PackageCollectionItem from '../card/package-game-card/PackageCollectionItem';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 
 const width = Dimensions.get('window').width
+const ITEM_WIDTH = IS_TABLET_CONDITION?(width - 160)/6:(width - 80)/3;
+const HORIZONTAL = 10;
+const GAP = 5;
 function CollectionPackageList({_id, title, arrowText, list}){
     const colors = useAppTheme();
-
-    const onClick = () => {
-        if (disabled) return;
-        onPress();
-    };
 
     const renderItem = ({item, index})=>{
         return(
@@ -32,7 +31,7 @@ function CollectionPackageList({_id, title, arrowText, list}){
         <View>
             {
                 title?.length > 0 &&(
-                <TouchableNativeFeedback onPress={onClick} style={{width:width}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
+                <TouchableNativeFeedback style={{width:width}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                     <View style={{width:width, height:50, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
                         <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{title}</Text>
                         <View style={{flexDirection:"row", alignItems:"center", gap:10}}>
@@ -46,11 +45,20 @@ function CollectionPackageList({_id, title, arrowText, list}){
                 keyExtractor={keyExtractor}
                 showsHorizontalScrollIndicator={false}
                 data={list}
-                contentContainerStyle={{alignItems:'flex-start', paddingHorizontal:10, gap:5}}
+                contentContainerStyle={{alignItems:'flex-start', paddingHorizontal:HORIZONTAL, gap:GAP}}
                 horizontal={true}
                 renderItem={memoizedValue}
                 onEndReachedThreshold={0.5}
-                removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                initialNumToRender={5}
+                maxToRenderPerBatch={10}
+                windowSize={5}
+                removeClippedSubviews={false}
+                decelerationRate="fast"
+                getItemLayout={(data, index) => ({
+                    length: ITEM_WIDTH + GAP,
+                    offset: HORIZONTAL + (ITEM_WIDTH + GAP) * index,
+                    index,
+                })}
             />
         </View>
     );

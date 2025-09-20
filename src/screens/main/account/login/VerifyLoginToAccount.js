@@ -279,73 +279,69 @@ function VerifyLoginToAccount(props){
         }
     }
     return(
-        <View>
+        <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 paddingHorizontal={15}
                 height={60}
                 back={true}
                 title={"تایید شماره موبایل"}
             />
-            <LinearGradient colors={colors.background_gradient} style={{width:width, height:height}}>
-                <View style={styles.container}>
-                    <ScrollView>
-                        <View style={{justifyContent:"center", alignItems:'center', paddingTop:50}}>
-                            <Icon name={'tooltip-cellphone'} type={"MaterialCommunityIcons"} style={{color:colors.text.a3, fontSize:100}}/>
-                            <Text style={{fontFamily:Font.black, color:colors.text.a1, fontSize:18, textAlign:'center', marginVertical:10}}>{'کد تایید را وارد کنید'}</Text>
-                            <Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:12, textAlign:'center'}}>{'یک کد 6 رقمی به شماره‌ موبایل شما ارسال شد'}</Text>
-                            <Text style={{textDecorationLine:'underline', fontFamily:Font.black, color:colors.text.a3, fontSize:16, textAlign:'center', marginBottom:30}}>{phoneDigitSeperator(phone || '')}</Text>
-                            <InputCodeField
-                                value={value}
-                                setValue={(text)=>{
-                                    setValue(text)
-                                    if(text.length == 6){
-                                        verifyUserLoginWithOTP(text)
-                                    }
-                                }}
-                                cellCount={6}
-                                onSubmitEditing={verifyUserLoginWithOTP}
-                            />
-                        </View>
-                    </ScrollView>
-                    <KeyboardAvoidingView behavior='position' >
-                        <View style={{justifyContent:"center", alignItems:'center', paddingBottom:50}}>
-                            <View style={{width:width, flexDirection:'row', height:50, alignItems:'center', justifyContent:'space-between', paddingHorizontal:20}}>
-                                <View>
-                                    {
-                                        newOtpLoading == true?
-                                        <DotIndicator color={colors.text.a1} count={3} size={7}/>
-                                        :
-                                        newOtp == true?
-                                        <TouchableOpacity activeOpacity={0.5} onPress={requestNewOtp}>
-                                            <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'درخواست مجدد کد'}</Text>
-                                        </TouchableOpacity>
-                                        :
-                                        <TimerShowOTP
-                                            minutes={minutes}
-                                            seconds={seconds}
-                                            endOfTime={endOfTime}
-                                            fontSize={16}
-                                            fontFamily={Font.black}
-                                        />
-                                    }
-                                </View>
-                                <TouchableOpacity activeOpacity={0.5} onPress={()=>{props.navigation.goBack()}}>
-                                    <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'تغییر شماره موبایل'}</Text>
+            <View style={styles.container}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={{justifyContent:"center", alignItems:'center', paddingTop:50}}>
+                        <Icon name={'tooltip-cellphone'} type={"MaterialCommunityIcons"} style={{color:colors.text.a3, fontSize:100}}/>
+                        <Text style={{fontFamily:Font.black, color:colors.text.a1, fontSize:18, textAlign:'center', marginVertical:10}}>{'کد تایید را وارد کنید'}</Text>
+                        <Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:12, textAlign:'center'}}>{'یک کد 6 رقمی به شماره‌ موبایل شما ارسال شد'}</Text>
+                        <Text style={{textDecorationLine:'underline', fontFamily:Font.black, color:colors.text.a3, fontSize:16, textAlign:'center', marginBottom:30}}>{phoneDigitSeperator(phone || '')}</Text>
+                        <InputCodeField
+                            value={value}
+                            setValue={(text)=>{
+                                setValue(text)
+                                if(text.length == 6){
+                                    verifyUserLoginWithOTP(text)
+                                }
+                            }}
+                            cellCount={6}
+                            onSubmitEditing={verifyUserLoginWithOTP}
+                        />
+                    </View>
+                </ScrollView>
+                <View style={{justifyContent:"center", alignItems:'center', paddingBottom:50}}>
+                    <View style={{width:width, flexDirection:'row', height:50, alignItems:'center', justifyContent:'space-between', paddingHorizontal:20}}>
+                        <View>
+                            {
+                                newOtpLoading == true?
+                                <DotIndicator color={colors.text.a1} count={3} size={7}/>
+                                :
+                                newOtp == true?
+                                <TouchableOpacity activeOpacity={0.5} onPress={requestNewOtp}>
+                                    <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'درخواست مجدد کد'}</Text>
                                 </TouchableOpacity>
-                            </View>
-                            <ButtonGradient
-                                height={65}
-                                width={width - 40}
-                                text={"ورود"}
-                                onPress={verifyUserLoginWithOTP}
-                                loading={loading}
-                                textSize={18}
-                                borderRadius={10}
-                            />
+                                :
+                                <TimerShowOTP
+                                    minutes={minutes}
+                                    seconds={seconds}
+                                    endOfTime={endOfTime}
+                                    fontSize={16}
+                                    fontFamily={Font.black}
+                                />
+                            }
                         </View>
-                    </KeyboardAvoidingView>
+                        <TouchableOpacity activeOpacity={0.5} onPress={()=>{props.navigation.goBack()}}>
+                            <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'تغییر شماره موبایل'}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <ButtonGradient
+                        height={65}
+                        width={width - 40}
+                        text={"ورود"}
+                        onPress={verifyUserLoginWithOTP}
+                        loading={loading}
+                        textSize={18}
+                        borderRadius={10}
+                    />
                 </View>
-            </LinearGradient>
+            </View>
         </View>
     )
 }

@@ -10,27 +10,33 @@ export const themes = {
         a1: '#0ea960',
         a2: '#24536b',
       },
-      background_gradient: ['#001818', '#001800'],
+      background:{
+        a1:'#001c20'
+      },
       text_gradient:{
         a1: ['#1b0b63', '#311b92', '#512da8'],
       },
       text_banner: {
-        background: ['#bf5340', '#813123', '#491a11'],
+        background: ['#1b0b6395', '#311b9295', '#512da895'],
         content_1: '#e8edf5',
         content_2: '#c4d2e5',
       },
+      status_bar: {
+        background: '#001012',
+        bar_style: "light-content"
+      },
       header: {
-        background: '#001010',
+        background: '#001012',
         content_1: '#F0F0F0',
         content_2: '#d1d1d1',
       },
       bottom_tab: {
-        background: '#001010',
-        active: '#FFFFFF',
-        inactive: '#AAAAAA',
+        background: '#001012',
+        active: '#dbdfdf',
+        inactive: '#87989a',
       },
       button_gradient: {
-        background: ['#0ea960', '#1ea90e'],
+        background: ['#0ea960', '#0ea988'],
         content_1: '#FFFFFF',
         content_2: '#EBEBEB',
       },
@@ -49,11 +55,11 @@ export const themes = {
         a5: 'rgba(14,169,96,0.20)',
       },
       border: {
-        a1: '#4a5858',
-        a2: '#222d2d',
+        a1: '#4f5f62',
+        a2: '#222c2e',
       },
       alert: {
-        a1: '#CC0000',
+        a1: '#ff4444',
       },
       shadow: {
         a1: '#00000095',
@@ -63,13 +69,13 @@ export const themes = {
         background: '#3f51b5',
         text1: '#FFFFFF',
         text2: '#d1d1d1',
-        error: '#CC0000',
+        error: '#ff4444',
         info: '#0088cc',
         success: '#0ea960',
       },
       alert_component: {
-        background: '#163241',
-        background2: '#193c4d',
+        background: '#00252a',
+        background2: '#00373f',
         success: ['#007E33', '#00C851'],
         error: ['#CC0000', '#ff4444'],
         info: ['#0099CC', '#33b5e5'],
@@ -77,7 +83,7 @@ export const themes = {
         question: ['#FF8800', '#ffbb33'],
       },
       bottom_drawer: {
-        background: '#163241',
+        background: '#00252a',
         text1: '#F0F0F0',
         text2: '#d1d1d1',
       },

@@ -7,6 +7,7 @@ import ConnectingLettersStageGame from '../screens/main/stage-game/game/Connecti
 import StagesStageGameSeason from '../screens/main/stage-game/StagesStageGameSeason';
 import LoginToAccount from '../screens/main/account/login/LoginToAccount';
 import VerifyLoginToAccount from '../screens/main/account/login/VerifyLoginToAccount';
+import PackageInformation from '../screens/main/package-game/PackageInformation';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"StagesStageGameSeason"} component={StagesStageGameSeason} />
       <Stack.Screen name={"LoginToAccount"} component={LoginToAccount} />
       <Stack.Screen name={"VerifyLoginToAccount"} component={VerifyLoginToAccount} />
+      <Stack.Screen name={"PackageInformation"} component={PackageInformation} />
     </Stack.Navigator>
   )
 }

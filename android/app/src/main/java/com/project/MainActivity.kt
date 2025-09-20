@@ -13,7 +13,7 @@ class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(null)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        window.navigationBarColor = Color.parseColor("#121212")
+        window.navigationBarColor = Color.parseColor("#001012")
     }
   }
 

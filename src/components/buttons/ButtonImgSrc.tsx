@@ -1,13 +1,15 @@
 import React, {memo} from 'react';
 import {View, Text, TouchableOpacity, ImageBackground} from 'react-native';
 import Icon from '../../utils/Icon';
+import SimpleBorderText from '../text-components/SimpleBorderText';
 
 
 interface ButtonImgSrcProps {
   text?: string;
   textColor?: string,
+  textBorderColor?: string,
   fontSize?: number;
-  fontFamily?: string;
+  textWidth: number;
   onPress?: () => void;
   width?: number;
   height?: number;
@@ -19,8 +21,9 @@ interface ButtonImgSrcProps {
 const ButtonImgSrc: React.FC<ButtonImgSrcProps> = ({
   text,
   textColor = "#FFFFFF",
+  textBorderColor = "#311b92",
   fontSize = 16,
-  fontFamily,
+  textWidth = 100,
   onPress,
   width = 200,
   height = 50,
@@ -31,15 +34,22 @@ const ButtonImgSrc: React.FC<ButtonImgSrcProps> = ({
 }) => {
     return(
         <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={{width, height, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5}}>
-            
             <ImageBackground
                 source={require('../../assets/image/button_1.png')}
                 style={{ width: width, height: height, justifyContent: "center", alignItems: "center" }}
                 imageStyle={{ resizeMode: "stretch" }}
                 resizeMode="stretch"
             >
-                <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
-                    {text&&<Text style={{ color: textColor, fontSize, fontFamily}}>{text}</Text>}
+                <View style={{alignSelf : 'center', width:'100%', justifyContent:'center', flexDirection:'row', alignItems:'center', gap:10}}>
+                    {text&&<SimpleBorderText
+                                text={text}
+                                width={textWidth}
+                                height={fontSize*1.6}
+                                fontSize={fontSize}
+                                textColor={textColor}
+                                borderColor={textBorderColor}
+                                borderWidth={3}
+                            />}
                     {(iconType && iconName)&&<Icon name={iconName} type={iconType} style={{fontSize:iconSize, color:iconColor}}/>}
                 </View>
             </ImageBackground>

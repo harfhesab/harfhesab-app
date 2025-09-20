@@ -4,6 +4,7 @@ import { Package } from "../package-game/PackageSchema";
 export class UserPackages extends Realm.Object<UserPackages> {
   _id!: BSON.ObjectId;
   package!: Package;
+  access_type!: "subscription" | "free" | "coin-payment";
   last_season?: BSON.ObjectId;
   last_season_number?: number;
   last_stage?: BSON.ObjectId;
@@ -17,6 +18,7 @@ export class UserPackages extends Realm.Object<UserPackages> {
     properties: {
       _id: "objectId",
       package: "Package",
+      access_type: "string",
       last_season: "objectId?",
       last_season_number: "int?",
       last_stage: "objectId?",

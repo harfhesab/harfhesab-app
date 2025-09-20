@@ -14,7 +14,7 @@ function GeneralHeader({height, hideShadow, paddingHorizontal, RightComponent, L
         goBack()
     }
     return(
-        <View style={{backgroundColor:colors.header.background, height:height??65, width:width, shadowColor:colors.shadow.a2, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal??15, justifyContent:'space-between', zIndex:100}}>
+        <View style={{backgroundColor:colors.header.background, height:height??65, width:width, shadowColor:colors.shadow.a2, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal??15, justifyContent:'space-between', zIndex:100, borderBottomColor:colors.border.a2, borderBottomWidth:0.5}}>
             <View style={{height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10}}>
                 {
                     RightComponent?
