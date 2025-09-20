@@ -9,6 +9,7 @@ import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import axios from 'axios';
 import Font from '../../../utils/Font';
+import { checkExistUserPackageWithPakcageId } from '../../../realm/repositories/user/user-package-game-progress.repository';
 
 const {width, height} = Dimensions.get("window")
 function PackageInformation(props){
@@ -21,68 +22,69 @@ function PackageInformation(props){
         getData()
     }, [])
     const getData = async()=>{
+        const checkExist = await checkExistUserPackageWithPakcageId()
         await axios({
             url:'/',
             method:'post',
             data: {
                 query : `
-                    query getPackageInformation(
+                    query getPackageInformationAndUserPackageStatus(
                         $_id : ID!,
-                        $version_created : Int,
-                        $version_updated : Int,
-                        $version_deleted : Int,
+                        $user_package : ID,
                     ){
-                        getPackageInformation(
+                        getPackageInformationAndUserPackageStatus(
                             _id : $_id,
-                            version_created : $version_created,
-                            version_updated : $version_updated,
-                            version_deleted : $version_deleted,
+                            user_package : $user_package,
                         ) {
-                            _id,
-                            title,
-                            description,
-                            subject,
-                            badg,
-                            language_ref{name},
-                            icon_image,
-                            banner_image,
-                            free,
-                            free_with_subscription,
-                            price,
-                            testable,
-                            number_stage,
-                            number_season,
-                            version_created,
-                            version_updated,
-                            version_deleted,
-                            rating_number,
-                            rating_average,
-                            rating_info,
-                            rating_some{
-                              _id,
-                              user{name},
-                              grade,
-                              comment,
-                              like,
-                              dis_like,
-                              me_set_like,
-                              me_set_dis_like,
-                              answers,
-                              createdAt,
+                            package{
+                                _id,
+                                title,
+                                description,
+                                subject,
+                                badg,
+                                language_ref{name},
+                                icon_image,
+                                banner_image,
+                                free,
+                                free_with_subscription,
+                                price,
+                                testable,
+                                number_stage,
+                                number_season,
+                                version_created,
+                                version_updated,
+                                version_deleted,
+                                rating_number,
+                                rating_average,
+                                rating_info,
+                                rating_some{
+                                    _id,
+                                    user{name},
+                                    grade,
+                                    comment,
+                                    like,
+                                    dis_like,
+                                    me_set_like,
+                                    me_set_dis_like,
+                                    answers,
+                                    createdAt,
+                                },
+                                seasons{title, first_media{path}},
                             },
-                            seasons{title, first_media{path}},
+                            user_package_status{
+                                status,
+                                button_text
+                            }
                         }
                     }
                 `,
                 variables : {
                     "_id" : props?.route?.params?._id,
-                    "version_created" : null,
-                    "version_updated" : null,
-                    "version_deleted" : null,
+                    "user_package" : chekcExist?.user_package?._id??null,
                 }
             }
         }).then(async(response)=>{
-            const data = response.data.data?.getPackageInformation
+            const data = response.data.data?.getPackageInformationAndUserPackageStatus
             if(data){
                 setData(data)
                 setLoading(false)
