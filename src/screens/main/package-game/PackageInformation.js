@@ -104,6 +104,21 @@ function PackageInformation(props){
         setGetError(false)
         getData()
     }
+    const onClickGetPackage = ()=>{
+        if(data?.user_package_status.status == "get-free"){
+            
+        } else if(data?.user_package_status.status == "get-subscription"){
+
+        } else if(data?.user_package_status.status == "get-coin-payment"){
+            
+        } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
+            
+        } else if(data?.user_package_status.status == "redownload-content"){
+            
+        } else if(data?.user_package_status.status == "start-game"){
+            
+        }
+    }
     
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
@@ -173,7 +188,7 @@ function PackageInformation(props){
                             <ButtonGradient
                                 text={data?.user_package_status?.button_text}
                                 textSize={14}
-                                onPress={()=>{}}
+                                onPress={onClickGetPackage}
                                 width={width - 30}
                                 height={50}
                                 borderRadius={5}

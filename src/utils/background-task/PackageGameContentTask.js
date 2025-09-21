@@ -3,7 +3,7 @@ import { updateStageGameContent } from '../api/StageGameApi';
 
 const options = {
     taskName: 'دریافت محتوا',
-    taskTitle: 'در حال دریافت محتوای بازی مرحله‌ای',
+    taskTitle: 'در حال دریافت محتوای بسته‌ی بازی',
     taskDesc: 'لطفاً تا پایان عملیات صبر کنید...',
     taskIcon: {
         name: 'ic_launcher', // آیکون از mipmap/ic_launcher.png
@@ -15,25 +15,25 @@ const options = {
 };
 
 const veryIntensiveTask = async (taskDataArguments) => {
-    const { dispatch, realm, state, versionContent } = taskDataArguments;
+    const { dispatch, realm, package, status } = taskDataArguments;
     try {
-        await updateStageGameContent({ dispatch, realm, state, versionContent });
+        await setPackageGameForUser({ dispatch, realm, package, status });
     } catch (e) {
         null
     }
 };
 
-export const startUpdateStageGameContentTask = async ({ dispatch, realm, state, versionContent, color }) => {
+export const startSetPackageGameForUser = async ({ dispatch, realm, package, status, color }) => {
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask, {
             ...options,
             color:color,
-            parameters: { dispatch, realm, state, versionContent },
+            parameters: { dispatch, realm, package, status },
         });
     }
 };
 
-export const stopUpdateStageGameContentTask = async () => {
+export const stopSetPackageGameForUser = async () => {
     if (BackgroundService.isRunning()) {
         await BackgroundService.stop();
     }
