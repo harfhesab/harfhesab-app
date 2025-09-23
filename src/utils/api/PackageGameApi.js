@@ -2,7 +2,7 @@ import axios from "axios";
 import { InteractionManager } from 'react-native';
 import Toast from "react-native-toast-message";
 
-export const setPackageGameForUser = async({ dispatch, realm, package, status }) => {
+export const setPackageGameForUser = async({ dispatch, realm, package, status, selectedAccessType }) => {
     const {
         versionCreatedContent,
         versionUpdatedContent,
@@ -16,10 +16,12 @@ export const setPackageGameForUser = async({ dispatch, realm, package, status })
                 mutation setPackageGameForUser(
                     $package : ID!,
                     $user_package_status : String!,
+                    $selected_access_type : String!
                 ){
                     setPackageGameForUser(
                         package : $package,
                         user_package_status : $user_package_status,
+                        selected_access_type : $selected_access_type,
                     ) {
                         status,
                         message
@@ -29,6 +31,7 @@ export const setPackageGameForUser = async({ dispatch, realm, package, status })
             variables : {
                 "package" : package,
                 "user_package_status" : status,
+                "selected_access_type" : selectedAccessType
             }
         }
     }).then((response)=>{
