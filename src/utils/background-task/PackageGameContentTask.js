@@ -17,18 +17,18 @@ const options = {
 const veryIntensiveTask = async (taskDataArguments) => {
     const { dispatch, realm, package, status } = taskDataArguments;
     try {
-        await setPackageGameForUser({ dispatch, realm, package, status });
+        await setPackageGameForUser({ dispatch, realm, package, status, selectedAccessType });
     } catch (e) {
         null
     }
 };
 
-export const startSetPackageGameForUser = async ({ dispatch, realm, package, status, color }) => {
+export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, package, status, selectedAccessType, color }) => {
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask, {
             ...options,
             color:color,
-            parameters: { dispatch, realm, package, status },
+            parameters: { dispatch, realm, package, status, selectedAccessType },
         });
     }
 };

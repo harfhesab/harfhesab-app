@@ -1,6 +1,10 @@
 import axios from "axios";
 import { InteractionManager } from 'react-native';
 import Toast from "react-native-toast-message";
+import { setDownloadFinished, setVersionCreatedDownloded, setVersionCreatedPage } from "../../redux/slices/packageGameDownloadSlice";
+import AlertHelper from "../../components/alert/AlertHelper";
+import { createManyPackageSeasons } from "../../realm/repositories/package-game/package-season.repository";
+import { createManyPackageStages } from "../../realm/repositories/package-game/package-stage.repository";
 
 export const setPackageGameForUser = async({ dispatch, realm, package, status, selectedAccessType }) => {
     const {
@@ -92,6 +96,7 @@ export const setPackageGameForUser = async({ dispatch, realm, package, status, s
 const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, realm, state, versionContent})=>{
     const {
         dataCheck,
+        packageId,
         versionCreatedPage,
         versionUpdatedPage,
         versionDeletedPage,
@@ -126,6 +131,7 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
                     ) {
                         season{
                             _id,
+                            package,
                             title,
                             description,
                             language_ref,
@@ -163,9 +169,10 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
                             media{path, file_type, duration, order},
                             voice{path, file_type, duration, order},
                             stage_hint,
+                            package,
                             season,
                             language_ref,
-                            stage_number_in_language,
+                            stage_number_in_package,
                             stage_number_in_season,
                             is_visible,
                             is_active,
@@ -179,8 +186,9 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
                 }
             `,
             variables : {
+                "package" : packageId,
                 "page" : page,
-                "version_created" : versionCreatedContent,
+                "version_created" : 0,
             }
         }
     }).then((response)=>{
@@ -190,11 +198,11 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
             const stageList = data?.stage ?? [];
             let result = true;
             if (seasonList.length > 0) {
-                const res = createManyStageSeasons(realm, seasonList);
+                const res = createManyPackageSeasons(realm, seasonList);
                 if (!res) result = false;
             }
             if (stageList.length > 0) {
-                const res = createManyStages(realm, stageList);
+                const res = createManyPackageStages(realm, stageList);
                 if (!res) result = false;
             }
             if (!result) {
@@ -209,7 +217,7 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
                     const newVersionContent = {versionCreatedContent:version_created, versionUpdatedContent:version_updated, versionDeletedContent:version_deleted}
                     dispatch(setDownloadFinished())
                     // dispatch(changeVersionContent(newVersionContent)) // به جای این فانکشن باید ورژن های مربوط به پکیج را آپدیت کنیم
-                    upgradeStageGameContentVersion(newVersionContent)
+                    upgradePackageGameContentVersion({newVersionContent, packageId})
                 }
             }
         } else {
@@ -218,4 +226,61 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
     }).catch((err)=>{
         dispatch(setGetError())
     })
+}
+export const upgradePackageGameContentVersion = async({newVersionContent, packageId}) => {
+    const {
+        versionCreatedContent,
+        versionUpdatedContent,
+        versionDeletedContent,
+    } = newVersionContent;
+    await axios({
+        url:'/',
+        method:'post',
+        data: {
+            query : `
+                mutation upgradePackageGameContentVersion(
+                    $package : ID!,
+                    $version_created : Int!,
+                    $version_updated : Int!,
+                    $version_deleted : Int!,
+                ){
+                    upgradePackageGameContentVersion(
+                        package : $package,
+                        version_created : $version_created,
+                        version_updated : $version_updated,
+                        version_deleted : $version_deleted,
+                    ) {
+                        status,
+                        message
+                    }
+                }
+            `,
+            variables : {
+                "package" : packageId,
+                "version_created" : versionCreatedContent,
+                "version_updated" : versionUpdatedContent,
+                "version_deleted" : versionDeletedContent
+            }
+        }
+    }).then((response)=>{
+        showSuccessAlertForDownloaded()
+    }).catch((err)=>{
+        showSuccessAlertForDownloaded()
+    })
+}
+const showSuccessAlertForDownloaded = ()=>{
+    AlertHelper.showAlert({
+        body: "بروزرسانی محتوای بستهٔ بازی با موفقیت انجام شد!",
+        buttons: [
+            {
+                text: "متوجه شدم",
+                onPress: () => {},
+                type:'bold'
+            },
+        ],
+        options : {
+            type: 'success',
+            cancelable: true
+        },
+    });
 }

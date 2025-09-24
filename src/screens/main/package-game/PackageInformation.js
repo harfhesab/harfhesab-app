@@ -106,11 +106,11 @@ function PackageInformation(props){
     }
     const onClickGetPackage = ()=>{
         if(data?.user_package_status.status == "get-free"){
-            
+            getForFirst()
         } else if(data?.user_package_status.status == "get-subscription"){
-
+            getForFirst()
         } else if(data?.user_package_status.status == "get-coin-payment"){
-            
+            getForFirst()
         } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
             
         } else if(data?.user_package_status.status == "redownload-content"){
@@ -118,6 +118,13 @@ function PackageInformation(props){
         } else if(data?.user_package_status.status == "start-game"){
             
         }
+    }
+    
+    const getForFirst = ()=>{
+        const color = colors.primary.a1
+        const status = data?.user_package_status.status
+        const selectedAccessType = 
+        await startSetPackageGameForUserAndGetIt({ dispatch, realm, state, status, selectedAccessType, color });
     }
     
     return(
