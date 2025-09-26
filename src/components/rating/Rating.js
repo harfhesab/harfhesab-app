@@ -13,7 +13,7 @@ import axios from 'axios';
 
 const width = Dimensions.get('window').width;
 const Rating = (props) => {
-    const colors = useTheme().colors;
+    const colors = useAppTheme()
     const [defaultRating, setDefaultRating] = useState(props.defaultRating)
     const [modalVisible, setModalVisible] = useState(false)
     const [comment, setComment] = useState(props.comment)

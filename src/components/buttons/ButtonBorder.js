@@ -5,7 +5,7 @@ import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
 function ButtonBorder(
-    {loading, loadingType, onPress, borderRadius, borderWidth, borderColor, width, height, text, text2, iconName, iconType, iconSize, complateContent, textSize, fontFamily, justifyContent, flexDirection, activeOpacity}
+    {loading, loadingType, onPress, borderRadius=5, borderWidth=0.75, borderColor, width, height, text, text2, iconName, iconType, iconSize=25, complateContent, textSize=16, fontFamily=Font.medium, justifyContent='center', flexDirection="row", activeOpacity=0.8}
 ){
     const colors = useAppTheme();
 
@@ -23,8 +23,8 @@ function ButtonBorder(
     )
 
     return(
-        <TouchableOpacity disabled={loading} activeOpacity={activeOpacity??0.8} onPress={onPress} style={{width:width, height:height, alignItems:'center', justifyContent:'center', borderRadius:borderRadius??5}}>
-            <View style={{borderRadius:borderRadius??5, borderWidth:borderWidth??1.5, borderColor:borderColor??colors.primary.a1, width:"100%", height:"100%", alignItems:'center', justifyContent:'center', backgroundColor:borderColor?`${borderColor}25`:`${colors.primary.a1}25`}}>
+        <TouchableOpacity disabled={loading} activeOpacity={activeOpacity} onPress={onPress} style={{width:width, height:height, alignItems:'center', justifyContent:'center', borderRadius:borderRadius}}>
+            <View style={{borderRadius:borderRadius, borderWidth:borderWidth, borderColor:borderColor??colors.primary.a1, width:"100%", height:"100%", alignItems:'center', justifyContent:'center', backgroundColor:borderColor?`${borderColor}25`:`${colors.primary.a1}25`}}>
                 {
                     (loading == true)?
                     (renderLoading())
@@ -33,13 +33,13 @@ function ButtonBorder(
                     (<complateContent/>)
                     :
                     (iconName && iconType)?
-                    (<View style={{flexDirection:flexDirection??'row', alignItems:'center', width:'100%', justifyContent:justifyContent??'center', paddingHorizontal:15, gap:15}}>
-                        <Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:borderColor??colors.primary.a1}}>{text}</Text>
-                        <Icon name={iconName} type={iconType} style={{fontSize:iconSize??25, color:borderColor??colors.primary.a1}}/>
+                    (<View style={{flexDirection:flexDirection, alignItems:'center', width:'100%', justifyContent:justifyContent, paddingHorizontal:15, gap:15}}>
+                        <Text style={{fontFamily:fontFamily, fontSize:textSize, color:borderColor??colors.primary.a1}}>{text}</Text>
+                        <Icon name={iconName} type={iconType} style={{fontSize:iconSize, color:borderColor??colors.primary.a1}}/>
                     </View>)
                     :
                     (<View style={{width:'100%', alignItems:'center'}}>
-                        <Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:borderColor??colors.primary.a1, textAlign:'center'}}>{text}</Text>
+                        <Text style={{fontFamily:fontFamily, fontSize:textSize, color:borderColor??colors.primary.a1, textAlign:'center'}}>{text}</Text>
                         {
                             text2&&
                             <Text style={{fontFamily:Font.medium, fontSize:12, color:borderColor??colors.primary.a1, textAlign:'center'}}>{text2}</Text>

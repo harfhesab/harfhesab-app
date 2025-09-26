@@ -13,3 +13,10 @@ export function goBack() {
     navigationRef.goBack();
   }
 }
+
+export function getCurrentRouteName() {
+  if (navigationRef.isReady()) {
+    return navigationRef.getCurrentRoute()?.name;
+  }
+  return null;
+}

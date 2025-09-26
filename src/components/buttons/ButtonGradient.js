@@ -7,7 +7,7 @@ import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
 function ButtonGradient(
-    {loading, loadingType, onPress, borderRadius, width, height, text, text2, iconName, iconType, iconSize, ComplateContent, backgorundGradinte, textSize, fontFamily, justifyContent, flexDirection, activeOpacity}
+    {loading, loadingType, onPress, borderRadius=5, width, height, text, text2, iconName, iconType, iconSize=25, ComplateContent, backgorundGradinte, textSize=16, fontFamily=Font.medium, justifyContent='center', flexDirection='row', activeOpacity=0.8}
 ){
     const colors = useAppTheme();
 
@@ -25,9 +25,9 @@ function ButtonGradient(
     )
 
     return(
-        <TouchableOpacity disabled={loading} activeOpacity={activeOpacity??0.8} onPress={onPress} style={{width:width, height:height, alignItems:'center', justifyContent:'center', borderRadius:borderRadius??5, shadowColor:colors.shadow.a1, elevation:3}}>
-            <LinearGradient colors={backgorundGradinte??colors.button_gradient.background} style={{borderRadius:borderRadius??5, width:"100%", height:"100%"}}>
-                <View style={{borderRadius:borderRadius??5, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
+        <TouchableOpacity disabled={loading} activeOpacity={activeOpacity} onPress={onPress} style={{width:width, height:height, alignItems:'center', justifyContent:'center', borderRadius:borderRadius, shadowColor:colors.shadow.a1, elevation:3}}>
+            <LinearGradient colors={backgorundGradinte??colors.button_gradient.background} style={{borderRadius:borderRadius, width:"100%", height:"100%"}}>
+                <View style={{borderRadius:borderRadius, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
                     {
                         (loading == true)?
                         (renderLoading())
@@ -36,13 +36,13 @@ function ButtonGradient(
                         (<ComplateContent/>)
                         :
                         (iconName && iconType)?
-                        (<View style={{flexDirection:flexDirection??'row', alignItems:'center', width:'100%', justifyContent:justifyContent??'center', paddingHorizontal:15, gap:15}}>
-                            {text&&<Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:colors.button_gradient.content_1}}>{text}</Text>}
-                            <Icon name={iconName} type={iconType} style={{fontSize:iconSize??25, color:colors.button_gradient.content_1}}/>
+                        (<View style={{flexDirection:flexDirection, alignItems:'center', width:'100%', justifyContent:justifyContent, paddingHorizontal:15, gap:15}}>
+                            {text&&<Text style={{fontFamily:fontFamily, fontSize:textSize, color:colors.button_gradient.content_1}}>{text}</Text>}
+                            <Icon name={iconName} type={iconType} style={{fontSize:iconSize, color:colors.button_gradient.content_1}}/>
                         </View>)
                         :
                         (<View style={{width:'100%', alignItems:'center'}}>
-                            <Text style={{fontFamily:fontFamily??Font.medium, fontSize:textSize??16, color:colors.button_gradient.content_1, textAlign:'center'}}>{text}</Text>
+                            <Text style={{fontFamily:fontFamily, fontSize:textSize, color:colors.button_gradient.content_1, textAlign:'center'}}>{text}</Text>
                             {
                                 text2&&
                                 <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.button_gradient.content_2, textAlign:'center'}}>{text2}</Text>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTab from './BottomTab';
 import StageGameUpdateScreen from '../screens/main/update-center/StageGameUpdateScreen';
@@ -8,10 +8,29 @@ import StagesStageGameSeason from '../screens/main/stage-game/StagesStageGameSea
 import LoginToAccount from '../screens/main/account/login/LoginToAccount';
 import VerifyLoginToAccount from '../screens/main/account/login/VerifyLoginToAccount';
 import PackageInformation from '../screens/main/package-game/PackageInformation';
+import { AppState } from 'react-native';
+import { getCurrentRouteName } from './navigationService';
+import NavigationBar from '../utils/android-native/NavigationBar';
 
 const Stack = createNativeStackNavigator();
 
 const MainRoutes = (props) =>{
+
+  useEffect(()=>{
+    const listenner = AppState.addEventListener('change', handleAppStateChange);
+    return () => {
+      listenner.remove()
+    };
+  }, [])
+
+  const handleAppStateChange = (nextAppState) => {
+    if(nextAppState === 'active'){
+      const currentRoute = getCurrentRouteName();
+      if(currentRoute === "StagesStageGameSeason" || currentRoute === "WordToSlotStageGame" || currentRoute === "ConnectingLettersStageGame"){
+        NavigationBar.hide();
+      }
+    }
+  };
 
   return(
     <Stack.Navigator screenOptions={{headerShown:false}} >

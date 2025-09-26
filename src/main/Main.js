@@ -8,7 +8,6 @@ import Toast from 'react-native-toast-message';
 import ToastConfig from '../components/ToastConfig';
 import Globals from '../utils/Globals';
 import { useSelector } from 'react-redux';
-import Color from '../utils/Color';
 import axios from 'axios';
 import { navigationRef } from './navigationService';
 import Alert from '../components/alert/Alert';

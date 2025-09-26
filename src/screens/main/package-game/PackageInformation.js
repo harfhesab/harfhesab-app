@@ -12,6 +12,8 @@ import Font from '../../../utils/Font';
 import { checkExistUserPackageWithPakcageId } from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { useRealm } from '../../../realm';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
+import ButtonBorder from '../../../components/buttons/ButtonBorder';
+import RatingInfo from '../../../components/rating/RatingInfo';
 
 const {width, height} = Dimensions.get("window")
 function PackageInformation(props){
@@ -21,6 +23,7 @@ function PackageInformation(props){
     const [localData, setLocalData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
+    const [checkUpdate, setCheckUpdate] = useState(null)
     const packageId = props?.route?.params?._id
 
     useEffect(()=>{
@@ -60,6 +63,9 @@ function PackageInformation(props){
                                 version_created,
                                 version_updated,
                                 version_deleted,
+                                force_version_created,
+                                force_version_updated,
+                                force_version_deleted,
                                 rating_number,
                                 rating_average,
                                 rating_info,
@@ -95,6 +101,13 @@ function PackageInformation(props){
                 setData(data)
                 setLoading(false)
             }
+            if(checkExist?.user_package?._id){
+                if(checkExist.user_package?.version_created < data.force_version_created || checkExist.user_package?.version_updated < data.force_version_updated || checkExist.user_package?.version_deleted < data.force_version_deleted){
+                    setCheckUpdate("OPTIONAL_UPDATE")
+                } else if(checkExist.user_package?.version_created < data.version_created || checkExist.user_package?.version_updated < data.version_updated || checkExist.user_package?.version_deleted < data.version_deleted){
+                    setCheckUpdate("FORCED_UPDATE")
+                }
+            }
         }).catch((e)=>{
             setGetError(true)
         })
@@ -120,7 +133,7 @@ function PackageInformation(props){
         }
     }
     
-    const getForFirst = ()=>{
+    const getForFirst = async()=>{
         const color = colors.primary.a1
         const status = data?.user_package_status.status
         const selectedAccessType = 
@@ -191,16 +204,33 @@ function PackageInformation(props){
                                 width={(width - 45)/4}
                             />
                         </View>
-                        <View style={{flexDirection:'row', alignItems:'center', paddingHorizontal:15, paddingTop:20}}>
+                        <View style={{width:width, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15, paddingTop:20}}>
                             <ButtonGradient
                                 text={data?.user_package_status?.button_text}
                                 textSize={14}
                                 onPress={onClickGetPackage}
-                                width={width - 30}
+                                width={checkUpdate == "OPTIONAL_UPDATE" || checkUpdate =="FORCED_UPDATE"?width/2 - 20:width - 30}
                                 height={50}
                                 borderRadius={5}
                             />
+                            {
+                                (checkUpdate == "OPTIONAL_UPDATE" || checkUpdate =="FORCED_UPDATE")&&
+                                <ButtonBorder
+                                    text={"بروزرسانی محتوا"}
+                                    height={50}
+                                    width={width/2 - 20}
+                                    loading={false}
+                                    onPress={()=>{}}
+                                    borderRadius={5}
+                                    textSize={14}
+                                />
+                            }
                         </View>
+                        <RatingInfo
+                            rating_average={data?.package?.rating_average}
+                            rating_info={data?.package?.rating_info}
+                            reviews={data?.package?.rating_number}
+                        />
                     </ScrollView>
                 }
             </View>
@@ -210,9 +240,9 @@ function PackageInformation(props){
 const InfoBox = ({title, value, width})=>{
     const colors = useAppTheme()
     return(
-        <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center', gap:5, width:width, paddingVertical:10, backgroundColor:"#00101299", borderRadius:10, borderColor:colors.border.a1, borderWidth:1}}>
+        <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center', gap:5, width:width, paddingVertical:10, backgroundColor:`${colors.background.a2}90`, borderRadius:10, borderColor:colors.border.a2, borderWidth:0.5}}>
             <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a2}}>{value}</Text>
-            <Text style={{fontFamily:Font.medium, fontSize:8, color:colors.text.a5}}>{title}</Text>
+            <Text style={{fontFamily:Font.medium, fontSize:8, color:colors.text.a6}}>{title}</Text>
         </View>
     )
 }

@@ -11,7 +11,8 @@ export const themes = {
         a2: '#24536b',
       },
       background:{
-        a1:'#001c20'
+        a1:'#001c20',
+        a2:'#001012'
       },
       text_gradient:{
         a1: ['#1b0b63', '#311b92', '#512da8'],
@@ -46,6 +47,7 @@ export const themes = {
         a3: '#d1d1d1',
         a4: '#cccccc',
         a5: '#BDBDBD',
+        a6: '#95a2a4'
       },
       rgb: {
         a1: 'rgba(14,169,96,0.80)',
