@@ -231,6 +231,25 @@ function PackageInformation(props){
                             rating_info={data?.package?.rating_info}
                             reviews={data?.package?.rating_number}
                         />
+                        {
+                            data?.seasons?.length > 0&&
+                            <View style={{width:width, flexDirection:'row', flexWrap:'wrap'}}>
+                                {
+                                    data?.seasons.map((item, index)=>(
+                                        <View key={index.toString()}>
+                                            <ImageComponent
+                                                uri={item?.first_media?.path}
+                                                width={width/2 - 20}
+                                                height={100}
+                                                resizeMode="cover"
+                                                borderRadius={10}
+                                            />
+                                            <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a3}}>{item.title}</Text>
+                                        </View>
+                                    ))
+                                }
+                            </View>
+                        }
                     </ScrollView>
                 }
             </View>

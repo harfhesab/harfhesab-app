@@ -1,19 +1,23 @@
 import React, {useState} from 'react';
-import {StyleSheet, StatusBar, View, Text, Dimensions, TouchableOpacity, TextInput, ToastAndroid} from 'react-native';
+import {StyleSheet, StatusBar, View, Text, Dimensions, TouchableOpacity, ToastAndroid} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import Globals from '../../utils/Globals';
-import ButtonBorder from '../ButtonBorder';
-import ButtonLinear from '../ButtonLinear';
+import ButtonBorder from '../buttons/ButtonBorder';
 import Modal from "react-native-modal";
-import {connect} from 'react-redux';
+import { useSelector} from 'react-redux';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
+import ButtonGradient from '../buttons/ButtonGradient';
+import InputText from '../inputs/InputText';
+import useAppTheme from '../../hooks/theme/useAppTheme';
+import { navigate } from '../../main/navigationService';
 
 const width = Dimensions.get('window').width;
 const Rating = (props) => {
     const colors = useAppTheme()
+    const { loginType } = useSelector((state) => state.account);
     const [defaultRating, setDefaultRating] = useState(props.defaultRating)
     const [modalVisible, setModalVisible] = useState(false)
     const [comment, setComment] = useState(props.comment)
@@ -21,50 +25,8 @@ const Rating = (props) => {
     const [loading, setLoading] = useState(false)
     const [edit, setEdit] = useState(props.edit)
 
-    const setRatingRecordForConsultant = async()=>{
-        if(props.signIn == true) {
-            let data = {
-                query : `
-                    mutation setRecordRatingForConsultant($_id : ID, $consultant : ID, $grade : Int, $comment : String){
-                        setRecordRatingForConsultant(_id : $_id,  consultant : $consultant, grade : $grade, comment : $comment) {
-                            status,
-                            message
-                        }
-                    }
-                  `,
-                variables : {
-                    "_id" : props.previous,
-                    "consultant" : props.consultant,
-                    "grade" : defaultRating,
-                    "comment" : comment.trim() !== ''?comment:null
-                }
-            }
-            await axios({
-                url:'/',
-                method:'post',
-                data: data,
-            }).then(async(response)=>{
-                if(response.data?.data == null){
-                    ToastAndroid.showWithGravity(response.data.errors[0].data[0].message, ToastAndroid.SHORT,ToastAndroid.BOTTOM)
-                } else {
-                    ToastAndroid.showWithGravity(response.data.data.setRecordRatingForConsultant.message, ToastAndroid.SHORT,ToastAndroid.BOTTOM)
-                    props.successOperation()
-                    setFocus(false)
-                    setModalVisible(false)
-                    setEdit(true)
-                }
-                setLoading(false)
-            }).catch((error)=>{
-                ToastAndroid.showWithGravity('مشکلی پیش آمد دوباره تلاش کند', ToastAndroid.SHORT,ToastAndroid.BOTTOM)
-                setLoading(false)
-            })
-        } else {
-            ToastAndroid.showWithGravity('برای استفاده از همهٔ امکانات و سرویس‌های منوملک ابتدا وارد حساب کاربری خود شوید.', ToastAndroid.SHORT,ToastAndroid.BOTTOM)
-            props.navigation.navigate('Login')
-        }
-    }
-    const setRatingRecordForRealEstate = async()=>{
-        if(props.signIn == true) {
+    const setRatingRecordForPackage = async()=>{
+        if(loginType == "registered") {
             let data = {
                 query : `
                     mutation setRecordRatingForAgency($_id : ID, $agency : ID, $grade : Int, $comment : String){
@@ -110,30 +72,22 @@ const Rating = (props) => {
             ToastAndroid.showWithGravity('ثبت یک امتیاز از 1 تا 5 الزامی است', ToastAndroid.SHORT,ToastAndroid.BOTTOM)
         } else {
             setLoading(true)
-            if(props.type == 'cn'){
-                setRatingRecordForConsultant()
-            } else if(props.type == 'real_estate'){
-                setRatingRecordForRealEstate()
-            }
+            setRatingRecordForPackage()
         }
     }
-    const changeComment = (text)=>{
-        setComment(text)
-    }
     const openDrawer = ()=>{
-        if(props.signIn == true) {
+        if(loginType == "registered") {
             setModalVisible(true)
         } else {
             Toast.show({
                 type:'info',
-                text1:'برای استفاده از همهٔ امکانات و سرویس‌های منوملک ابتدا وارد حساب کاربری خود شوید.',
-                visibilityTime:5000
+                text1:"برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید."
             })
-            props.navigation.navigate('Login')
+            navigate('LoginToAccount')
         }
     }
     const setScoreWithRating = async(i)=>{
-        if(props.signIn == true) {
+        if(loginType == "registered") {
             await setDefaultRating(i)
             const time = setTimeout(()=>{
                 setModalVisible(true)
@@ -142,10 +96,9 @@ const Rating = (props) => {
         } else {
             Toast.show({
                 type:'info',
-                text1:'برای استفاده از همهٔ امکانات و سرویس‌های منوملک ابتدا وارد حساب کاربری خود شوید.',
-                visibilityTime:5000
+                text1:"برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید."
             })
-            props.navigation.navigate('Login')
+            navigate('LoginToAccount')
         }
     }
     const ratingBarRender = (i)=>{
@@ -154,15 +107,15 @@ const Rating = (props) => {
             <TouchableOpacity onPress={()=>setScoreWithRating(i)} activeOpacity={0.3} style={{alignItems:'center', justifyContent:'center', width:35}}>
                 {
                     (i <= defaultRating)?
-                    <Icon name='star' type='AntDesign' style={{fontSize:35, color:Globals.data.configs.colors.primary_gradient_end}} />
+                    <Icon name='star' type='AntDesign' style={{fontSize:35, color:colors.primary.a1}} />
                     :
                     <View style={{alignItems:'center', justifyContent:'center'}}>
-                      <Icon name='star' type='AntDesign' style={{fontSize:35, color:`${Globals.data.configs.colors.primary_gradient_end}20`}} />
-                      <Icon name='staro' type='AntDesign' style={{fontSize:35, color:`${Globals.data.configs.colors.primary_gradient_end}99`, position:'absolute'}} />
+                      <Icon name='star' type='AntDesign' style={{fontSize:35, color:`${colors.primary.a1}20`}} />
+                      <Icon name='staro' type='AntDesign' style={{fontSize:35, color:`${colors.primary.a1}99`, position:'absolute'}} />
                     </View>
                 }
             </TouchableOpacity> 
-            <Text style={{color:colors.text5, fontFamily:Font.medium, fontSize:12}}>{i}</Text>
+            <Text style={{color:colors.text.a5, fontFamily:Font.medium, fontSize:12}}>{i}</Text>
 
           </View>
         )
@@ -190,41 +143,35 @@ const Rating = (props) => {
                 useNativeDriverForBackdrop={true}
                 style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
             >
-                <StatusBar backgroundColor={props.darkMode?"#000000":"#00000005"} barStyle={"light-content"}/>
-                <View style={[styles.modalContainer, {backgroundColor:colors.background2}]}>
-                    <View style={{borderWidth:1, borderRadius:5, borderStyle:'dashed', borderColor:colors.text4, alignItems:'center', width:width-40, alignSelf:'center', backgroundColor:colors.background5, marginTop:10}}>
+                <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
+                    <View style={{borderWidth:1, borderRadius:5, borderStyle:'dashed', borderColor:colors.border.a1, alignItems:'center', width:width-40, alignSelf:'center', backgroundColor:colors.background5, marginTop:10}}>
                         <View style={styles.starContent}>
                             {ratingBar}
                         </View>
                     </View>
-                    <TextInput
+                    <InputText
                         placeholder={"نظر و بازخورد خود را بنویسید..."}
-                        placeholderTextColor={colors.text5}
-                        underlineColorAndroid={'transparent'}
-                        multiline={true}
-                        numberOfLines={6}
-                        maxLength={400}
-                        autoFocus={true}
-                        onFocus={()=>{setFocus(true)}}
-                        onBlur={()=>{setFocus(false)}}
-                        onChangeText={changeComment}
-                        selectionColor={Globals.data.configs.colors.rgba1}
-                        cursorColor={colors.color}
                         value={comment}
-                        autoCapitalize={'none'}
-                        style={{width:width-40, fontFamily:Font.medium, fontSize:14, paddingHorizontal:10, alignSelf:'center', color:colors.text, borderWidth:1, borderColor:focus == true?colors.color:colors.border, borderRadius:5, textAlignVertical:'top', backgroundColor:colors.background5, maxHeight:120, marginTop:15}}
+                        maxLength={400}
+                        onChangeText={(text)=>setComment(text)}
+                        borderWidth={1}
+                        fontSize={14}
+                        maxHeight={120}
+                        numberOfLines={6}
+                        multiline={true}
+                        borderRadius={5}
                     />
                     <View style={{width:width - 40, alignItems:'flex-end', alignSelf:'center'}}>
-                        <Text style={{color:colors.text6, fontFamily:Font.medium, fontSize:14}}>{`${comment.length}/400`}</Text>
+                        <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:14}}>{`${comment.length}/400`}</Text>
                     </View>
                     <View style={{width:width, alignItems:'center', marginTop:5}}>
-                        <ButtonLinear
+                        <ButtonGradient
+                            height={50}
+                            width={width - 40}
                             text={edit == true?'ویرایش نظر و امتیاز':'ثبت نظر و امتیاز'}
                             onPress={setRating}
                             loading={loading}
                             textSize={14}
-                            width={width - 40}
-                            height={50}
                             borderRadius={5}
                         />
                     </View>
@@ -233,8 +180,8 @@ const Rating = (props) => {
         )
     }
     return (
-        <View style={[styles.container, {backgroundColor:colors.background5, borderColor:colors.text4}]}>
-            <Text style={{color:colors.text5, fontFamily:Font.medium, fontSize:12, textAlign:"center"}}>{props.title}</Text>
+        <View style={[styles.container, {borderColor:colors.border.a1}]}>
+            <Text style={{color:colors.text.a1, fontFamily:Font.medium, fontSize:12, textAlign:"center"}}>{props.title}</Text>
             <View style={styles.starContent}>
                 {ratingBar}
             </View>
@@ -285,10 +232,4 @@ const styles = StyleSheet.create({
         paddingVertical:20
     },
 })
-const mapStateToProps = (state) => {
-    return {
-        signIn: state.main.signIn,
-        darkMode: state.main.darkMode,
-    }
-}
-export default connect(mapStateToProps)(React.memo(Rating))
+export default React.memo(Rating)

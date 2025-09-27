@@ -6,8 +6,6 @@ import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
 import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-game/stage-season.repository';
-import BottomDrawer from '../../../components/bottom-drawer/BottomDrawer';
-import BottomDrawerHelper from '../../../components/bottom-drawer/BottomDrawerHelper';
 import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
 import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -23,6 +21,8 @@ import { updateCurrentLanguageLastStageAndLastSeason } from '../../../redux/slic
 import { BSON } from 'realm';
 import { StageSeason } from '../../../realm/schemas/stage-game/StageSeasonSchema';
 import { useIsFocused } from '@react-navigation/native';
+import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
+import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -135,9 +135,9 @@ function StageGame(props){
         const languages = getAllLanguages(realm)
         const btn = [
             {
-                onPress : ({radio})=>{
-                    const selected = languages[radio]._id
-                    const selectedName = languages[radio].name
+                onPress : ({data})=>{
+                    const selected = data._id[0]
+                    const selectedName = data.text1[0]
                     dispatch(changeStageGameLanguage({
                         language:selected.toString(),
                         languageName:selectedName.toString(),
@@ -145,7 +145,8 @@ function StageGame(props){
                 },
                 text: 'انتخاب زبان',
                 loading: false,
-                type: "bold"
+                type: "bold",
+                selectRequired:true
             },
         ]
         if(stageGameLanguage){
@@ -153,21 +154,28 @@ function StageGame(props){
                 onPress : ()=>{},
                 text: 'لغو',
                 loading: false,
-                type: "border"
+                type: "border",
+                selectRequired:false
             }
             btn.push(cancelBtn)
         }
-        BottomDrawerHelper.showBottomDrawer({
+        const previousSelected = stageGameLanguage?{
+            _id: [stageGameLanguage],
+            text1: [stageGameLanguageName],
+        }:undefined;
+        BottomDrawerGridHelper.showBottomDrawer({
             title:"زبان بازی مرحله‌ای را انتخاب کنید.",
             list: languages.map(item => ({
-                text1: item.name
+                _id: item._id,
+                text1: item.name,
+                image: item.icon_image
             })),
             buttons:btn,
             options:{
-                radioSelected: stageGameLanguage?languages.findIndex(i=>i._id == stageGameLanguage):undefined,
-                listType: "radio-button",
+                numberSelectable: 1,
+                previousSelected:previousSelected,
                 cancelable: stageGameLanguage?true:false,
-                selectRequired: stageGameLanguage?false:true
+                selectRequired: stageGameLanguage?false:true,
             }
         })
     }
@@ -309,7 +317,7 @@ function StageGame(props){
                     />
                 </View>
             }
-            <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>
+            <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </View>
     )
 }

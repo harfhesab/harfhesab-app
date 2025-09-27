@@ -6,8 +6,6 @@ import Toast from 'react-native-toast-message';
 import Icon from '../../utils/Icon';
 import ButtonBorder from '../buttons/ButtonBorder';
 import ButtonGradient from '../buttons/ButtonGradient';
-import LinearGradient from 'react-native-linear-gradient';
-import LottieView from 'lottie-react-native';
 import Border from '../Border';
 import CheckBoxItem from '../list-view-items/CheckBoxItem';
 import SimpleCenterItem from '../list-view-items/SimpleCenterItem';

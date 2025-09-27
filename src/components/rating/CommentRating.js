@@ -13,7 +13,8 @@ import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
-function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt, answerNumbers, consultant}){
+function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt, answerNumbers, user}){
+    const colors = useAppTheme();
     const [likeNumber, setLikeNumber] = useState(likeNumbers?likeNumbers:0)
     const [disLikeNumber, setDisLikeNumber] = useState(disLikeNumbers?disLikeNumbers:0)
     const [liked, setLiked] = useState(likedIt?likedIt:false)
@@ -246,7 +247,6 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
             })
         })
     }
-    const colors = useAppTheme();
     return (
         <View style={{width:width, flexDirection:'column', marginVertical:40}}>
             <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'space-between'}}>
@@ -271,14 +271,14 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
             </View>
             <View style={{marginVertical:15, paddingHorizontal:15}}>
                 {
-                    consultant&&
+                    user&&
                     <View style={{flexDirection:'row', alignItems:'center'}}>
                         {
-                            consultant?.avatar_img?
+                            user?.avatar_img?
                             <FastImage
                                 style={{width:15, height:15, borderRadius:3}}
                                 source={{
-                                    uri: `${Globals.uri}${consultant.avatar_img}`,
+                                    uri: `${Globals.uri}${user.avatar_img}`,
                                     priority: FastImage.priority.normal,
                                 }}
                                 resizeMode={FastImage.resizeMode.cover}
@@ -286,7 +286,7 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                             :
                             <Icon name='user-tie' type='FontAwesome5' style={{color:colors.text.a4, fontSize:13}}/>
                         }
-                        <Text style={{color:colors.text.a4, fontFamily:Font.medium, fontSize:11, marginStart:5}}>{`${consultant.f_name} ${consultant.l_name}`}</Text>
+                        <Text style={{color:colors.text.a4, fontFamily:Font.medium, fontSize:11, marginStart:5}}>{`${user.f_name} ${user.l_name}`}</Text>
                     </View>
                 }
                 <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a5}}>{comment}</Text>
@@ -344,7 +344,6 @@ const areEqual = (prevProps, nextProps) => {
     if (prevProps.grade !== nextProps.grade) return false;
     if (prevProps.date !== nextProps.date) return false;
     if (prevProps.comment !== nextProps.comment) return false;
-    if (prevProps.consultant !== nextProps.consultant) return false;
     return true;
 };
 export default React.memo(CommentRating, areEqual)

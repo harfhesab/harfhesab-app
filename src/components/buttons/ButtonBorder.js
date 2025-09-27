@@ -24,7 +24,7 @@ function ButtonBorder(
 
     return(
         <TouchableOpacity disabled={loading} activeOpacity={activeOpacity} onPress={onPress} style={{width:width, height:height, alignItems:'center', justifyContent:'center', borderRadius:borderRadius}}>
-            <View style={{borderRadius:borderRadius, borderWidth:borderWidth, borderColor:borderColor??colors.primary.a1, width:"100%", height:"100%", alignItems:'center', justifyContent:'center', backgroundColor:borderColor?`${borderColor}25`:`${colors.primary.a1}25`}}>
+            <View style={{borderRadius:borderRadius, borderWidth:borderWidth, borderColor:borderColor??colors.primary.a1, width:"100%", height:"100%", alignItems:'center', justifyContent:'center', backgroundColor:borderColor?`${borderColor}15`:`${colors.primary.a1}25`}}>
                 {
                     (loading == true)?
                     (renderLoading())

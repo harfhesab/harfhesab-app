@@ -5,6 +5,7 @@ import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import MovementGradientLayer from '../backgroun-layer/MovementGradientLayer';
 import { WaveIndicator } from 'react-native-indicators';
+import Icon from '../../utils/Icon';
 
 const BASE_URL = Globals.uri;
 
@@ -19,6 +20,9 @@ type ImageComponentProps = {
   onLoad?: () => void;
   onError?: () => void;
   placeHolder?: boolean;
+  iconType?: string;
+  iconName?: string;
+  iconSize?: number;
 } & Omit<FastImageProps, 'onLoad' | 'onError'>;
 
 const ImageComponent: React.FC<ImageComponentProps> = ({
@@ -32,6 +36,9 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   onLoad,
   onError,
   placeHolder = true,
+  iconType,
+  iconName,
+  iconSize,
   ...props
 }) => {
   const colors = useAppTheme()
@@ -58,18 +65,26 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
       {(error && !loaded && placeHolder == true) &&(
         <MovementGradientLayer height={height} width={width} borderRadius={borderRadius}>
           <View style={{width, height, alignItems:'center', justifyContent:'center'}}>
-              <Image
-                source={require('../../assets/image/image-place-holder.png')}
-                style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius }}
-              />
-              <View style={{ position: 'absolute', width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, alignItems: 'center', justifyContent: 'center' }}>
-                <WaveIndicator
-                  color={"#FFFFFF65"}
-                  size={PLACE_HOLDER_WIDTH}
-                  count={2}
-                  waveMode="outline"
-                />
-              </View>
+              {
+                (iconName && iconSize) ?(
+                  <Icon name={iconName} type={iconType} style={{fontSize:iconSize, color:colors.border.a2}}/>
+                )
+                :
+                <>
+                  <Image
+                    source={require('../../assets/image/image-place-holder.png')}
+                    style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius }}
+                  />
+                  <View style={{ position: 'absolute', width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, alignItems: 'center', justifyContent: 'center' }}>
+                    <WaveIndicator
+                      color={"#FFFFFF65"}
+                      size={PLACE_HOLDER_WIDTH}
+                      count={2}
+                      waveMode="outline"
+                    />
+                  </View>
+                </>
+              }
           </View>
         </MovementGradientLayer>
       )}

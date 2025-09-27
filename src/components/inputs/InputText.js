@@ -20,7 +20,7 @@ function InputText({
         numberOfLines = 1,
         autoFocus,
         secureTextEntry,
-        onSubmitEditing,
+        onSubmitEditing = ()=>{},
         returnKeyType = "default",
         borderWidth = 1,
         borderRadius = 5,
