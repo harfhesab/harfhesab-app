@@ -1,7 +1,6 @@
 import Realm, { BSON } from "realm";
-import { Package } from "../package-game/PackageSchema";
 
-export class UserPackages extends Realm.Object<UserPackages> {
+export class UserPackage extends Realm.Object<UserPackage> {
   _id!: BSON.ObjectId;
   package_ref!: BSON.ObjectId;
   access_type!: "subscription" | "free" | "coin-payment";
@@ -16,7 +15,7 @@ export class UserPackages extends Realm.Object<UserPackages> {
   updatedAt?: Date;
 
   static schema: Realm.ObjectSchema = {
-    name: "UserPackages",
+    name: "UserPackage",
     primaryKey: "_id",
     properties: {
       _id: "objectId",

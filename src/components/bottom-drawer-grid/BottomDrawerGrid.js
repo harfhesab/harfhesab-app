@@ -65,10 +65,12 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
     }))
 
     const deletedItem = (item) => {
-        const index = extendedState._id.findIndex((i) => i == item._id);
-        extendedState._id.splice(index, 1);
-        extendedState.text1.splice(index, 1);
-        setExtendedState({ ...extendedState });
+        if(numberSelectable > 1){
+            const index = extendedState._id.findIndex((i) => i == item._id);
+            extendedState._id.splice(index, 1);
+            extendedState.text1.splice(index, 1);
+            setExtendedState({ ...extendedState });
+        }
     };
     const selectedItem = (item) => {
         if (numberSelectable == 1) {
@@ -89,6 +91,7 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                 return false;
             }
         }
+        item?.onPress?.()
     };
 
     
@@ -145,12 +148,15 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                             <GridItem
                                 key={index.toString()}
                                 title={item?.text1}
+                                description={item?.text2??undefined}
                                 disabled={item?.disabled == true?true:false}
+                                onPress={item?.disabled == true?item?.onPress?.():undefined}
                                 height={gridSize+50}
                                 width={gridSize}
                                 image={item?.image}
                                 selectedItem={()=>selectedItem(item)}
                                 deletedItem={()=>deletedItem(item)}
+                                disabledDeleteItem={numberSelectable == 1?true:false}
                                 selected={extendedState._id.find((i) => i == item._id) ? true : false}
                                 iconName={item?.iconName??'layers'}
                                 iconType={item?.iconType??'Ionicons'}

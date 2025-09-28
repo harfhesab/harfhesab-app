@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 interface PackageGameDownloadState {
-    status: "up-to-date" | "need-update" | "force-update" | string;
     packageId: string | null;
     isDownloading : boolean;
     getError : boolean;
@@ -18,7 +17,6 @@ interface PackageGameDownloadState {
 }
 
 const initialState: PackageGameDownloadState = {
-    status: "",
     packageId : null,
     isDownloading : false,
     getError:false,
@@ -37,9 +35,6 @@ const packageGameDownloadSlice = createSlice({
     name: 'packageGameDownloadSlice',
     initialState,
     reducers: {
-        setStatus: (state, action: PayloadAction<{ status: string; }>) =>{
-            state.status = action.payload.status
-        },
         setDataCheck: (state, action: PayloadAction<{ data: any; }>) =>{
             state.dataCheck = action.payload.data
         },
@@ -72,7 +67,6 @@ const packageGameDownloadSlice = createSlice({
             state.downloadFinished = true;
             state.isDownloading = false;
             state.downloadFinishedDate = new Date();
-            state.status = "";
         },
         setVersionCreatedDownloded: (state, action: PayloadAction<{ downloaded: boolean; }>) =>{
             state.versionCreatedDownloded = action.payload.downloaded
@@ -87,7 +81,6 @@ const packageGameDownloadSlice = createSlice({
 });
 
 export const {
-  setStatus,
   setDataCheck,
   setIsDownloading,
   setGetError,

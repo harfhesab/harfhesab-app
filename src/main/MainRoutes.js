@@ -8,6 +8,8 @@ import StagesStageGameSeason from '../screens/main/stage-game/StagesStageGameSea
 import LoginToAccount from '../screens/main/account/login/LoginToAccount';
 import VerifyLoginToAccount from '../screens/main/account/login/VerifyLoginToAccount';
 import PackageInformation from '../screens/main/package-game/PackageInformation';
+import UserPackagesList from '../screens/main/package-game/UserPackagesList';
+// ==================================================================================================
 import { AppState } from 'react-native';
 import { getCurrentRouteName } from './navigationService';
 import NavigationBar from '../utils/android-native/NavigationBar';
@@ -42,6 +44,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"LoginToAccount"} component={LoginToAccount} />
       <Stack.Screen name={"VerifyLoginToAccount"} component={VerifyLoginToAccount} />
       <Stack.Screen name={"PackageInformation"} component={PackageInformation} />
+      <Stack.Screen name={"UserPackagesList"} component={UserPackagesList} />
     </Stack.Navigator>
   )
 }

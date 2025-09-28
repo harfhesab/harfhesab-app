@@ -1,6 +1,6 @@
 import { BSON } from "realm";
 
-export interface IUserPackages {
+export interface IUserPackage {
   _id: BSON.ObjectId;
   package: BSON.ObjectId;
   access_type: "subscription" | "free" | "coin-payment";

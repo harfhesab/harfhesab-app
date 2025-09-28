@@ -14,17 +14,23 @@ import { useRealm } from '../../../realm';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
 import ButtonBorder from '../../../components/buttons/ButtonBorder';
 import RatingInfo from '../../../components/rating/RatingInfo';
+import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
+import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
+import { useDispatch } from 'react-redux';
 
 const {width, height} = Dimensions.get("window")
 function PackageInformation(props){
     const realm = useRealm();
     const colors = useAppTheme()
+    const dispatch = useDispatch();
     const [data, setData] = useState(null)
     const [localData, setLocalData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [checkUpdate, setCheckUpdate] = useState(null)
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null)
     const packageId = props?.route?.params?._id
+    const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
 
     useEffect(()=>{
         getData()
@@ -103,9 +109,9 @@ function PackageInformation(props){
             }
             if(checkExist?.user_package?._id){
                 if(checkExist.user_package?.version_created < data.force_version_created || checkExist.user_package?.version_updated < data.force_version_updated || checkExist.user_package?.version_deleted < data.force_version_deleted){
-                    setCheckUpdate("OPTIONAL_UPDATE")
+                    setCheckUpdate("need-update")
                 } else if(checkExist.user_package?.version_created < data.version_created || checkExist.user_package?.version_updated < data.version_updated || checkExist.user_package?.version_deleted < data.version_deleted){
-                    setCheckUpdate("FORCED_UPDATE")
+                    setCheckUpdate("force-update")
                 }
             }
         }).catch((e)=>{
@@ -119,11 +125,12 @@ function PackageInformation(props){
     }
     const onClickGetPackage = ()=>{
         if(data?.user_package_status.status == "get-free"){
-            getForFirst()
+            const accessType = "coin-free"
+            getForFirst(accessType)
         } else if(data?.user_package_status.status == "get-subscription"){
-            getForFirst()
+            getPackageWithSubscription()
         } else if(data?.user_package_status.status == "get-coin-payment"){
-            getForFirst()
+            getPackageWithCoinPayment()
         } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
             
         } else if(data?.user_package_status.status == "redownload-content"){
@@ -132,11 +139,122 @@ function PackageInformation(props){
             
         }
     }
+
+    const getPackageWithSubscription = ()=>{
+        const previousSelected = selectedPaymentMethod?{
+            _id:[selectedPaymentMethod?._id],
+            text1:[selectedPaymentMethod?.text1]
+        }:{
+            _id:["1"],
+            text1:["دریافت رایگان"]
+        }
+        BottomDrawerGridHelper.showBottomDrawer({
+            title:"دریافت بستهٔ بازی",
+            list:[
+                {
+                    _id: "1",
+                    text1: "دریافت رایگان",
+                    text2: `تا زمانی که اشتراک فعال دارید به بستهٔ بازی دسترسی خواهید داشت`,
+                    image: require('../../../assets/image/coin.png'),
+                    onPress : ()=>{
+                        setSelectedPaymentMethod({_id:"1", text1:"دریافت رایگان"})
+                    }
+                },
+                {
+                    _id: "2",
+                    text1: `پرداخت ${data?.package?.price} سکه`,
+                    text2: `با یکبار پرداخت سکه همیشه به بازی دسترسی خواهید داشت`,
+                    image: require('../../../assets/image/coin.png'),
+                    onPress : ()=>{
+                        setSelectedPaymentMethod({_id:"2", text1:`پرداخت ${data?.package?.price} سکه`})
+                    }
+                },
+            ],
+            buttons:[
+                {
+                    onPress : ({data})=>{
+                        if(data._id[0] == "1"){
+                            const accessType = "subscription"
+                            getForFirst(accessType)
+                        } else if(data._id[0] == "2"){
+                            const accessType = "coin-payment"
+                            getForFirst(accessType)
+                        }
+                    },
+                    text: data?.user_package_status?.button_text,
+                    loading: false,
+                    type: "bold",
+                    selectRequired:true
+                },
+            ],
+            options:{
+                numberSelectable: 1,
+                previousSelected:previousSelected,
+                cancelable: true,
+                selectRequired: true,
+            }
+        })
+    }
+
+    const getPackageWithCoinPayment = ()=>{
+        const previousSelected = selectedPaymentMethod?{
+            _id:[selectedPaymentMethod?._id],
+            text1:[selectedPaymentMethod?.text1]
+        }:{
+            _id:["1"],
+            text1:[`پرداخت ${data?.package?.price} سکه`]
+        }
+        BottomDrawerGridHelper.showBottomDrawer({
+            title:"دریافت بستهٔ بازی",
+            list:[
+                {
+                    _id: "1",
+                    text1: `پرداخت ${data?.package?.price} سکه`,
+                    text2: `دسترسی همیشگی به بستهٔ بازی`,
+                    image: require('../../../assets/image/coin.png'),
+                    onPress : ()=>{
+                        setSelectedPaymentMethod({_id:"1", text1:`پرداخت ${data?.package?.price} سکه`})
+                    }
+                },
+                {
+                    _id: "2",
+                    text1: "دریافت رایگان با داشتن اشتراک",
+                    text2: `دسترسی به اکثر بسته‌های بازی با داشتن اشتراک فعال`,
+                    image: require('../../../assets/image/coin.png'),
+                    disabled:true,
+                    onPress : ()=>{
+                        props.navigation.navigate("")
+                        BottomDrawerGridHelper.hideBottomDrawer()
+                    }
+                }
+            ],
+            buttons:[
+                {
+                    onPress : ({data})=>{
+                        if(data._id[0] == "1"){
+                            const accessType = "coin-payment"
+                            getForFirst(accessType)
+                        }
+                    },
+                    text: data?.user_package_status?.button_text,
+                    loading: false,
+                    type: "bold",
+                    selectRequired:true
+                },
+            ],
+            options:{
+                numberSelectable: 1,
+                previousSelected:previousSelected,
+                cancelable: true,
+                selectRequired: true,
+            }
+        })
+    }
     
-    const getForFirst = async()=>{
+    const getForFirst = async(accessType)=>{
         const color = colors.primary.a1
         const status = data?.user_package_status.status
-        const selectedAccessType = 
+        const selectedAccessType = accessType
         await startSetPackageGameForUserAndGetIt({ dispatch, realm, state, status, selectedAccessType, color });
     }
     
@@ -209,12 +327,12 @@ function PackageInformation(props){
                                 text={data?.user_package_status?.button_text}
                                 textSize={14}
                                 onPress={onClickGetPackage}
-                                width={checkUpdate == "OPTIONAL_UPDATE" || checkUpdate =="FORCED_UPDATE"?width/2 - 20:width - 30}
+                                width={checkUpdate == "need-update" || checkUpdate =="force-update"?width/2 - 20:width - 30}
                                 height={50}
                                 borderRadius={5}
                             />
                             {
-                                (checkUpdate == "OPTIONAL_UPDATE" || checkUpdate =="FORCED_UPDATE")&&
+                                (checkUpdate == "need-update" || checkUpdate =="force-update")&&
                                 <ButtonBorder
                                     text={"بروزرسانی محتوا"}
                                     height={50}
@@ -253,6 +371,7 @@ function PackageInformation(props){
                     </ScrollView>
                 }
             </View>
+            <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </View>
     )
 }

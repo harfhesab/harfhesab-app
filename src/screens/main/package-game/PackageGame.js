@@ -263,7 +263,7 @@ function PackageGame(props){
             </View>
             <View style={{position:'absolute', width:width, alignItems:'flex-start', bottom:15, paddingHorizontal:15}}>
                 <MyPackageButton
-                    onPress={()=>{}}
+                    onPress={()=>{props.navigation.navigate("UserPackagesList")}}
                 />
             </View>
         </View>

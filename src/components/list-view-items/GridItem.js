@@ -12,6 +12,7 @@ function GridItem({
     onPress,
     disabled=undefined,
     title,
+    description,
     image,
     width,
     height,
@@ -20,6 +21,7 @@ function GridItem({
     iconType='Ionicons',
     deletedItem,
     selectedItem,
+    disabledDeleteItem
 }){
     const colors = useAppTheme();
     const [select, setSelect] = useState(selected);
@@ -28,25 +30,30 @@ function GridItem({
         setSelect(selected);
     }, [selected]);
 
-    const selectItem = () => {
-        if (select == true) {
-            setSelect(false);
-            const time = setTimeout(() => {
-                deletedItem();
-            }, 100);
+    const onClick = () => {
+        if(disabled == true){
+            onPress?.()
         } else {
-            setSelect(true);
-            const time = setTimeout(() => {
-                if (selectedItem() == false) {
-                    setSelect(false);
-                }
-            }, 100);
+            if (select == true) {
+                if(disabledDeleteItem == true) return
+                setSelect(false);
+                const time = setTimeout(() => {
+                    deletedItem();
+                }, 100);
+            } else {
+                setSelect(true);
+                const time = setTimeout(() => {
+                    if (selectedItem() == false) {
+                        setSelect(false);
+                    }
+                }, 100);
+            }
         }
     };
 
     return (
         <View style={{width, height}}>
-            <TouchableNativeFeedback disabled={disabled} onPress={selectItem} style={{width, height}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
+            <TouchableNativeFeedback onPress={onClick} style={{width, height}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                 <View style={{alignItems:'center', justifyContent:'flex-start', paddingTop:10, width:"100%", height:"100%", gap:5, borderColor:select?colors.primary.a1:colors.border.a1, borderWidth:select?1.5:0.5, borderRadius:10, backgroundColor:select?`${colors.primary.a1}15`:"transparent"}}>
                     <ImageComponent
                         uri={image}
@@ -58,8 +65,9 @@ function GridItem({
                         iconName={iconName}
                         iconType={iconType}
                         iconSize={width/2}
-                    />  
+                    />
                     <Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:14, width:width - 20, textAlign:'center'}}>{title}</Text>
+                    {description&&<Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:9, width:width - 20, textAlign:'center'}}>{description}</Text>}
                 </View>
             </TouchableNativeFeedback> 
         </View>
