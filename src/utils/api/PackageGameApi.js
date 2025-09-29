@@ -1,17 +1,15 @@
 import axios from "axios";
 import { InteractionManager } from 'react-native';
 import Toast from "react-native-toast-message";
-import { setDownloadFinished, setVersionCreatedDownloded, setVersionCreatedPage } from "../../redux/slices/packageGameDownloadSlice";
 import AlertHelper from "../../components/alert/AlertHelper";
 import { createManyPackageSeasons } from "../../realm/repositories/package-game/package-season.repository";
 import { createManyPackageStages } from "../../realm/repositories/package-game/package-stage.repository";
+import { createPackage } from "../../realm/repositories/package-game/package.repository";
+import { createUserPackage } from "../../realm/repositories/user/user-package-game-progress.repository";
+import { updateNumberCoins } from "../../redux/slices/coinSlice";
+import { endProgressLoading, setDownloadEnded, setGetError, setIsDownloading, setIsDownloadingFailed, setVersionCreatedPage } from "../../redux/slices/packageGameDownloadSlice";
 
-export const setPackageGameForUser = async({ dispatch, realm, package, status, selectedAccessType }) => {
-    const {
-        versionCreatedContent,
-        versionUpdatedContent,
-        versionDeletedContent,
-    } = versionContent;
+export const setPackageGameForUser = async({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType }) => {
     await axios({
         url:'/',
         method:'post',
@@ -20,36 +18,59 @@ export const setPackageGameForUser = async({ dispatch, realm, package, status, s
                 mutation setPackageGameForUser(
                     $package : ID!,
                     $user_package_status : String!,
-                    $selected_access_type : String!
+                    $selected_access_type : String!,
+                    $user_number_coins : Int,
                 ){
                     setPackageGameForUser(
                         package : $package,
                         user_package_status : $user_package_status,
                         selected_access_type : $selected_access_type,
+                        user_number_coins : $user_number_coins,
                     ) {
+                        _id,
+                        number,
                         status,
                         message
                     }
                 }
             `,
             variables : {
-                "package" : package,
+                "package" : packageId,
                 "user_package_status" : status,
-                "selected_access_type" : selectedAccessType
+                "selected_access_type" : selectedAccessType,
+                "user_number_coins" : numberCoins,
             }
         }
     }).then((response)=>{
         const data = response.data?.data?.setPackageGameForUser
-        if(data?.status == 200){
-            
+        if(data?.status == 200 && data?._id){
+            if(selectedAccessType == "coin-payment" && typeof data?.number === "number"){
+                dispatch(updateNumberCoins({number:data.number}))
+            }
+            const packagDocument = createPackage(realm, packageInfo)
+            userPackageInfo._id = data?._id
+            const userPackagDocument = createUserPackage(realm, userPackageInfo)
+            const dataCheck = {
+                version_created : userPackageInfo.version_created,
+                version_updated : userPackageInfo.version_updated,
+                version_deleted : userPackageInfo.version_deleted,
+            }
+            if(packagDocument == true && userPackagDocument == true){
+                dispatch(setIsDownloading({packageId, userPackageId:data?._id, dataCheck}))
+                const page = 1
+                getNewVersionCreatedPackageGameContentForFirst({page, realm, dispatch, versionContent:dataCheck, packageId, userPackageId})
+            } else {
+                dispatch(setIsDownloadingFailed({packageId, userPackageId:data?._id, dataCheck}))
+            }
         } else {
+            dispatch(endProgressLoading())
             AlertHelper.showAlert({
                 body: data?.message??"مشکلی پیش آمد. دوباره تلاش کنید.",
                 buttons: [
                     {
                         text: 'تلاش مجدد',
                         onPress: () => {
-                            setPackageGameForUser({dispatch, realm, package, status})
+                            setPackageGameForUser({ dispatch, realm, packageId, packageInfo, userPackageInfo, status, selectedAccessType })
                         },
                         type:'bold'
                     },
@@ -68,13 +89,14 @@ export const setPackageGameForUser = async({ dispatch, realm, package, status, s
             });
         }
     }).catch((err)=>{
+        dispatch(endProgressLoading())
         AlertHelper.showAlert({
             body: "مشکلی پیش آمد. دوباره تلاش کنید.",
             buttons: [
                 {
                     text: 'تلاش مجدد',
                     onPress: () => {
-                        setPackageGameForUser({dispatch, realm, package, status})
+                        setPackageGameForUser({ dispatch, realm, packageId, packageInfo, userPackageInfo, status, selectedAccessType })
                     },
                     type:'bold'
                 },
@@ -93,27 +115,10 @@ export const setPackageGameForUser = async({ dispatch, realm, package, status, s
         });
     })
 }
-const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, realm, state, versionContent})=>{
-    const {
-        dataCheck,
-        packageId,
-        versionCreatedPage,
-        versionUpdatedPage,
-        versionDeletedPage,
-        versionCreatedDownloded,
-        versionUpdatedDownloded,
-        versionDeletedDownloded,
-    } = state;
-    const {
-        versionCreatedContent,
-        versionUpdatedContent,
-        versionDeletedContent,
-    } = versionContent;
-    const {
-        version_created,
-        version_updated,
-        version_deleted,
-    } = dataCheck;
+
+export const recreatePackageGameForUser
+
+const getNewVersionCreatedPackageGameContentForFirst = async ({page, realm, dispatch, versionContent, packageId, userPackageId})=>{
     await axios({
         url:'/',
         method:'post',
@@ -210,14 +215,14 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
             } else {
                 if(data?.hasNextPage == true) {
                     const page = data?.nextPage
-                    dispatch(setVersionCreatedPage({ page: page}))
-                    getNewVersionCreatedPackageGameContentForFirst({page, dispatch, realm, state, versionContent})
+                    dispatch(setVersionCreatedPage({page}))
+                    getNewVersionCreatedPackageGameContentForFirst({page, realm, dispatch})
                 } else {
-                    dispatch(setVersionCreatedDownloded({downloaded:true}))
-                    const newVersionContent = {versionCreatedContent:version_created, versionUpdatedContent:version_updated, versionDeletedContent:version_deleted}
-                    dispatch(setDownloadFinished())
-                    // dispatch(changeVersionContent(newVersionContent)) // به جای این فانکشن باید ورژن های مربوط به پکیج را آپدیت کنیم
-                    upgradePackageGameContentVersion({newVersionContent, packageId})
+                    const newVersionContent = {versionCreatedContent:versionContent.version_created, versionUpdatedContent:versionContent.version_updated, versionDeletedContent:versionContent.version_deleted}
+                    dispatch(setDownloadEnded())
+                    const completionStatus = true
+                    changeCompletionStatusUserPackage(realm, userPackageId, completionStatus)
+                    upgradePackageGameContentVersion({newVersionContent, userPackageId})
                 }
             }
         } else {
@@ -227,7 +232,7 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, dispatch, r
         dispatch(setGetError())
     })
 }
-export const upgradePackageGameContentVersion = async({newVersionContent, packageId}) => {
+export const upgradePackageGameContentVersion = async({newVersionContent, userPackageId}) => {
     const {
         versionCreatedContent,
         versionUpdatedContent,
@@ -239,13 +244,13 @@ export const upgradePackageGameContentVersion = async({newVersionContent, packag
         data: {
             query : `
                 mutation upgradePackageGameContentVersion(
-                    $package : ID!,
+                    $user_package : ID!,
                     $version_created : Int!,
                     $version_updated : Int!,
                     $version_deleted : Int!,
                 ){
                     upgradePackageGameContentVersion(
-                        package : $package,
+                        user_package : $user_package,
                         version_created : $version_created,
                         version_updated : $version_updated,
                         version_deleted : $version_deleted,
@@ -256,7 +261,7 @@ export const upgradePackageGameContentVersion = async({newVersionContent, packag
                 }
             `,
             variables : {
-                "package" : packageId,
+                "user_package" : userPackageId,
                 "version_created" : versionCreatedContent,
                 "version_updated" : versionUpdatedContent,
                 "version_deleted" : versionDeletedContent

@@ -16,7 +16,10 @@ import ButtonBorder from '../../../components/buttons/ButtonBorder';
 import RatingInfo from '../../../components/rating/RatingInfo';
 import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import AlertHelper from '../../../components/alert/AlertHelper';
+import { startSetPackageGameForUserAndGetIt } from '../../../utils/background-task/PackageGameContentTask';
+import { startProgressLoading } from '../../../redux/slices/packageGameDownloadSlice';
 
 const {width, height} = Dimensions.get("window")
 function PackageInformation(props){
@@ -29,14 +32,15 @@ function PackageInformation(props){
     const [getError, setGetError] = useState(false)
     const [checkUpdate, setCheckUpdate] = useState(null)
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null)
-    const packageId = props?.route?.params?._id
-    const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
+    const packageParamId = props?.route?.params?._id
+    const { numberCoins } = useSelector((state) => state.coins);
+    const { packageId, userPackageId, status, progressLoading } = useSelector((state) => state.packageGameDownload);
 
     useEffect(()=>{
         getData()
     }, [])
     const getData = async()=>{
-        const checkExist = await checkExistUserPackageWithPakcageId(realm, packageId)
+        const checkExist = await checkExistUserPackageWithPakcageId(realm, packageParamId)
         setLocalData(checkExist)
         await axios({
             url:'/',
@@ -46,10 +50,12 @@ function PackageInformation(props){
                     query getPackageInformationAndUserPackageStatus(
                         $_id : ID!,
                         $user_package : ID,
+                        $user_package_completed : Boolean
                     ){
                         getPackageInformationAndUserPackageStatus(
                             _id : $_id,
                             user_package : $user_package,
+                            user_package_completed : $user_package_completed
                         ) {
                             package{
                                 _id,
@@ -57,6 +63,7 @@ function PackageInformation(props){
                                 description,
                                 subject,
                                 badg,
+                                language_ref,
                                 language_info{name},
                                 icon_image,
                                 banner_image,
@@ -66,6 +73,9 @@ function PackageInformation(props){
                                 testable,
                                 number_stage,
                                 number_season,
+                                doc_version_created,
+                                doc_version_updated,
+                                doc_version_deleted,
                                 version_created,
                                 version_updated,
                                 version_deleted,
@@ -97,8 +107,9 @@ function PackageInformation(props){
                     }
                 `,
                 variables : {
-                    "_id" : packageId,
+                    "_id" : packageParamId,
                     "user_package" : checkExist?.user_package?._id??null,
+                    "user_package_completed" : checkExist?.user_package?.content_completed??false
                 }
             }
         }).then(async(response)=>{
@@ -125,7 +136,7 @@ function PackageInformation(props){
     }
     const onClickGetPackage = ()=>{
         if(data?.user_package_status.status == "get-free"){
-            const accessType = "coin-free"
+            const accessType = "free"
             getForFirst(accessType)
         } else if(data?.user_package_status.status == "get-subscription"){
             getPackageWithSubscription()
@@ -135,6 +146,8 @@ function PackageInformation(props){
             
         } else if(data?.user_package_status.status == "redownload-content"){
             
+        } else if(data?.user_package_status.status == "recreate-and-download-content"){
+            recreateAndDownloadContent()
         } else if(data?.user_package_status.status == "start-game"){
             
         }
@@ -252,10 +265,93 @@ function PackageInformation(props){
     }
     
     const getForFirst = async(accessType)=>{
+        if(accessType == "coin-payment" && data?.package?.price > numberCoins){
+            AlertHelper.showAlert({
+                body: "تعداد سکهٔ شما برای فعال سازی این بستهٔ بازی کافی نمیباشد.",
+                buttons: [
+                    {
+                        text: "افزایش سکه",
+                        onPress: () => {
+                            props.navigation.navigate("")
+                        },
+                        type:'bold'
+                    },
+                    {
+                        text: 'لغو',
+                        onPress: () => {},
+                        type:'border'
+                    },
+                ],
+                options : {
+                    type: 'warning',
+                    cancelable: true,
+                    bodyAlign:'center',
+                    textAlign:'center'
+                },
+            });
+        } else {
+            const color = colors.primary.a1
+            const status = data?.user_package_status.status
+            const selectedAccessType = accessType
+            const packageInfo = {
+                _id : data.package._id,
+                title : data.package.title,
+                description : data.package.description,
+                subject : data.package.subject,
+                badg : data.package.badg,
+                language_ref : data.package.language_ref,
+                icon_image : data.package.icon_image,
+                banner_image : data.package.banner_image,
+                free : data.package.free,
+                free_with_subscription : data.package.free_with_subscription,
+                price : data.package.price,
+                testable : data.package.testable,
+                number_stage : data.package.number_stage,
+                number_season : data.package.number_season,
+                version_created : data.package.doc_version_created,
+                version_updated : data.package.doc_version_updated,
+                version_deleted : data.package.doc_version_deleted,
+            }
+            const userPackageInfo = {
+                package_ref : packageParamId,
+                access_type : selectedAccessType,
+                version_created : data.package.version_created,
+                version_updated : data.package.version_updated,
+                version_deleted : data.package.version_deleted,
+            }
+            dispatch(startProgressLoading())
+            await startSetPackageGameForUserAndGetIt({ dispatch, realm, packageId:packageParamId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
+        }
+    }
+    const recreateAndDownloadContent = ()=>{
         const color = colors.primary.a1
-        const status = data?.user_package_status.status
-        const selectedAccessType = accessType
-        await startSetPackageGameForUserAndGetIt({ dispatch, realm, state, status, selectedAccessType, color });
+        const packageInfo = {
+            _id : data.package._id,
+            title : data.package.title,
+            description : data.package.description,
+            subject : data.package.subject,
+            badg : data.package.badg,
+            language_ref : data.package.language_ref,
+            icon_image : data.package.icon_image,
+            banner_image : data.package.banner_image,
+            free : data.package.free,
+            free_with_subscription : data.package.free_with_subscription,
+            price : data.package.price,
+            testable : data.package.testable,
+            number_stage : data.package.number_stage,
+            number_season : data.package.number_season,
+            version_created : data.package.doc_version_created,
+            version_updated : data.package.doc_version_updated,
+            version_deleted : data.package.doc_version_deleted,
+        }
+        const userPackageInfo = {
+            package_ref : packageParamId,
+            access_type : selectedAccessType,
+            version_created : data.package.version_created,
+            version_updated : data.package.version_updated,
+            version_deleted : data.package.version_deleted,
+        }
+        recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
     
     return(
@@ -330,6 +426,7 @@ function PackageInformation(props){
                                 width={checkUpdate == "need-update" || checkUpdate =="force-update"?width/2 - 20:width - 30}
                                 height={50}
                                 borderRadius={5}
+                                loading={checkUpdate == "need-update" || checkUpdate =="force-update"?false:progressLoading}
                             />
                             {
                                 (checkUpdate == "need-update" || checkUpdate =="force-update")&&
@@ -337,7 +434,7 @@ function PackageInformation(props){
                                     text={"بروزرسانی محتوا"}
                                     height={50}
                                     width={width/2 - 20}
-                                    loading={false}
+                                    loading={progressLoading}
                                     onPress={()=>{}}
                                     borderRadius={5}
                                     textSize={14}

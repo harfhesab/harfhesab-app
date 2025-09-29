@@ -32,7 +32,7 @@ const initialState: StageGameDownloadState = {
 };
 
 const stageGameDownloadSlice = createSlice({
-    name: 'stageGameDownloadSlice',
+    name: 'stageGameDownload',
     initialState,
     reducers: {
         setStatus: (state, action: PayloadAction<{ status: string; }>) =>{

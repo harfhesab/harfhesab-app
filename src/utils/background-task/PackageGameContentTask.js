@@ -1,5 +1,5 @@
 import BackgroundService from 'react-native-background-actions';
-import { updateStageGameContent } from '../api/StageGameApi';
+import { setPackageGameForUser } from '../api/PackageGameApi';
 
 const options = {
     taskName: 'دریافت محتوا',
@@ -14,27 +14,51 @@ const options = {
     },
 };
 
-const veryIntensiveTask = async (taskDataArguments) => {
-    const { dispatch, realm, package, status } = taskDataArguments;
+const veryIntensiveTask1 = async (taskDataArguments) => {
+    const { dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType } = taskDataArguments;
     try {
-        await setPackageGameForUser({ dispatch, realm, package, status, selectedAccessType });
+        await setPackageGameForUser({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType });
     } catch (e) {
         null
     }
 };
 
-export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, package, status, selectedAccessType, color }) => {
+export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color }) => {
     if (!BackgroundService.isRunning()) {
-        await BackgroundService.start(veryIntensiveTask, {
+        await BackgroundService.start(veryIntensiveTask1, {
             ...options,
             color:color,
-            parameters: { dispatch, realm, package, status, selectedAccessType },
+            parameters: { dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType },
         });
     }
 };
+
+// ===============================================================================================================================================
+
+const veryIntensiveTask2 = async (taskDataArguments) => {
+    const { dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo } = taskDataArguments;
+    try {
+        await recreatePackageGameForUser({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo });
+    } catch (e) {
+        null
+    }
+};
+
+export const recreateAndDownloadContentUserPackage = async ({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color }) => {
+    if (!BackgroundService.isRunning()) {
+        await BackgroundService.start(veryIntensiveTask2, {
+            ...options,
+            color:color,
+            parameters: { dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo },
+        });
+    }
+};
+
+// ===============================================================================================================================================
 
 export const stopSetPackageGameForUser = async () => {
     if (BackgroundService.isRunning()) {
         await BackgroundService.stop();
     }
 };
+

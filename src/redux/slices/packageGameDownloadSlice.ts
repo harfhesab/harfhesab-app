@@ -2,50 +2,54 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 interface PackageGameDownloadState {
+    progressLoading: boolean;
     packageId: string | null;
-    isDownloading : boolean;
-    getError : boolean;
+    userPackageId: string | null;
+    status : string | null;
     dataCheck: any;
     versionCreatedPage: number;
     versionUpdatedPage: number;
     versionDeletedPage: number;
-    versionCreatedDownloded: boolean;
-    versionUpdatedDownloded: boolean;
-    versionDeletedDownloded: boolean;
-    downloadFinished: boolean;
-    downloadFinishedDate: Date | null;
 }
 
 const initialState: PackageGameDownloadState = {
+    progressLoading : false,
     packageId : null,
-    isDownloading : false,
-    getError:false,
+    userPackageId : null,
+    status : null,
     dataCheck:null,
     versionCreatedPage: 1,
     versionUpdatedPage: 1,
     versionDeletedPage: 1,
-    versionCreatedDownloded: false,
-    versionUpdatedDownloded: false,
-    versionDeletedDownloded: false,
-    downloadFinished : false,
-    downloadFinishedDate : null
 };
 
 const packageGameDownloadSlice = createSlice({
-    name: 'packageGameDownloadSlice',
+    name: 'packageGameDownload',
     initialState,
     reducers: {
-        setDataCheck: (state, action: PayloadAction<{ data: any; }>) =>{
-            state.dataCheck = action.payload.data
+        startProgressLoading: (state) =>{
+            state.progressLoading = true;
         },
-        setIsDownloading: (state) =>{
-            state.isDownloading = true;
-            state.getError = false;
-            state.downloadFinished = false;
+        endProgressLoading: (state) =>{
+            state.progressLoading = false;
+        },
+        setIsDownloading: (state, action: PayloadAction<{ dataCheck: any; packageId: string; userPackageId: string}>) =>{
+            state.packageId = action.payload.packageId;
+            state.userPackageId = action.payload.userPackageId;
+            state.dataCheck = action.payload.dataCheck;
+            state.status = "downloading";
+            state.progressLoading = true;
+        },
+        setIsDownloadingFailed: (state, action: PayloadAction<{ dataCheck: any; packageId: string; userPackageId: string}>) =>{
+            state.packageId = action.payload.packageId;
+            state.userPackageId = action.payload.userPackageId;
+            state.dataCheck = action.payload.dataCheck;
+            state.status = "get-error";
+            state.progressLoading = false;
         },
         setGetError: (state) =>{
-            state.getError = true;
-            state.isDownloading = false;
+            state.status = "get-error";
+            state.progressLoading = false;
         },
         setVersionCreatedPage: (state, action: PayloadAction<{ page: number; }>) =>{
             state.versionCreatedPage = action.payload.page
@@ -56,40 +60,39 @@ const packageGameDownloadSlice = createSlice({
         setVersionDeletedPage: (state, action: PayloadAction<{ page: number; }>) =>{
             state.versionDeletedPage = action.payload.page
         },
-        setDownloadFinished: (state) =>{
-            state.getError = false;
+        setDownloadEnded: (state) =>{
+            state.progressLoading = false;
+            state.packageId = null;
+            state.userPackageId = null;
+            state.dataCheck = null;
             state.versionCreatedPage = 1;
             state.versionUpdatedPage = 1;
             state.versionDeletedPage = 1;
-            state.versionCreatedDownloded = false;
-            state.versionUpdatedDownloded = false;
-            state.versionDeletedDownloded = false;
-            state.downloadFinished = true;
-            state.isDownloading = false;
-            state.downloadFinishedDate = new Date();
+            state.status = "downloaded";
         },
-        setVersionCreatedDownloded: (state, action: PayloadAction<{ downloaded: boolean; }>) =>{
-            state.versionCreatedDownloded = action.payload.downloaded
-        },
-        setVersionUpdatedDownloded: (state, action: PayloadAction<{ downloaded: boolean; }>) =>{
-            state.versionUpdatedDownloded = action.payload.downloaded
-        },
-        setVersionDeletedDownloded: (state, action: PayloadAction<{ downloaded: boolean; }>) =>{
-            state.versionDeletedDownloded = action.payload.downloaded
+        clearDownloadHistory: (state) =>{
+            state.progressLoading = false;
+            state.packageId = null;
+            state.userPackageId = null;
+            state.dataCheck = null;
+            state.versionCreatedPage = 1;
+            state.versionUpdatedPage = 1;
+            state.versionDeletedPage = 1;
+            state.status = null;
         },
     },
 });
 
 export const {
-  setDataCheck,
+  startProgressLoading,
+  endProgressLoading,
   setIsDownloading,
+  setIsDownloadingFailed,
   setGetError,
   setVersionCreatedPage,
   setVersionUpdatedPage,
   setVersionDeletedPage,
-  setDownloadFinished,
-  setVersionCreatedDownloded,
-  setVersionUpdatedDownloded,
-  setVersionDeletedDownloded,
+  setDownloadEnded,
+  clearDownloadHistory
 } = packageGameDownloadSlice.actions;
 export default packageGameDownloadSlice.reducer;
