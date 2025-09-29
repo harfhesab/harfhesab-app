@@ -22,6 +22,7 @@ import { startSetPackageGameForUserAndGetIt } from '../../../utils/background-ta
 import { startProgressLoading } from '../../../redux/slices/packageGameDownloadSlice';
 
 const {width, height} = Dimensions.get("window")
+const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function PackageInformation(props){
     const realm = useRealm();
     const colors = useAppTheme()
@@ -166,9 +167,12 @@ function PackageInformation(props){
             list:[
                 {
                     _id: "1",
-                    text1: "دریافت رایگان",
-                    text2: `تا زمانی که اشتراک فعال دارید به بستهٔ بازی دسترسی خواهید داشت`,
+                    text1: "دریافت رایگان بازی",
+                    text2: `تا زمان فعال بودن اشتراک، به بستهٔ بازی دسترسی خواهید داشت`,
                     image: require('../../../assets/image/coin.png'),
+                    localImage: true,
+                    height:gridSize + 80,
+                    width:gridSize,
                     onPress : ()=>{
                         setSelectedPaymentMethod({_id:"1", text1:"دریافت رایگان"})
                     }
@@ -176,8 +180,11 @@ function PackageInformation(props){
                 {
                     _id: "2",
                     text1: `پرداخت ${data?.package?.price} سکه`,
-                    text2: `با یکبار پرداخت سکه همیشه به بازی دسترسی خواهید داشت`,
+                    text2: `با یکبار پرداخت سکه، به شکل دائمی به بستهٔ بازی دسترسی خواهید داشت`,
                     image: require('../../../assets/image/coin.png'),
+                    localImage: true,
+                    height:gridSize + 80,
+                    width:gridSize,
                     onPress : ()=>{
                         setSelectedPaymentMethod({_id:"2", text1:`پرداخت ${data?.package?.price} سکه`})
                     }
@@ -223,8 +230,11 @@ function PackageInformation(props){
                 {
                     _id: "1",
                     text1: `پرداخت ${data?.package?.price} سکه`,
-                    text2: `دسترسی همیشگی به بستهٔ بازی`,
+                    text2: `دسترسی دائمی به بستهٔ بازی بعد از دریافت بازی`,
                     image: require('../../../assets/image/coin.png'),
+                    localImage: true,
+                    height:gridSize + 80,
+                    width:gridSize,
                     onPress : ()=>{
                         setSelectedPaymentMethod({_id:"1", text1:`پرداخت ${data?.package?.price} سکه`})
                     }
@@ -232,11 +242,14 @@ function PackageInformation(props){
                 {
                     _id: "2",
                     text1: "دریافت رایگان با داشتن اشتراک",
-                    text2: `دسترسی به اکثر بسته‌های بازی با داشتن اشتراک فعال`,
+                    text2: `دریافت رایگان بسته‌های بازی با داشتن اشتراک فعال`,
                     image: require('../../../assets/image/coin.png'),
+                    localImage: true,
                     disabled:true,
+                    height:gridSize + 80,
+                    width:gridSize,
                     onPress : ()=>{
-                        props.navigation.navigate("")
+                        props.navigation.navigate("UserPackagesList")
                         BottomDrawerGridHelper.hideBottomDrawer()
                     }
                 }

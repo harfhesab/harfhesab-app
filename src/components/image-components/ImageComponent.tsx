@@ -117,11 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const areEqual = (prevProps:any, nextProps:any) => {
-  if (prevProps.uri !== nextProps.uri) return false;
-  if (prevProps.width !== nextProps.width) return false;
-  if (prevProps.height !== nextProps.height) return false;
-  return true;
-};
-
-export default memo(ImageComponent, areEqual);
+export default memo(ImageComponent);

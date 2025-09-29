@@ -116,7 +116,7 @@ export const setPackageGameForUser = async({ dispatch, realm, packageId, package
     })
 }
 
-export const recreatePackageGameForUser
+// export const recreatePackageGameForUser
 
 const getNewVersionCreatedPackageGameContentForFirst = async ({page, realm, dispatch, versionContent, packageId, userPackageId})=>{
     await axios({

@@ -6,6 +6,7 @@ import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import ImageComponent from '../image-components/ImageComponent';
+import LocalImageComponent from '../image-components/LocalImageComponent';
 
 
 function GridItem({
@@ -14,6 +15,7 @@ function GridItem({
     title,
     description,
     image,
+    localImage,
     width,
     height,
     selected,
@@ -54,20 +56,34 @@ function GridItem({
     return (
         <View style={{width, height}}>
             <TouchableNativeFeedback onPress={onClick} style={{width, height}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{alignItems:'center', justifyContent:'flex-start', paddingTop:10, width:"100%", height:"100%", gap:5, borderColor:select?colors.primary.a1:colors.border.a1, borderWidth:select?1.5:0.5, borderRadius:10, backgroundColor:select?`${colors.primary.a1}15`:"transparent"}}>
-                    <ImageComponent
-                        uri={image}
-                        width={width - 20}
-                        height={width - 20}
-                        resizeMode={'cover'}
-                        borderRadius={13}
-                        style={{ borderRadius:10 }}
-                        iconName={iconName}
-                        iconType={iconType}
-                        iconSize={width/2}
-                    />
-                    <Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:14, width:width - 20, textAlign:'center'}}>{title}</Text>
-                    {description&&<Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:9, width:width - 20, textAlign:'center'}}>{description}</Text>}
+                <View style={{alignItems:'center', justifyContent:'flex-start', paddingVertical:10, width:"100%", height:"100%", gap:5, borderColor:select?colors.primary.a1:colors.border.a1, borderWidth:select?1.5:0.5, borderRadius:10, backgroundColor:select?`${colors.primary.a1}15`:"transparent"}}>
+                    {
+                        localImage == true?
+                        <LocalImageComponent
+                            path={image}
+                            width={width - 20}
+                            height={width - 20}
+                            resizeMode={'cover'}
+                            borderRadius={13}
+                            style={{ borderRadius:10 }}
+                        />
+                        :
+                        <ImageComponent
+                            uri={image}
+                            width={width - 20}
+                            height={width - 20}
+                            resizeMode={'cover'}
+                            borderRadius={13}
+                            style={{ borderRadius:10 }}
+                            iconName={iconName}
+                            iconType={iconType}
+                            iconSize={width/2}
+                        />
+                    }
+                    <View style={{width:"100%", alignItems:'center', paddingHorizontal:10, flex:1, justifyContent:'space-between'}}>
+                        {title&&<Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:13, width:width - 20, textAlign:'center', lineHeight:20}}>{title}</Text>}
+                        {description&&<Text style={{fontFamily:Font.medium, color:colors.text.a6, fontSize:8, width:width - 20, textAlign:'center', lineHeight:15}}>{description}</Text>}
+                    </View>
                 </View>
             </TouchableNativeFeedback> 
         </View>

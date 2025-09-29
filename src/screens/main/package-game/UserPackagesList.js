@@ -44,7 +44,6 @@ function UserPackagesList(props){
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const realm = useRealm();
-    const { lastSeasonNumber } = useSelector((state) => state.stageGame);
     const [loading, setLoading] = useState(true)
     const data = useUserPackage()
 
@@ -64,7 +63,7 @@ function UserPackagesList(props){
             />
         )
     }
-    const memoizedValue = useMemo(() => renderItem, [data, activeIndexes, lastSeasonNumber]);
+    const memoizedValue = useMemo(() => renderItem, [data]);
     const keyExtractor = (item,index)=>index.toString()
     
 

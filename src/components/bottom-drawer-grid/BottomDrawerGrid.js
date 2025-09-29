@@ -15,7 +15,7 @@ const {width, height} = Dimensions.get('window');
 const BottomDrawerGrid = React.forwardRef((props, ref)=>{
     const colors = useAppTheme();
     const maxHeight = height*0.9 - 160;
-    const gridSize = IS_TABLET_CONDITION?(width-60)/3:(width-45)/2
+    const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(true)
     const [title, setTitle] = useState(null)
@@ -39,7 +39,7 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
             setButtons(dialog?.buttons??null)
             setList(dialog?.list??[])
             setNumberSelectable(dialog?.options?.numberSelectable)
-            setExtendedState(dialog?.options?.previousSelected)
+            dialog?.options?.previousSelected&&setExtendedState(dialog?.options?.previousSelected)
             setSelectRequired(dialog?.options?.setSelectRequired??false)
         }, 200)
     }
@@ -150,10 +150,15 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                 title={item?.text1}
                                 description={item?.text2??undefined}
                                 disabled={item?.disabled == true?true:false}
-                                onPress={item?.disabled == true?item?.onPress?.():undefined}
-                                height={gridSize+50}
-                                width={gridSize}
+                                onPress={()=>{
+                                    if(item?.disabled == true){
+                                        item?.onPress?.()
+                                    }
+                                }}
+                                height={item?.height??gridSize+40}
+                                width={item?.width??gridSize}
                                 image={item?.image}
+                                localImage={item?.localImage??false}
                                 selectedItem={()=>selectedItem(item)}
                                 deletedItem={()=>deletedItem(item)}
                                 disabledDeleteItem={numberSelectable == 1?true:false}
