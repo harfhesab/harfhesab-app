@@ -18,7 +18,7 @@ import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawe
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import AlertHelper from '../../../components/alert/AlertHelper';
-import { startSetPackageGameForUserAndGetIt } from '../../../utils/background-task/PackageGameContentTask';
+import { recreateAndDownloadContentUserPackage, redownloadContentUserPackage, startSetPackageGameForUserAndGetIt } from '../../../utils/background-task/PackageGameContentTask';
 import { startProgressLoading } from '../../../redux/slices/packageGameDownloadSlice';
 
 const {width, height} = Dimensions.get("window")
@@ -102,7 +102,8 @@ function PackageInformation(props){
                             },
                             user_package_status{
                                 status,
-                                button_text
+                                button_text,
+                                user_package_id
                             }
                         }
                     }
@@ -146,7 +147,7 @@ function PackageInformation(props){
         } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
             
         } else if(data?.user_package_status.status == "redownload-content"){
-            
+            redownloadContent()
         } else if(data?.user_package_status.status == "recreate-and-download-content"){
             recreateAndDownloadContent()
         } else if(data?.user_package_status.status == "start-game"){
@@ -336,7 +337,7 @@ function PackageInformation(props){
             await startSetPackageGameForUserAndGetIt({ dispatch, realm, packageId:packageParamId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
         }
     }
-    const recreateAndDownloadContent = ()=>{
+    const recreateAndDownloadContent = async()=>{
         const color = colors.primary.a1
         const packageInfo = {
             _id : data.package._id,
@@ -358,13 +359,45 @@ function PackageInformation(props){
             version_deleted : data.package.doc_version_deleted,
         }
         const userPackageInfo = {
+            _id : data?.user_package_status?.user_package_id,
             package_ref : packageParamId,
             access_type : selectedAccessType,
             version_created : data.package.version_created,
             version_updated : data.package.version_updated,
             version_deleted : data.package.version_deleted,
         }
-        recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
+        await recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
+    }
+    const redownloadContent = async()=>{
+        const color = colors.primary.a1
+        const packageInfo = {
+            _id : data.package._id,
+            title : data.package.title,
+            description : data.package.description,
+            subject : data.package.subject,
+            badg : data.package.badg,
+            language_ref : data.package.language_ref,
+            icon_image : data.package.icon_image,
+            banner_image : data.package.banner_image,
+            free : data.package.free,
+            free_with_subscription : data.package.free_with_subscription,
+            price : data.package.price,
+            testable : data.package.testable,
+            number_stage : data.package.number_stage,
+            number_season : data.package.number_season,
+            version_created : data.package.doc_version_created,
+            version_updated : data.package.doc_version_updated,
+            version_deleted : data.package.doc_version_deleted,
+        }
+        const userPackageInfo = {
+            _id : data?.user_package_status?.user_package_id,
+            package_ref : packageParamId,
+            access_type : selectedAccessType,
+            version_created : data.package.version_created,
+            version_updated : data.package.version_updated,
+            version_deleted : data.package.version_deleted,
+        }
+        await redownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
     
     return(

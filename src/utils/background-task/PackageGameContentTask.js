@@ -1,5 +1,5 @@
 import BackgroundService from 'react-native-background-actions';
-import { setPackageGameForUser } from '../api/PackageGameApi';
+import { redownloadContentPackageGameForUser, setPackageGameForUser } from '../api/PackageGameApi';
 
 const options = {
     taskName: 'دریافت محتوا',
@@ -36,20 +36,41 @@ export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, pack
 // ===============================================================================================================================================
 
 const veryIntensiveTask2 = async (taskDataArguments) => {
-    const { dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo } = taskDataArguments;
+    const { dispatch, realm, packageId, packageInfo, userPackageInfo } = taskDataArguments;
     try {
-        await recreatePackageGameForUser({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo });
+        await recreatePackageGameForUser({ dispatch, realm, packageId, packageInfo, userPackageInfo });
     } catch (e) {
         null
     }
 };
 
-export const recreateAndDownloadContentUserPackage = async ({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color }) => {
+export const recreateAndDownloadContentUserPackage = async ({ dispatch, realm, packageId, packageInfo, userPackageInfo, color }) => {
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask2, {
             ...options,
             color:color,
-            parameters: { dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo },
+            parameters: { dispatch, realm, packageId, packageInfo, userPackageInfo },
+        });
+    }
+};
+
+// ===============================================================================================================================================
+
+const veryIntensiveTask3 = async (taskDataArguments) => {
+    const { dispatch, realm, packageId, packageInfo, userPackageInfo } = taskDataArguments;
+    try {
+        await redownloadContentPackageGameForUser({ dispatch, realm, packageId, packageInfo, userPackageInfo });
+    } catch (e) {
+        null
+    }
+};
+
+export const redownloadContentUserPackage = async ({ dispatch, realm, packageId, packageInfo, userPackageInfo, color }) => {
+    if (!BackgroundService.isRunning()) {
+        await BackgroundService.start(veryIntensiveTask3, {
+            ...options,
+            color:color,
+            parameters: { dispatch, realm, packageId, packageInfo, userPackageInfo },
         });
     }
 };

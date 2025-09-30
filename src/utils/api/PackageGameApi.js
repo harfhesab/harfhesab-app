@@ -58,7 +58,7 @@ export const setPackageGameForUser = async({ dispatch, realm, packageId, package
             if(packagDocument == true && userPackagDocument == true){
                 dispatch(setIsDownloading({packageId, userPackageId:data?._id, dataCheck}))
                 const page = 1
-                getNewVersionCreatedPackageGameContentForFirst({page, realm, dispatch, versionContent:dataCheck, packageId, userPackageId})
+                getNewVersionCreatedPackageGameContentForFirst({page, realm, dispatch, versionContent:dataCheck, packageId, userPackageId:data?._id})
             } else {
                 dispatch(setIsDownloadingFailed({packageId, userPackageId:data?._id, dataCheck}))
             }
@@ -116,7 +116,38 @@ export const setPackageGameForUser = async({ dispatch, realm, packageId, package
     })
 }
 
-// export const recreatePackageGameForUser
+export const recreatePackageGameForUser = async({ dispatch, realm, packageId, packageInfo, userPackageInfo }) =>{
+    const packagDocument = createPackage(realm, packageInfo)
+    const userPackagDocument = createUserPackage(realm, userPackageInfo)
+    const dataCheck = {
+        version_created : userPackageInfo.version_created,
+        version_updated : userPackageInfo.version_updated,
+        version_deleted : userPackageInfo.version_deleted,
+    }
+    if(packagDocument == true && userPackagDocument == true){
+        dispatch(setIsDownloading({packageId, userPackageId:userPackageInfo?._id, dataCheck}))
+        const page = 1
+        getNewVersionCreatedPackageGameContentForFirst({page, realm, dispatch, versionContent:dataCheck, packageId, userPackageId:userPackageInfo?._id})
+    } else {
+        dispatch(setIsDownloadingFailed({packageId, userPackageId:userPackageInfo?._id, dataCheck}))
+    }
+}
+
+export const redownloadContentPackageGameForUser = async({ dispatch, realm, packageId, packageInfo, userPackageInfo }) =>{
+    const packagDocument = createPackage(realm, packageInfo)
+    const dataCheck = {
+        version_created : userPackageInfo.version_created,
+        version_updated : userPackageInfo.version_updated,
+        version_deleted : userPackageInfo.version_deleted,
+    }
+    if(packagDocument == true ){
+        dispatch(setIsDownloading({packageId, userPackageId:userPackageInfo?._id, dataCheck}))
+        const page = 1
+        getNewVersionCreatedPackageGameContentForFirst({page, realm, dispatch, versionContent:dataCheck, packageId, userPackageId:userPackageInfo?._id})
+    } else {
+        dispatch(setIsDownloadingFailed({packageId, userPackageId:userPackageInfo?._id, dataCheck}))
+    }
+}
 
 const getNewVersionCreatedPackageGameContentForFirst = async ({page, realm, dispatch, versionContent, packageId, userPackageId})=>{
     await axios({
