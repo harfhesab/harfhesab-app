@@ -10,6 +10,7 @@ type LocalImageComponentProps = {
   borderRadius?: number;
   resizeMode?: keyof typeof FastImage.resizeMode;
   style?: StyleProp<ImageStyle>;
+  blank_background?: boolean;
 };
 
 const LocalImageComponent: React.FC<LocalImageComponentProps> = ({
@@ -19,13 +20,14 @@ const LocalImageComponent: React.FC<LocalImageComponentProps> = ({
   borderRadius = 5,
   resizeMode = "cover",
   style = {},
+  blank_background,
   ...props
 }) => {
   const colors = useAppTheme()
 
 
   return (
-    <View style={[{ width, height, borderRadius, backgroundColor:colors.primary.a2 }, styles.container, style]}>
+    <View style={[{ width, height, borderRadius, backgroundColor:blank_background == true?"transparent":colors.primary.a2 }, styles.container, style]}>
       <FastImage
           style={{ width, height, borderRadius }}
           source={path}

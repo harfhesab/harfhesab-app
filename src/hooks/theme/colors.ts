@@ -97,4 +97,21 @@ export const themes = {
   },
 } as const;
 
+export const colors = {
+  background:{
+    a1:'#001c20'
+  },
+  primary: {
+    a1: '#0ea960',
+  },
+  text: {
+    a1: '#FFFFFF',
+    a2: '#F0F0F0',
+    a3: '#d1d1d1',
+    a4: '#cccccc',
+    a5: '#BDBDBD',
+    a6: '#95a2a4'
+  },
+}
+
 export default themes;

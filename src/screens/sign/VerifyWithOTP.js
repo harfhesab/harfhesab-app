@@ -28,6 +28,7 @@ import { updateConstantsVersion } from '../../redux/slices/constantsSlice';
 import { updateNumberCoins } from '../../redux/slices/coinSlice';
 import { useRealm } from '../../realm';
 import { updateUserStageGameProgressInLogin } from '../../realm/repositories/user/user-stage-game-progress.repository';
+import { updateSubscriptionStatus } from '../../redux/slices/subscriptionSlice';
   
   
 const {width, height} = Dimensions.get('window');
@@ -158,6 +159,7 @@ function VerifyWithOTP(props){
             const device_name = await DeviceInfo.getDeviceName()
             const device_model = await DeviceInfo.getModel()
             const app_version = await DeviceInfo.getVersion()
+            const app_build_number = await DeviceInfo.getBuildNumber()
             const unique_id = await DeviceInfo.getUniqueId()
             await axios({
                 url:'/',
@@ -170,6 +172,7 @@ function VerifyWithOTP(props){
                         $constants_version : Int,
                         $firebase_token : String,
                         $app_version : String,
+                        $app_build_number : Int,
                         $os : String,
                         $os_version : String,
                         $device_brand : String,
@@ -185,6 +188,7 @@ function VerifyWithOTP(props){
                             constants_version : $constants_version,
                             firebase_token : $firebase_token,
                             app_version : $app_version,
+                            app_build_number : $app_build_number,
                             os : $os,
                             os_version : $os_version,
                             device_brand : $device_brand,
@@ -197,9 +201,9 @@ function VerifyWithOTP(props){
                             status,
                             message,
                             token,
-                            user{first_name, last_name, number_coins},
+                            user{first_name, last_name, number_coins, active_subscription, subscription_expiration},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
-                            application_constants{
+                            game_constants{
                                 constants_version,
                                 coins_for_get_help_word_to_slot_stage_game,
                                 coins_for_get_help_word_to_slot_package_game,
@@ -221,6 +225,7 @@ function VerifyWithOTP(props){
                         "constants_version" : constants_version,
                         "firebase_token" : "",
                         "app_version" : app_version,
+                        "app_build_number" : app_build_number,
                         "os" : os,
                         "os_version" : os_version,
                         "device_brand" : device_brand,
@@ -238,9 +243,14 @@ function VerifyWithOTP(props){
                     const token = data?.token
                     const firstName = data?.user?.firstName ?? null
                     const lastName = data?.user?.lastName ?? null
-                    if(data?.application_constants){
-                        const variables = data.application_constants
+                    if(data?.game_constants){
+                        const variables = data.game_constants
                         dispatch(updateConstantsVersion(variables))
+                    }
+                    const activeSubscription = data?.user?.active_subscription;
+                    if(activeSubscription == true){
+                        const subscriptionExpiration = data?.user?.subscription_expiration??null;
+                        dispatch(updateSubscriptionStatus({activeSubscription, subscriptionExpiration}))
                     }
                     const numberCoins = data?.user?.number_coins
                     if(typeof numberCoins === "number"){

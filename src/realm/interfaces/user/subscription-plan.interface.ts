@@ -1,0 +1,19 @@
+import { BSON } from "realm";
+
+export interface ISubscriptionPlan {
+    _id: BSON.ObjectId;
+    product_id: string;
+    title?: string;
+    description?: string;
+    badg?: string;
+    icon_image?: string;
+    duration: number;
+    price: number;
+    discount_amount?: number;
+    discount_percent?: number;
+    order?: number;
+    is_visible: boolean;
+    is_active: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+}

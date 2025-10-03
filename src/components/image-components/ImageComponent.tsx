@@ -23,6 +23,7 @@ type ImageComponentProps = {
   iconType?: string;
   iconName?: string;
   iconSize?: number;
+  blank_background?: boolean;
 } & Omit<FastImageProps, 'onLoad' | 'onError'>;
 
 const ImageComponent: React.FC<ImageComponentProps> = ({
@@ -39,6 +40,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   iconType,
   iconName,
   iconSize,
+  blank_background,
   ...props
 }) => {
   const colors = useAppTheme()
@@ -61,7 +63,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   const PLACE_HOLDER_WIDTH = WIDTH - 80 > 200?200:WIDTH-80
 
   return (
-    <View style={[{ width, height, borderRadius, backgroundColor:colors.primary.a2 }, styles.container, style]}>
+    <View style={[{ width, height, borderRadius, backgroundColor:blank_background == true?"transparent":colors.primary.a2 }, styles.container, style]}>
       {(error && !loaded && placeHolder == true) &&(
         <MovementGradientLayer height={height} width={width} borderRadius={borderRadius}>
           <View style={{width, height, alignItems:'center', justifyContent:'center'}}>

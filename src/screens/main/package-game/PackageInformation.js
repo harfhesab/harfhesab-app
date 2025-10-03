@@ -170,10 +170,11 @@ function PackageInformation(props){
                     _id: "1",
                     text1: "دریافت رایگان بازی",
                     text2: `تا زمان فعال بودن اشتراک، به بستهٔ بازی دسترسی خواهید داشت`,
-                    image: require('../../../assets/image/coin.png'),
+                    image: require('../../../assets/image/diamond.png'),
                     localImage: true,
                     height:gridSize + 80,
                     width:gridSize,
+                    blank_background: true,
                     onPress : ()=>{
                         setSelectedPaymentMethod({_id:"1", text1:"دریافت رایگان"})
                     }
@@ -186,6 +187,7 @@ function PackageInformation(props){
                     localImage: true,
                     height:gridSize + 80,
                     width:gridSize,
+                    blank_background: true,
                     onPress : ()=>{
                         setSelectedPaymentMethod({_id:"2", text1:`پرداخت ${data?.package?.price} سکه`})
                     }
@@ -236,6 +238,7 @@ function PackageInformation(props){
                     localImage: true,
                     height:gridSize + 80,
                     width:gridSize,
+                    blank_background: true,
                     onPress : ()=>{
                         setSelectedPaymentMethod({_id:"1", text1:`پرداخت ${data?.package?.price} سکه`})
                     }
@@ -244,11 +247,12 @@ function PackageInformation(props){
                     _id: "2",
                     text1: "دریافت رایگان با داشتن اشتراک",
                     text2: `دریافت رایگان بسته‌های بازی با داشتن اشتراک فعال`,
-                    image: require('../../../assets/image/coin.png'),
+                    image: require('../../../assets/image/diamond.png'),
                     localImage: true,
                     disabled:true,
                     height:gridSize + 80,
                     width:gridSize,
+                    blank_background: true,
                     onPress : ()=>{
                         props.navigation.navigate("UserPackagesList")
                         BottomDrawerGridHelper.hideBottomDrawer()

@@ -23,7 +23,8 @@ function GridItem({
     iconType='Ionicons',
     deletedItem,
     selectedItem,
-    disabledDeleteItem
+    disabledDeleteItem,
+    blank_background
 }){
     const colors = useAppTheme();
     const [select, setSelect] = useState(selected);
@@ -56,7 +57,7 @@ function GridItem({
     return (
         <View style={{width, height}}>
             <TouchableNativeFeedback onPress={onClick} style={{width, height}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{alignItems:'center', justifyContent:'flex-start', paddingVertical:10, width:"100%", height:"100%", gap:5, borderColor:select?colors.primary.a1:colors.border.a1, borderWidth:select?1.5:0.5, borderRadius:10, backgroundColor:select?`${colors.primary.a1}15`:"transparent"}}>
+                <View style={{alignItems:'center', justifyContent:'flex-start', paddingVertical:10, width:"100%", height:"100%", gap:10, borderColor:select?colors.primary.a1:colors.border.a1, borderWidth:select?1.5:0.5, borderRadius:10, backgroundColor:select?`${colors.primary.a1}15`:"transparent"}}>
                     {
                         localImage == true?
                         <LocalImageComponent
@@ -66,6 +67,7 @@ function GridItem({
                             resizeMode={'cover'}
                             borderRadius={13}
                             style={{ borderRadius:10 }}
+                            blank_background
                         />
                         :
                         <ImageComponent
@@ -78,6 +80,7 @@ function GridItem({
                             iconName={iconName}
                             iconType={iconType}
                             iconSize={width/2}
+                            blank_background
                         />
                     }
                     <View style={{width:"100%", alignItems:'center', paddingHorizontal:10, flex:1, justifyContent:'space-between'}}>

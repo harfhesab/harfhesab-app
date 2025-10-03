@@ -36,6 +36,7 @@ function SignIn(props){
         const device_name = await DeviceInfo.getDeviceName()
         const device_model = await DeviceInfo.getModel()
         const app_version = await DeviceInfo.getVersion()
+        const app_build_number = await DeviceInfo.getBuildNumber()
         const unique_id = await DeviceInfo.getUniqueId()
         await axios({
             url:'/',
@@ -46,6 +47,7 @@ function SignIn(props){
                     $constants_version : Int,
                     $firebase_token : String,
                     $app_version : String,
+                    $app_build_number : Int,
                     $os : String,
                     $os_version : String,
                     $device_brand : String,
@@ -59,6 +61,7 @@ function SignIn(props){
                         constants_version : $constants_version,
                         firebase_token : $firebase_token,
                         app_version : $app_version,
+                        app_build_number : $app_build_number,
                         os : $os,
                         os_version : $os_version,
                         device_brand : $device_brand,
@@ -72,7 +75,7 @@ function SignIn(props){
                         message,
                         token,
                         user{number_coins},
-                        application_constants{
+                        game_constants{
                             constants_version,
                             coins_for_get_help_word_to_slot_stage_game,
                             coins_for_get_help_word_to_slot_package_game,
@@ -92,6 +95,7 @@ function SignIn(props){
                     "constants_version" : constants_version,
                     "firebase_token" : "",
                     "app_version" : app_version,
+                    "app_build_number" : app_build_number,
                     "os" : os,
                     "os_version" : os_version,
                     "device_brand" : device_brand,
@@ -110,8 +114,8 @@ function SignIn(props){
                 const token = data?.token
                 const firstName = data?.user?.firstName ?? null
                 const lastName = data?.user?.lastName ?? null
-                if(data?.application_constants){
-                    const variables = data.application_constants
+                if(data?.game_constants){
+                    const variables = data.game_constants
                     dispatch(updateConstantsVersion(variables))
                 }
                 const numberCoins = data?.user?.number_coins

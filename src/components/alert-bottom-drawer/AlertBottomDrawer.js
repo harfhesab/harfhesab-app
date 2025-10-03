@@ -9,25 +9,18 @@ import ButtonGradient from '../buttons/ButtonGradient';
 import Border from '../Border';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
-import GridItem from '../list-view-items/GridItem';
+
 
 const {width, height} = Dimensions.get('window');
-const BottomDrawerGrid = React.forwardRef((props, ref)=>{
+const AlertBottomDrawer = React.forwardRef((props, ref)=>{
     const colors = useAppTheme();
     const maxHeight = height*0.9 - 160;
-    const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(true)
     const [title, setTitle] = useState(null)
+    const [message, setMessage] = useState([])
     const [buttons, setButtons] = useState(null)
     const [buttonsLoading, setButtonsLoading] = useState(null)
-    const [list, setList] = useState([])
-    const [numberSelectable, setNumberSelectable] = useState(1)
-    const [extendedState, setExtendedState] = useState({
-        _id: [],
-        text1: [],
-    });
-    const [selectRequired, setSelectRequired] = useState(false)
     
 
 
@@ -35,12 +28,9 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
         setVisible(true)
         const time = setTimeout(()=>{
             setTitle(dialog?.title??null)
+            setMessage(dialog?.message??[])
             setCancelable(dialog?.options?.cancelable??true)
             setButtons(dialog?.buttons??null)
-            setList(dialog?.list??[])
-            setNumberSelectable(dialog?.options?.numberSelectable)
-            dialog?.options?.previousSelected&&setExtendedState(dialog?.options?.previousSelected)
-            setSelectRequired(dialog?.options?.setSelectRequired??false)
         }, 200)
     }
     const close = () => {
@@ -48,52 +38,15 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
             const time = setTimeout(()=>{
                 setCancelable(true)
                 setTitle(null)
+                setMessage([])
                 setButtons(null)
                 setButtonsLoading(null)
-                setList([])
-                setExtendedState({
-                    _id: [],
-                    text1: [],
-                })
-                setNumberSelectable(1)
-                setSelectRequired(false)
             }, 400)
     }
     useImperativeHandle(ref, ()=>({
         open,
         close
     }))
-
-    const deletedItem = (item) => {
-        if(numberSelectable > 1){
-            const index = extendedState._id.findIndex((i) => i == item._id);
-            extendedState._id.splice(index, 1);
-            extendedState.text1.splice(index, 1);
-            setExtendedState({ ...extendedState });
-        }
-    };
-    const selectedItem = (item) => {
-        if (numberSelectable == 1) {
-            const _id = item._id;
-            const text1 = item.text1;
-            setExtendedState({
-                _id: [_id],
-                text1: [text1],
-            });
-        } else {
-            if (extendedState._id.length < numberSelectable) {
-                const _id = item._id;
-                const text1 = item.text1;
-                extendedState._id.push(_id);
-                extendedState.text1.push(text1);
-                setExtendedState({ ...extendedState });
-            } else {
-                return false;
-            }
-        }
-        item?.onPress?.()
-    };
-
     
     return(
         visible == true&&
@@ -143,31 +96,15 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                     style={{maxHeight:maxHeight}}
                     showsVerticalScrollIndicator={false}
                 >
-                    <View style={{flexDirection:'row', flexWrap:'wrap', justifyContent:'space-between', paddingHorizontal:15, rowGap:15, paddingBottom:30}}>
-                        {list.map((item, index) => (
-                            <GridItem
-                                key={index.toString()}
-                                title={item?.text1}
-                                description={item?.text2??undefined}
-                                disabled={item?.disabled == true?true:false}
-                                onPress={()=>{
-                                    if(item?.disabled == true){
-                                        item?.onPress?.()
-                                    }
-                                }}
-                                height={item?.height??gridSize+40}
-                                width={item?.width??gridSize}
-                                image={item?.image}
-                                blank_background={item?.blank_background??undefined}
-                                localImage={item?.localImage??false}
-                                selectedItem={()=>selectedItem(item)}
-                                deletedItem={()=>deletedItem(item)}
-                                disabledDeleteItem={numberSelectable == 1?true:false}
-                                selected={extendedState._id.find((i) => i == item._id) ? true : false}
-                                iconName={item?.iconName??'layers'}
-                                iconType={item?.iconType??'Ionicons'}
-                            />
-                        ))}
+                    <View style={{flexDirection:'column', paddingHorizontal:15, gap:15, paddingTop:15, paddingBottom:50}}>
+                        {
+                            message?.length > 0&&message.map((item, index)=>(
+                                <View key={index.toString()} style={{flexDirection:'row', alignItems:'flex-start', width:"100%", gap:10}}>
+                                    {item.Icon&&<item.Icon/>}
+                                    <Text style={item?.style??{fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:20}}>{item.text}</Text>
+                                </View>
+                            ))
+                        }
                     </View>
                 </ScrollView>
                 {
@@ -184,15 +121,11 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                     width={item?.width??(buttons.length > 1?(width/2) - 20:width-40)}
                                     loading={(item?.loading == true && buttonsLoading == index)?true:false}
                                     onPress={()=>{
-                                        if((selectRequired && extendedState._id.length == 0) || (item.selectRequired == true && extendedState._id.length == 0)){
-                                            null
-                                        } else {
-                                            item.onPress({ data: extendedState })
-                                            if(item.loading == true){
-                                                setButtonsLoading(index)
-                                            } else {
-                                                close()
-                                            }
+                                        item.onPress()
+                                        if(item.loading == true){
+                                            setButtonsLoading(index)
+                                        } else if(!item?.stayOpen){
+                                            close()
                                         }
                                     }}
                                     borderRadius={item?.borderRadius??5}
@@ -213,15 +146,11 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                     width={item?.width??(buttons.length > 1?(width/2) - 25:width-40)}
                                     loading={(item?.loading == true && buttonsLoading == index)?true:false}
                                     onPress={()=>{
-                                        if((selectRequired && extendedState._id.length == 0) || (item.selectRequired == true && extendedState._id.length == 0)){
-                                            null
-                                        } else {
-                                            item.onPress({ data: extendedState })
-                                            if(item.loading == true){
-                                                setButtonsLoading(index)
-                                            } else {
-                                                close()
-                                            }
+                                        item.onPress()
+                                        if(item.loading == true){
+                                            setButtonsLoading(index)
+                                        } else if(!item?.stayOpen){
+                                            close()
                                         }
                                     }}
                                     borderRadius={item?.borderRadius??5}
@@ -251,4 +180,4 @@ const styles = StyleSheet.create({
       borderTopRightRadius:20,
     },
 });
-export default memo(BottomDrawerGrid)
+export default memo(AlertBottomDrawer)

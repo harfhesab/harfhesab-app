@@ -4,8 +4,7 @@ export default {
     baseURL: `${url}/graphql`,
     uri: url,
     android_package_name: 'com.pod.kiosk',
-    app_version: "1.0.0",
-    install_source: "direct_download",
+    install_source: "direct", // 'direct', 'googleplay', 'cafebazaar', 'myket', 'appstore', 'sibirani', 'sibapp', 'anardoni'
     build_type: "apk",
     data: {
       configs: {

@@ -29,17 +29,16 @@ function Account(props){
         {
             title: "خرید سکه",
             image_icon: require('../../../assets/image/coin.png'),
-            icon_size: 25,
-            icon_backgroun_color:"#388e3c99",
+            icon_size: 35,
+            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{}
         },
         {
             title: "اشتراک بازی",
-            icon_name: "diamond-outline",
-            icon_type: "Ionicons",
-            icon_size: 25,
-            icon_backgroun_color:"#fcb90099",
+            image_icon: require('../../../assets/image/diamond.png'),
+            icon_size: 35,
+            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{}
         },
@@ -55,8 +54,8 @@ function Account(props){
         {
             title: "دریافت سکه رایگان",
             image_icon: require('../../../assets/image/coin.png'),
-            icon_size: 25,
-            icon_backgroun_color:"#673ab799",
+            icon_size: 35,
+            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{}
         },
@@ -84,16 +83,15 @@ function Account(props){
             title: "خرید سکه",
             image_icon: require('../../../assets/image/coin.png'),
             icon_size: 25,
-            icon_backgroun_color:"#388e3c99",
+            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{}
         },
         {
             title: "اشتراک بازی",
-            icon_name: "diamond-outline",
-            icon_type: "Ionicons",
+            image_icon: require('../../../assets/image/diamond.png'),
             icon_size: 25,
-            icon_backgroun_color:"#fcb90099",
+            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{}
         },
@@ -110,7 +108,7 @@ function Account(props){
             title: "دریافت سکه رایگان",
             image_icon: require('../../../assets/image/coin.png'),
             icon_size: 25,
-            icon_backgroun_color:"#673ab799",
+            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{}
         },

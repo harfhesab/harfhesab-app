@@ -9,6 +9,8 @@ import { PackageStage } from "./package-game/PackageStageSchema";
 import { Package } from "./package-game/PackageSchema";
 import { UserStageGameProgress } from "./user/UserStageGameProgressSchema";
 import { UserPackage } from "./user/UserPackageSchema";
+import { CoinPlan } from "./user/CoinPlanSchema";
+import { SubscriptionPlan } from "./user/SubscriptionPlanSchema";
 
 export const realmSchemas = [
   StageGameVersionControl,
@@ -22,5 +24,7 @@ export const realmSchemas = [
   PackageStage,
   Package,
   UserStageGameProgress,
-  UserPackage
+  UserPackage,
+  CoinPlan,
+  SubscriptionPlan
 ];

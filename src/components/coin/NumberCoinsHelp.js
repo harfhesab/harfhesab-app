@@ -31,7 +31,7 @@ function NumberCoinsHelp({ onPress = () => {}, transparent = 40, numberCoinsHelp
                 <Text style={{fontFamily:Font.medium, fontSize:13, color:colors.text.a1, paddingHorizontal:15}}>{"راهنما"}</Text>
                 <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
                     <Image
-                        style={{height:13, width:13}}
+                        style={{height:12, width:12}}
                         source={require('../../assets/image/coin.png')}
                     />
                     <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a1}}>{numberCoinsHelp}</Text>

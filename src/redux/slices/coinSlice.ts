@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CoinState {
   numberCoins: number;
+  coinPlansVersion: number;
 }
 
 const initialState: CoinState = {
   numberCoins: 100,
+  coinPlansVersion: 0
 };
 
 const coinSlice = createSlice({
@@ -30,9 +32,15 @@ const coinSlice = createSlice({
     ) {
       state.numberCoins = state.numberCoins + action.payload.number;
     },
+    changeCoinPlansVersion(
+      state,
+      action: PayloadAction<{ version: number }>
+    ) {
+      state.coinPlansVersion = action.payload.version;
+    },
   },
 });
 
-export const { updateNumberCoins, reduceNumberCoins, increaseNumberCoins } = coinSlice.actions;
+export const { updateNumberCoins, reduceNumberCoins, increaseNumberCoins, changeCoinPlansVersion } = coinSlice.actions;
 
 export default coinSlice.reducer;

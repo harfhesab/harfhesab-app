@@ -2,6 +2,7 @@ import React from 'react';
 import { StatusBar, SafeAreaView} from 'react-native';
 import { MD3LightTheme as PaperDefaultTheme, PaperProvider } from 'react-native-paper';
 import {NavigationContainer, DefaultTheme as NavigationDefaultTheme} from '@react-navigation/native';
+import SplashRoutes from './SplashRoutes';
 import MainRoutes from './MainRoutes';
 import SignRoutes from './SignRoutes';
 import Toast from 'react-native-toast-message';
@@ -18,6 +19,7 @@ import useAppTheme from '../hooks/theme/useAppTheme';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.account);
+  const { splash } = useSelector((state) => state.main);
   const colors = useAppTheme();
 
   axios.defaults.headers.post['token'] = token;
@@ -29,6 +31,9 @@ const Main = (props) => {
           ref={navigationRef}
         >
             {
+              splash == true?
+              <SplashRoutes/>
+              :
               (isLoggedIn == true && token)?
               <MainRoutes/>
               :

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { RealmProvider } from '.';
-import { DatabaseLoader } from '../components/splash/DatabaseLoader';
+import { DatabaseLoader } from '../components/loader/DatabaseLoader';
 
 interface Props {
   children: React.ReactNode;

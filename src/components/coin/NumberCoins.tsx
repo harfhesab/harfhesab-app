@@ -48,6 +48,7 @@ function NumberCoins({
   transparent?: number;
 }) {
   const colors = useAppTheme();
+  
   const { numberCoins } = useSelector((state: any) => state.coins);
 
   const size = useSharedValue(25);
@@ -85,9 +86,11 @@ function NumberCoins({
             withSpring(25, { damping: 5, stiffness: 280, mass:0.8, overshootClamping:false })
           );
           await wait(2000);
-          rotateY.value = withTiming(180, { duration: 2000 });
+          rotateY.value = withTiming(70, { duration: 1000 });
           await wait(2000);
-          rotateY.value = withTiming(0, { duration: 2000 });
+          rotateY.value = withTiming(-70, { duration: 2000 });
+          await wait(2000);
+          rotateY.value = withTiming(0, { duration: 1000 });
           await wait(4000);
         } else {
           await wait(300); // وقتی شمارش فعاله، لوپ متوقف باشه
@@ -120,7 +123,7 @@ function NumberCoins({
     coinCountUpdateSound()
     animatedValue.value = withTiming(
       target,
-      { duration: 2000, easing: Easing.out(Easing.quad) }, // ← کندتر و واضح‌تر
+      { duration: 1000, easing: Easing.out(Easing.quad) }, // ← کندتر و واضح‌تر
       (finished) => {
         if (finished) {
           isCounting.value = false;
@@ -128,7 +131,7 @@ function NumberCoins({
 
           // بعد از شمارش: فرفره‌وار بچرخه و کم‌کم کند بشه
           rotateY.value = withTiming(rotateY.value + 1440, {
-            duration: 3000,
+            duration: 2000,
             easing: Easing.out(Easing.quad),
           });
         }
@@ -166,7 +169,7 @@ function NumberCoins({
           defaultValue={priceDigitSeperator(String(numberCoins ?? 0))}
           style={{
             fontFamily: Font.black,
-            fontSize: 15,
+            fontSize: numberCoins.toString().length > 5?12:numberCoins.toString().length>4?13:15,
             color: colors.text.a1,
             padding: 0,
             textAlign: "center",
@@ -189,9 +192,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingStart: 10,
+    paddingStart: 5,
     paddingEnd: 5,
-    width: 140,
+    width: 120,
     borderWidth: 1,
     borderRadius: 8,
     height: 40,
@@ -201,8 +204,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   coinWrapper: {
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
     alignItems: "center",
     justifyContent: "center",
   },

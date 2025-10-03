@@ -6,8 +6,8 @@ import rootReducer from './RootReducer';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['account', 'ui', 'stageGamePersist', 'coins'],
-  blacklist: ['stageGameDownload', 'stageGame'],
+  whitelist: ['account', 'ui', 'stageGamePersist', 'coins', 'constants', 'subscription'],
+  blacklist: ['stageGameDownload', 'stageGame', 'main', 'packageGameDownload'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
