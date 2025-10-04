@@ -18,6 +18,7 @@ import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import CoinPlanItem from '../../../components/card/general/CoinPlanItem';
 import { getAllCoinPlansList } from '../../../realm/repositories/user/coin-plan-repository';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import Globals from '../../../utils/Globals';
 
 const {width, height} = Dimensions.get("window")
 const numColumns = IS_TABLET_CONDITION ? 4 : 2
@@ -30,10 +31,23 @@ function CoinPlans(props){
     const dispatch = useDispatch();
     const data = getAllCoinPlansList(realm)
 
+    const clickItem = (item)=>{
+        if(Globals.install_source == "direct") {
+            directPaymentGateway()
+        } else if(Globals.install_source == "googleplay") {
+            directPaymentGateway()
+        } else if(Globals.install_source == "cafebazaar") {
+            
+        } else if(Globals.install_source == "myket") {
+            
+        }
+    }
+
     const renderItem = ({item, index})=>{
         return(
             <CoinPlanItem
                 _id={item._id}
+                click={()=>clickItem(item)}
                 productId={item.product_id}
                 title={item.title}
                 badg={item.badg}

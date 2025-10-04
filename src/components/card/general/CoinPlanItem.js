@@ -16,12 +16,9 @@ const size = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function reverseString(str) {
   return str.split("").reverse().join("");
 }
-function CoinPlanItem({_id, productId, title, badg, image, numberCoin, price, active}){
+function CoinPlanItem({_id, click, productId, title, badg, image, numberCoin, price, active}){
     const colors = useAppTheme();
 
-    const click = ()=>{
-        navigate("PackageInformation", {_id})
-    }
     return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
