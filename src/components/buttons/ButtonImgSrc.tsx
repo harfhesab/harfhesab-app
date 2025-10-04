@@ -17,6 +17,7 @@ interface ButtonImgSrcProps {
   iconName?: string;
   iconSize?: number;
   iconColor?: string,
+  imageSrc?: string,
 }
 const ButtonImgSrc: React.FC<ButtonImgSrcProps> = ({
   text,
@@ -31,11 +32,13 @@ const ButtonImgSrc: React.FC<ButtonImgSrcProps> = ({
   iconName,
   iconSize = 20,
   iconColor = "#FFFFFF",
+  imageSrc = "1"
 }) => {
+    const source = imageSrc == "1"?require('../../assets/image/button_1.png'): imageSrc== "2"&&require('../../assets/image/button_2.png')
     return(
         <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={{width, height, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5}}>
             <ImageBackground
-                source={require('../../assets/image/button_1.png')}
+                source={source}
                 style={{ width: width, height: height, justifyContent: "center", alignItems: "center" }}
                 imageStyle={{ resizeMode: "stretch" }}
                 resizeMode="stretch"

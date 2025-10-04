@@ -32,7 +32,7 @@ function Account(props){
             icon_size: 35,
             icon_backgroun_color:"transparent",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("CoinPlans")}
         },
         {
             title: "اشتراک بازی",
@@ -40,7 +40,7 @@ function Account(props){
             icon_size: 35,
             icon_backgroun_color:"transparent",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("SubscriptionPlans")}
         },
         {
             title: "بسته‌های بازی من",
@@ -85,7 +85,7 @@ function Account(props){
             icon_size: 25,
             icon_backgroun_color:"transparent",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("CoinPlans")}
         },
         {
             title: "اشتراک بازی",
@@ -93,7 +93,7 @@ function Account(props){
             icon_size: 25,
             icon_backgroun_color:"transparent",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("SubscriptionPlans")}
         },
         {
             title: "بسته‌های بازی من",

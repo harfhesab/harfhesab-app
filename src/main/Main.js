@@ -16,6 +16,8 @@ import AlertHelper from '../components/alert/AlertHelper';
 import GameAlert from '../components/game-alert/GameAlert';
 import GameAlertHelper from '../components/game-alert/GameAlertHelper';
 import useAppTheme from '../hooks/theme/useAppTheme';
+import AlertBottomDrawer from '../components/alert-bottom-drawer/AlertBottomDrawer';
+import AlertBottomDrawerHelper from '../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.account);
@@ -43,6 +45,7 @@ const Main = (props) => {
         <Toast config={ToastConfig}/>
         <Alert ref = {Ref => {AlertHelper.setRef(Ref)}}/>
         <GameAlert ref={ref => GameAlertHelper.setRef(ref)} />
+        <AlertBottomDrawer ref = {Ref => {AlertBottomDrawerHelper.setRef(Ref)}}/>
     </SafeAreaView>
   );
 };

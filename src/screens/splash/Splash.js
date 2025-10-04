@@ -17,7 +17,6 @@ import { changeCoinPlansVersion } from '../../redux/slices/coinSlice';
 import { hideSplash } from '../../redux/slices/mainSlice';
 import { createSubscriptionPlansList } from '../../realm/repositories/user/subscription-plan-repository';
 import AlertBottomDrawerHelper from '../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
-import AlertBottomDrawer from '../../components/alert-bottom-drawer/AlertBottomDrawer';
 import Icon from '../../utils/Icon';
 
 const { width } = Dimensions.get("window");
@@ -180,7 +179,7 @@ function Splash(props){
                     setAppIsReady(true)
                 }
             } else {
-                null
+                setAppIsReady(true)
             }
         }).catch(()=>{
             setAppIsReady(true)
@@ -222,6 +221,11 @@ function Splash(props){
             buttons:btn,
             options:{
                 cancelable: false,
+                icon:{
+                    Icon:()=>(
+                        <Icon name={"logo-android"} type={"Ionicons"} style={{fontSize:80, color:colors.primary.a1}}/>
+                    )
+                }
             }
         })
     }
@@ -252,7 +256,6 @@ function Splash(props){
                     onComplete={hideSplashAndStartApp}
                 />
             </View>
-            <AlertBottomDrawer ref = {Ref => {AlertBottomDrawerHelper.setRef(Ref)}}/>
         </View>
     )
 }

@@ -21,6 +21,7 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
     const [message, setMessage] = useState([])
     const [buttons, setButtons] = useState(null)
     const [buttonsLoading, setButtonsLoading] = useState(null)
+    const [icon, setIcon] = useState(null)
     
 
 
@@ -31,6 +32,7 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
             setMessage(dialog?.message??[])
             setCancelable(dialog?.options?.cancelable??true)
             setButtons(dialog?.buttons??null)
+            setIcon(dialog?.options?.icon??null)
         }, 200)
     }
     const close = () => {
@@ -79,16 +81,12 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
         >
             <TouchableOpacity activeOpacity={1} style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
                 <View>
-                    <View style={{width:width * 0.25, height:4, backgroundColor:colors.border.a1, marginTop:30, marginBottom:15, alignSelf:'center', borderRadius:2}}/>                  
+                    <View style={{width:width * 0.25, height:4, backgroundColor:colors.border.a1, marginTop:30, marginBottom:5, alignSelf:'center', borderRadius:2}}/>                  
                     {
                         (title && title.length > 0)&&
-                        <View style={{width:width, marginBottom:15}}>
+                        <View style={{width:width, marginBottom:40, alignItems:'center', gap:5}}>
                             <Text style={{fontFamily:Font.medium, fontSize:14, textAlign:'center', color:colors.bottom_drawer.text2, marginHorizontal:20}}>{title}</Text>
-                            <Border
-                                height={0.5}
-                                top={15}
-                                color={colors.border.a2}
-                            />
+                            {icon&&<icon.Icon/>}
                         </View>
                     }
                 </View>

@@ -15,30 +15,30 @@ import { useIsFocused } from '@react-navigation/native';
 import UserPackageItem from '../../../components/card/package-game-card/UserPackageItem';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
-import CoinPlanItem from '../../../components/card/general/CoinPlanItem';
-import { getAllCoinPlansList } from '../../../realm/repositories/user/coin-plan-repository';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import SubscriptionPlanItem from '../../../components/card/general/SubscriptionPlanItem';
+import { getAllSubscriptionPlansList } from '../../../realm/repositories/user/subscription-plan-repository';
 
 const {width, height} = Dimensions.get("window")
 const numColumns = IS_TABLET_CONDITION ? 4 : 2
 
-function CoinPlans(props){
+function SubscriptionPlans(props){
     const realm = useRealm();
     const isFocused = useIsFocused();
     const colors = useAppTheme()
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
-    const data = getAllCoinPlansList(realm)
+    const data = getAllSubscriptionPlansList(realm)
 
     const renderItem = ({item, index})=>{
         return(
-            <CoinPlanItem
+            <SubscriptionPlanItem
                 _id={item._id}
                 productId={item.product_id}
                 title={item.title}
                 badg={item.badg}
                 image={item.icon_image}
-                numberCoin={item.number_coin}
+                duration={item.duration}
                 price={item.price}
                 active={item.active}
             />
@@ -65,7 +65,7 @@ function CoinPlans(props){
                 paddingHorizontal={15}
                 back={true}
                 height={60}
-                title={"خرید سکه"}
+                title={"خرید اشتراک"}
             />
             <View style={styles.container}>
                 <FlatList
@@ -90,4 +90,4 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     }
 });
-export default CoinPlans;
+export default SubscriptionPlans;

@@ -17,6 +17,7 @@ import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
 import { coinCountUpdateSound } from "../../utils/sound/SoundFunctions";
 import { priceDigitSeperator } from "../../utils/PriceDigitSeperator";
+import { navigate } from "../../main/navigationService";
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
@@ -141,6 +142,7 @@ function NumberCoins({
 
   const onClick = () => {
     onPress?.();
+    navigate("CoinPlans")
   };
 
   return (

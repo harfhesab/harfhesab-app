@@ -27,7 +27,7 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   borderWidth = 2,
  }) => {
 
-  const font = useFont(require('../../assets/fonts/IRANYekanWebExtraBold.ttf'), fontSize);
+  const font = useFont(require('../../assets/fonts/IRANSans(FaNum)_Black.ttf'), fontSize);
 
   if (font === null || !text?.trim()) {
     return null;
