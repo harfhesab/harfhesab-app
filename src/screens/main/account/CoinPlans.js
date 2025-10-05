@@ -37,10 +37,22 @@ function CoinPlans(props){
         } else if(Globals.install_source == "googleplay") {
             directPaymentGateway()
         } else if(Globals.install_source == "cafebazaar") {
-            
+            cafebazaarPaymentGateway()
         } else if(Globals.install_source == "myket") {
-            
+            mayketPaymentGateway()
         }
+    }
+    
+    const directPaymentGateway = ()=>{
+
+    }
+
+    const cafebazaarPaymentGateway = ()=>{
+
+    }
+
+    const mayketPaymentGateway = ()=>{
+        
     }
 
     const renderItem = ({item, index})=>{

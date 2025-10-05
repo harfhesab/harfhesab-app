@@ -13,15 +13,22 @@ import DeviceInfo from 'react-native-device-info';
 import { useSelector, useDispatch } from 'react-redux';
 import Globals from '../../utils/Globals';
 import { updateConstantsVersion } from '../../redux/slices/constantsSlice';
-import { updateNumberCoins } from '../../redux/slices/coinSlice';
+import { changeCoinPlansVersion, updateNumberCoins } from '../../redux/slices/coinSlice';
 import ButtonBorder from '../../components/buttons/ButtonBorder';
 import { loginAsGuest } from '../../redux/slices/accountSlice';
+import { createCoinPlansList } from '../../realm/repositories/user/coin-plan-repository';
+import { createSubscriptionPlansList } from '../../realm/repositories/user/subscription-plan-repository';
+import { changeSubscriptionPlansVersion } from '../../redux/slices/subscriptionSlice';
+import { useRealm } from '../../realm';
 
 const {width, height} = Dimensions.get('window');
 function SignIn(props){
     const colors = useAppTheme()
     const dispatch = useDispatch();
+    const realm = useRealm();
     const { constants_version } = useSelector((state) => state.constants);
+    const { coinPlansVersion } = useSelector((state) => state.coins);
+    const { subscriptionPlansVersion } = useSelector((state) => state.subscription);
     const [loading, setLoading] = useState(false)
 
     const login =() =>{
@@ -56,6 +63,8 @@ function SignIn(props){
                     $unique_id : String,
                     $install_source : String,
                     $build_type : String,
+                    $coin_plans_version : Int,
+                    $subscription_plans_version : Int,
                 ){
                     loginAsGuestByUser(
                         constants_version : $constants_version,
@@ -70,6 +79,8 @@ function SignIn(props){
                         unique_id : $unique_id,
                         install_source : $install_source,
                         build_type : $build_type,
+                        coin_plans_version : $coin_plans_version,
+                        subscription_plans_version : $subscription_plans_version,
                     ) {
                         status,
                         message,
@@ -87,7 +98,39 @@ function SignIn(props){
                             coins_reward_from_season_completed_stage_game,
                             coins_reward_from_stage_completed_package_game,
                             coins_reward_from_season_completed_package_game,
-                        }
+                        },
+                        coin_plans{
+                            _id,
+                            product_id,
+                            title,
+                            description,
+                            badg,
+                            icon_image,
+                            number_coin,
+                            price,
+                            discount_amount,
+                            discount_percent,
+                            order,
+                            is_visible,
+                            is_active,
+                        },
+                        coin_plans_new_version,
+                        subscription_plans{
+                            _id,
+                            product_id,
+                            title,
+                            description,
+                            badg,
+                            icon_image,
+                            duration,
+                            price,
+                            discount_amount,
+                            discount_percent,
+                            order,
+                            is_visible,
+                            is_active,
+                        },
+                        subscription_plans_new_version,
                     }
                 }
                 `,
@@ -103,7 +146,9 @@ function SignIn(props){
                     "device_model" : device_model,
                     "unique_id" : unique_id,
                     "install_source" : Globals.install_source,
-                    "build_type" : Globals.build_type
+                    "build_type" : Globals.build_type,
+                    "coin_plans_version" : coinPlansVersion,
+                    "subscription_plans_version" : subscriptionPlansVersion,
                 }
             }
         }).then(async(response)=>{
@@ -117,6 +162,26 @@ function SignIn(props){
                 if(data?.game_constants){
                     const variables = data.game_constants
                     dispatch(updateConstantsVersion(variables))
+                }
+                if(data?.coin_plans?.length > 0){
+                    const dataList = data.coin_plans
+                    const newCoinPlans = createCoinPlansList(realm, dataList)
+                    if(newCoinPlans == true){
+                        const newCoinPlansVersion = data?.coin_plans_new_version
+                        if(newCoinPlansVersion > 0){
+                            dispatch(changeCoinPlansVersion({version:newCoinPlansVersion}))
+                        }
+                    }
+                }
+                if(data?.subscription_plans?.length > 0){
+                    const dataList = data.subscription_plans
+                    const newSubscriptionPlans = createSubscriptionPlansList(realm, dataList)
+                    if(newSubscriptionPlans == true){
+                        const newSubscriptionPlansVersion = data?.subscription_plans_new_version
+                        if(newSubscriptionPlansVersion > 0){
+                            dispatch(changeSubscriptionPlansVersion({version:newSubscriptionPlansVersion}))
+                        }
+                    }
                 }
                 const numberCoins = data?.user?.number_coins
                 if(typeof numberCoins === "number"){
