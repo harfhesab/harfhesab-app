@@ -23,20 +23,19 @@ import {
 } from 'react-native-otp-verify';
 import Globals from '../../../../utils/Globals';
 import { useSelector, useDispatch } from 'react-redux';
-import { login } from '../../../../redux/slices/accountSlice';
+import { convertGuestToRegistered, login } from '../../../../redux/slices/accountSlice';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
-import { updateConstantsVersion } from '../../../../redux/slices/constantsSlice';
 import { updateNumberCoins } from '../../../../redux/slices/coinSlice';
 import { useRealm } from '../../../../realm';
 import { updateUserStageGameProgressInLogin } from '../../../../realm/repositories/user/user-stage-game-progress.repository';
 import GeneralHeader from '../../../../components/header/GeneralHeader';
+import { updateSubscriptionStatus } from '../../../../redux/slices/subscriptionSlice';
   
   
 const {width, height} = Dimensions.get('window');
 function VerifyLoginToAccount(props){
     const realm = useRealm();
     const dispatch = useDispatch();
-    const { constants_version } = useSelector((state) => state.constants);
     const colors = useAppTheme()
     const [value, setValue] = useState('');
     const [hash, setHash] = useState("")
@@ -170,7 +169,6 @@ function VerifyLoginToAccount(props){
                     mutation verifyUserLoginWithOTPAndMergeGuestAndRegistered(
                         $phone : String!,
                         $code : String!,
-                        $constants_version : Int,
                         $firebase_token : String,
                         $app_version : String,
                         $app_build_number : Int,
@@ -186,7 +184,6 @@ function VerifyLoginToAccount(props){
                         verifyUserLoginWithOTPAndMergeGuestAndRegistered(
                             phone : $phone,
                             code : $code,
-                            constants_version : $constants_version,
                             firebase_token : $firebase_token,
                             app_version : $app_version,
                             app_build_number : $app_build_number,
@@ -202,28 +199,14 @@ function VerifyLoginToAccount(props){
                             status,
                             message,
                             token,
-                            user{first_name, last_name, number_coins},
+                            user{first_name, last_name, number_coins, active_subscription, subscription_expiration},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
-                            game_constants{
-                                constants_version,
-                                coins_for_get_help_word_to_slot_stage_game,
-                                coins_for_get_help_word_to_slot_package_game,
-                                coins_for_get_help_letter_connecting_stage_game,
-                                coins_for_get_help_letter_connecting_package_game,
-                                coins_reward_from_play_video_ads_current_stage,
-                                coins_reward_from_play_video_ads_previous_stage,
-                                coins_reward_from_stage_completed_stage_game,
-                                coins_reward_from_season_completed_stage_game,
-                                coins_reward_from_stage_completed_package_game,
-                                coins_reward_from_season_completed_package_game,
-                            }
                         }
                     }
                     `,
                     variables : {
                         "phone" : phone,
                         "code" : otp,
-                        "constants_version" : constants_version,
                         "firebase_token" : "",
                         "app_version" : app_version,
                         "app_build_number" : app_build_number,
@@ -241,14 +224,14 @@ function VerifyLoginToAccount(props){
                 setLoading(false)
                 const data = response?.data?.data?.verifyUserLoginWithOTPAndMergeGuestAndRegistered
                 if(data?.status == 200) {
-                    const token = data?.token
                     const firstName = data?.user?.firstName ?? null
                     const lastName = data?.user?.lastName ?? null
-                    if(data?.game_constants){
-                        const variables = data.game_constants
-                        dispatch(updateConstantsVersion(variables))
-                    }
                     const numberCoins = data?.user?.number_coins
+                    const activeSubscription = data?.usre?.active_subscription;
+                    if(activeSubscription == true){
+                        const subscriptionExpiration = data?.user?.subscription_expiration;
+                        dispatch(updateSubscriptionStatus({activeSubscription, subscriptionExpiration}))
+                    }
                     if(typeof numberCoins === "number"){
                         dispatch(updateNumberCoins({number:numberCoins}))
                     }
@@ -256,13 +239,14 @@ function VerifyLoginToAccount(props){
                     if(progressData?.length > 0){
                         updateUserStageGameProgressInLogin(realm, progressData)
                     }
-                    dispatch(login({token, phone, firstName, lastName}))
-                    axios.defaults.headers.post['token'] = token;
+                    dispatch(convertGuestToRegistered({ phone, firstName, lastName}))
                     Toast.show({
                         type: "success",
                         text1 : "ورود به حساب",
                         text2 : "ورود به حساب کاربری با موفقیت انجام شد."
                     })
+                    props.navigation.goBack()
+                    props.navigation.goBack()
                 } else {
                     Toast.show({
                         type: "error",

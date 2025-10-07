@@ -145,12 +145,97 @@ function PackageInformation(props){
         } else if(data?.user_package_status.status == "get-coin-payment"){
             getPackageWithCoinPayment()
         } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
-            
+            subscriptionRenewalOrCoinPayment()
         } else if(data?.user_package_status.status == "redownload-content"){
             redownloadContent()
         } else if(data?.user_package_status.status == "recreate-and-download-content"){
             recreateAndDownloadContent()
         } else if(data?.user_package_status.status == "start-game"){
+            
+        }
+    }
+
+    const subscriptionRenewalOrCoinPayment = ()=>{
+        const previousSelected = {
+            _id:["1"],
+            text1:[`پرداخت ${data?.package?.price} سکه`]
+        }
+        BottomDrawerGridHelper.showBottomDrawer({
+            title:data?.user_package_status?.button_text,
+            list:[
+                {
+                    _id: "1",
+                    text1: `پرداخت ${data?.package?.price} سکه`,
+                    text2: `دسترسی دائمی به بستهٔ بازی بعد از تمدید`,
+                    image: require('../../../assets/image/coin.png'),
+                    localImage: true,
+                    height:gridSize + 80,
+                    width:gridSize,
+                    blank_background: true,
+                },
+                {
+                    _id: "2",
+                    text1: "دریافت رایگان با داشتن اشتراک",
+                    text2: `دریافت رایگان بسته‌های بازی با داشتن اشتراک فعال`,
+                    image: require('../../../assets/image/diamond.png'),
+                    localImage: true,
+                    disabled:true,
+                    height:gridSize + 80,
+                    width:gridSize,
+                    blank_background: true,
+                    onPress : ()=>{
+                        props.navigation.navigate("SubscriptionPlans")
+                        BottomDrawerGridHelper.hideBottomDrawer()
+                    }
+                }
+            ],
+            buttons:[
+                {
+                    onPress : ({data})=>{
+                        if(data._id[0] == "1"){
+                            coinPayment()
+                        }
+                    },
+                    text: "پرداخت سکه",
+                    loading: false,
+                    type: "bold",
+                    selectRequired:true
+                },
+            ],
+            options:{
+                numberSelectable: 1,
+                previousSelected:previousSelected,
+                cancelable: true,
+                selectRequired: true,
+            }
+        })
+    }
+    const coinPayment = async()=>{
+        if(data?.package?.price > numberCoins){
+            AlertHelper.showAlert({
+                body: "تعداد سکهٔ شما برای پرداخت این بستهٔ بازی کافی نمیباشد.",
+                buttons: [
+                    {
+                        text: "افزایش سکه",
+                        onPress: () => {
+                            props.navigation.navigate("CoinPlans")
+                        },
+                        type:'bold'
+                    },
+                    {
+                        text: 'لغو',
+                        onPress: () => {},
+                        type:'border'
+                    },
+                ],
+                options : {
+                    type: 'warning',
+                    cancelable: true,
+                    bodyAlign:'center',
+                    textAlign:'center'
+                },
+            });
+        } else {
             
         }
     }
@@ -254,7 +339,7 @@ function PackageInformation(props){
                     width:gridSize,
                     blank_background: true,
                     onPress : ()=>{
-                        props.navigation.navigate("UserPackagesList")
+                        props.navigation.navigate("SubscriptionPlans")
                         BottomDrawerGridHelper.hideBottomDrawer()
                     }
                 }
@@ -290,7 +375,7 @@ function PackageInformation(props){
                     {
                         text: "افزایش سکه",
                         onPress: () => {
-                            props.navigation.navigate("")
+                            props.navigation.navigate("CoinPlans")
                         },
                         type:'bold'
                     },

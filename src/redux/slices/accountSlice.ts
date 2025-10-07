@@ -49,9 +49,19 @@ const accountSlice = createSlice({
       state.lastName = null;
       state.loginType = null;
     },
+    convertGuestToRegistered(
+      state,
+      action: PayloadAction<{ phone: string, firstName: string | null; lastName: string | null; }>
+    ) {
+      state.isLoggedIn = true;
+      state.phone = action.payload.phone;
+      state.firstName = action.payload.firstName;
+      state.lastName = action.payload.lastName;
+      state.loginType = "registered";
+    },
   },
 });
 
-export const { login, logout, loginAsGuest } = accountSlice.actions;
+export const { login, logout, loginAsGuest, convertGuestToRegistered } = accountSlice.actions;
 
 export default accountSlice.reducer;
