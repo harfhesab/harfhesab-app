@@ -20,6 +20,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { recreateAndDownloadContentUserPackage, redownloadContentUserPackage, startSetPackageGameForUserAndGetIt } from '../../../utils/background-task/PackageGameContentTask';
 import { startProgressLoading } from '../../../redux/slices/packageGameDownloadSlice';
+import Toast from 'react-native-toast-message';
+import { updateNumberCoins } from '../../../redux/slices/coinSlice';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -197,7 +199,7 @@ function PackageInformation(props){
                         }
                     },
                     text: "پرداخت سکه",
-                    loading: false,
+                    loading: true,
                     type: "bold",
                     selectRequired:true
                 },
@@ -236,8 +238,92 @@ function PackageInformation(props){
                 },
             });
         } else {
-            
+            coinPaymentOperation()
         }
+    }
+    const coinPaymentOperation = ()=>{
+        await axios({
+            url:'/',
+            method:'post',
+            data: {
+                query : `
+                    mutation coinPaymentToPreviousUserPackageGame(
+                        $package : ID!,
+                        $user_package : ID,
+                        $user_number_coins : Int,
+                    ){
+                        coinPaymentToPreviousUserPackageGame(
+                            package : $package
+                            user_package : $user_package,
+                            user_number_coins : $user_number_coins,
+                        ) {
+                            status,
+                            message,
+                            number
+                        }
+                    }
+                `,
+                variables : {
+                    "package" : packageParamId,
+                    "user_package" : packageId,
+                    "user_number_coins" : numberCoins
+                }
+            }
+        }).then((response)=>{
+            const data = response.data?.data?.coinPaymentToPreviousUserPackageGame
+            if(data?.status == 200){
+                BottomDrawerGridHelper.hideBottomDrawer()
+                if(typeof data?.number === "number"){
+                    dispatch(updateNumberCoins({number:data.number}))
+                }
+                if(localData?.user_package?._id && localData?.user_package?.content_completed){
+                    setData(prev => ({
+                        ...(prev || {}),
+                        user_package_status: {
+                            ...(prev?.user_package_status || {}),
+                            status: "start-game",
+                            button_text: "شروع بازی",
+                        },
+                    }));
+                } else {
+                    if(localData?.user_package?._id){
+                        setData(prev => ({
+                            ...(prev || {}),
+                            user_package_status: {
+                                ...(prev?.user_package_status || {}),
+                                status: "redownload-content",
+                                button_text: "دانلود مجدد محتوا",
+                            },
+                        }));
+                        redownloadContent()
+                    } else {
+                        setData(prev => ({
+                            ...(prev || {}),
+                            user_package_status: {
+                                ...(prev?.user_package_status || {}),
+                                status: "recreate-and-download-content",
+                                button_text: "دانلود مجدد محتوا",
+                            },
+                        }));
+                        recreateAndDownloadContent()
+                    }
+                }
+            } else {
+                BottomDrawerGridHelper.hideBottomDrawer()
+                Toast.show({
+                    type: "error",
+                    text1 : "خطا در پرداخت سکه",
+                    text2: response.data?.data?.message??"مشکلی در پرداخت سکه پیش آمد. دوباره تلاش کنید.",
+                })
+            }
+        }).catch((err)=>{
+            BottomDrawerGridHelper.hideBottomDrawer()
+            Toast.show({
+                type: "error",
+                text1 : "خطا در پرداخت سکه",
+                text2: "مشکلی در پرداخت سکه پیش آمد. دوباره تلاش کنید.",
+            })
+        })
     }
 
     const getPackageWithSubscription = ()=>{
