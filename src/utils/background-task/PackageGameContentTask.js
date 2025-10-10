@@ -24,6 +24,7 @@ const veryIntensiveTask1 = async (taskDataArguments) => {
 };
 
 export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color }) => {
+            console.log("PPPPPPPPPPPPPP4444444444444444444444")
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask1, {
             ...options,

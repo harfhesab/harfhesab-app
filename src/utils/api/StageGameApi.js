@@ -220,6 +220,7 @@ const getNewVersionCreatedStageGameContent = async ({page, dispatch, realm, stat
                                 _id,
                                 sentence,
                                 sentence_hint,
+                                sentence_display,
                                 words{
                                     _id,
                                     word,
@@ -378,6 +379,7 @@ const getNewVersionUpdatedStageGameContent = async ({page, dispatch, realm, stat
                                 _id,
                                 sentence,
                                 sentence_hint,
+                                sentence_display,
                                 words{
                                     _id,
                                     word,
@@ -626,6 +628,7 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
                                 _id,
                                 sentence,
                                 sentence_hint,
+                                sentence_display,
                                 words{
                                     _id,
                                     word,

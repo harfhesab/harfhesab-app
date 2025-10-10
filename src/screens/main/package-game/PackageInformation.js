@@ -241,7 +241,7 @@ function PackageInformation(props){
             coinPaymentOperation()
         }
     }
-    const coinPaymentOperation = ()=>{
+    const coinPaymentOperation = async()=>{
         await axios({
             url:'/',
             method:'post',
@@ -479,6 +479,7 @@ function PackageInformation(props){
                 },
             });
         } else {
+            console.log("PPPPPPPPPPPPPP000000000000000000")
             const color = colors.primary.a1
             const status = data?.user_package_status.status
             const selectedAccessType = accessType
@@ -501,6 +502,7 @@ function PackageInformation(props){
                 version_updated : data.package.doc_version_updated,
                 version_deleted : data.package.doc_version_deleted,
             }
+            console.log("PPPPPPPPPPPPPP11111111111111111111")
             const userPackageInfo = {
                 package_ref : packageParamId,
                 access_type : selectedAccessType,
@@ -508,7 +510,9 @@ function PackageInformation(props){
                 version_updated : data.package.version_updated,
                 version_deleted : data.package.version_deleted,
             }
+            console.log("PPPPPPPPPPPPPP2222222222222222222")
             dispatch(startProgressLoading())
+            console.log("PPPPPPPPPPPPPP333333333333333333333333")
             await startSetPackageGameForUserAndGetIt({ dispatch, realm, packageId:packageParamId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
         }
     }

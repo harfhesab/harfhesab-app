@@ -5,7 +5,7 @@ import AlertHelper from "../../components/alert/AlertHelper";
 import { createManyPackageSeasons } from "../../realm/repositories/package-game/package-season.repository";
 import { createManyPackageStages } from "../../realm/repositories/package-game/package-stage.repository";
 import { createPackage } from "../../realm/repositories/package-game/package.repository";
-import { createUserPackage } from "../../realm/repositories/user/user-package-game-progress.repository";
+import { changeCompletionStatusUserPackage, createUserPackage } from "../../realm/repositories/user/user-package-game-progress.repository";
 import { updateNumberCoins } from "../../redux/slices/coinSlice";
 import { endProgressLoading, setDownloadEnded, setGetError, setIsDownloading, setIsDownloadingFailed, setVersionCreatedPage } from "../../redux/slices/packageGameDownloadSlice";
 
@@ -190,6 +190,7 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, realm, disp
                                 _id,
                                 sentence,
                                 sentence_hint,
+                                sentence_display,
                                 words{
                                     _id,
                                     word,

@@ -20,6 +20,7 @@ export interface IPartStage {
   sentence: string;
   sentence_builded?: boolean;
   sentence_hint?: string;
+  sentence_display?: string;
   words: IWordStage[];
   order?: number;
 }

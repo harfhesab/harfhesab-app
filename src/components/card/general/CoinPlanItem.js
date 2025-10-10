@@ -22,7 +22,7 @@ function CoinPlanItem({_id, click, productId, title, badg, image, numberCoin, pr
     return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{flexDirection:'column', width:size, alignItems:'center', justifyContent:'flex-start', paddingVertical:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:10, backgroundColor:`${colors.primary.a1}40`}}>
+                <View style={{flexDirection:'column', width:size, alignItems:'center', justifyContent:'flex-start', paddingVertical:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:10, backgroundColor:`${colors.primary.a2}40`}}>
                     <View style={{width:size - 20, height:size - 20, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderRadius:10}}>
                         <ImageComponent
                             uri={image}

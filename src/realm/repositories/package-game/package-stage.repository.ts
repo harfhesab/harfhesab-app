@@ -11,6 +11,7 @@ function cleanParts(parts: IPartStage[]): PartStage[] {
       _id: part._id,
       sentence: part.sentence,
       sentence_hint: part.sentence_hint ?? null,
+      sentence_display: part.sentence_display ?? null,
       order: part.order ?? null,
       words: part.words
         .filter((word): word is IWordStage => word && typeof word.word === 'string')

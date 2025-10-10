@@ -43,6 +43,7 @@ export class PartStage extends Realm.Object<PartStage> {
   sentence!: string;
   sentence_builded?: boolean;
   sentence_hint?: string;
+  sentence_display?: string;
   words!: WordStage[];
   order?: number;
 
@@ -54,6 +55,7 @@ export class PartStage extends Realm.Object<PartStage> {
       sentence: "string",
       sentence_builded: { type: "bool", default: false },
       sentence_hint: "string?",
+      sentence_display: "string?",
       words: "WordStage[]",
       order: "int?",
     },

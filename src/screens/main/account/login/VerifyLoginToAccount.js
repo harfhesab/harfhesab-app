@@ -209,7 +209,7 @@ function VerifyLoginToAccount(props){
                         "code" : otp,
                         "firebase_token" : "",
                         "app_version" : app_version,
-                        "app_build_number" : app_build_number,
+                        "app_build_number" : Number(app_build_number),
                         "os" : os,
                         "os_version" : os_version,
                         "device_brand" : device_brand,

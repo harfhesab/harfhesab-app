@@ -138,7 +138,7 @@ function SignIn(props){
                     "constants_version" : constants_version,
                     "firebase_token" : "",
                     "app_version" : app_version,
-                    "app_build_number" : app_build_number,
+                    "app_build_number" : Number(app_build_number),
                     "os" : os,
                     "os_version" : os_version,
                     "device_brand" : device_brand,
@@ -152,7 +152,6 @@ function SignIn(props){
                 }
             }
         }).then(async(response)=>{
-                console.log(response)
             setLoading(false)
             const data = response?.data?.data?.loginAsGuestByUser
             if(data?.status == 200) {
