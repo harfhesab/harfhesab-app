@@ -153,7 +153,7 @@ function PackageInformation(props){
         } else if(data?.user_package_status.status == "recreate-and-download-content"){
             recreateAndDownloadContent()
         } else if(data?.user_package_status.status == "start-game"){
-            
+            props.navigation.navigate("StartPackageGame", {_id:localData?.user_package._id, packageId:localData?.package._id })
         }
     }
 
@@ -601,7 +601,7 @@ function PackageInformation(props){
                             <ImageComponent
                                 uri={data?.package?.banner_image}
                                 width={IS_TABLET_CONDITION?500:width}
-                                height={IS_TABLET_CONDITION?225:width * 0.45}
+                                height={IS_TABLET_CONDITION?300:width * 0.6}
                                 resizeMode="cover"
                                 borderRadius={0}
                             />

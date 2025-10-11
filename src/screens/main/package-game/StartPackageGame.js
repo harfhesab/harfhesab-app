@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, StatusBar} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -25,6 +25,7 @@ import { PackageSeason } from '../../../realm/schemas/package-game/PackageSeason
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import ImageComponent from '../../../components/image-components/ImageComponent';
+import NavigationBar from '../../../utils/android-native/NavigationBar';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -34,7 +35,7 @@ const numColumns = IS_TABLET_CONDITION ? 2 : 1
 const snapInterval = itemHeight + rowGap
 function useUserPackageGameData({ _id, packageId }) {
   const allSeasons = useQuery(PackageSeason);
-  const id = useMemo(() => {
+  const validPackageId = useMemo(() => {
     try {
       return packageId ? new BSON.ObjectId(packageId) : null;
     } catch {
@@ -42,23 +43,21 @@ function useUserPackageGameData({ _id, packageId }) {
     }
   }, [packageId]);
 
-  const userPackageId = useMemo(() => {
+  const validUserPackageId = useMemo(() => {
     try {
       return _id ? new BSON.ObjectId(_id) : null;
     } catch {
       return null;
     }
   }, [_id]);
-  const EMPTY_ID = useRef(new BSON.ObjectId()).current;
-  const packageInfo = useObject(Package, id ?? EMPTY_ID);
-  const userPackage = useObject(UserPackage, userPackageId ?? EMPTY_ID);
+  const packageInfo = useObject(Package, validPackageId);
+  const userPackage = useObject(UserPackage, validUserPackageId);
   const seasons = useMemo(() => {
-    if (!id) return [];
+    if (!validPackageId) return [];
     return allSeasons
-      .filtered("package == $0 AND is_visible == true", id)
+      .filtered("package == $0 AND is_visible == true", validPackageId)
       .sorted("season_number");
-  }, [allSeasons, id]);
-  console.log({seasons, packageInfo, userPackage})
+  }, [allSeasons, validPackageId]);
   return { seasons, packageInfo, userPackage };
 }
 
@@ -86,6 +85,13 @@ function StartPackageGame(props){
             }, 3000)
         }
     }, [seasons])
+
+    useEffect(() => {
+        NavigationBar.hide();
+        return () => {
+            NavigationBar.show();
+        }
+    }, []);
 
     const renderItem = ({item, index})=>{
         return(
@@ -150,16 +156,20 @@ function StartPackageGame(props){
                 <ImageComponent
                     uri={packageInfo?.banner_image}
                     width={IS_TABLET_CONDITION?500:width}
-                    height={IS_TABLET_CONDITION?225:width * 0.45}
+                    height={IS_TABLET_CONDITION?300:width * 0.6}
                     resizeMode="cover"
                     borderRadius={0}
                 />
+                <View>
+                    <Text></Text>
+                </View>
             </View>
         </View>
     )
 
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
+            <StatusBar hidden={true} />
             <GeneralHeader
                 paddingHorizontal={15}
                 height={60}

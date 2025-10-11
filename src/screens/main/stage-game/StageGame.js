@@ -30,14 +30,15 @@ const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT
 const rowGap = 25
 const numColumns = IS_TABLET_CONDITION ? 2 : 1
 const snapInterval = itemHeight + rowGap
+
 function useStageSeasonsByLanguage(languageId) {
   const all = useQuery(StageSeason);
-
-  if (!languageId) return [];
-
-  const id = typeof languageId === 'string' ? new BSON.ObjectId(languageId) : languageId;
-
-  return all.filtered("language_ref == $0 AND is_visible == true", id).sorted("season_number");
+  const seasons = useMemo(() => {
+    if (!languageId) return [];
+    const id = typeof languageId === 'string' ? new BSON.ObjectId(languageId) : languageId;
+    return all.filtered("language_ref == $0 AND is_visible == true", id).sorted("season_number");
+  }, [all, languageId]);
+  return seasons;
 }
 function StageGame(props){
     const isFocused = useIsFocused();

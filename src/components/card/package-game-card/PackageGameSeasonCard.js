@@ -18,8 +18,8 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 
 const { width, height } = Dimensions.get('window');
 
-export const PACKAGE_GAME_SEASON_CARD_MARGIN = 15;
-export const PACKAGE_GAME_SEASON_CARD_HEIGHT = height - 185;
+export const PACKAGE_GAME_SEASON_CARD_MARGIN = 10;
+export const PACKAGE_GAME_SEASON_CARD_HEIGHT = height - 100;
 const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION
   ? (width - (PACKAGE_GAME_SEASON_CARD_MARGIN * 3)) / 2
   : width - (PACKAGE_GAME_SEASON_CARD_MARGIN * 2);
@@ -106,16 +106,14 @@ const CardContent = memo(({
       height: PACKAGE_GAME_SEASON_CARD_HEIGHT,
       flexDirection: 'column',
       justifyContent: 'space-between',
-      padding: 2,
     }}>
-      <View style={{ width: '100%', alignItems: 'center', paddingTop: 10 }}>
+      <View style={{ width: '100%', alignItems: 'center' }}>
         <ImageComponent
           uri={image}
-          width={STAGE_GAME_CARD_WIDTH - 20}
-          height={(STAGE_GAME_CARD_WIDTH - 20) * 0.7}
+          width={STAGE_GAME_CARD_WIDTH}
+          height={(STAGE_GAME_CARD_WIDTH) * 0.7}
           resizeMode={'cover'}
-          borderRadius={13}
-          style={{ borderWidth: 1, borderColor: colors.border.a1 }}
+          borderRadius={15}
         />
         <View style={{ width: '100%', alignItems: 'center', paddingTop: 10, paddingHorizontal: 10 }}>
           <View style={{
@@ -123,7 +121,7 @@ const CardContent = memo(({
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            backgroundColor: `${colors.primary.a1}25`,
+            backgroundColor: `${colors.primary.a1}45`,
             paddingVertical: 15,
             paddingHorizontal: 10,
             borderRadius: 10,
