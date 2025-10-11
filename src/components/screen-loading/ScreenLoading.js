@@ -37,7 +37,7 @@ function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErr
                             <Text style={[styles.text2, {color:colors.text.a3}]}>{"متأسفانه مشکلی پیش آمد. لطفا دوباره تلاش کنید."}</Text>
                             <ButtonGradient
                                 text={"تلاش مجدد"}
-                                textSize={16}
+                                textSize={14}
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
@@ -57,7 +57,7 @@ function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErr
                             <Text style={[styles.text2, {color:colors.text.a3}]}>{"موردی برای نمایش یافت نشد."}</Text>
                             <ButtonGradient
                                 text={"تلاش مجدد"}
-                                textSize={16}
+                                textSize={14}
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
@@ -88,16 +88,16 @@ const styles = StyleSheet.create({
     },
     text1:{
         fontFamily: Font.bold,
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'center',
         maxWidth:"60%",
     },
     text2:{
         fontFamily: Font.medium,
-        fontSize: 16,
+        fontSize: 12,
         textAlign: 'center',
         maxWidth:"60%",
-        lineHeight:28
+        lineHeight:24
     },
 })
 export default memo(ScreenLoading);

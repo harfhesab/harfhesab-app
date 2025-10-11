@@ -15,6 +15,7 @@ import { getCurrentRouteName } from './navigationService';
 import NavigationBar from '../utils/android-native/NavigationBar';
 import CoinPlans from '../screens/main/account/CoinPlans';
 import SubscriptionPlans from '../screens/main/account/SubscriptionPlans';
+import StartPackageGame from '../screens/main/package-game/StartPackageGame';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"UserPackagesList"} component={UserPackagesList} />
       <Stack.Screen name={"CoinPlans"} component={CoinPlans} />
       <Stack.Screen name={"SubscriptionPlans"} component={SubscriptionPlans} />
+      <Stack.Screen name={"StartPackageGame"} component={StartPackageGame} />
     </Stack.Navigator>
   )
 }

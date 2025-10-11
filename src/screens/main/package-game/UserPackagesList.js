@@ -27,10 +27,9 @@ function useUserPackage() {
       const packag = allPackage.find(p => 
         p._id.toHexString() === userPkg.package_ref.toHexString()
       );
-
       return {
-        ...userPkg.toJSON(), // یا مستقیم خود userPkg هم میشه
-        packag, // پکیج مربوطه
+        ...userPkg.toJSON(),
+        packag,
       };
     });
   }, [allUserPackage, allPackage]);
@@ -44,22 +43,34 @@ function UserPackagesList(props){
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const realm = useRealm();
-    const [loading, setLoading] = useState(true)
     const data = useUserPackage()
+    const [loading, setLoading] = useState(true)
+    const [noItem, setNoItem] = useState(false)
 
-    useEffect(() => {
-        setTimeout(()=>{
+    useEffect(()=>{
+        if(data.length > 0){
             setLoading(false)
-        }, 300)
-    }, []);
+            setNoItem(false)
+        } else {
+            setTimeout(()=>{
+                setNoItem(true)
+            }, 3000)
+        }
+    }, [data])
+
 
     const renderItem = ({item, index})=>{
         return(
             <UserPackageItem
                 _id={item._id}
                 packageId={item.packag._id}
-                title={item.packag.title}
-                image={item.packag.icon_image}
+                accessType={item.access_type}
+                title={item?.packag?.title}
+                image={item?.packag?.icon_image}
+                price={item?.packag?.price}
+                numberStage={item?.packag?.number_stage}
+                numberSeason={item?.packag?.number_season}
+                click={()=>{props.navigation.navigate("StartPackageGame", {_id:item._id.toHexString(), packageId:item.packag._id.toHexString()})}}
             />
         )
     }
@@ -71,9 +82,9 @@ function UserPackagesList(props){
     const ListEmptyComponent = ()=>{
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
-                loading={false}
+                loading={loading}
                 getError={false}
-                noItem={true}
+                noItem={noItem}
                 tryAgain={()=>{}}
             />
         </View>
@@ -99,17 +110,6 @@ function UserPackagesList(props){
                     style={{width:width, paddingHorizontal:15}}
                 />
             </View>
-            {
-                loading == true&&
-                <View style={{width:"100%", height:"100%", backgroundColor:colors.background.a1, alignItems:'center', justifyContent:'center', position:'absolute'}}>
-                    <ScreenLoading
-                        loading={true}
-                        getError={false}
-                        noItem={false}
-                        tryAgain={()=>{}}
-                    />
-                </View>
-            }
         </View>
     )
 }

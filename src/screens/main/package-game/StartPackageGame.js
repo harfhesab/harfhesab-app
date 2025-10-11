@@ -4,134 +4,92 @@ import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
-import { useQuery, useRealm } from '../../../realm';
+import { useQuery, useObject } from '../../../realm';
 import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-game/stage-season.repository';
 import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import StageGameSeasonCard, { STAGE_GAME_SEASON_CARD_HEIGHT, STAGE_GAME_SEASON_CARD_MARGIN } from '../../../components/card/stage-game-card/StageGameSeasonCard';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
 import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
 import { updateCurrentLanguageLastStageAndLastSeason } from '../../../redux/slices/stageGameSlice';
 import { BSON } from 'realm';
-import { StageSeason } from '../../../realm/schemas/stage-game/StageSeasonSchema';
 import { useIsFocused } from '@react-navigation/native';
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
+import PackageGameSeasonCard, { PACKAGE_GAME_SEASON_CARD_HEIGHT, PACKAGE_GAME_SEASON_CARD_MARGIN } from '../../../components/card/package-game-card/PackageGameSeasonCard';
+import { PackageSeason } from '../../../realm/schemas/package-game/PackageSeasonSchema';
+import { Package } from '../../../realm/schemas/package-game/PackageSchema';
+import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
+import ImageComponent from '../../../components/image-components/ImageComponent';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
-const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT
+const itemHeight = PACKAGE_GAME_SEASON_CARD_HEIGHT
 const rowGap = 25
 const numColumns = IS_TABLET_CONDITION ? 2 : 1
 const snapInterval = itemHeight + rowGap
-function useStageSeasonsByLanguage(languageId) {
-  const all = useQuery(StageSeason);
+function useUserPackageGameData({ _id, packageId }) {
+  const allSeasons = useQuery(PackageSeason);
+  const id = useMemo(() => {
+    try {
+      return packageId ? new BSON.ObjectId(packageId) : null;
+    } catch {
+      return null;
+    }
+  }, [packageId]);
 
-  if (!languageId) return [];
-
-  const id = typeof languageId === 'string' ? new BSON.ObjectId(languageId) : languageId;
-
-  return all.filtered("language_ref == $0 AND is_visible == true", id).sorted("season_number");
+  const userPackageId = useMemo(() => {
+    try {
+      return _id ? new BSON.ObjectId(_id) : null;
+    } catch {
+      return null;
+    }
+  }, [_id]);
+  const EMPTY_ID = useRef(new BSON.ObjectId()).current;
+  const packageInfo = useObject(Package, id ?? EMPTY_ID);
+  const userPackage = useObject(UserPackage, userPackageId ?? EMPTY_ID);
+  const seasons = useMemo(() => {
+    if (!id) return [];
+    return allSeasons
+      .filtered("package == $0 AND is_visible == true", id)
+      .sorted("season_number");
+  }, [allSeasons, id]);
+  console.log({seasons, packageInfo, userPackage})
+  return { seasons, packageInfo, userPackage };
 }
+
+
 function StartPackageGame(props){
     const isFocused = useIsFocused();
     const colors = useAppTheme()
-    const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
-    const realm = useRealm();
     const flatListRef = useRef(null);
     const [activeIndexes, setActiveIndexes] = useState([]);
-    const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
-    const { lastSeasonNumber } = useSelector((state) => state.stageGame);
+    const _id = props?.route?.params?._id
+    const packageId = props?.route?.params?.packageId
+    const {seasons, packageInfo, userPackage} = useUserPackageGameData({_id, packageId})
+    const lastSeasonNumber = userPackage?.last_season_number || 1;
     const [loading, setLoading] = useState(true)
-    const data = useStageSeasonsByLanguage(stageGameLanguage)
+    const [noItem, setNoItem] = useState(false)
 
-    useEffect(() => {
-        if(isFocused){
-            startFirst()
-        }
-    }, [isFocused]);
     useEffect(()=>{
-        getProgressOperation()
-    }, [stageGameLanguage])
-    useEffect(() => {
-        setLoading(true)
-        setTimeout(()=>{
+        if(seasons.length > 0){
             setLoading(false)
-        }, 300)
-        const targetIndex = Math.max(0, lastSeasonNumber - 1);
-        if (targetIndex < data.length) {
-            flatListRef.current?.scrollToIndex({
-                index: targetIndex,
-                animated: false,
-                viewOffset: FLATLIST_PADDING_VERTICAL,
-            });
-        }
-    }, [ lastSeasonNumber]);zabonsaz
-    const getProgressOperation = async(selected)=>{
-        const language = selected ?? stageGameLanguage
-        const progress = await getCurrentLanguageLastStageAndLastSeason(realm, language)
-        const data = {
-            lastStage: progress?.last_stage,
-            lastStageNumber: progress?.last_stage_number,
-            lastSeason: progress?.last_season,
-            lastSeasonNumber: progress?.last_season_number  
-        }
-        await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
-    }
-    const startFirst = async() =>{
-        if(versionCreatedContent == 0){
-            AlertHelper.showAlert({
-                body: "برای شروع بازی، محتوای بازی مرحله‌ای را دریافت کنید.",
-                buttons: [
-                    {
-                        text: 'دریافت محتوا',
-                        onPress: () => {
-                            props.navigation.navigate("StageGameUpdateScreen")
-                        },
-                        type:'bold'
-                    },
-                ],
-                options : {
-                    type: 'warning',
-                    cancelable: false,
-                    bodyAlign:'center',
-                    textAlign:'center',
-                },
-            });
-        } else if(forceUpdate == true){
-            AlertHelper.showAlert({
-                body: "یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
-                buttons: [
-                    {
-                        text: 'دریافت بروزرسانی',
-                        onPress: () => {
-                            props.navigation.navigate("StageGameUpdateScreen")
-                        },
-                        type:'bold'
-                    },
-                ],
-                options : {
-                    type: 'warning',
-                    cancelable: false,
-                    bodyAlign:'flex-start',
-                    textAlign:'flex-start'
-                },
-            });
+            setNoItem(false)
         } else {
-            const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
-            checkStageGameContentVersion({ dispatch, realm, state, versionContent });
+            setTimeout(()=>{
+                setNoItem(true)
+            }, 3000)
         }
-    }
+    }, [seasons])
 
     const renderItem = ({item, index})=>{
         return(
-            <StageGameSeasonCard
+            <PackageGameSeasonCard
                 lock={item.season_number > lastSeasonNumber?true:false}
                 currentScroll={activeIndexes.includes(index)}
                 title={item.title}
@@ -149,7 +107,7 @@ function StartPackageGame(props){
             />
         )
     }
-    const memoizedValue = useMemo(() => renderItem, [data, activeIndexes, lastSeasonNumber]);
+    const memoizedValue = useMemo(() => renderItem, [seasons, activeIndexes, lastSeasonNumber]);
     const keyExtractor = (item,index)=>index.toString()
     
 
@@ -179,42 +137,67 @@ function StartPackageGame(props){
     const ListEmptyComponent = ()=>{
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
-                loading={false}
+                loading={loading}
                 getError={false}
-                noItem={true}
+                noItem={noItem}
                 tryAgain={()=>{}}
             />
         </View>
     }
+    const ListHeaderComponent = ()=>(
+        <View>
+            <View style={{width:width, alignItems:'center'}}>
+                <ImageComponent
+                    uri={packageInfo?.banner_image}
+                    width={IS_TABLET_CONDITION?500:width}
+                    height={IS_TABLET_CONDITION?225:width * 0.45}
+                    resizeMode="cover"
+                    borderRadius={0}
+                />
+            </View>
+        </View>
+    )
+
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 paddingHorizontal={15}
                 height={60}
+                title={packageInfo?.title}
+                Image={()=>(
+                    <ImageComponent
+                        uri={packageInfo?.icon_image}
+                        width={40}
+                        height={40}
+                        resizeMode="cover"
+                        borderRadius={8}
+                    />
+                )}
                 coin={true}
                 back={true}
             />
             <View style={styles.container}>
                 <FlatList
                     ref={flatListRef}
-                    key={stageGameLanguage}
+                    key={_id}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={keyExtractor}
                     initialNumToRender={3}
                     windowSize={5}
                     initialScrollIndex={
-                        data.length > 0
-                        ? Math.min(Math.max(0, lastSeasonNumber - 1), data.length - 1)
+                        seasons?.length > 0
+                        ? Math.min(Math.max(0, lastSeasonNumber - 1), seasons.length - 1)
                         : 0
                     }
+                    ListHeaderComponent={ListHeaderComponent}
                     maxToRenderPerBatch={3}
-                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, h:15, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
+                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingBottom:FLATLIST_PADDING_VERTICAL}}
                     renderItem={memoizedValue}
-                    data={data}
+                    data={seasons}
                     numColumns={numColumns}
                     onEndReachedThreshold={0.5}
                     removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                    style={{width:width, paddingHorizontal:STAGE_GAME_SEASON_CARD_MARGIN}}
+                    style={{width:width, paddingHorizontal:PACKAGE_GAME_SEASON_CARD_MARGIN}}
                     getItemLayout={(data, index) => {
                         const row = Math.floor(index / numColumns); // هر ردیف
                         return {
@@ -233,28 +216,14 @@ function StartPackageGame(props){
                     ListEmptyComponent={ListEmptyComponent}
                     extraData={{ activeIndexes, lastSeasonNumber }}
                     onScrollToIndexFailed={(info) => {
-                        console.warn("scrollToIndex failed", info);
-
-                        // تلاش دوباره با نزدیک‌ترین ایندکس معتبر
                         flatListRef.current?.scrollToIndex({
-                            index: Math.max(0, data.length - 1),
+                            index: Math.max(0, seasons.length - 1),
                             animated: false,
                             viewOffset: FLATLIST_PADDING_VERTICAL,
                         });
                     }}
                 />
             </View>
-            {
-                loading == true&&
-                <View style={{width:"100%", height:"100%", backgroundColor:colors.background.a1, alignItems:'center', justifyContent:'center', position:'absolute'}}>
-                    <ScreenLoading
-                        loading={true}
-                        getError={false}
-                        noItem={false}
-                        tryAgain={()=>{}}
-                    />
-                </View>
-            }
             <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </View>
     )

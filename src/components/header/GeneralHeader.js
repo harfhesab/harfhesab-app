@@ -7,7 +7,7 @@ import useAppTheme from "../../hooks/theme/useAppTheme";
 import NumberCoins from "../coin/NumberCoins";
 
 const {width} = Dimensions.get('window');
-function GeneralHeader({height, hideShadow, paddingHorizontal, RightComponent, LeftComponent, back, coin, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
+function GeneralHeader({height, hideShadow, Image, paddingHorizontal, RightComponent, LeftComponent, back, coin, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
     const colors = useAppTheme();
 
     const goBackOnClick = ()=>{
@@ -25,6 +25,10 @@ function GeneralHeader({height, hideShadow, paddingHorizontal, RightComponent, L
                             <Icon name={"arrow-right"} type='Feather' style={{color:colors.text.a1, fontSize:25}}/>
                         </View>
                     </TouchableOpacity>
+                }
+                {
+                    Image&&
+                    <Image/>
                 }
                 {
                     title&&
