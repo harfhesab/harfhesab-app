@@ -10,7 +10,6 @@ import Font from '../../../utils/Font';
 import ImageComponent from '../../image-components/ImageComponent';
 import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
 import ButtonImgSrc from '../../buttons/ButtonImgSrc';
-import GalaxyTwinkle from '../../backgroun-layer/GalaxyTwinkle';
 import LockedSeasonAnimation from '../../LockedSeasonAnimation';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
@@ -59,14 +58,7 @@ function StageGameSeasonCard({
       overflow: 'hidden',
       alignItems:'center'
     }}>
-      {/* ثابت: محتوا همیشه یکسان است؛ GalaxyTwinkle به عنوان لایه پس‌زمینه نمایش داده می‌شود */}
       <View style={{ flex: 1, position: 'relative' }}>
-        {/* پس‌زمینهٔ انیمیشن فقط وقتی فعال است، رندر می‌شود
-            این روش باعث نمی‌شود نوع Wrapper تغییر کند */}
-        {currentScroll && (
-          <GalaxyTwinkle style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
-        )}
-
         <CardContent
           lock={lock}
           title={title}

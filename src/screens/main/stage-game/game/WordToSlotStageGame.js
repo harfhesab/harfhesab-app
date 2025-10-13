@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Dimensions, StatusBar} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
-import NightSky from '../../../../components/particles/NightSky';
 import { useSelector } from 'react-redux';
+import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
 
-const {width, height} = Dimensions.get("window")
+const screenHeight = Dimensions.get("screen").height;
+const {width} = Dimensions.get("screen");
+const statusBarHeight = StatusBar.currentHeight ?? 0;
+const height = screenHeight - statusBarHeight;
 function WordToSlotStageGame(props){
     const colors = useAppTheme()
     const stage = props?.route?.params?.stage
@@ -13,8 +16,8 @@ function WordToSlotStageGame(props){
    
     
     return(
-        <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
-            <NightSky>
+        <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
+            <GalaxyTwinkle >
                 <SafeAreaView style={styles.container}>
                     <WordToSlot 
                         id={stage}
@@ -22,7 +25,7 @@ function WordToSlotStageGame(props){
                         type={"stage-game"}
                     />
                 </SafeAreaView>
-            </NightSky>
+            </GalaxyTwinkle>
         </SafeAreaView>
     )
 }

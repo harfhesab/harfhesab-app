@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import ConnectingLetters from '../../../../components/connecting-letters/ConnectingLetters';
 import NightSky from '../../../../components/particles/NightSky';
 
-const {width, height} = Dimensions.get("window")
 function ConnectingLettersStageGame(props){
     const colors = useAppTheme()
     const stageId = props?.route?.params?.stageId

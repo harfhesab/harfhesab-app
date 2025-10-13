@@ -29,19 +29,19 @@ function NumberCoinsHelp({ onPress = () => {}, transparent = 40, numberCoinsHelp
         <TouchableOpacity onPress={onClick} activeOpacity={0.7}>
             <ImageBackground
                     source={require("../../assets/image/button_6.png")}
-                    style={{ width: undefined, height: 40, justifyContent: "center", alignItems: "center" }}
+                    style={{ width: 83, height: 40, justifyContent: "center", alignItems: "center" }}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                    <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', height:"100%"}}>x
-                        <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                    <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', height:"100%", width:"100%", overflow:'hidden', paddingBottom:2, paddingHorizontal:8}}>
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}}>
+                            <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a1}}>{numberCoinsHelp}</Text>
                             <Image
-                                style={{height:12, width:12}}
+                                style={{height:15, width:15}}
                                 source={require('../../assets/image/coin.png')}
                             />
-                            <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a1}}>{numberCoinsHelp}</Text>
                         </View>
-                        <Text style={{fontFamily:Font.medium, fontSize:13, color:colors.text.a1, paddingHorizontal:15}}>{"راهنما"}</Text>
+                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{"راهنما"}</Text>
                     </View>
             </ImageBackground>
         </TouchableOpacity>

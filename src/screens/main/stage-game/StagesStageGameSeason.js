@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar, NativeModules} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -15,7 +15,6 @@ import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import MediaSwiper from '../../../components/swiper/MediaSwiper';
 import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CARD_SIZE } from '../../../components/card/general/StageNumber';
 import { getStagesBySeasonId } from '../../../realm/repositories/stage-game/stage.repository';
-import GalaxyTwinkle from '../../../components/backgroun-layer/GalaxyTwinkle';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import MultiLineTextGradientSvg from '../../../components/text-components/MultiLineTextGradientSvg';
 import SeasonHeader from '../../../components/header/SeasonHeader';
@@ -26,7 +25,6 @@ const {width} = Dimensions.get("screen");
 const statusBarHeight = StatusBar.currentHeight ?? 0;
 const height = screenHeight - statusBarHeight;
 
-const { NavigationBar } = NativeModules;
 function StagesStageGameSeason(props){
     const colors = useAppTheme()
     const realm = useRealm();
@@ -42,10 +40,6 @@ function StagesStageGameSeason(props){
 
     useEffect(() => {
         getData()
-        NavigationBar.hide();
-        return () => {
-            NavigationBar.show();
-        }
     }, []);
 
     
@@ -112,7 +106,6 @@ function StagesStageGameSeason(props){
     const FLATLIST_PADDING_TOP = 15
     return(
         <>
-        <StatusBar hidden={true} />
         {
             loading?
             <View style={{flex:1}}>
@@ -132,7 +125,6 @@ function StagesStageGameSeason(props){
             </View>
             :
             <View style={{flex:1, backgroundColor:"#120426"}}>
-                <GalaxyTwinkle style={{width:width, height:height }}>
                     <SeasonHeader
                         transparent={headerTransparent}
                     />
@@ -158,7 +150,6 @@ function StagesStageGameSeason(props){
                             extraData={{lastStage, lastStageNumber}}
                         />
                     </View>
-                </GalaxyTwinkle>
             </View>
         }
         </>

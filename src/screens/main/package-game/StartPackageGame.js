@@ -25,7 +25,6 @@ import { PackageSeason } from '../../../realm/schemas/package-game/PackageSeason
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import ImageComponent from '../../../components/image-components/ImageComponent';
-import NavigationBar from '../../../utils/android-native/NavigationBar';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -86,12 +85,6 @@ function StartPackageGame(props){
         }
     }, [seasons])
 
-    useEffect(() => {
-        NavigationBar.hide();
-        return () => {
-            NavigationBar.show();
-        }
-    }, []);
 
     const renderItem = ({item, index})=>{
         return(
@@ -169,7 +162,6 @@ function StartPackageGame(props){
 
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
-            <StatusBar hidden={true} />
             <GeneralHeader
                 paddingHorizontal={10}
                 height={60}
