@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -184,9 +184,20 @@ function StageGame(props){
         return(
             (stageGameLanguage)&&
             <View style={{height:'100%', alignItems:'center', justifyContent:'center'}}>
-                <TouchableOpacity onPress={getLanguages} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10, borderColor:colors.border.a1, borderWidth:1, borderRadius:8, paddingHorizontal: 10, backgroundColor:`${colors.primary.a1}25`, height:40}}>
-                    <Icon name={'layers-outline'} type={'Ionicons'} style={{fontSize:25, color:colors.text.a3}}/>
-                    <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:14}}>{`زبان ${stageGameLanguageName}`}</Text>
+                <TouchableOpacity activeOpacity={0.85} onPress={getLanguages}>
+                    <ImageBackground
+                        source={require("../../../assets/image/frame_language.png")}
+                        style={{ width: 115, height: 40, justifyContent: "center", alignItems: "center" }}
+                        imageStyle={{ resizeMode: "stretch" }}
+                        resizeMode="stretch"
+                    >
+                        <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", height: "100%", paddingStart:9, paddingBottom:2}}>
+                            <Icon name={'layers'} type={'Ionicons'} style={{fontSize:20, color:"#fcb900"}}/>
+                            <View style={{width:85, alignItems:'center'}}>
+                                <Text style={{fontFamily:Font.bold, color:colors.text.a2, fontSize:12}}>{`${stageGameLanguageName}`}</Text>
+                            </View>
+                        </View>
+                    </ImageBackground>
                 </TouchableOpacity>
             </View>
         )
@@ -252,7 +263,7 @@ function StageGame(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                paddingHorizontal={15}
+                paddingHorizontal={10}
                 height={60}
                 coin={true}
                 RightComponent={headerRigthComponent}

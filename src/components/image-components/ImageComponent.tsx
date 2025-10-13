@@ -20,6 +20,7 @@ type ImageComponentProps = {
   onLoad?: () => void;
   onError?: () => void;
   placeHolder?: boolean;
+  placeHolderImage?:any;
   iconType?: string;
   iconName?: string;
   iconSize?: number;
@@ -37,6 +38,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   onLoad,
   onError,
   placeHolder = true,
+  placeHolderImage,
   iconType,
   iconName,
   iconSize,
@@ -60,7 +62,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
   };
 
   const WIDTH = width > height?height:width
-  const PLACE_HOLDER_WIDTH = WIDTH - 80 > 200?200:WIDTH-80
+  const PLACE_HOLDER_WIDTH = WIDTH - 60 > 200?200:WIDTH-60
 
   return (
     <View style={[{ width, height, borderRadius, backgroundColor:blank_background == true?"transparent":colors.primary.a2 }, styles.container, style]}>
@@ -68,20 +70,20 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
         <MovementGradientLayer height={height} width={width} borderRadius={borderRadius}>
           <View style={{width, height, alignItems:'center', justifyContent:'center'}}>
               {
-                (iconName && iconSize) ?(
+                (iconName && iconType) ?(
                   <Icon name={iconName} type={iconType} style={{fontSize:iconSize, color:colors.border.a2}}/>
                 )
                 :
                 <>
                   <Image
-                    source={require('../../assets/image/image-place-holder.png')}
+                    source={placeHolderImage??require('../../assets/image/image-place-holder.png')}
                     style={{ width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, borderRadius }}
                   />
                   <View style={{ position: 'absolute', width: PLACE_HOLDER_WIDTH, height: PLACE_HOLDER_WIDTH, alignItems: 'center', justifyContent: 'center' }}>
                     <WaveIndicator
-                      color={"#FFFFFF65"}
+                      color={"#FFFFFF60"}
                       size={PLACE_HOLDER_WIDTH}
-                      count={2}
+                      count={1}
                       waveMode="outline"
                     />
                   </View>

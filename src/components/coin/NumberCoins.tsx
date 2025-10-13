@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react";
-import { View, TouchableOpacity, TextInput, StyleSheet } from "react-native";
+import { View, TouchableOpacity, TextInput, StyleSheet, ImageBackground } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -80,11 +80,11 @@ function NumberCoins({
       while (isMounted) {
         if (!isCounting.value) {
           size.value = withSequence(
-            withSpring(30, { damping: 5, stiffness: 280, mass:0.8, overshootClamping:false }),
+            withSpring(25, { damping: 5, stiffness: 280, mass:0.8, overshootClamping:false }),
           );
           await wait(1200);
           size.value = withSequence(
-            withSpring(25, { damping: 5, stiffness: 280, mass:0.8, overshootClamping:false })
+            withSpring(20, { damping: 5, stiffness: 280, mass:0.8, overshootClamping:false })
           );
           await wait(2000);
           rotateY.value = withTiming(70, { duration: 1000 });
@@ -147,44 +147,42 @@ function NumberCoins({
 
   return (
     <TouchableOpacity activeOpacity={0.85} onPress={onClick}>
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: `${colors.primary.a1}${transparent}`,
-            borderColor: colors.border.a1,
-          },
-        ]}
+      <ImageBackground
+          source={require("../../assets/image/frame_coin.png")}
+          style={{ width: 115, height: 40, justifyContent: "center", alignItems: "center" }}
+          imageStyle={{ resizeMode: "stretch" }}
+          resizeMode="stretch"
       >
-        <View style={styles.iconContainer}>
-          <Icon
-            name={"plus-square-o"}
-            type={"FontAwesome"}
-            style={{ fontSize: 25, color: "#ff9800" }}
-          />
-        </View>
+        <View
+            style={styles.container}
+          >
+            
+            <View style={{width:50, alignItems:'center'}}>
+              <AnimatedTextInput
+                editable={false}
+                underlineColorAndroid="transparent"
+                animatedProps={animatedTextProps}
+                defaultValue={priceDigitSeperator(String(numberCoins ?? 0))}
+                style={{
+                  fontFamily: Font.black,
+                  fontSize: numberCoins.toString().length > 5?12:numberCoins.toString().length>4?13:15,
+                  color: colors.text.a1,
+                  padding: 0,
+                  textAlign: "center",
+                }}
+              />
+            </View>
+            
 
-        <AnimatedTextInput
-          editable={false}
-          underlineColorAndroid="transparent"
-          animatedProps={animatedTextProps}
-          defaultValue={priceDigitSeperator(String(numberCoins ?? 0))}
-          style={{
-            fontFamily: Font.black,
-            fontSize: numberCoins.toString().length > 5?12:numberCoins.toString().length>4?13:15,
-            color: colors.text.a1,
-            padding: 0,
-            textAlign: "center",
-          }}
-        />
-
-        <View style={styles.coinWrapper}>
-          <Animated.Image
-            style={animatedStyle}
-            source={require("../../assets/image/coin.png")}
-          />
-        </View>
-      </View>
+            <View style={styles.coinWrapper}>
+              <Animated.Image
+                style={animatedStyle}
+                source={require("../../assets/image/coin.png")}
+              />
+            </View>
+          </View>
+      </ImageBackground>
+      
     </TouchableOpacity>
   );
 }
@@ -194,20 +192,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingStart: 5,
-    paddingEnd: 5,
-    width: 120,
-    borderWidth: 1,
-    borderRadius: 8,
-    height: 40,
+    width: "100%",
+    height: "100%",
+    paddingEnd:9,
+    paddingStart:25,
+    paddingBottom:2
   },
   iconContainer: {
     alignItems: "center",
     justifyContent: "center",
   },
   coinWrapper: {
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
     alignItems: "center",
     justifyContent: "center",
   },

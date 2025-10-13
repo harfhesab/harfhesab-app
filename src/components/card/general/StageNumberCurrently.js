@@ -6,13 +6,13 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  ImageBackground
 } from 'react-native';
 import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
 import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import TextGradientSvg from '../../text-components/TextGradientSvg';
-import LinearGradient from 'react-native-linear-gradient';
 import Animated,
 {
   useSharedValue,
@@ -70,7 +70,12 @@ function StageNumberCurrently({
     return (
         <Animated.View style={animatedStyle}>
             <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={{width:boxSize, height:boxSize, alignItems:'center', justifyContent:'center', borderRadius:15, margin:margin}}>
-                <LinearGradient colors={["#00d084", "#133c28"]} style={{ width:"100%", height:"100%", borderRadius:15}}>
+                <ImageBackground
+                    source={require("../../../assets/image/square_green.png")}
+                    style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
+                    imageStyle={{ resizeMode: "stretch" }}
+                    resizeMode="stretch"
+                >
                     <View style={{borderRadius:15, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
                         <TextGradientSvg
                             text={`${text}`}
@@ -87,7 +92,7 @@ function StageNumberCurrently({
                             glowShadow={true}
                         />
                     </View>
-                </LinearGradient>
+                </ImageBackground>
             </TouchableOpacity>
         </Animated.View>
     );

@@ -171,7 +171,7 @@ function StartPackageGame(props){
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <StatusBar hidden={true} />
             <GeneralHeader
-                paddingHorizontal={15}
+                paddingHorizontal={10}
                 height={60}
                 title={packageInfo?.title}
                 Image={()=>(

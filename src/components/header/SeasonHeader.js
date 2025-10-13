@@ -2,27 +2,21 @@ import React, {memo} from "react";
 import {StyleSheet, View, Text, Dimensions, TouchableNativeFeedback, TouchableOpacity} from 'react-native';
 import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
-import { goBack } from "../../main/navigationService";
 import useAppTheme from "../../hooks/theme/useAppTheme";
 import NumberCoins from "../coin/NumberCoins";
+import Back from "../icon/Back";
+import Setting from "../icon/Setting";
 
 const {width} = Dimensions.get('window');
-function SeasonHeader({height=65, paddingHorizontal=15, back=true, coin=true, title, setting=true, transparent=0}){
+function SeasonHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true, transparent=0}){
     const colors = useAppTheme();
-
-    const goBackOnClick = ()=>{
-        goBack()
-    }
     return(
         <View style={{backgroundColor:`rgba(14,32,42,${transparent})`, height:height, width:width, shadowColor:colors.shadow.a2, elevation:transparent < 0.85?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
             <View style={{height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10}}>
                 {
                     back&&
-                    <TouchableOpacity onPress={goBackOnClick} activeOpacity={0.8}>
-                        <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}50`}}>
-                            <Icon name={"arrow-right"} type={"Feather"} style={{color:colors.text.a1, fontSize:25}}/>
-                        </View>
-                    </TouchableOpacity>
+                    <Back/>
+                    
                 }
                 {
                     title&&
@@ -38,11 +32,7 @@ function SeasonHeader({height=65, paddingHorizontal=15, back=true, coin=true, ti
                 }
                 {
                     setting&&
-                    <TouchableOpacity onPress={()=>navigate("ConnectingLettersStageGame")} activeOpacity={0.8}>
-                        <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}50`}}>
-                            <Icon name={"settings-outline"} type={"Ionicons"} style={{color:colors.text.a1, fontSize:25}}/>
-                        </View>
-                    </TouchableOpacity>
+                    <Setting/>
                 }
             </View>
         </View>

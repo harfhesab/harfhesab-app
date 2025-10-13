@@ -2,6 +2,7 @@ import React, { useEffect, memo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Canvas, LinearGradient, Rect, vec, SkPoint } from '@shopify/react-native-skia';
 import { useSharedValue, withTiming, useDerivedValue, withRepeat, Easing } from 'react-native-reanimated';
+import { colors } from '../../hooks/theme/colors';
 
 // تایپ‌ها برای پراپس‌های کامپوننت
 interface MovementGradientLayerProps {
@@ -66,8 +67,6 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   childrenContainer: {
     flex: 1,

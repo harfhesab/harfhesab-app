@@ -33,6 +33,7 @@ function SubscriptionPlanItem({_id, productId, title, badg, image, duration, pri
                             height={size - 20}
                             resizeMode="cover"
                             borderRadius={10}
+                            placeHolderImage={require("../../../assets/image/diamond.png")}
                         />
                     </View>
                     <View>

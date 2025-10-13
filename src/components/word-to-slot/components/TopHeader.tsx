@@ -5,12 +5,13 @@ import Icon from '../../../utils/Icon';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import NumberCoins from '../../coin/NumberCoins';
 import Font from '../../../utils/Font';
-import { goBack, navigate } from '../../../main/navigationService';
 import { useDragDrop } from '../context/DragDropContext';
 import Toast from 'react-native-toast-message';
 import NumberCoinsHelp from '../../coin/NumberCoinsHelp';
 import { RootState } from '../../../redux/store/RootReducer';
 import { useSelector } from 'react-redux';
+import Back from '../../icon/Back';
+import Setting from '../../icon/Setting';
 
 const {width} = Dimensions.get("window");
 const TopHeader = () => {
@@ -34,11 +35,7 @@ const TopHeader = () => {
     <View style={{width:width}}>
         <View style={styles.header}>
             <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-                <TouchableOpacity onPress={()=>navigate("ConnectingLettersStageGame")} activeOpacity={0.8}>
-                    <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}25`}}>
-                        <Icon name={"settings-outline"} type='Ionicons' style={{color:colors.text.a1, fontSize:25}}/>
-                    </View>
-                </TouchableOpacity>
+                <Setting/>
                 <View style={{direction:'rtl'}}>
                     <NumberCoins />
                 </View>
@@ -48,14 +45,10 @@ const TopHeader = () => {
               numberCoinsHelp={type == "stage-game"?coins_for_get_help_word_to_slot_stage_game:type == "package-game"&&coins_for_get_help_word_to_slot_package_game}
               onPress={applyForHelp}
             />
-            <TouchableOpacity onPress={()=>{goBack()}} activeOpacity={0.8}>
-                <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}25`}}>
-                    <Icon name={"arrow-right"} type='Feather' style={{color:colors.text.a1, fontSize:25}}/>
-                </View>
-            </TouchableOpacity>
+            <Back/>
             </View>
         </View>
-        <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:10, justifyContent:'flex-start', paddingHorizontal:15, marginTop:5}}>
+        <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:10, justifyContent:'flex-start', paddingHorizontal:10, marginTop:5}}>
             {
               Array.from({length:numberParts}).map((_, index)=>(
                 <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6}>
@@ -96,7 +89,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between',
-    paddingHorizontal:15,
+    paddingHorizontal:10,
   },
 });
 

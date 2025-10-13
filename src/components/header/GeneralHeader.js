@@ -5,10 +5,11 @@ import Font from "../../utils/Font";
 import { goBack } from "../../main/navigationService";
 import useAppTheme from "../../hooks/theme/useAppTheme";
 import NumberCoins from "../coin/NumberCoins";
+import Back from "../icon/Back";
 
 const {width} = Dimensions.get('window');
 
-function GeneralHeader({height, hideShadow, Image, paddingHorizontal, RightComponent, LeftComponent, back, coin, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
+function GeneralHeader({height, hideShadow, Image, paddingHorizontal = 10, RightComponent, LeftComponent, back, coin, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
     const colors = useAppTheme();
 
     const goBackOnClick = ()=>{
@@ -16,7 +17,7 @@ function GeneralHeader({height, hideShadow, Image, paddingHorizontal, RightCompo
     }
 
     return(
-        <View style={{backgroundColor:colors.header.background, height:height??65, width:width, shadowColor:colors.shadow.a2, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal??15, justifyContent:'space-between', zIndex:100, borderBottomColor:colors.border.a2, borderBottomWidth:0.5}}>
+        <View style={{backgroundColor:colors.header.background, height:height??65, width:width, shadowColor:colors.shadow.a2, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:100, borderBottomColor:colors.border.a2, borderBottomWidth:0.5}}>
             
             {/* این کانتینر اصلی برای بخش راست و وسط است */}
             {/* 1. این ویو را "انعطاف‌پذیر" می‌کنیم تا فضای خالی را پر کند */}
@@ -25,11 +26,7 @@ function GeneralHeader({height, hideShadow, Image, paddingHorizontal, RightCompo
                     RightComponent?
                     <RightComponent/>
                     :back&&
-                    <TouchableOpacity onPress={goBackOnClick} activeOpacity={0.8}>
-                        <View style={{justifyContent:'center', alignItems:'center', height:40, width:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}25`}}>
-                            <Icon name={"arrow-right"} type='Feather' style={{color:colors.text.a1, fontSize:25}}/>
-                        </View>
-                    </TouchableOpacity>
+                    <Back/>
                 }
                 {
                     Image&&

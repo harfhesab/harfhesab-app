@@ -19,6 +19,7 @@ import GalaxyTwinkle from '../../../components/backgroun-layer/GalaxyTwinkle';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import MultiLineTextGradientSvg from '../../../components/text-components/MultiLineTextGradientSvg';
 import SeasonHeader from '../../../components/header/SeasonHeader';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 
 const screenHeight = Dimensions.get("screen").height;
 const {width} = Dimensions.get("screen");
@@ -77,16 +78,16 @@ function StagesStageGameSeason(props){
 
    
 
-    const BANNER_WIDTH = width > 600?460:width - 30
-    const LIST_HEADER_COMPONENT_HEIGHT = info?.media?.length > 0?(BANNER_WIDTH*0.7) + 30 + 80:80
+    const BANNER_WIDTH = IS_TABLET_CONDITION?460:width - 24
+    const LIST_HEADER_COMPONENT_HEIGHT = info?.media?.length > 0?(BANNER_WIDTH*0.7) + 24 + 80:80
     const listHeaderComponent = ()=>{
         return(
             info?.media?.length > 0&&
-            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-30, alignItems:'center', justifyContent:'center'}}>
+            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-24, alignItems:'center', justifyContent:'center'}}>
                 <MediaSwiper
                     items={info?.media}
                 />
-                <View style={{width:width-30, height:70, backgroundColor:`${colors.primary.a1}50`, borderRadius:15, alignItems:'flex-end', justifyContent:'space-between', marginTop:10, paddingHorizontal:10, paddingVertical:10}}>
+                <View style={{width:width-24, height:70, backgroundColor:`${colors.primary.a1}50`, borderRadius:15, alignItems:'flex-end', justifyContent:'space-between', marginTop:10, paddingHorizontal:10, paddingVertical:10}}>
                     <Text style={{fontFamily:Font.bold, color:colors.text.a1, fontSize:14}}>{seasonName}</Text>
                     <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12}}>{`زبان ${stageGameLanguageName}  -  فصل ${info?.season_number}  -  مرحله ${info?.stage_number_from} تا ${info?.stage_number_to}`}</Text>
                 </View>
@@ -145,13 +146,13 @@ function StagesStageGameSeason(props){
                             contentContainerStyle={{direction:'ltr'}}
                             renderItem={memoizedValue}
                             data={data}
-                            style={{paddingHorizontal:15}}
+                            style={{paddingHorizontal:12}}
                             numColumns={LIST_STAGE_CARD_NUMBER_COLUMN}
                             onEndReachedThreshold={0.5}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                             getItemLayout={(data, index) => ({
                                 length: STAGE_CARD_SIZE + (STAGE_CARD_MARGIN*2),
-                                offset: FLATLIST_PADDING_TOP + (STAGE_CARD_MARGIN*2) + LIST_HEADER_COMPONENT_HEIGHT + (STAGE_CARD_SIZE* index),  // 15 پدینگ بالای کل لیست
+                                offset: FLATLIST_PADDING_TOP + (STAGE_CARD_MARGIN*2) + LIST_HEADER_COMPONENT_HEIGHT + (STAGE_CARD_SIZE* index),
                                 index,
                             })}
                             extraData={{lastStage, lastStageNumber}}

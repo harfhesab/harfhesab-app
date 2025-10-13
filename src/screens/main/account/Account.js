@@ -202,7 +202,7 @@ function Account(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                paddingHorizontal={15}
+                paddingHorizontal={10}
                 height={60}
                 coin={true}
             />

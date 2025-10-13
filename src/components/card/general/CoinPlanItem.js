@@ -30,6 +30,7 @@ function CoinPlanItem({_id, click, productId, title, badg, image, numberCoin, pr
                             height={size - 20}
                             resizeMode="cover"
                             borderRadius={10}
+                            placeHolderImage={require("../../../assets/image/coin.png")}
                         />
                     </View>
                     <View>

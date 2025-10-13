@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import { View, TouchableOpacity, Text, Image, ImageBackground } from 'react-native';
 import useAppTheme from "../../hooks/theme/useAppTheme";
 import { useDispatch, useSelector } from "react-redux";
 import Font from "../../utils/Font";
@@ -27,16 +27,23 @@ function NumberCoinsHelp({ onPress = () => {}, transparent = 40, numberCoinsHelp
 
     return (
         <TouchableOpacity onPress={onClick} activeOpacity={0.7}>
-            <View style={{justifyContent:'center', alignItems:'center', height:40, borderWidth:1, borderRadius:8, borderColor:colors.border.a1, backgroundColor:`${colors.primary.a1}${transparent}`}}>
-                <Text style={{fontFamily:Font.medium, fontSize:13, color:colors.text.a1, paddingHorizontal:15}}>{"راهنما"}</Text>
-                <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
-                    <Image
-                        style={{height:12, width:12}}
-                        source={require('../../assets/image/coin.png')}
-                    />
-                    <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a1}}>{numberCoinsHelp}</Text>
-                </View>
-            </View>
+            <ImageBackground
+                    source={require("../../assets/image/button_6.png")}
+                    style={{ width: undefined, height: 40, justifyContent: "center", alignItems: "center" }}
+                    imageStyle={{ resizeMode: "stretch" }}
+                    resizeMode="stretch"
+                >
+                    <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', height:"100%"}}>x
+                        <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                            <Image
+                                style={{height:12, width:12}}
+                                source={require('../../assets/image/coin.png')}
+                            />
+                            <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a1}}>{numberCoinsHelp}</Text>
+                        </View>
+                        <Text style={{fontFamily:Font.medium, fontSize:13, color:colors.text.a1, paddingHorizontal:15}}>{"راهنما"}</Text>
+                    </View>
+            </ImageBackground>
         </TouchableOpacity>
     );
 }

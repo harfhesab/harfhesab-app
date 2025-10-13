@@ -54,9 +54,10 @@ function PackageGameSeasonCard({
       shadowColor: '#000',
       elevation: 5,
       borderRadius: 15,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: colors.border.a1,
       overflow: 'hidden',
+      alignItems:'center'
     }}>
       {/* ثابت: محتوا همیشه یکسان است؛ GalaxyTwinkle به عنوان لایه پس‌زمینه نمایش داده می‌شود */}
       <View style={{ flex: 1, position: 'relative' }}>
@@ -102,7 +103,7 @@ const CardContent = memo(({
 }) => {
   return (
     <View style={{
-      width: STAGE_GAME_CARD_WIDTH,
+      width: STAGE_GAME_CARD_WIDTH-3,
       height: PACKAGE_GAME_SEASON_CARD_HEIGHT,
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -110,10 +111,10 @@ const CardContent = memo(({
       <View style={{ width: '100%', alignItems: 'center' }}>
         <ImageComponent
           uri={image}
-          width={STAGE_GAME_CARD_WIDTH}
-          height={(STAGE_GAME_CARD_WIDTH) * 0.7}
+          width={STAGE_GAME_CARD_WIDTH-3}
+          height={STAGE_GAME_CARD_WIDTH * 0.7}
           resizeMode={'cover'}
-          borderRadius={15}
+          borderRadius={13.5}
         />
         <View style={{ width: '100%', alignItems: 'center', paddingTop: 10, paddingHorizontal: 10 }}>
           <View style={{
