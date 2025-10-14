@@ -43,10 +43,8 @@ const wait = (ms: number): Promise<void> =>
 
 function NumberCoins({
   onPress = () => {},
-  transparent = 40,
 }: {
   onPress?: () => void;
-  transparent?: number;
 }) {
   const colors = useAppTheme();
   

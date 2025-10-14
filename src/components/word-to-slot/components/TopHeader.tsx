@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, StyleSheet} from 'react-native';
+import {Dimensions, ImageBackground, StyleSheet} from 'react-native';
 import { TouchableOpacity, View } from 'react-native';
 import Icon from '../../../utils/Icon';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -12,6 +12,7 @@ import { RootState } from '../../../redux/store/RootReducer';
 import { useSelector } from 'react-redux';
 import Back from '../../icon/Back';
 import Setting from '../../icon/Setting';
+import LocalImageComponent from '../../image-components/LocalImageComponent';
 
 const {width} = Dimensions.get("window");
 const TopHeader = () => {
@@ -48,21 +49,24 @@ const TopHeader = () => {
             <Back/>
             </View>
         </View>
-        <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:10, justifyContent:'flex-start', paddingHorizontal:10, marginTop:5}}>
+        <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:5, justifyContent:'flex-start', paddingHorizontal:10, marginTop:5}}>
             {
               Array.from({length:numberParts}).map((_, index)=>(
-                <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6}>
-                  <View style={{width:35, height:35, alignItems:'center', justifyContent:'center', borderRadius:8, backgroundColor:`#0088cc35`, borderColor:index == playingPartIndex?colors.primary.a1:colors.border.a1, borderWidth:1}}>
-                    {
-                      (completedSentences.length == numberParts || currentPartIndex > index)?
-                      (<Icon name={"lock-open"} type={"FontAwesome5"} style={{fontSize:20, color:'#0088cc'}}/>)
-                      :
-                      currentPartIndex == index?
-                      (<Icon name={"unlock-alt"} type={"FontAwesome5"} style={{fontSize:20, color:colors.primary.a1}}/>)
-                      :
-                      (<Icon name={"lock"} type={"FontAwesome5"} style={{fontSize:20, color:"#607d8b"}}/>)
-                    }
-                    </View>
+                <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6} style={{ backgroundColor:index == playingPartIndex?"#40bf42":"transparent", borderRadius:22, width:45, height:45, alignItems:'center', justifyContent:'center'}}>
+                  <ImageBackground
+                      source={(completedSentences.length == numberParts || currentPartIndex > index || currentPartIndex == index)?require("../../../assets/image/circle_blue.png"):require("../../../assets/image/circle_red.png")}
+                      style={{ width: 40, height: 40, justifyContent: "center", alignItems: "center" }}
+                      imageStyle={{ resizeMode: "stretch" }}
+                      resizeMode="stretch"
+                  >
+                      <LocalImageComponent
+                          path={(completedSentences.length == numberParts || currentPartIndex > index)?require("../../../assets/image/tick.png"):currentPartIndex == index?require("../../../assets/image/play.png"):require("../../../assets/image/lock_gray.png")}
+                          width={(completedSentences.length == numberParts || currentPartIndex > index)?20:currentPartIndex == index?16.5:15.5}
+                          height={(completedSentences.length == numberParts || currentPartIndex > index)?22:currentPartIndex == index?22:22}
+                          resizeMode={'cover'}
+                          blank_background
+                      />
+                  </ImageBackground>
                 </TouchableOpacity>
               ))
             }

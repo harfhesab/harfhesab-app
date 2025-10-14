@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar, ImageBackground} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -73,18 +73,20 @@ function StagesStageGameSeason(props){
    
 
     const BANNER_WIDTH = IS_TABLET_CONDITION?460:width - 24
-    const LIST_HEADER_COMPONENT_HEIGHT = info?.media?.length > 0?(BANNER_WIDTH*0.7) + 24 + 80:80
     const listHeaderComponent = ()=>{
         return(
-            info?.media?.length > 0&&
-            <View style={{height:LIST_HEADER_COMPONENT_HEIGHT, width:width-24, alignItems:'center', justifyContent:'center'}}>
-                <MediaSwiper
-                    items={info?.media}
-                />
-                <View style={{width:width-24, height:70, backgroundColor:`${colors.primary.a1}50`, borderRadius:15, alignItems:'flex-end', justifyContent:'space-between', marginTop:10, paddingHorizontal:10, paddingVertical:10}}>
-                    <Text style={{fontFamily:Font.bold, color:colors.text.a1, fontSize:14}}>{seasonName}</Text>
-                    <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12}}>{`زبان ${stageGameLanguageName}  -  فصل ${info?.season_number}  -  مرحله ${info?.stage_number_from} تا ${info?.stage_number_to}`}</Text>
-                </View>
+            <View style={{width:width, alignItems:'center'}}>
+                <ImageBackground
+                    source={require("../../../assets/image/frame_stages_title.png")}
+                    style={{ width: width - 160, height: (width - 160)/2.22, justifyContent: "center", alignItems: "center" }}
+                    imageStyle={{ resizeMode: "stretch" }}
+                    resizeMode="stretch"
+                >
+                    <View style={{width:"100%", height:"100%", alignItems:'center', justifyContent:'center', paddingHorizontal:10, paddingVertical:10}}>
+                        <Text style={{fontFamily:Font.bold, color:colors.text.a1, fontSize:16}}>{seasonName}</Text>
+                        <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12}}>{`زبان ${stageGameLanguageName}  -  فصل ${info?.season_number}  -  مرحله ${info?.stage_number_from} تا ${info?.stage_number_to}`}</Text>
+                    </View>
+                </ImageBackground>
             </View>
         )
     }
@@ -124,31 +126,32 @@ function StagesStageGameSeason(props){
                 </View>
             </View>
             :
-            <View style={{flex:1, backgroundColor:"#120426"}}>
-                    <SeasonHeader
-                        transparent={headerTransparent}
-                    />
+            <View style={{flex:1, backgroundColor:colors.background.a1}}>
+                    <SeasonHeader/>
                     <View style={styles.container}>
-                        <FlatList
-                            onScroll={(i)=>operationHeaderTransparent(i.nativeEvent.contentOffset.y)}
-                            showsVerticalScrollIndicator={false}
-                            keyExtractor={keyExtractor}
-                            initialNumToRender={20}
-                            ListHeaderComponent={listHeaderComponent}
-                            contentContainerStyle={{direction:'ltr'}}
-                            renderItem={memoizedValue}
-                            data={data}
-                            style={{paddingHorizontal:12}}
-                            numColumns={LIST_STAGE_CARD_NUMBER_COLUMN}
-                            onEndReachedThreshold={0.5}
-                            removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                            getItemLayout={(data, index) => ({
-                                length: STAGE_CARD_SIZE + (STAGE_CARD_MARGIN*2),
-                                offset: FLATLIST_PADDING_TOP + (STAGE_CARD_MARGIN*2) + LIST_HEADER_COMPONENT_HEIGHT + (STAGE_CARD_SIZE* index),
-                                index,
-                            })}
-                            extraData={{lastStage, lastStageNumber}}
+                        <MediaSwiper
+                            items={info?.media}
                         />
+                        <ImageBackground
+                            source={require("../../../assets/image/frame_stages.png")}
+                            style={{ width: width - 20, height: (width-20)*1.21, justifyContent: "center", alignItems: "center" }}
+                            imageStyle={{ resizeMode: "stretch" }}
+                            resizeMode="stretch"
+                        >
+                            <FlatList
+                                showsVerticalScrollIndicator={false}
+                                keyExtractor={keyExtractor}
+                                initialNumToRender={20}
+                                ListHeaderComponent={listHeaderComponent}
+                                contentContainerStyle={{direction:'ltr'}}
+                                renderItem={memoizedValue}
+                                data={data}
+                                numColumns={LIST_STAGE_CARD_NUMBER_COLUMN}
+                                onEndReachedThreshold={0.5}
+                                removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                                extraData={{lastStage, lastStageNumber}}
+                            />
+                        </ImageBackground>
                     </View>
             </View>
         }
@@ -159,7 +162,8 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent:'space-between',
+      paddingBottom:10
     }
 });
 export default StagesStageGameSeason;

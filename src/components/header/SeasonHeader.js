@@ -8,10 +8,10 @@ import Back from "../icon/Back";
 import Setting from "../icon/Setting";
 
 const {width} = Dimensions.get('window');
-function SeasonHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true, transparent=0}){
+function SeasonHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true}){
     const colors = useAppTheme();
     return(
-        <View style={{backgroundColor:`rgba(14,32,42,${transparent})`, height:height, width:width, shadowColor:colors.shadow.a2, elevation:transparent < 0.85?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
+        <View style={{height:height, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
             <View style={{height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10}}>
                 {
                     back&&
@@ -28,7 +28,7 @@ function SeasonHeader({height=65, paddingHorizontal=10, back=true, coin=true, ti
             <View style={{height:"100%", flexDirection:'row', alignItems:'center', gap:7}}>
                 {
                     coin&&
-                    <NumberCoins transparent={50}/>
+                    <NumberCoins/>
                 }
                 {
                     setting&&
@@ -38,9 +38,5 @@ function SeasonHeader({height=65, paddingHorizontal=10, back=true, coin=true, ti
         </View>
     )
 }
-const areEqual = (prevProps, nextProps) => {
-  if (prevProps.transparent !== nextProps.transparent) return false;
-  return true;
-};
 
-export default memo(SeasonHeader, areEqual);
+export default memo(SeasonHeader);

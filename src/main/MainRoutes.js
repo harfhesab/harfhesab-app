@@ -31,7 +31,7 @@ const MainRoutes = (props) =>{
   const handleAppStateChange = (nextAppState) => {
     if(nextAppState === 'active'){
       const currentRoute = getCurrentRouteName();
-      if(currentRoute === "StagesStageGameSeason" || currentRoute === "WordToSlotStageGame" || currentRoute === "ConnectingLettersStageGame"){
+      if( currentRoute === "WordToSlotStageGame" || currentRoute === "ConnectingLettersStageGame"){
         NavigationBar.hide();
       }
     }
