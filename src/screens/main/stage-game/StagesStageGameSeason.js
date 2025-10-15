@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar, ImageBackground} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar, ImageBackground, NativeModules} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -25,6 +25,7 @@ const {width} = Dimensions.get("screen");
 const statusBarHeight = StatusBar.currentHeight ?? 0;
 const height = screenHeight - statusBarHeight;
 
+const { ImmersiveMode } = NativeModules;
 function StagesStageGameSeason(props){
     const colors = useAppTheme()
     const realm = useRealm();
@@ -40,6 +41,7 @@ function StagesStageGameSeason(props){
 
     useEffect(() => {
         getData()
+        ImmersiveMode.enterImmersiveMode();
     }, []);
 
     

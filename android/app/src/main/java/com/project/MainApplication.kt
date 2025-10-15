@@ -15,6 +15,7 @@ import com.facebook.react.modules.i18nmanager.I18nUtil
 import android.content.Context
 import android.content.res.Configuration
 import com.project.navigationbar.NavigationBarPackage
+import com.project.immersivemode.ImmersiveModePackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -25,6 +26,7 @@ class MainApplication : Application(), ReactApplication {
               // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
               add(NavigationBarPackage()) 
+              add(ImmersiveModePackage()) 
             }
 
         override fun getJSMainModuleName(): String = "index"
