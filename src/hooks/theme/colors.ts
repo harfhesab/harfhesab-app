@@ -7,7 +7,7 @@ export const themes = {
   t1: {
     colors: {
       primary: {
-        a1: '#0ea960',
+        a1: '#40bf42',
         a2: '#24536b',
       },
       background:{
@@ -37,7 +37,7 @@ export const themes = {
         inactive: '#87989a',
       },
       button_gradient: {
-        background: ['#0ea960', '#0ea988'],
+        background: ['#40bf42', '#008B02'],
         content_1: '#FFFFFF',
         content_2: '#EBEBEB',
       },
@@ -50,11 +50,11 @@ export const themes = {
         a6: '#95a2a4'
       },
       rgb: {
-        a1: 'rgba(14,169,96,0.80)',
-        a2: 'rgba(14,169,96,0.65)',
-        a3: 'rgba(14,169,96,0.50)',
-        a4: 'rgba(14,169,96,0.35)',
-        a5: 'rgba(14,169,96,0.20)',
+        a1: 'rgba(64,191,66,0.80)',
+        a2: 'rgba(64,191,66,0.65)',
+        a3: 'rgba(64,191,66,0.50)',
+        a4: 'rgba(64,191,66,0.35)',
+        a5: 'rgba(64,191,66,0.20)',
       },
       border: {
         a1: '#4f5f62',
@@ -73,7 +73,7 @@ export const themes = {
         text2: '#d1d1d1',
         error: '#ff4444',
         info: '#0088cc',
-        success: '#0ea960',
+        success: '#40bf42',
       },
       alert_component: {
         background: '#00252a',
@@ -90,7 +90,7 @@ export const themes = {
         text2: '#d1d1d1',
       },
       check_box: {
-        color: '#0ea960',
+        color: '#40bf42',
         check: '#FFFFFF',
       },
     },
@@ -102,7 +102,7 @@ export const colors = {
     a1:'#001c20'
   },
   primary: {
-    a1: '#0ea960',
+    a1: '#40bf42',
   },
   text: {
     a1: '#FFFFFF',

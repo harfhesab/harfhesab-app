@@ -1,5 +1,5 @@
-import React, { memo, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, NativeModules } from 'react-native';
+import React, { memo } from 'react';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DragDropProvider } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
@@ -19,7 +19,6 @@ import {
 import SentenceDisplay from './components/SentenceDisplay';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const { NavigationBar } = NativeModules;
 const WordToSlot = ({
   id,
   currentStageId,
@@ -31,36 +30,26 @@ const WordToSlot = ({
 }) => {
   const colors = useAppTheme();
 
-  useEffect(() => {
-      NavigationBar.hide();
-      return () => {
-          NavigationBar.show();
-      }
-  }, []);
-
   return (
-    <>
-      <StatusBar hidden={true} />
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <DragDropProvider
-          stageId={id}
-          currentStageId={currentStageId}
-          type={type}
-        >
-          <SafeAreaView style={styles.container}>
-            <SentenceDisplay />
-            <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
-              <View style={styles.dropZoneContainer}>
-                <DropZoneList />
-              </View>
-              <View style={[styles.boundaryContainer, {borderColor:colors.primary.a1}]}>
-                <FloatingCardList />
-              </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <DragDropProvider
+        stageId={id}
+        currentStageId={currentStageId}
+        type={type}
+      >
+        <SafeAreaView style={styles.container}>
+          <SentenceDisplay />
+          <View style={{ gap: DISTANCE_BOUNDARY_AND_SLOT }}>
+            <View style={styles.dropZoneContainer}>
+              <DropZoneList />
             </View>
-          </SafeAreaView>
-        </DragDropProvider>
-      </GestureHandlerRootView>
-    </>
+            <View style={[styles.boundaryContainer, {borderColor:colors.primary.a1}]}>
+              <FloatingCardList />
+            </View>
+          </View>
+        </SafeAreaView>
+      </DragDropProvider>
+    </GestureHandlerRootView>
   );
 };
 

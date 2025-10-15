@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, memo } from 'react';
-import { Dimensions, StatusBar, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import {
   Canvas,
   Circle,
@@ -12,10 +12,7 @@ import {
 import Meteor from './components/Meteor';
 import Moon from './components/Moon';
 
-const screenHeight = Dimensions.get("screen").height;
-const {width} = Dimensions.get("screen");
-const statusBarHeight = StatusBar.currentHeight ?? 0;
-const height = screenHeight - statusBarHeight;
+const {width, height} = Dimensions.get("screen");
 
 const STAR_COUNT = 180;
 

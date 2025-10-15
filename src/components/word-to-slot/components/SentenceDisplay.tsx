@@ -64,7 +64,7 @@ const SentenceDisplay = () => {
                             glowBlur={50}
                             glowColor={'#FFFFFF'}
                             glowShadow={true}
-                            colors={['#47d994', '#0ea960']}
+                            colors={['#47d994', '#40bf42']}
                         />
                     </View>
                   ))

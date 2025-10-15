@@ -10,15 +10,15 @@ import VerifyLoginToAccount from '../screens/main/account/login/VerifyLoginToAcc
 import PackageInformation from '../screens/main/package-game/PackageInformation';
 import UserPackagesList from '../screens/main/package-game/UserPackagesList';
 // ==================================================================================================
-import { AppState } from 'react-native';
+import { AppState, NativeModules } from 'react-native';
 import { getCurrentRouteName } from './navigationService';
-import NavigationBar from '../utils/android-native/NavigationBar';
 import CoinPlans from '../screens/main/account/CoinPlans';
 import SubscriptionPlans from '../screens/main/account/SubscriptionPlans';
 import StartPackageGame from '../screens/main/package-game/StartPackageGame';
 
 const Stack = createNativeStackNavigator();
 
+const { ImmersiveMode } = NativeModules;
 const MainRoutes = (props) =>{
 
   useEffect(()=>{
@@ -31,8 +31,8 @@ const MainRoutes = (props) =>{
   const handleAppStateChange = (nextAppState) => {
     if(nextAppState === 'active'){
       const currentRoute = getCurrentRouteName();
-      if( currentRoute === "WordToSlotStageGame" || currentRoute === "ConnectingLettersStageGame"){
-        NavigationBar.hide();
+      if( currentRoute === "WordToSlotStageGame" || currentRoute === "ConnectingLettersStageGame" || currentRoute == "StagesStageGameSeason"){
+        ImmersiveMode.enterImmersiveMode();
       }
     }
   };

@@ -20,9 +20,9 @@ import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 
 const { width, height } = Dimensions.get('window');
 
-const AVERAGE_SIZE = 70
+const AVERAGE_SIZE = 55
 export const STAGE_CARD_MARGIN = 5
-const PADDING_HORIZONTAL = 12
+const PADDING_HORIZONTAL = 30
 const CALCULATE_ALMOST_NUMBER_COLUMN = (width - (PADDING_HORIZONTAL*2)) / (AVERAGE_SIZE + (STAGE_CARD_MARGIN*2))
 export const LIST_STAGE_CARD_NUMBER_COLUMN = Math.trunc(CALCULATE_ALMOST_NUMBER_COLUMN)
 export const STAGE_CARD_SIZE = ((width - (PADDING_HORIZONTAL*2)) / LIST_STAGE_CARD_NUMBER_COLUMN) - (STAGE_CARD_MARGIN*2)

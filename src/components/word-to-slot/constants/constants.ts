@@ -1,9 +1,6 @@
-import { Dimensions, StatusBar } from "react-native";
+import { Dimensions } from "react-native";
 
-const screenHeight = Dimensions.get("screen").height;
-const {width} = Dimensions.get("screen");
-const statusBarHeight = StatusBar.currentHeight ?? 0;
-const height = screenHeight - statusBarHeight;
+const {width, height} = Dimensions.get("screen");
 
 export const SLOT_GAP = 6; // فاصله اسلات ها از هم
 export const SLOT_HORIZONTAL = 15; // فاصله اسلات از کنار صفحه

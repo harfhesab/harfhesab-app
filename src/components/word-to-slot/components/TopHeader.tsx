@@ -13,8 +13,9 @@ import { useSelector } from 'react-redux';
 import Back from '../../icon/Back';
 import Setting from '../../icon/Setting';
 import LocalImageComponent from '../../image-components/LocalImageComponent';
+import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 
-const {width} = Dimensions.get("window");
+const {width} = Dimensions.get("screen");
 const TopHeader = () => {
   const colors = useAppTheme();
   const {coins_for_get_help_word_to_slot_stage_game, coins_for_get_help_word_to_slot_package_game} = useSelector((state: RootState) => state.constants);
@@ -33,7 +34,7 @@ const TopHeader = () => {
     }
   }
   return (
-    <View style={{width:width}}>
+    <View style={{width:width, marginTop:STATUS_BAR_HEIGHT}}>
         <View style={styles.header}>
             <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
                 <Setting/>
@@ -52,10 +53,10 @@ const TopHeader = () => {
         <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:5, justifyContent:'flex-start', paddingHorizontal:10, marginTop:5}}>
             {
               Array.from({length:numberParts}).map((_, index)=>(
-                <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6} style={{ backgroundColor:index == playingPartIndex?"#40bf42":"transparent", borderRadius:22, width:45, height:45, alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6} style={{ backgroundColor:index == playingPartIndex?`${colors.primary.a1}80`:"transparent", borderRadius:21, width:42, height:42, alignItems:'center', justifyContent:'center'}}>
                   <ImageBackground
                       source={(completedSentences.length == numberParts || currentPartIndex > index || currentPartIndex == index)?require("../../../assets/image/circle_blue.png"):require("../../../assets/image/circle_red.png")}
-                      style={{ width: 40, height: 40, justifyContent: "center", alignItems: "center" }}
+                      style={{ width: 35, height: 35, justifyContent: "center", alignItems: "center" }}
                       imageStyle={{ resizeMode: "stretch" }}
                       resizeMode="stretch"
                   >
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   header: {
-    height:65,
+    height:55,
     width:width,
     flexDirection:'row',
     alignItems:'center',

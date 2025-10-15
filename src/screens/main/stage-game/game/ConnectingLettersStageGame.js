@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import ConnectingLetters from '../../../../components/connecting-letters/ConnectingLetters';
@@ -15,7 +15,6 @@ function ConnectingLettersStageGame(props){
         additional_words : ["بوس", "بیل", "سیب"],
         hidden_words : ["سیل", "کولی"]
     }
-   
     
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>

@@ -31,10 +31,10 @@ const FEEDBACK_STATE = {
 // --- پالت رنگی برای بازخورد ---
 const COLORS = {
   NORMAL: "#86442d",
-  SUCCESS: "#0ea960",
+  SUCCESS: "#40bf42",
   ERROR: "#CC0000",
   DUPLICATE: "#0099CC",
-  GRADIENT_SUCCESS: ["#0ea960", "#018044"],
+  GRADIENT_SUCCESS: ["#40bf42", "#018044"],
   GRADIENT_ERROR: ['#CC0000', '#ff4444'],
   GRADIENT_DUPLICATE: ['#0099CC', '#33b5e5'],
   GRADIENT_NORMAL: ['#86442d', '#4d2719'],

@@ -1,14 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Dimensions, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import { useSelector } from 'react-redux';
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
 
-const screenHeight = Dimensions.get("screen").height;
-const {width} = Dimensions.get("screen");
-const statusBarHeight = StatusBar.currentHeight ?? 0;
-const height = screenHeight - statusBarHeight;
 function WordToSlotStageGame(props){
     const colors = useAppTheme()
     const stage = props?.route?.params?.stage

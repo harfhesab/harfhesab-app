@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, StatusBar, ImageBackground, NativeModules} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, NativeModules, StatusBar} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -18,12 +18,9 @@ import { getStagesBySeasonId } from '../../../realm/repositories/stage-game/stag
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import MultiLineTextGradientSvg from '../../../components/text-components/MultiLineTextGradientSvg';
 import SeasonHeader from '../../../components/header/SeasonHeader';
-import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 
-const screenHeight = Dimensions.get("screen").height;
-const {width} = Dimensions.get("screen");
-const statusBarHeight = StatusBar.currentHeight ?? 0;
-const height = screenHeight - statusBarHeight;
+const {width, height} = Dimensions.get("screen");
 
 const { ImmersiveMode } = NativeModules;
 function StagesStageGameSeason(props){
@@ -42,6 +39,9 @@ function StagesStageGameSeason(props){
     useEffect(() => {
         getData()
         ImmersiveMode.enterImmersiveMode();
+        return () => {
+            ImmersiveMode.exitImmersiveMode();
+        };
     }, []);
 
     
@@ -110,6 +110,7 @@ function StagesStageGameSeason(props){
     const FLATLIST_PADDING_TOP = 15
     return(
         <>
+        <StatusBar translucent={true} hidden={true} />
         {
             loading?
             <View style={{flex:1}}>
@@ -128,7 +129,7 @@ function StagesStageGameSeason(props){
                 </View>
             </View>
             :
-            <View style={{flex:1, backgroundColor:colors.background.a1}}>
+            <View style={{flex:1, backgroundColor:colors.background.a1, paddingTop:STATUS_BAR_HEIGHT}}>
                     <SeasonHeader/>
                     <View style={styles.container}>
                         <MediaSwiper
@@ -144,8 +145,7 @@ function StagesStageGameSeason(props){
                                 showsVerticalScrollIndicator={false}
                                 keyExtractor={keyExtractor}
                                 initialNumToRender={20}
-                                ListHeaderComponent={listHeaderComponent}
-                                contentContainerStyle={{direction:'ltr'}}
+                                contentContainerStyle={{direction:'ltr', marginTop:50}}
                                 renderItem={memoizedValue}
                                 data={data}
                                 numColumns={LIST_STAGE_CARD_NUMBER_COLUMN}
@@ -153,6 +153,9 @@ function StagesStageGameSeason(props){
                                 removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                                 extraData={{lastStage, lastStageNumber}}
                             />
+                            <View style={{ position: 'absolute', top: -(width - 240)/2.22, alignSelf: 'center', zIndex: 50 }}>
+                                {listHeaderComponent()}
+                            </View>
                         </ImageBackground>
                     </View>
             </View>

@@ -24,7 +24,7 @@ const FEEDBACK_STATE = {
 };
 const COLORS = {
   NORMAL: "#86442d",
-  SUCCESS: "#0ea960",
+  SUCCESS: "#40bf42",
   ERROR: "#CC0000",
   DUPLICATE: "#0099CC",
 };

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, StatusBar, View, Text, Dimensions, TouchableOpacity, ToastAndroid} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';

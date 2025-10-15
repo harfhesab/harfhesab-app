@@ -2,7 +2,6 @@ import React from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 import { useLetters } from '../../context/LettersContext';
 import { View } from 'react-native';
-import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import NumberCoins from '../../../coin/NumberCoins';
 import Font from '../../../../utils/Font';
 import NumberCoinsHelp from '../../../coin/NumberCoinsHelp';
@@ -10,10 +9,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store/RootReducer';
 import Setting from '../../../icon/Setting';
 import Back from '../../../icon/Back';
+import { STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
-  const colors = useAppTheme();
   const {coins_for_get_help_letter_connecting_stage_game, coins_for_get_help_letter_connecting_package_game} = useSelector((state: RootState) => state.constants);
   const { type, applyForHelp } = useLetters();
 
@@ -49,7 +48,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   header: {
-    height:65,
+    marginTop:STATUS_BAR_HEIGHT,
+    height:55,
     width:width,
     flexDirection:'row',
     alignItems:'center',

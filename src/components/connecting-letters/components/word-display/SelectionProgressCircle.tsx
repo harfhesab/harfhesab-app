@@ -28,7 +28,7 @@ const SelectionProgressCircle = () => {
           width={BOUNDARY_WIDTH - 60}
           height={10}
           fill="transparent"
-          stroke="#0ea96090"
+          stroke="#40bf4290"
           strokeWidth={1}
           rx={5}
         />
