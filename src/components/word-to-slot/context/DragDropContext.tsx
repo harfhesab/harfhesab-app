@@ -287,7 +287,7 @@ export const DragDropProvider: React.FC<{
       if (fromUpperZone) {
         // قانون A: کارت از منطقه بالایی آمده است
         unassignCardFromSlot(slotIndex); // صراحتاً کارت قبلی را حذف کن
-        const fontSizeScale = occupyingCard.word.length < 3 ? 1.6 : occupyingCard.word.length < 4 ? 1.5 : occupyingCard.word.length < 5 ? 1.4 : occupyingCard.word.length < 6 ? 1.3 : occupyingCard.word.length < 7 ? 1.2 : occupyingCard.word.length < 8 ? 1.1 : occupyingCard.word.length > 12 ? 0.9 : 1;
+        const fontSizeScale = occupyingCard.word.length < 3 ? 1.6 : occupyingCard.word.length < 4 ? 1.5 : occupyingCard.word.length < 5 ? 1.4 : occupyingCard.word.length < 6 ? 1.3 : occupyingCard.word.length < 7 ? 1.2 : occupyingCard.word.length < 8 ? 1.1 : occupyingCard.word.length > 12 ?0.8:0.9;
         const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
         occupyingCard.isAssigned.value = false;
         occupyingCard.position.value = withSpring(
@@ -315,8 +315,8 @@ export const DragDropProvider: React.FC<{
           // انتقال کارت موجود به اسلات مبدا
           occupyingCard.position.value = withSpring(
             {
-              x: posToReturn.x - (CARD_SIZE_SLOTTED*1.3 + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
-              y: posToReturn.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
+              x: posToReturn.x - (CARD_SIZE_SLOTTED + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+              y: posToReturn.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + 2,
             },
             { stiffness: 200, damping: 18 }
           );
@@ -332,14 +332,14 @@ export const DragDropProvider: React.FC<{
     }
 
     // تخصیص کارت جدید به اسلات مقصد
-    const fontSizeScale = cards[cardId].word.length < 3 ? 1.6 : cards[cardId].word.length < 4 ? 1.5 : cards[cardId].word.length < 5 ? 1.4 : cards[cardId].word.length < 6 ? 1.3 : cards[cardId].word.length < 7 ? 1.2 : cards[cardId].word.length < 8 ? 1.1 : cards[cardId].word.length > 12 ? 0.9 : 1;
+    const fontSizeScale = cards[cardId].word.length < 3 ? 1.6 : cards[cardId].word.length < 4 ? 1.5 : cards[cardId].word.length < 5 ? 1.4 : cards[cardId].word.length < 6 ? 1.3 : cards[cardId].word.length < 7 ? 1.2 : cards[cardId].word.length < 8 ? 1.1 : cards[cardId].word.length > 12 ?0.8:0.9;
     const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;
     const target = getSlotPosition(slotIndex);
     if (target) {
       cards[cardId].position.value = withSpring(
         {
-          x: target.x - (CARD_SIZE_SLOTTED*1.3 + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
-          y: target.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4,
+          x: target.x - (CARD_SIZE_SLOTTED + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+          y: target.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + 2,
         },
         { stiffness: 200, damping: 18 }
       );

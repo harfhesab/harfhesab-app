@@ -20,7 +20,7 @@ export const BOUNDARY_BOTTOM_OFFSET = 15; // فاصله محدوده از پای
 
 export const BOUNDARY_WIDTH = width - (BOUNDARY_HORIZONTAL_OFFSET*2);
 export const BOUNDARY_HEIGHT = height * 0.45;
-export const BOUNDARY_BORDER_RADIUS = 10;
+export const BOUNDARY_BORDER_RADIUS = 20;
 export const BOUNDARY_BORDER_WIDTH = 2;
 export const BOUNDARY_TOP_OFFSET = height - BOUNDARY_HEIGHT + BOUNDARY_BOTTOM_OFFSET;
 
@@ -35,6 +35,6 @@ export const BOUNDARY_Y = 0;
 export const FONT_SIZE_FLOATING = CARD_SIZE_FLOATING/3.9; // فونت سایز در حالت شناور
 export const FONT_SIZE_DRAGGING = CARD_SIZE_DRAGGING/3.9; // فونت سایز در حالت درگ
 export const FONT_SIZE_SLOTTED = CARD_SIZE_SLOTTED/3.9; // فونت سایز در حالت اسلات
-export const MAX_VELOCITY = 200;
-export const MIN_VELOCITY = 50;
+export const MAX_VELOCITY = 140;
+export const MIN_VELOCITY = 60;
 export const CARD_BORDER_RADIUS = 15;

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ImageBackground } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DragDropProvider } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
@@ -43,9 +43,16 @@ const WordToSlot = ({
             <View style={styles.dropZoneContainer}>
               <DropZoneList />
             </View>
-            <View style={[styles.boundaryContainer, {borderColor:colors.primary.a1}]}>
+            <ImageBackground
+                  source={require("../../assets/image/border_1.png")}
+                  style={{ width: BOUNDARY_WIDTH, height: BOUNDARY_HEIGHT, justifyContent: "center", alignItems: "center", marginBottom: BOUNDARY_BOTTOM_OFFSET}}
+                  imageStyle={{ resizeMode: "stretch" }}
+                  resizeMode="stretch"
+              >
+            <View style={[styles.boundaryContainer]}>
               <FloatingCardList />
             </View>
+            </ImageBackground>
           </View>
         </SafeAreaView>
       </DragDropProvider>
@@ -64,8 +71,6 @@ const styles = StyleSheet.create({
   boundaryContainer: {
     height: BOUNDARY_HEIGHT,
     width: BOUNDARY_WIDTH,
-    marginBottom: BOUNDARY_BOTTOM_OFFSET,
-    borderWidth: BOUNDARY_BORDER_WIDTH,
     borderRadius: BOUNDARY_BORDER_RADIUS,
     zIndex: 0,
     overflow: 'visible',

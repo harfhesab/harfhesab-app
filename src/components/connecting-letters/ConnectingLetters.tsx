@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ImageBackground } from 'react-native';
 import { LettersProvider } from './context/LettersContext';
 import FloatingCardList from './components/FloatingCardList';
 import WordDisplay from './components/WordDisplay';
@@ -43,9 +43,16 @@ const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
       >
         <SafeAreaView style={styles.container}>
           <WordDisplay />
-          <View style={styles.boundaryContainer}>
-            <FloatingCardList/>
-          </View>
+            <ImageBackground
+                source={require("../../assets/image/border_2.png")}
+                style={{ width: BOUNDARY_WIDTH, height: BOUNDARY_HEIGHT, justifyContent: "center", alignItems: "center", marginBottom: BOUNDARY_BOTTOM_OFFSET}}
+                imageStyle={{ resizeMode: "stretch" }}
+                resizeMode="stretch"
+            >
+              <View style={styles.boundaryContainer}>
+                <FloatingCardList/>
+              </View>
+            </ImageBackground>
         </SafeAreaView>
       </LettersProvider>
     </View>
@@ -63,9 +70,6 @@ const styles = StyleSheet.create({
   boundaryContainer: {
     height: BOUNDARY_HEIGHT,
     width: BOUNDARY_WIDTH,
-    marginBottom: BOUNDARY_BOTTOM_OFFSET,
-    borderWidth: BOUNDARY_BORDER_WIDTH,
-    borderColor: '#0693e3',
     borderRadius: BOUNDARY_BORDER_RADIUS,
     zIndex: 0,
     overflow: 'visible',

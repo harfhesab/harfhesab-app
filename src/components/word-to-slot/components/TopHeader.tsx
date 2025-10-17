@@ -14,6 +14,7 @@ import Back from '../../icon/Back';
 import Setting from '../../icon/Setting';
 import LocalImageComponent from '../../image-components/LocalImageComponent';
 import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
+import { Text } from '@react-navigation/elements';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
@@ -50,28 +51,36 @@ const TopHeader = () => {
             <Back/>
             </View>
         </View>
-        <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:5, justifyContent:'flex-start', paddingHorizontal:10, marginTop:5}}>
-            {
-              Array.from({length:numberParts}).map((_, index)=>(
-                <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6} style={{ backgroundColor:index == playingPartIndex?`${colors.primary.a1}80`:"transparent", borderRadius:21, width:42, height:42, alignItems:'center', justifyContent:'center'}}>
-                  <ImageBackground
-                      source={(completedSentences.length == numberParts || currentPartIndex > index || currentPartIndex == index)?require("../../../assets/image/circle_blue.png"):require("../../../assets/image/circle_red.png")}
-                      style={{ width: 35, height: 35, justifyContent: "center", alignItems: "center" }}
-                      imageStyle={{ resizeMode: "stretch" }}
-                      resizeMode="stretch"
-                  >
-                      <LocalImageComponent
-                          path={(completedSentences.length == numberParts || currentPartIndex > index)?require("../../../assets/image/tick.png"):currentPartIndex == index?require("../../../assets/image/play.png"):require("../../../assets/image/lock_gray.png")}
-                          width={(completedSentences.length == numberParts || currentPartIndex > index)?20:currentPartIndex == index?16.5:15.5}
-                          height={(completedSentences.length == numberParts || currentPartIndex > index)?22:currentPartIndex == index?22:22}
-                          resizeMode={'cover'}
-                          blank_background
-                      />
-                  </ImageBackground>
-                </TouchableOpacity>
-              ))
-            }
-        </View>
+        {
+          numberParts>1&&
+          <View style={{flexDirection:'row', width:'100%', alignItems:'center', gap:8, justifyContent:'flex-start', paddingHorizontal:10, marginTop:5}}>
+              {
+                Array.from({length:numberParts}).map((_, index)=>(
+                  <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6} style={{alignItems:'center', justifyContent:'center'}}>
+                    <ImageBackground
+                        source={index <= currentPartIndex?require("../../../assets/image/card_1.png"):require("../../../assets/image/card_2.png")}
+                        style={{ width: 40, height: 52, justifyContent: "center", alignItems: "center", opacity:index == playingPartIndex?1:0.6 }}
+                        imageStyle={{ resizeMode: "stretch" }}
+                        resizeMode="stretch"
+                    >
+                        {
+                          (index <= currentPartIndex && index !== playingPartIndex) ?
+                          <Text style={{fontFamily:Font.black, fontSize:22, color:"#ffeb3b"}}>{index + 1}</Text>
+                          :
+                          <LocalImageComponent
+                              path={index == playingPartIndex? require("../../../assets/image/play_red_background.png"):require("../../../assets/image/lock_yellow_backgrond.png")}
+                              width={index == playingPartIndex?18:22}
+                              height={index == playingPartIndex?20:27}
+                              resizeMode={'cover'}
+                              blank_background
+                          />
+                        }
+                    </ImageBackground>
+                  </TouchableOpacity>
+                ))
+              }
+          </View>
+        }
     </View>
     
   );

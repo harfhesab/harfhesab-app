@@ -1,17 +1,16 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, NativeModules, StatusBar} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useObject } from '../../../realm';
 import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-game/stage-season.repository';
-import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
 import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
@@ -25,6 +24,7 @@ import { PackageSeason } from '../../../realm/schemas/package-game/PackageSeason
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import ImageComponent from '../../../components/image-components/ImageComponent';
+import PackageHeader from '../../../components/header/PackageHeader';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -60,7 +60,7 @@ function useUserPackageGameData({ _id, packageId }) {
   return { seasons, packageInfo, userPackage };
 }
 
-
+const { ImmersiveMode } = NativeModules;
 function StartPackageGame(props){
     const isFocused = useIsFocused();
     const colors = useAppTheme()
@@ -84,6 +84,13 @@ function StartPackageGame(props){
             }, 3000)
         }
     }, [seasons])
+
+    useEffect(() => {
+        ImmersiveMode.enterImmersiveMode();
+        return () => {
+            ImmersiveMode.exitImmersiveMode();
+        };
+    }, []);
 
 
     const renderItem = ({item, index})=>{
@@ -161,22 +168,10 @@ function StartPackageGame(props){
     )
 
     return(
-        <View style={{flex:1, backgroundColor:colors.background.a1}}>
-            <GeneralHeader
-                paddingHorizontal={10}
-                height={60}
-                title={packageInfo?.title}
-                Image={()=>(
-                    <ImageComponent
-                        uri={packageInfo?.icon_image}
-                        width={40}
-                        height={40}
-                        resizeMode="cover"
-                        borderRadius={8}
-                    />
-                )}
-                coin={true}
-                back={true}
+        <View style={{flex:1, backgroundColor:colors.background.a1, paddingTop:STATUS_BAR_HEIGHT}}>
+            <StatusBar translucent={true} hidden={true} />
+            <PackageHeader
+                packageIcon={packageInfo?.icon_image}
             />
             <View style={styles.container}>
                 <FlatList

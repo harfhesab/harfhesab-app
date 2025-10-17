@@ -9,6 +9,7 @@ export const themes = {
       primary: {
         a1: '#40bf42',
         a2: '#24536b',
+        a3: '#fcb900'
       },
       background:{
         a1:'#001c20',

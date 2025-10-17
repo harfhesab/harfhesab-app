@@ -4,6 +4,8 @@ import {
   Text,
   Dimensions,
   StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
@@ -14,11 +16,13 @@ import LockedSeasonAnimation from '../../LockedSeasonAnimation';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import SimpleBorderText from '../../text-components/SimpleBorderText';
 
 const { width, height } = Dimensions.get('window');
 
 export const STAGE_GAME_SEASON_CARD_MARGIN = 10;
 export const STAGE_GAME_SEASON_CARD_HEIGHT = height - 185;
+const CONTENT_HEIGHT = STAGE_GAME_SEASON_CARD_HEIGHT - 25
 const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION
   ? (width - (STAGE_GAME_SEASON_CARD_MARGIN * 3)) / 2
   : width - (STAGE_GAME_SEASON_CARD_MARGIN * 2);
@@ -46,46 +50,63 @@ function StageGameSeasonCard({
   };
 
   return (
-    <View style={{
-      width: STAGE_GAME_CARD_WIDTH,
-      height: STAGE_GAME_SEASON_CARD_HEIGHT,
-      backgroundColor: '#120426',
-      shadowColor: '#000',
-      elevation: 5,
-      borderRadius: 15,
-      borderWidth: 1.5,
-      borderColor: colors.border.a1,
-      overflow: 'hidden',
-      alignItems:'center'
-    }}>
-      <View style={{ flex: 1, position: 'relative' }}>
-        <CardContent
-          lock={lock}
-          title={title}
-          image={image}
-          seasonNumber={seasonNumber}
-          stageNumberFrom={stageNumberFrom}
-          stageNumberTo={stageNumberTo}
-          numberStage={numberStage}
-          colors={colors}
-          onClick={onClick}
-        />
-      </View>
-
-      {lock === true && (
+    <View style={{height:STAGE_GAME_SEASON_CARD_HEIGHT, alignItems:'center', justifyContent:'flex-end'}}>
+      <ImageBackground
+          source={require("../../../assets/image/frame_stage.png")}
+          style={{ width: STAGE_GAME_CARD_WIDTH, height: CONTENT_HEIGHT }}
+          imageStyle={{ resizeMode: "stretch" }}
+          resizeMode="stretch"
+      >
         <View style={{
-          width: '100%',
-          height: '100%',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#83703d70',
-          position: 'absolute',
-          top: 0,
-          left: 0,
+          width: STAGE_GAME_CARD_WIDTH,
+          height: CONTENT_HEIGHT,
+          overflow: 'visible',
+          alignItems:'center'
         }}>
-          <LockedSeasonAnimation animate={currentScroll} lockFontSize={STAGE_GAME_CARD_WIDTH / 2} />
+          <View style={{ flex: 1, position: 'relative' }}>
+            <CardContent
+              lock={lock}
+              title={title}
+              image={image}
+              seasonNumber={seasonNumber}
+              stageNumberFrom={stageNumberFrom}
+              stageNumberTo={stageNumberTo}
+              numberStage={numberStage}
+              colors={colors}
+              onClick={onClick}
+            />
+          </View>
+
+          {lock === true && (
+            <View style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#83703d70',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}>
+              <LockedSeasonAnimation animate={currentScroll} lockFontSize={STAGE_GAME_CARD_WIDTH / 2} />
+            </View>
+          )}
         </View>
-      )}
+      </ImageBackground>
+      <ImageBackground
+          source={require("../../../assets/image/frame_stage_title.png")}
+          style={{ width: STAGE_GAME_CARD_WIDTH * 0.75, height: STAGE_GAME_CARD_WIDTH * 0.177, position:'absolute', top:0, alignSelf:'center', alignItems:'center', justifyContent:'center'}}
+          imageStyle={{ resizeMode: "stretch" }}
+          resizeMode="stretch"
+      >
+        <SimpleBorderText
+            text={title}
+            width={STAGE_GAME_CARD_WIDTH * 0.6 - 30}
+            height={18*1.6}
+            fontSize={18}
+            borderWidth={2}
+        />
+      </ImageBackground>
     </View>
   );
 }
@@ -95,18 +116,18 @@ const CardContent = memo(({
 }) => {
   return (
     <View style={{
-      width: STAGE_GAME_CARD_WIDTH-3,
-      height: STAGE_GAME_SEASON_CARD_HEIGHT,
+      width: STAGE_GAME_CARD_WIDTH,
+      height: CONTENT_HEIGHT,
       flexDirection: 'column',
       justifyContent: 'space-between',
     }}>
-      <View style={{ width: '100%', alignItems: 'center' }}>
+      <View style={{ width: '100%', alignItems: 'center', paddingTop:STAGE_GAME_CARD_WIDTH*0.055 }}>
         <ImageComponent
           uri={image}
-          width={STAGE_GAME_CARD_WIDTH-3}
-          height={STAGE_GAME_CARD_WIDTH * 0.7}
+          width={STAGE_GAME_CARD_WIDTH*0.92}
+          height={STAGE_GAME_CARD_WIDTH * 0.5175}
           resizeMode={'cover'}
-          borderRadius={13.5}
+          style={{borderTopLeftRadius:STAGE_GAME_CARD_WIDTH*0.16, borderTopRightRadius:STAGE_GAME_CARD_WIDTH*0.16, borderBottomLeftRadius:25, borderBottomRightRadius:25}}
         />
         <View style={{ width: '100%', alignItems: 'center', paddingTop: 10, paddingHorizontal: 10 }}>
           <View style={{
@@ -130,35 +151,21 @@ const CardContent = memo(({
         </View>
       </View>
 
-      <View style={{ flex: 1, width: '100%', alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 10 }}>
-        <MultiLineTextGradientSvg
-          text={title}
-          fontFamily={Font.iran_yekan_black_fa}
-          fontSize={30}
-          borderColor={'#795548'}
-          borderWidth={1}
-          glowBlur={100}
-          glowColor={'#FFFFFF'}
-          glowShadow={true}
-          colors={['#ffc107', '#ff9800', '#ff5722']}
-          width={STAGE_GAME_CARD_WIDTH - 20} // دادم width تا اندازه‌گیری دقیق و cache بشه
-        />
-      </View>
+      
 
-      <View style={{ width: '100%', alignItems: 'flex-end', paddingBottom: 10, paddingEnd: 10 }}>
-        <ButtonImgSrc
-          onPress={onClick}
-          fontSize={20}
-          textWidth={100}
-          text={lock == true ? undefined : 'شروع بازی'}
-          height={50}
-          width={180}
-          iconName={lock == true ? 'shield-lock' : 'gamepad'}
-          iconType={lock == true ? 'MaterialCommunityIcons' : 'FontAwesome5'}
-          iconSize={35}
-          iconColor={"#311b92"}
-        />
+      <View style={{ width: '100%', alignItems: 'center', paddingBottom:30 }}>
+        <TouchableOpacity onPress={onClick} activeOpacity={1} style={{ alignSelf:'center', shadowColor:'#000', elevation:5}}>
+          <ImageBackground
+              source={require("../../../assets/image/frame_stage_button.png")}
+              style={{ width: STAGE_GAME_CARD_WIDTH * 0.65, height: STAGE_GAME_CARD_WIDTH * 0.247, alignItems:'center', justifyContent:'center', paddingBottom:10}}
+              imageStyle={{ resizeMode: "stretch" }}
+              resizeMode="stretch"
+          >
+            <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:25, color:"#fcb900"}}>{'شروع بازی'}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
       </View>
+      
     </View>
   );
 }, (p, n) => {

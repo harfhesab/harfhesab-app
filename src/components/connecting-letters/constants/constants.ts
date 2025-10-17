@@ -17,8 +17,8 @@ export const BOUNDARY_X = 0;
 export const BOUNDARY_Y = 0;
 export const FONT_SIZE_FLOATING = CARD_SIZE_FLOATING / 1.55;
 export const CARD_BORDER_RADIUS = 15;
-export const MAX_VELOCITY = 200;
-export const MIN_VELOCITY = 50;
+export const MAX_VELOCITY = 140;
+export const MIN_VELOCITY = 60;
 
 export const CARD_SELECTION_DURATION = 3000;
 export const CARD_SIZE_SELECTED = CARD_SIZE_FLOATING / 3;

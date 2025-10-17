@@ -30,6 +30,7 @@ import { useRealm } from '../../../../realm';
 import { updateUserStageGameProgressInLogin } from '../../../../realm/repositories/user/user-stage-game-progress.repository';
 import GeneralHeader from '../../../../components/header/GeneralHeader';
 import { updateSubscriptionStatus } from '../../../../redux/slices/subscriptionSlice';
+import { updateCurrentLanguageLastStageAndLastSeason } from '../../../../redux/slices/stageGameSlice';
   
   
 const {width, height} = Dimensions.get('window');
@@ -46,6 +47,7 @@ function VerifyLoginToAccount(props){
     const [seconds, setSeconds] = useState(props.route.params?.seconds)
     const { stopListener } = useOtpVerify({numberOfDigits: 6});
     const phone = props.route.params?.phone
+    const { stageGameLanguage } = useSelector((state) => state.stageGamePersist);
 
 
     const removeListener = ()=>{
@@ -238,6 +240,16 @@ function VerifyLoginToAccount(props){
                     const progressData = data?.user_stage_game_progress?.stage_game
                     if(progressData?.length > 0){
                         updateUserStageGameProgressInLogin(realm, progressData)
+                        const currentProgressItem = progressData.find((i)=>i.language_ref == stageGameLanguage)
+                        if(currentProgressItem?.language_ref){
+                            const currentProgressData = {
+                                lastStage: currentProgressItem?.last_stage,
+                                lastStageNumber: currentProgressItem?.last_stage_number,
+                                lastSeason: currentProgressItem?.last_season,
+                                lastSeasonNumber: currentProgressItem?.last_season_number  
+                            }
+                            await dispatch(updateCurrentLanguageLastStageAndLastSeason(currentProgressData))
+                        }
                     }
                     dispatch(convertGuestToRegistered({ phone, firstName, lastName}))
                     Toast.show({

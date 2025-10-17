@@ -14,17 +14,16 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import TextGradientSvg from '../../text-components/TextGradientSvg';
 import StageNumberCurrently from './StageNumberCurrently';
 import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 
 
 
 
 const { width, height } = Dimensions.get('window');
 
-const AVERAGE_SIZE = 55
 export const STAGE_CARD_MARGIN = 5
-const PADDING_HORIZONTAL = 30
-const CALCULATE_ALMOST_NUMBER_COLUMN = (width - (PADDING_HORIZONTAL*2)) / (AVERAGE_SIZE + (STAGE_CARD_MARGIN*2))
-export const LIST_STAGE_CARD_NUMBER_COLUMN = Math.trunc(CALCULATE_ALMOST_NUMBER_COLUMN)
+const PADDING_HORIZONTAL = 32
+export const LIST_STAGE_CARD_NUMBER_COLUMN = IS_TABLET_CONDITION?6:4
 export const STAGE_CARD_SIZE = ((width - (PADDING_HORIZONTAL*2)) / LIST_STAGE_CARD_NUMBER_COLUMN) - (STAGE_CARD_MARGIN*2)
 
 function StageNumber({
