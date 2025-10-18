@@ -49,7 +49,7 @@ function StageGame(props){
     const flatListRef = useRef(null);
     const [activeIndexes, setActiveIndexes] = useState([]);
     const { stageGameLanguage, stageGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
-    const { lastSeasonNumber } = useSelector((state) => state.stageGame);
+    const { lastSeasonNumber, lastStageNumber } = useSelector((state) => state.stageGame);
     const [loading, setLoading] = useState(true)
     const data = useStageSeasonsByLanguage(stageGameLanguage)
 
@@ -206,7 +206,9 @@ function StageGame(props){
     const renderItem = ({item, index})=>{
         return(
             <StageGameSeasonCard
+                ended={item.season_number < lastSeasonNumber?true:false}
                 lock={item.season_number > lastSeasonNumber?true:false}
+                progress={item.season_number == lastSeasonNumber?lastStageNumber - item.stage_number_from:null }
                 currentScroll={activeIndexes.includes(index)}
                 title={item.title}
                 description={item.description}
@@ -220,10 +222,11 @@ function StageGame(props){
                     if(item.season_number > lastSeasonNumber)return
                     props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString(), seasonName:item.title.toString()})
                 }}
+                languageName={stageGameLanguageName}
             />
         )
     }
-    const memoizedValue = useMemo(() => renderItem, [data, activeIndexes, lastSeasonNumber]);
+    const memoizedValue = useMemo(() => renderItem, [data, activeIndexes, lastSeasonNumber, lastStageNumber]);
     const keyExtractor = (item,index)=>index.toString()
     
 
@@ -305,11 +308,8 @@ function StageGame(props){
                     viewabilityConfig={viewabilityConfig}
                     onViewableItemsChanged={onViewableItemsChanged}
                     ListEmptyComponent={ListEmptyComponent}
-                    extraData={{ activeIndexes, lastSeasonNumber }}
+                    extraData={{ activeIndexes, lastSeasonNumber, lastStageNumber }}
                     onScrollToIndexFailed={(info) => {
-                        console.warn("scrollToIndex failed", info);
-
-                        // تلاش دوباره با نزدیک‌ترین ایندکس معتبر
                         flatListRef.current?.scrollToIndex({
                             index: Math.max(0, data.length - 1),
                             animated: false,

@@ -9,7 +9,7 @@ import Animated,
   withTiming,
   cancelAnimation,
 } from "react-native-reanimated";
-import Icon from "../utils/Icon";
+import LocalImageComponent from "./image-components/LocalImageComponent";
 
 function LockedSeasonAnimation({ animate, lockFontSize = 80 }) {
   const size = useSharedValue(25);
@@ -76,17 +76,13 @@ function LockedSeasonAnimation({ animate, lockFontSize = 80 }) {
       }}
     >
       <Animated.View style={animatedStyle}>
-        <Icon
-            name={"locked"}
-            type={"Fontisto"}
-            style={{
-                fontSize: lockFontSize,
-                color: "#fcb900",
-                textShadowColor: "#00000090",           // رنگ سایه
-                textShadowOffset: { width: 1, height: 1 }, // جهت سایه
-                textShadowRadius: 10,               // میزان پخش
-            }}
-        />
+        <LocalImageComponent
+            path={require('../assets/image/lock_gold.png')}
+            width={170}
+            height={240}
+            resizeMode={'stretch'}
+            blank_background={true}
+          />
       </Animated.View>
     </View>
   );

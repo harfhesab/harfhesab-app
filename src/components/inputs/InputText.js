@@ -2,7 +2,6 @@ import React, {memo, useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, TextInput, ActivityIndicator} from 'react-native';
 import Font from '../../utils/Font';
 import { DotIndicator, UIActivityIndicator } from 'react-native-indicators';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
