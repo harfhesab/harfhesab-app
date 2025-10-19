@@ -21,9 +21,9 @@ import LocalImageComponent from '../../image-components/LocalImageComponent';
 import WoodProgressBar from '../../WoodProgressBar';
 
 const { width, height } = Dimensions.get('screen');
-
+export const HEADER_HEIGHT = width*0.45
 export const PACKAGE_GAME_SEASON_CARD_MARGIN = 10;
-export const PACKAGE_GAME_SEASON_CARD_HEIGHT = height - 140;
+export const PACKAGE_GAME_SEASON_CARD_HEIGHT = height - (HEADER_HEIGHT + 60);
 const CONTENT_HEIGHT = PACKAGE_GAME_SEASON_CARD_HEIGHT - 25
 const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION
   ? (width - (PACKAGE_GAME_SEASON_CARD_MARGIN * 3)) / 2

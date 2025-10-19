@@ -10,7 +10,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
 import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
@@ -19,7 +19,7 @@ import { BSON } from 'realm';
 import { useIsFocused } from '@react-navigation/native';
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
-import PackageGameSeasonCard, { PACKAGE_GAME_SEASON_CARD_HEIGHT, PACKAGE_GAME_SEASON_CARD_MARGIN } from '../../../components/card/package-game-card/PackageGameSeasonCard';
+import PackageGameSeasonCard, { PACKAGE_GAME_SEASON_CARD_HEIGHT, PACKAGE_GAME_SEASON_CARD_MARGIN, HEADER_HEIGHT } from '../../../components/card/package-game-card/PackageGameSeasonCard';
 import { PackageSeason } from '../../../realm/schemas/package-game/PackageSeasonSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
@@ -172,60 +172,65 @@ function StartPackageGame(props){
     )
 
     return(
-        <View style={{flex:1, backgroundColor:colors.background.a1, paddingTop:STATUS_BAR_HEIGHT}}>
-            <StatusBar translucent={true} hidden={true} />
-            <PackageHeader
-                packageIcon={packageInfo?.icon_image}
-            />
-            <View style={styles.container}>
-                <FlatList
-                    ref={flatListRef}
-                    key={_id}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={keyExtractor}
-                    initialNumToRender={3}
-                    windowSize={5}
-                    initialScrollIndex={
-                        seasons?.length > 0
-                        ? Math.min(Math.max(0, lastSeasonNumber - 1), seasons.length - 1)
-                        : 0
-                    }
-                    ListHeaderComponent={ListHeaderComponent}
-                    maxToRenderPerBatch={3}
-                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingBottom:FLATLIST_PADDING_VERTICAL}}
-                    renderItem={memoizedValue}
-                    data={seasons}
-                    numColumns={numColumns}
-                    onEndReachedThreshold={0.5}
-                    removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                    style={{width:width, paddingHorizontal:PACKAGE_GAME_SEASON_CARD_MARGIN}}
-                    getItemLayout={(data, index) => {
-                        const row = Math.floor(index / numColumns); // هر ردیف
-                        return {
-                            length: itemHeight,
-                            offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
-                            index,
-                        };
-                    }}
-                    snapToInterval={snapInterval} // ارتفاع هر ردیف
-                    snapToAlignment="start"       // آیتم از بالا چفت شود
-                    decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
-                    disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
-                    bounces={true}                // فنری بودن مانند iOS
-                    viewabilityConfig={viewabilityConfig}
-                    onViewableItemsChanged={onViewableItemsChanged}
-                    ListEmptyComponent={ListEmptyComponent}
-                    extraData={{ activeIndexes, lastSeasonNumber }}
-                    onScrollToIndexFailed={(info) => {
-                        flatListRef.current?.scrollToIndex({
-                            index: Math.max(0, seasons.length - 1),
-                            animated: false,
-                            viewOffset: FLATLIST_PADDING_VERTICAL,
-                        });
-                    }}
+        <View style={{flex:1}}>
+            <View style={{flex:1, backgroundColor:colors.background.a1}}>
+                <StatusBar translucent={true} hidden={true} />
+                <View style={styles.container}>
+                    <FlatList
+                        ref={flatListRef}
+                        key={_id}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={keyExtractor}
+                        initialNumToRender={3}
+                        windowSize={5}
+                        initialScrollIndex={
+                            seasons?.length > 0
+                            ? Math.min(Math.max(0, lastSeasonNumber - 1), seasons.length - 1)
+                            : 0
+                        }
+                        ListHeaderComponent={ListHeaderComponent}
+                        maxToRenderPerBatch={3}
+                        contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingBottom:FLATLIST_PADDING_VERTICAL, paddingTop:HEADER_HEIGHT+15}}
+                        renderItem={memoizedValue}
+                        data={seasons}
+                        numColumns={numColumns}
+                        onEndReachedThreshold={0.5}
+                        removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                        style={{width:width, paddingHorizontal:PACKAGE_GAME_SEASON_CARD_MARGIN}}
+                        getItemLayout={(data, index) => {
+                            const row = Math.floor(index / numColumns); // هر ردیف
+                            return {
+                                length: itemHeight,
+                                offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
+                                index,
+                            };
+                        }}
+                        snapToInterval={snapInterval} // ارتفاع هر ردیف
+                        snapToAlignment="start"       // آیتم از بالا چفت شود
+                        decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
+                        disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                        bounces={true}                // فنری بودن مانند iOS
+                        viewabilityConfig={viewabilityConfig}
+                        onViewableItemsChanged={onViewableItemsChanged}
+                        ListEmptyComponent={ListEmptyComponent}
+                        extraData={{ activeIndexes, lastSeasonNumber }}
+                        onScrollToIndexFailed={(info) => {
+                            flatListRef.current?.scrollToIndex({
+                                index: Math.max(0, seasons.length - 1),
+                                animated: false,
+                                viewOffset: FLATLIST_PADDING_VERTICAL,
+                            });
+                        }}
+                    />
+                </View>
+                <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
+            </View>
+            <View style={{position:'absolute', top:0}}>
+                <PackageHeader
+                    packageIcon={packageInfo?.icon_image}
+                    title={packageInfo?.title}
                 />
             </View>
-            <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </View>
     )
 }
