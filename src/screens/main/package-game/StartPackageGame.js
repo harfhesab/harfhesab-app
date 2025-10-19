@@ -71,6 +71,7 @@ function StartPackageGame(props){
     const packageId = props?.route?.params?.packageId
     const {seasons, packageInfo, userPackage} = useUserPackageGameData({_id, packageId})
     const lastSeasonNumber = userPackage?.last_season_number || 1;
+    const lastStageNumber = userPackage?.last_stage_number
     const [loading, setLoading] = useState(true)
     const [noItem, setNoItem] = useState(false)
 
@@ -96,7 +97,9 @@ function StartPackageGame(props){
     const renderItem = ({item, index})=>{
         return(
             <PackageGameSeasonCard
+                ended={item.season_number < lastSeasonNumber?true:false}
                 lock={item.season_number > lastSeasonNumber?true:false}
+                progress={item.season_number == lastSeasonNumber?lastStageNumber - item.stage_number_from:null }
                 currentScroll={activeIndexes.includes(index)}
                 title={item.title}
                 description={item.description}
@@ -110,6 +113,7 @@ function StartPackageGame(props){
                     if(item.season_number > lastSeasonNumber)return
                     props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString(), seasonName:item.title.toString()})
                 }}
+                packageName={packageInfo?.title}
             />
         )
     }
@@ -152,7 +156,7 @@ function StartPackageGame(props){
     }
     const ListHeaderComponent = ()=>(
         <View>
-            <View style={{width:width, alignItems:'center'}}>
+            <View style={{width:width, alignItems:'center', height:PACKAGE_GAME_SEASON_CARD_HEIGHT}}>
                 <ImageComponent
                     uri={packageInfo?.banner_image}
                     width={IS_TABLET_CONDITION?500:width}
