@@ -121,31 +121,9 @@ function StartPackageGame(props){
     }
     const memoizedValue = useMemo(() => renderItem, [seasons, activeIndexes, lastSeasonNumber]);
     const keyExtractor = (item,index)=>index.toString()
-    
 
-    
 
-    // کانفیگ برای تشخیص آیتم‌های دیده‌شده
-    const viewabilityConfig = {
-        itemVisiblePercentThreshold: 90, // حداقل 90% آیتم دیده شود
-    };
-
-    // وقتی آیتم‌های دیده‌شده تغییر کنند
-    const onViewableItemsChanged = useRef(({ viewableItems }) => {
-        if (viewableItems.length > 0) {
-            if (numColumns === 1) {
-                // موبایل: فقط یک آیتم در مرکز فعال باشد
-                const currentIndex = viewableItems[0].index;
-                setActiveIndexes([currentIndex-1]);
-            } else {
-                // تبلت: هر ردیف شامل دو آیتم → هر دو فعال باشند
-                const currentRow = Math.floor(viewableItems[0].index / 2);
-                const firstIndex = currentRow * 2;
-                const secondIndex = firstIndex + 1;
-                setActiveIndexes([firstIndex-1, secondIndex-1]);
-            }
-        }
-    }).current;
+  
     const ListEmptyComponent = ()=>{
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
@@ -213,8 +191,6 @@ function StartPackageGame(props){
                     decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
                     disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
                     bounces={true}                // فنری بودن مانند iOS
-                    viewabilityConfig={viewabilityConfig}
-                    onViewableItemsChanged={onViewableItemsChanged}
                     ListEmptyComponent={ListEmptyComponent}
                     extraData={{ activeIndexes, lastSeasonNumber }}
                     onScrollToIndexFailed={(info) => {
@@ -223,6 +199,20 @@ function StartPackageGame(props){
                             animated: false,
                             viewOffset: FLATLIST_PADDING_VERTICAL,
                         });
+                    }}
+                    onMomentumScrollEnd={(e) => {
+                        if (numColumns === 1) {
+                            const offsetY = e.nativeEvent.contentOffset.y;
+                            const currentRow = Math.round(offsetY / snapInterval);
+                            const firstIndex = currentRow * numColumns;
+                            setActiveIndexes([firstIndex - 1]);
+                        } else {
+                            const offsetY = e.nativeEvent.contentOffset.y;
+                            const currentRow = Math.round(offsetY / snapInterval);
+                            const firstIndex = currentRow * numColumns;
+                            const secondIndex = firstIndex + 1;
+                            setActiveIndexes([firstIndex - 1, secondIndex - 1]);
+                        }
                     }}
                 />
             </View>

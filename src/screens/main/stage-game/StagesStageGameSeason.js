@@ -128,7 +128,6 @@ function StagesStageGameSeason(props){
                                 resizeMode="stretch"
                                 imageStyle={{
                                     resizeMode: "stretch",
-                                    opacity: 0.8,
                                 }}
                             >
                                 <View style={{height:((width-20)*1.21)-32, borderRadius:23, overflow:'hidden'}}>

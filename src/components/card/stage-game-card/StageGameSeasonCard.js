@@ -135,7 +135,7 @@ const CardContent = memo(({
           width={STAGE_GAME_CARD_WIDTH*0.92}
           height={STAGE_GAME_CARD_WIDTH * 0.5175}
           resizeMode={'cover'}
-          style={{borderTopLeftRadius:STAGE_GAME_CARD_WIDTH*0.16, borderTopRightRadius:STAGE_GAME_CARD_WIDTH*0.16, borderBottomLeftRadius:25, borderBottomRightRadius:25}}
+          style={{borderTopLeftRadius:STAGE_GAME_CARD_WIDTH*0.16, borderTopRightRadius:STAGE_GAME_CARD_WIDTH*0.16, borderBottomLeftRadius:8, borderBottomRightRadius:8}}
         />
       </View>
       <View style={{ width: '100%', alignItems: 'center' }}>

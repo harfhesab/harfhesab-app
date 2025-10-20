@@ -45,7 +45,7 @@ function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, t
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                                <Text numberOfLines={1} style={{color:"#FFF", fontFamily:Font.medium, fontSize:6}}>{"اطلاعات"}</Text>
+                                <Text numberOfLines={1} style={{color:"#FFF", fontFamily:Font.medium, fontSize:6}}>{"بستهٔ بازی"}</Text>
                             </ImageBackground>
                         </View>
                     }
