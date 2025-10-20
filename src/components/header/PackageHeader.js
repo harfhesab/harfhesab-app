@@ -8,18 +8,14 @@ import Back from "../icon/Back";
 import Setting from "../icon/Setting";
 import ImageComponent from "../image-components/ImageComponent";
 import SimpleBorderText from "../text-components/SimpleBorderText";
+import { STATUS_BAR_HEIGHT } from "../../utils/constants/constants";
 
 const {width} = Dimensions.get('screen');
 function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true, packageIcon}){
     const colors = useAppTheme();
     return(
-        <ImageBackground
-            source={require("../../assets/image/header_frame.png")}
-            style={{ width: width, height: width*0.45, justifyContent: "space-between", alignItems: "center", paddingBottom:25}}
-            imageStyle={{ resizeMode: "stretch" }}
-            resizeMode="stretch"
-        >
-            <View style={{height:height, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
+        <View style={{backgroundColor:colors.header.background, paddingTop:STATUS_BAR_HEIGHT}}>
+            <View style={{backgroundColor:colors.header.background, shadowColor:colors.shadow.a2, elevation:5, height:height, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
                 <View style={{height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10}}>
                     {
                         back&&
@@ -65,24 +61,7 @@ function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, t
                     }
                 </View>
             </View>
-            <ImageBackground
-                source={require("../../assets/image/header_title_frame.png")}
-                style={{ width: width*0.8, height: width*0.8*0.233, alignItems:'center', justifyContent:'center', paddingBottom:10}}
-                imageStyle={{ resizeMode: "stretch" }}
-                resizeMode="stretch"
-            >
-                {
-                    title&&
-                    <SimpleBorderText
-                        text={title}
-                        width={width*0.8 - 40}
-                        height={18*1.6}
-                        fontSize={18}
-                        borderWidth={2}
-                    />
-                }
-            </ImageBackground>
-        </ImageBackground>
+        </View>
     )
 }
 

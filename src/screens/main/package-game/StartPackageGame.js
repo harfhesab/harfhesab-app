@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, NativeModules, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, NativeModules, StatusBar, ImageBackground} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -10,7 +10,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
 import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
@@ -19,12 +19,14 @@ import { BSON } from 'realm';
 import { useIsFocused } from '@react-navigation/native';
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
-import PackageGameSeasonCard, { PACKAGE_GAME_SEASON_CARD_HEIGHT, PACKAGE_GAME_SEASON_CARD_MARGIN, HEADER_HEIGHT } from '../../../components/card/package-game-card/PackageGameSeasonCard';
+import PackageGameSeasonCard, { PACKAGE_GAME_SEASON_CARD_HEIGHT, PACKAGE_GAME_SEASON_CARD_MARGIN, HEADER_HEIGHT, PACKAGE_GAME_CARD_WIDTH } from '../../../components/card/package-game-card/PackageGameSeasonCard';
 import { PackageSeason } from '../../../realm/schemas/package-game/PackageSeasonSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import ImageComponent from '../../../components/image-components/ImageComponent';
 import PackageHeader from '../../../components/header/PackageHeader';
+import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
+import PackageGameSeasonFirstCard from '../../../components/card/package-game-card/PackageGameSeasonFirstCard';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -134,13 +136,13 @@ function StartPackageGame(props){
             if (numColumns === 1) {
                 // موبایل: فقط یک آیتم در مرکز فعال باشد
                 const currentIndex = viewableItems[0].index;
-                setActiveIndexes([currentIndex]);
+                setActiveIndexes([currentIndex-1]);
             } else {
                 // تبلت: هر ردیف شامل دو آیتم → هر دو فعال باشند
                 const currentRow = Math.floor(viewableItems[0].index / 2);
                 const firstIndex = currentRow * 2;
                 const secondIndex = firstIndex + 1;
-                setActiveIndexes([firstIndex, secondIndex]);
+                setActiveIndexes([firstIndex-1, secondIndex-1]);
             }
         }
     }).current;
@@ -154,83 +156,77 @@ function StartPackageGame(props){
             />
         </View>
     }
-    const ListHeaderComponent = ()=>(
-        <View>
-            <View style={{width:width, alignItems:'center', height:PACKAGE_GAME_SEASON_CARD_HEIGHT}}>
-                <ImageComponent
-                    uri={packageInfo?.banner_image}
-                    width={IS_TABLET_CONDITION?500:width}
-                    height={IS_TABLET_CONDITION?300:width * 0.6}
-                    resizeMode="cover"
-                    borderRadius={0}
-                />
-                <View>
-                    <Text></Text>
-                </View>
-            </View>
+    const ListHeaderComponent = useMemo(()=>(
+        <View style={{width:width, alignItems:'center'}}>
+            <PackageGameSeasonFirstCard
+                title={packageInfo?.title}
+                image={packageInfo?.banner_image}
+                numberStage={packageInfo?.number_stage}
+                numberSeason={packageInfo?.number_season}
+                lastStageNumber={lastStageNumber??0}
+                onPress={()=>{
+                    
+                }}
+            />
         </View>
-    )
+    ), [])
 
     return(
-        <View style={{flex:1}}>
-            <View style={{flex:1, backgroundColor:colors.background.a1}}>
-                <StatusBar translucent={true} hidden={true} />
-                <View style={styles.container}>
-                    <FlatList
-                        ref={flatListRef}
-                        key={_id}
-                        showsVerticalScrollIndicator={false}
-                        keyExtractor={keyExtractor}
-                        initialNumToRender={3}
-                        windowSize={5}
-                        initialScrollIndex={
-                            seasons?.length > 0
-                            ? Math.min(Math.max(0, lastSeasonNumber - 1), seasons.length - 1)
-                            : 0
-                        }
-                        ListHeaderComponent={ListHeaderComponent}
-                        maxToRenderPerBatch={3}
-                        contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingBottom:FLATLIST_PADDING_VERTICAL, paddingTop:HEADER_HEIGHT+15}}
-                        renderItem={memoizedValue}
-                        data={seasons}
-                        numColumns={numColumns}
-                        onEndReachedThreshold={0.5}
-                        removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                        style={{width:width, paddingHorizontal:PACKAGE_GAME_SEASON_CARD_MARGIN}}
-                        getItemLayout={(data, index) => {
-                            const row = Math.floor(index / numColumns); // هر ردیف
-                            return {
-                                length: itemHeight,
-                                offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
-                                index,
-                            };
-                        }}
-                        snapToInterval={snapInterval} // ارتفاع هر ردیف
-                        snapToAlignment="start"       // آیتم از بالا چفت شود
-                        decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
-                        disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
-                        bounces={true}                // فنری بودن مانند iOS
-                        viewabilityConfig={viewabilityConfig}
-                        onViewableItemsChanged={onViewableItemsChanged}
-                        ListEmptyComponent={ListEmptyComponent}
-                        extraData={{ activeIndexes, lastSeasonNumber }}
-                        onScrollToIndexFailed={(info) => {
-                            flatListRef.current?.scrollToIndex({
-                                index: Math.max(0, seasons.length - 1),
-                                animated: false,
-                                viewOffset: FLATLIST_PADDING_VERTICAL,
-                            });
-                        }}
-                    />
-                </View>
-                <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
-            </View>
-            <View style={{position:'absolute', top:0}}>
-                <PackageHeader
-                    packageIcon={packageInfo?.icon_image}
-                    title={packageInfo?.title}
+        <View style={{flex:1, backgroundColor:colors.background.a1}}>
+            <StatusBar translucent={true} hidden={true} />
+            <PackageHeader
+                packageIcon={packageInfo?.icon_image}
+                title={packageInfo?.title}
+            />
+            <View style={styles.container}>
+                <FlatList
+                    ref={flatListRef}
+                    key={_id}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={keyExtractor}
+                    initialNumToRender={3}
+                    windowSize={5}
+                    initialScrollIndex={
+                        seasons?.length > 0
+                        ? Math.min(Math.max(0, lastSeasonNumber - 1), seasons.length - 1)
+                        : 0
+                    }
+                    ListHeaderComponent={ListHeaderComponent}
+                    maxToRenderPerBatch={3}
+                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingBottom:125, paddingTop:FLATLIST_PADDING_VERTICAL}}
+                    renderItem={memoizedValue}
+                    data={seasons}
+                    numColumns={numColumns}
+                    onEndReachedThreshold={0.5}
+                    removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                    style={{width:width, paddingHorizontal:PACKAGE_GAME_SEASON_CARD_MARGIN}}
+                    getItemLayout={(data, index) => {
+                        const row = Math.floor(index / numColumns); // هر ردیف
+                        return {
+                            length: itemHeight,
+                            offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
+                            index,
+                        };
+                    }}
+                    snapToInterval={snapInterval} // ارتفاع هر ردیف
+                    snapToAlignment="start"       // آیتم از بالا چفت شود
+                    decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
+                    disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                    bounces={true}                // فنری بودن مانند iOS
+                    viewabilityConfig={viewabilityConfig}
+                    onViewableItemsChanged={onViewableItemsChanged}
+                    ListEmptyComponent={ListEmptyComponent}
+                    extraData={{ activeIndexes, lastSeasonNumber }}
+                    onScrollToIndexFailed={(info) => {
+                        flatListRef.current?.scrollToIndex({
+                            index: Math.max(0, seasons.length - 1),
+                            animated: false,
+                            viewOffset: FLATLIST_PADDING_VERTICAL,
+                        });
+                    }}
                 />
             </View>
+            <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </View>
     )
 }

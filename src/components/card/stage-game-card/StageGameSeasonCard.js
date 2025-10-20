@@ -129,7 +129,7 @@ const CardContent = memo(({
       flexDirection: 'column',
       justifyContent: 'space-between',
     }}>
-      <View style={{ width: '100%', alignItems: 'center', paddingTop:STAGE_GAME_CARD_WIDTH*0.055 }}>
+      <View style={{ width: '100%', alignItems: 'center', paddingTop:STAGE_GAME_CARD_WIDTH*0.065 }}>
         <ImageComponent
           uri={image}
           width={STAGE_GAME_CARD_WIDTH*0.92}

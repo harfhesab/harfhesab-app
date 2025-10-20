@@ -11,8 +11,8 @@ import MaskedView from '@react-native-masked-view/masked-view';
 const width = Dimensions.get("screen").width;
 function SeasonMediaSwiper({items, title, height}){
     const bannerWidth = IS_TABLET_CONDITION?460:width - 20
-    const mediaWidth = bannerWidth - 16
-    const mediaHeight = height*0.868
+    const mediaWidth = bannerWidth*0.94
+    const mediaHeight = height*0.87
     const titleWidth = bannerWidth - 100
     const colors = useAppTheme();
     const onClickItem = (item)=>{
@@ -22,7 +22,7 @@ function SeasonMediaSwiper({items, title, height}){
         <View style={{width:width, alignItems:'center'}}>
             <ImageBackground
                 source={require("../../assets/image/horizontal_frame.png")}
-                style={{ width: bannerWidth, height: height, justifyContent: "center", alignItems: "center", paddingTop:height*0.028}}
+                style={{ width: bannerWidth, height: height, justifyContent: "center", alignItems: "center", paddingTop:height*0.023}}
                 imageStyle={{ resizeMode: "stretch" }}
                 resizeMode="stretch"
             >
@@ -31,7 +31,7 @@ function SeasonMediaSwiper({items, title, height}){
                         width: mediaWidth,
                         height: mediaHeight,
                         alignSelf: 'center',
-                        borderRadius: 15,
+                        borderRadius: 18,
                     }}
                     maskElement={
                         <View
@@ -39,7 +39,7 @@ function SeasonMediaSwiper({items, title, height}){
                             backgroundColor: 'black',
                             width: mediaWidth,
                             height: mediaHeight,
-                            borderRadius: 15,
+                            borderRadius: 18,
                         }}
                         />
                     }
@@ -67,6 +67,7 @@ function SeasonMediaSwiper({items, title, height}){
                                         width={mediaWidth}
                                         height={mediaHeight}
                                         resizeMode="cover"
+                                        borderRadius={18}
                                     />
                                 </TouchableOpacity>
                                 ))}
@@ -76,16 +77,16 @@ function SeasonMediaSwiper({items, title, height}){
             </ImageBackground>
             <View style={{position:'absolute'}}>
                 <ImageBackground
-                    source={require("../../assets/image/frame_title.png")}
-                    style={{ width: titleWidth, height: titleWidth/5, justifyContent: "center", alignItems: "center", top:-titleWidth/10}}
+                    source={require("../../assets/image/frame_stage_title.png")}
+                    style={{ width: titleWidth, height: titleWidth/4.21, justifyContent: "center", alignItems: "center", top:-titleWidth/10}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
                     <SimpleBorderText
                         text={title}
                         width={titleWidth}
-                        height={16*1.6}
-                        fontSize={16}
+                        height={17*1.6}
+                        fontSize={17}
                         borderWidth={2}
                     />
                 </ImageBackground>

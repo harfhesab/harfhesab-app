@@ -285,7 +285,7 @@ function StageGame(props){
                         : 0
                     }
                     maxToRenderPerBatch={3}
-                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:FLATLIST_PADDING_VERTICAL}}
+                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:45}}
                     renderItem={memoizedValue}
                     data={data}
                     numColumns={numColumns}

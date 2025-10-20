@@ -13,7 +13,7 @@ import ImageComponent from '../../image-components/ImageComponent';
 import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
 import ButtonImgSrc from '../../buttons/ButtonImgSrc';
 import LockedSeasonAnimation from '../../LockedSeasonAnimation';
-import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import SimpleBorderText from '../../text-components/SimpleBorderText';
@@ -21,11 +21,11 @@ import LocalImageComponent from '../../image-components/LocalImageComponent';
 import WoodProgressBar from '../../WoodProgressBar';
 
 const { width, height } = Dimensions.get('screen');
-export const HEADER_HEIGHT = width*0.45
+export const HEADER_HEIGHT = 65+STATUS_BAR_HEIGHT
 export const PACKAGE_GAME_SEASON_CARD_MARGIN = 10;
-export const PACKAGE_GAME_SEASON_CARD_HEIGHT = height - (HEADER_HEIGHT + 60);
+export const PACKAGE_GAME_SEASON_CARD_HEIGHT = height - (HEADER_HEIGHT + 140);
 const CONTENT_HEIGHT = PACKAGE_GAME_SEASON_CARD_HEIGHT - 25
-const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION
+export const PACKAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION
   ? (width - (PACKAGE_GAME_SEASON_CARD_MARGIN * 3)) / 2
   : width - (PACKAGE_GAME_SEASON_CARD_MARGIN * 2);
 
@@ -58,12 +58,12 @@ function PackageGameSeasonCard({
     <View style={{height:PACKAGE_GAME_SEASON_CARD_HEIGHT, alignItems:'center', justifyContent:'flex-end'}}>
       <ImageBackground
           source={require("../../../assets/image/frame_stage.png")}
-          style={{ width: STAGE_GAME_CARD_WIDTH, height: CONTENT_HEIGHT }}
+          style={{ width: PACKAGE_GAME_CARD_WIDTH, height: CONTENT_HEIGHT }}
           imageStyle={{ resizeMode: "stretch" }}
           resizeMode="stretch"
       >
         <View style={{
-          width: STAGE_GAME_CARD_WIDTH,
+          width: PACKAGE_GAME_CARD_WIDTH,
           height: CONTENT_HEIGHT,
           overflow: 'visible',
           alignItems:'center'
@@ -94,20 +94,20 @@ function PackageGameSeasonCard({
               paddingTop:"15%",
               position: 'absolute',
             }}>
-              <LockedSeasonAnimation animate={currentScroll} lockFontSize={STAGE_GAME_CARD_WIDTH / 2} />
+              <LockedSeasonAnimation animate={currentScroll} lockFontSize={PACKAGE_GAME_CARD_WIDTH / 2} />
             </View>
           )}
         </View>
       </ImageBackground>
       <ImageBackground
           source={require("../../../assets/image/frame_stage_title.png")}
-          style={{ width: STAGE_GAME_CARD_WIDTH * 0.75, height: STAGE_GAME_CARD_WIDTH * 0.177, position:'absolute', top:0, alignSelf:'center', alignItems:'center', justifyContent:'center'}}
+          style={{ width: PACKAGE_GAME_CARD_WIDTH * 0.75, height: PACKAGE_GAME_CARD_WIDTH * 0.177, position:'absolute', top:0, alignSelf:'center', alignItems:'center', justifyContent:'center'}}
           imageStyle={{ resizeMode: "stretch" }}
           resizeMode="stretch"
       >
         <SimpleBorderText
             text={title}
-            width={STAGE_GAME_CARD_WIDTH * 0.6 - 30}
+            width={PACKAGE_GAME_CARD_WIDTH * 0.6 - 30}
             height={18*1.6}
             fontSize={18}
             borderWidth={2}
@@ -124,24 +124,24 @@ const CardContent = memo(({
   const cupNumberFontSize = seasonNumberLength == 1?14:seasonNumberLength == 2?11:8
   return (
     <View style={{
-      width: STAGE_GAME_CARD_WIDTH,
+      width: PACKAGE_GAME_CARD_WIDTH,
       height: CONTENT_HEIGHT,
       flexDirection: 'column',
       justifyContent: 'space-between',
     }}>
-      <View style={{ width: '100%', alignItems: 'center', paddingTop:STAGE_GAME_CARD_WIDTH*0.055 }}>
+      <View style={{ width: '100%', alignItems: 'center', paddingTop:PACKAGE_GAME_CARD_WIDTH*0.07 }}>
         <ImageComponent
           uri={image}
-          width={STAGE_GAME_CARD_WIDTH*0.92}
-          height={STAGE_GAME_CARD_WIDTH * 0.5175}
+          width={PACKAGE_GAME_CARD_WIDTH*0.92}
+          height={PACKAGE_GAME_CARD_WIDTH * 0.5175}
           resizeMode={'cover'}
-          style={{borderTopLeftRadius:STAGE_GAME_CARD_WIDTH*0.16, borderTopRightRadius:STAGE_GAME_CARD_WIDTH*0.16, borderBottomLeftRadius:25, borderBottomRightRadius:25}}
+          style={{borderTopLeftRadius:PACKAGE_GAME_CARD_WIDTH*0.16, borderTopRightRadius:PACKAGE_GAME_CARD_WIDTH*0.16, borderBottomLeftRadius:25, borderBottomRightRadius:25}}
         />
       </View>
       <View style={{ width: '100%', alignItems: 'center' }}>
         <ImageBackground
             source={require("../../../assets/image/frame_stage_info.png")}
-            style={{ width: STAGE_GAME_CARD_WIDTH*0.8, height: STAGE_GAME_CARD_WIDTH*0.31, alignItems:'center', justifyContent:'center'}}
+            style={{ width: PACKAGE_GAME_CARD_WIDTH*0.8, height: PACKAGE_GAME_CARD_WIDTH*0.31, alignItems:'center', justifyContent:'center'}}
             imageStyle={{ resizeMode: "stretch" }}
             resizeMode="stretch"
         >
@@ -162,7 +162,7 @@ const CardContent = memo(({
                   ended == true&&
                   <ImageBackground
                       source={require("../../../assets/image/cup.png")}
-                      style={{ width: STAGE_GAME_CARD_WIDTH*0.15, height: STAGE_GAME_CARD_WIDTH*0.15, alignItems:'center', justifyContent:'center', paddingBottom:20}}
+                      style={{ width: PACKAGE_GAME_CARD_WIDTH*0.15, height: PACKAGE_GAME_CARD_WIDTH*0.15, alignItems:'center', justifyContent:'center', paddingBottom:20}}
                       imageStyle={{ resizeMode: "stretch", opacity:0.9 }}
                       resizeMode="stretch"
                   >
@@ -177,7 +177,7 @@ const CardContent = memo(({
       </View>
       <View style={{alignItems:'center', width:'100%'}}>
         <WoodProgressBar
-          progressWidth={STAGE_GAME_CARD_WIDTH*0.8}
+          progressWidth={PACKAGE_GAME_CARD_WIDTH*0.8}
           progress={ended == true?numberStage:progress??0}
           maxValue={numberStage}
           showValue={lock == true?false:true}
@@ -187,7 +187,7 @@ const CardContent = memo(({
         <TouchableOpacity onPress={onClick} activeOpacity={1} style={{ alignSelf:'center', shadowColor:'#000', elevation:5}}>
           <ImageBackground
               source={require("../../../assets/image/frame_stage_button.png")}
-              style={{ width: STAGE_GAME_CARD_WIDTH * 0.65, height: STAGE_GAME_CARD_WIDTH * 0.247, alignItems:'center', justifyContent:'center', paddingBottom:5}}
+              style={{ width: PACKAGE_GAME_CARD_WIDTH * 0.65, height: PACKAGE_GAME_CARD_WIDTH * 0.247, alignItems:'center', justifyContent:'center', paddingBottom:5}}
               imageStyle={{ resizeMode: "stretch" }}
               resizeMode="stretch"
           >
