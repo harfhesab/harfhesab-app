@@ -1,50 +1,61 @@
 import React, { useState, useEffect, useMemo} from 'react';
+import { BSON } from 'realm';
 import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, NativeModules, StatusBar} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
-import { useRealm } from '../../../realm';
-import { getStageSeasonById } from '../../../realm/repositories/stage-game/stage-season.repository';
-import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
+import { useObject, useRealm } from '../../../realm';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import TextSkia from '../../../components/text-components/TextSkia';
 import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CARD_SIZE } from '../../../components/card/general/StageNumber';
-import { getStagesBySeasonId } from '../../../realm/repositories/stage-game/stage.repository';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import MultiLineTextGradientSvg from '../../../components/text-components/MultiLineTextGradientSvg';
 import SeasonHeader from '../../../components/header/SeasonHeader';
 import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import SeasonMediaSwiper from '../../../components/swiper/SeasonMediaSwiper';
+import { getPackageSeasonById } from '../../../realm/repositories/package-game/package-season.repository';
+import { getPackageStagesBySeasonId } from '../../../realm/repositories/package-game/package-stage.repository';
+import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 
 const {width, height} = Dimensions.get("screen");
 
 const { ImmersiveMode } = NativeModules;
-function StagesStageGameSeason(props){
+function useUserPackageGameData({ userPackageId }) {
+  const validUserPackageId = useMemo(() => {
+    try {
+      return userPackageId ? new BSON.ObjectId(userPackageId) : null;
+    } catch {
+      return null;
+    }
+  }, [userPackageId]);
+  const userPackage = useObject(UserPackage, validUserPackageId);
+  return { userPackage };
+}
+function StagesPackageGameSeason(props){
     const colors = useAppTheme()
     const realm = useRealm();
-    const { stageGameLanguage, stageGameLanguageName } = useSelector((state) => state.stageGamePersist);
-    const { lastStageNumber, lastStage } = useSelector((state) => state.stageGame);
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)
     const [info, setInfo] = useState(null)
     const [data, setData] = useState([])
     const seasonName = props?.route?.params?.seasonName
+    const userPackageId = props?.route?.params?.userPackageId
+    const { userPackage} = useUserPackageGameData({userPackageId})
+    const lastStage = userPackage?.last_stage;
+    const lastStageNumber = userPackage?.last_stage_number??1;
 
     useEffect(() => {
         getData()
         ImmersiveMode.enterImmersiveMode();
-        return () => {
-            ImmersiveMode.exitImmersiveMode();
-        };
     }, []);
 
     const getData = async (selected)=>{
         const id = props?.route?.params?.season
-        const season = getStageSeasonById(realm, id)
-        const stages = getStagesBySeasonId(realm, id)
+        const season = getPackageSeasonById(realm, id)
+        const stages = getPackageStagesBySeasonId(realm, id)
         if(season && stages?.length > 0){
             setInfo(season)
             setData(stages)
@@ -73,7 +84,7 @@ function StagesStageGameSeason(props){
                     resizeMode="stretch"
                 >
                     <View style={{width:"100%", height:"100%", alignItems:'center', justifyContent:'center', paddingHorizontal:5, gap:5}}>
-                        <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{`زبان ${stageGameLanguageName}`}</Text>
+                        <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{`${props?.route?.params?.packageName}`}</Text>
                         <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12}}>{`فصل ${info?.season_number}  -  مرحله ${info?.stage_number_from} تا ${info?.stage_number_to}`}</Text>
                     </View>
                 </ImageBackground>
@@ -83,12 +94,12 @@ function StagesStageGameSeason(props){
 
     const renderItem = ({item})=>(
         <StageNumber
-            currently={item._id.toHexString() == lastStage?true:false}
-            lock={item.stage_number_in_language > lastStageNumber?true:false}
-            number={item.stage_number_in_language}
+            currently={item._id.toHexString() == lastStage?true:(item.stage_number_in_package == 1 && lastStageNumber == 1)?true:false}
+            lock={item.stage_number_in_package > lastStageNumber?true:false}
+            number={item.stage_number_in_package}
             onPress={()=>{
-                if(item.stage_number_in_language > lastStageNumber)return
-                props.navigation.navigate("WordToSlotStageGame", {stage:item?._id.toHexString()})
+                if(item.stage_number_in_package > lastStageNumber)return
+                props.navigation.navigate("WordToSlotPackageGame", {stage:item?._id.toHexString()})
             }}
         />
     )
@@ -154,4 +165,4 @@ const styles = StyleSheet.create({
       paddingBottom:10
     }
 });
-export default StagesStageGameSeason;
+export default StagesPackageGameSeason;

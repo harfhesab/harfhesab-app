@@ -9,6 +9,9 @@ import LoginToAccount from '../screens/main/account/login/LoginToAccount';
 import VerifyLoginToAccount from '../screens/main/account/login/VerifyLoginToAccount';
 import PackageInformation from '../screens/main/package-game/PackageInformation';
 import UserPackagesList from '../screens/main/package-game/UserPackagesList';
+import StagesPackageGameSeason from '../screens/main/package-game/StagesPackageGameSeason';
+import ConnectingLettersPackageGame from '../screens/main/package-game/game/ConnectingLettersPackageGame';
+import WordToSlotPackageGame from '../screens/main/package-game/game/WordToSlotPackageGame';
 // ==================================================================================================
 import { AppState, NativeModules } from 'react-native';
 import { getCurrentRouteName } from './navigationService';
@@ -51,6 +54,9 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"CoinPlans"} component={CoinPlans} />
       <Stack.Screen name={"SubscriptionPlans"} component={SubscriptionPlans} />
       <Stack.Screen name={"StartPackageGame"} component={StartPackageGame} />
+      <Stack.Screen name={"StagesPackageGameSeason"} component={StagesPackageGameSeason} />
+      <Stack.Screen name={"ConnectingLettersPackageGame"} component={ConnectingLettersPackageGame} />
+      <Stack.Screen name={"WordToSlotPackageGame"} component={WordToSlotPackageGame} />
     </Stack.Navigator>
   )
 }

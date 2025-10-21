@@ -34,7 +34,7 @@ function PackageGameSeasonFirstCard({
   numberStage,
   numberSeason,
   lastStageNumber,
-  onPress,
+  startPackage,
 }) {
   const colors = useAppTheme();
 
@@ -63,7 +63,6 @@ function PackageGameSeasonFirstCard({
               numberSeason={numberSeason}
               lastStageNumber={lastStageNumber}
               colors={colors}
-              onPress={onPress}
             />
         </View>
       </ImageBackground>
@@ -83,7 +82,7 @@ function PackageGameSeasonFirstCard({
             borderColor={"#e5c0b3"}
         />
       </ImageBackground>
-      <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0, alignSelf:'center'}}>
+      <TouchableOpacity onPress={startPackage} activeOpacity={0.8} style={{position:'absolute', bottom:0, alignSelf:'center'}}>
         <ImageBackground
             source={require("../../../assets/image/wood_blue_button.png")}
             style={{ width: PACKAGE_GAME_CARD_WIDTH*0.7, height: PACKAGE_GAME_CARD_WIDTH*0.7*0.383, alignItems:'center', justifyContent:'center', paddingBottom:10}}
@@ -104,7 +103,6 @@ const CardContent = memo(({
   numberSeason,
   lastStageNumber,
   colors,
-  onPress,
 }) => {
   return (
     <View style={{
@@ -132,8 +130,8 @@ const CardContent = memo(({
             imageStyle={{ resizeMode: "stretch" }}
             resizeMode="stretch"
         >
-          <Text style={{fontFamily:Font.medium, fontSize:14, color:"#222"}}>{numberSeason}</Text>
-          <Text style={{fontFamily:Font.medium, fontSize:8, color:"#666"}}>{'تعداد فصل'}</Text>
+          <Text style={{fontFamily:Font.medium, fontSize:14, color:"#222", textAlign:'center'}}>{numberSeason}</Text>
+          <Text style={{fontFamily:Font.medium, fontSize:8, color:"#666", textAlign:'center'}}>{'تعداد فصل'}</Text>
           <Icon name={"receipt"} type={"Ionicons"} style={{color:"#333", fontSize:20}}/>
         </ImageBackground>
 
@@ -143,8 +141,8 @@ const CardContent = memo(({
             imageStyle={{ resizeMode: "stretch" }}
             resizeMode="stretch"
         >
-          <Text style={{fontFamily:Font.medium, fontSize:14, color:"#222"}}>{numberStage}</Text>
-          <Text style={{fontFamily:Font.medium, fontSize:8, color:"#666"}}>{'تعداد مرحله'}</Text>
+          <Text style={{fontFamily:Font.medium, fontSize:14, color:"#222", textAlign:'center'}}>{numberStage}</Text>
+          <Text style={{fontFamily:Font.medium, fontSize:8, color:"#666", textAlign:'center'}}>{'تعداد مرحله'}</Text>
           <Icon name={"golf"} type={"Ionicons"} style={{color:"#333", fontSize:20}}/>
         </ImageBackground>
 
@@ -154,11 +152,10 @@ const CardContent = memo(({
             imageStyle={{ resizeMode: "stretch" }}
             resizeMode="stretch"
         >
-          <Text style={{fontFamily:Font.medium, fontSize:14, color:"#222"}}>{"فارسی"}</Text>
-          <Text style={{fontFamily:Font.medium, fontSize:8, color:"#666"}}>{'زبان بازی'}</Text>
+          <Text style={{fontFamily:Font.medium, fontSize:14, color:"#222", textAlign:'center'}}>{"فارسی"}</Text>
+          <Text style={{fontFamily:Font.medium, fontSize:8, color:"#666", textAlign:'center'}}>{'زبان بازی'}</Text>
           <Icon name={"layers"} type={"Ionicons"} style={{color:"#333", fontSize:20}}/>
         </ImageBackground>
-        
       </View>
 
       

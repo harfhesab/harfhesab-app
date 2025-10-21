@@ -153,7 +153,7 @@ function PackageInformation(props){
         } else if(data?.user_package_status.status == "recreate-and-download-content"){
             recreateAndDownloadContent()
         } else if(data?.user_package_status.status == "start-game"){
-            props.navigation.navigate("StartPackageGame", {_id:localData?.user_package._id, packageId:localData?.package._id })
+            props.navigation.navigate("StartPackageGame", {_id:localData?.user_package._id.toHexString(), packageId:localData?.package._id.toHexString() })
         }
     }
 

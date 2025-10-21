@@ -72,8 +72,8 @@ function StartPackageGame(props){
     const _id = props?.route?.params?._id
     const packageId = props?.route?.params?.packageId
     const {seasons, packageInfo, userPackage} = useUserPackageGameData({_id, packageId})
-    const lastSeasonNumber = userPackage?.last_season_number || 1;
-    const lastStageNumber = userPackage?.last_stage_number
+    const lastSeasonNumber = userPackage?.last_season_number??0;
+    const lastStageNumber = userPackage?.last_stage_number??0;
     const [loading, setLoading] = useState(true)
     const [noItem, setNoItem] = useState(false)
 
@@ -95,13 +95,25 @@ function StartPackageGame(props){
         };
     }, []);
 
+    useEffect(() => {
+        if(lastSeasonNumber == 1){
+            if (seasons.length > 0) {
+                flatListRef.current?.scrollToIndex({
+                    index: 0,
+                    animated: true,
+                    viewOffset: FLATLIST_PADDING_VERTICAL,
+                });
+            }
+        }
+    }, [lastSeasonNumber])
+
 
     const renderItem = ({item, index})=>{
         return(
             <PackageGameSeasonCard
                 ended={item.season_number < lastSeasonNumber?true:false}
-                lock={item.season_number > lastSeasonNumber?true:false}
-                progress={item.season_number == lastSeasonNumber?lastStageNumber - item.stage_number_from:null }
+                lock={(item.season_number > lastSeasonNumber && item.season_number > 1)?true:false}
+                progress={(item.season_number == lastSeasonNumber && lastStageNumber > 0)?lastStageNumber - item.stage_number_from:null }
                 currentScroll={activeIndexes.includes(index)}
                 title={item.title}
                 description={item.description}
@@ -112,14 +124,19 @@ function StartPackageGame(props){
                 stageNumberFrom={item.stage_number_from}
                 stageNumberTo={item.stage_number_to}
                 onPress={()=>{
-                    if(item.season_number > lastSeasonNumber)return
-                    props.navigation.navigate("StagesStageGameSeason", {season:item._id.toString(), seasonName:item.title.toString()})
+                    if(item.season_number > lastSeasonNumber && item.season_number > 1)return
+                    props.navigation.navigate("StagesPackageGameSeason", {
+                        season:item._id.toString(),
+                        userPackageId:_id,
+                        seasonName:item.title.toString(),
+                        packageName:packageInfo?.title.toString()
+                    })
                 }}
                 packageName={packageInfo?.title}
             />
         )
     }
-    const memoizedValue = useMemo(() => renderItem, [seasons, activeIndexes, lastSeasonNumber]);
+    const memoizedValue = useMemo(() => renderItem, [seasons, activeIndexes, lastSeasonNumber, lastStageNumber]);
     const keyExtractor = (item,index)=>index.toString()
 
 
@@ -142,12 +159,19 @@ function StartPackageGame(props){
                 numberStage={packageInfo?.number_stage}
                 numberSeason={packageInfo?.number_season}
                 lastStageNumber={lastStageNumber??0}
-                onPress={()=>{
-                    
+                startPackage={()=>{
+                    const targetIndex = Math.max(0, lastSeasonNumber-1);
+                    if (targetIndex < seasons.length) {
+                        flatListRef.current?.scrollToIndex({
+                            index: targetIndex,
+                            animated: true,
+                            viewOffset: FLATLIST_PADDING_VERTICAL,
+                        });
+                    }
                 }}
             />
         </View>
-    ), [])
+    ), [lastStageNumber])
 
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
@@ -165,7 +189,7 @@ function StartPackageGame(props){
                     initialNumToRender={3}
                     windowSize={5}
                     initialScrollIndex={
-                        seasons?.length > 0
+                        seasons.length > 0
                         ? Math.min(Math.max(0, lastSeasonNumber - 1), seasons.length - 1)
                         : 0
                     }
@@ -182,7 +206,7 @@ function StartPackageGame(props){
                         const row = Math.floor(index / numColumns); // هر ردیف
                         return {
                             length: itemHeight,
-                            offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
+                            offset: snapInterval + FLATLIST_PADDING_VERTICAL + row * snapInterval,
                             index,
                         };
                     }}

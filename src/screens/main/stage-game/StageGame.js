@@ -208,7 +208,7 @@ function StageGame(props){
             <StageGameSeasonCard
                 ended={item.season_number < lastSeasonNumber?true:false}
                 lock={item.season_number > lastSeasonNumber?true:false}
-                progress={item.season_number == lastSeasonNumber?lastStageNumber - item.stage_number_from:null }
+                progress={(item.season_number == lastSeasonNumber && lastStageNumber > 0)?lastStageNumber - item.stage_number_from:null }
                 currentScroll={activeIndexes.includes(index)}
                 title={item.title}
                 description={item.description}

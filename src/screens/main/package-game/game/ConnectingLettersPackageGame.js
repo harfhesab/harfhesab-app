@@ -4,7 +4,7 @@ import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import ConnectingLetters from '../../../../components/connecting-letters/ConnectingLetters';
 import NightSky from '../../../../components/particles/NightSky';
 
-function ConnectingLettersStageGame(props){
+function ConnectingLettersPackageGame(props){
     const colors = useAppTheme()
     const stageId = props?.route?.params?.stageId
     const partIndex = props?.route?.params?.partIndex
@@ -15,7 +15,7 @@ function ConnectingLettersStageGame(props){
             <NightSky>
                 <View style={styles.container}>
                     <ConnectingLetters 
-                        type={"stage-game"}
+                        type={"package-game"}
                         stageId={stageId}
                         partIndex={partIndex}
                         wordId={wordId}
@@ -31,4 +31,4 @@ const styles = StyleSheet.create({
       direction: "ltr"
     },
 });
-export default ConnectingLettersStageGame;
+export default ConnectingLettersPackageGame;
