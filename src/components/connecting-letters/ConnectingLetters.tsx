@@ -12,9 +12,9 @@ import {
   BOUNDARY_BORDER_WIDTH,
   BOUNDARY_BOTTOM_OFFSET,
 } from './constants/constants';
-import useAppTheme from '../../hooks/theme/useAppTheme';
 import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
 import { useRealm } from '../../realm';
+import { getPackageStageById } from '../../realm/repositories/package-game/package-stage.repository';
 
 interface Props {
   type: string;
@@ -23,11 +23,10 @@ interface Props {
   wordId: string;
 }
 const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
-  const colors = useAppTheme();
   const realm = useRealm();
   
 
-  const partWords = type == "stage-game"? getStageById(realm, stageId)?.parts[partIndex]?.words:undefined
+  const partWords = type == "stage-game"? getStageById(realm, stageId)?.parts[partIndex]?.words:type == "package-game"?getPackageStageById(realm, stageId)?.parts[partIndex]?.words:undefined
   const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
   const data = wordIndex !== undefined && wordIndex > -1  && partWords? partWords[wordIndex]:undefined
   

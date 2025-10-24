@@ -1,5 +1,5 @@
 import BackgroundService from 'react-native-background-actions';
-import { redownloadContentPackageGameForUser, setPackageGameForUser } from '../api/PackageGameApi';
+import { recreatePackageGameForUser, redownloadContentPackageGameForUser, setPackageGameForUser } from '../api/PackageGameApi';
 
 const options = {
     taskName: 'دریافت محتوا',
@@ -37,6 +37,7 @@ export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, pack
 // ===============================================================================================================================================
 
 const veryIntensiveTask2 = async (taskDataArguments) => {
+    console.log("66666666666666666")
     const { dispatch, realm, packageId, packageInfo, userPackageInfo } = taskDataArguments;
     try {
         await recreatePackageGameForUser({ dispatch, realm, packageId, packageInfo, userPackageInfo });
@@ -46,6 +47,7 @@ const veryIntensiveTask2 = async (taskDataArguments) => {
 };
 
 export const recreateAndDownloadContentUserPackage = async ({ dispatch, realm, packageId, packageInfo, userPackageInfo, color }) => {
+        console.log("555555555555555")
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask2, {
             ...options,

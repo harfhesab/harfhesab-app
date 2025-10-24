@@ -26,6 +26,9 @@ import { BSON } from 'realm';
 import { Stage } from '../../../realm/schemas/stage-game/StageSchema';
 import { saveCompletedPartAndSentenceBuilded, saveWordHelpUsedInStageGame } from '../../../realm/repositories/user/user-stage-game-progress.repository';
 import Toast from 'react-native-toast-message';
+import { PackageStage } from '../../../realm/schemas/package-game/PackageStageSchema';
+import { saveCompletedPartAndSentenceBuildedInPackageGame, saveWordHelpUsedInPackageGame } from '../../../realm/repositories/user/user-package-game-progress.repository';
+import { endOfAStageInPackageGame } from '../functions/PackageGameFunctions';
 
 interface Position {
   x: number;
@@ -79,18 +82,31 @@ export const DragDropProvider: React.FC<{
   stageId: string;
   currentStageId: string;
   type: string;
+  packageRef:string | undefined | null;
+  userPackage:string | undefined | null;
+  packageName:string | undefined | null;
 }> = ({
   children,
   stageId,
   currentStageId,
   type,
+  packageRef,
+  userPackage,
+  packageName,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const realm = useRealm();
   const objectId = typeof stageId === 'string' ? new BSON.ObjectId(stageId) : stageId;
-  const data = type == "stage-game"&&useObject<Stage>('Stage', objectId);
-  const stageNumber = (type == "stage-game" && data)?data?.stage_number_in_language:undefined
-  const languageId = (type == "stage-game" && data)?data?.language_ref?.toString():undefined
+  const data = type == "stage-game" ? useObject<Stage>("Stage", objectId) : type == "package-game"? useObject<PackageStage>("PackageStage", objectId): undefined;
+  let stageNumber: number | undefined;
+  if (type === "stage-game" && data) {
+    const stageData = data as Stage; // 👈 اینجا type narrowing
+    stageNumber = stageData.stage_number_in_language;
+  } else if (type === "package-game" && data) {
+    const packageData = data as PackageStage;
+    stageNumber = packageData.stage_number_in_package;
+  }
+  const languageId = (type == "stage-game" && data)?data?.language_ref?.toHexString():undefined
   const parts = data?data?.parts:[]
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [slots, setSlots] = useState<Record<number, string>>({});
@@ -134,6 +150,9 @@ export const DragDropProvider: React.FC<{
         if(type == "stage-game"){
           saveWordHelpUsedInStageGame( realm, stageId, partIndex, wordId);
           return true
+        } else if(type == "package-game"){
+          saveWordHelpUsedInPackageGame( realm, stageId, partIndex, wordId);
+          return true
         }
         break
       }
@@ -156,6 +175,9 @@ export const DragDropProvider: React.FC<{
     if(type == "stage-game"){
       const partIndex = playingPartIndex
       saveCompletedPartAndSentenceBuilded( realm, stageId, partIndex);
+    } else if(type == "package-game"){
+      const partIndex = playingPartIndex
+      saveCompletedPartAndSentenceBuildedInPackageGame( realm, stageId, partIndex);
     }
     if (playingPartIndex < parts.length - 1) {
       setTimeout(()=>{
@@ -179,7 +201,8 @@ export const DragDropProvider: React.FC<{
           const language_ref = languageId
           endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})
         } else if(type == "package-game"){
-          
+          console.log("111111111111111111111111")
+          endOfAStageInPackageGame({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences})
         }
       }, 1000)
     }

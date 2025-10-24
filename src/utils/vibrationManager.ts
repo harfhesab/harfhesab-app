@@ -20,7 +20,7 @@ export const setVibrationEnabled = (enabled: boolean) => {
 export const vibrate = (options?: VibrationOptions) => {
   if (!isVibrationEnabled) return;
 
-  const pattern = options?.pattern ?? 50; // پیش‌فرض ۵۰ میلی‌ثانیه
+  const pattern = options?.pattern ?? 80; // پیش‌فرض 80 میلی‌ثانیه
   const repeat = options?.repeat ?? false;
 
   // فقط روی Android تکرار پشتیبانی می‌شه

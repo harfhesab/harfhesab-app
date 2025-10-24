@@ -181,7 +181,6 @@ export const getCurrentLanguageNextStageInformation = (
             const nextStageNumber = currentStageNumber ? currentStageNumber + 1 : 2;
             const next = realm.objects<Stage>('Stage').filtered('language_ref == $0 AND stage_number_in_language == $1', languageRefId, nextStageNumber)[0];
             if(next){
-                const nextDocument = next.toJSON()
                 const nextStage = next._id.toString()
                 if(currentSeason?.equals(next.season)){
                     return {

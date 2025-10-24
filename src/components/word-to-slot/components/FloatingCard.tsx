@@ -216,6 +216,8 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   const handleNavigate = () => {
     if(type == "stage-game"){
       navigate('ConnectingLettersStageGame', {stageId:stageId, partIndex:playingPartIndex, wordId:_id});
+    } else {
+      navigate('ConnectingLettersPackageGame', {stageId:stageId, partIndex:playingPartIndex, wordId:_id});
     }
   };
 

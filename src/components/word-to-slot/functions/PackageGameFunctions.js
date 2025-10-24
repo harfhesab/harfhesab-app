@@ -1,22 +1,22 @@
 import axios from "axios";
 import { InteractionManager } from 'react-native';
 import { goBack } from "../../../main/navigationService";
-import { getCurrentLanguageNextStageInformation, updateUserStageGameProgress, makingStageContentReplayableInStageGame } from "../../../realm/repositories/user/user-stage-game-progress.repository";
-import { updateCurrentLanguageLastStageAndLastSeason } from "../../../redux/slices/stageGameSlice";
 import GameAlertHelper from "../../game-alert/GameAlertHelper";
 import { successfulCompletionOfSeasonSound, successfulCompletionOfStageSound } from "../../../utils/sound/SoundFunctions";
 import { store } from "../../../redux/store/Store";
+import { getCurrentPackageNextStageInformation, makingStageContentReplayableInPackageGame, updateUserPackageGameProgress } from "../../../realm/repositories/user/user-package-game-progress.repository";
 
 
-export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})=>{
+export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences})=>{
     const state = store.getState()
     if(stageId.toString() === currentStageId.toString()){
-        const next = getCurrentLanguageNextStageInformation(realm, language_ref)
+        const next = getCurrentPackageNextStageInformation(realm, packageRef, userPackage)
+        console.log("sssssssssss", next)
         if(next.endAllStage == true){
             GameAlertHelper.showAlertGame({
                 title:`پایان مرحله ${stageNumber}`,
                 admiration: "درود بر شما!",
-                description: `جملات مرحله ${stageNumber} زبان ${state.stageGamePersist.stageGameLanguageName} با موفقیت ساخته شد.`,
+                description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} با موفقیت ساخته شد.`,
                 completedSentences: sentences,
                 buttons: [
                     {
@@ -45,7 +45,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
             const last_season_number = next?.nextSeasonNumber;
             const last_stage = next?.nextStage;
             const last_stage_number = next?.nextStageNumber;
-            const updateProgress = await updateUserStageGameProgress(realm, language_ref, last_season, last_season_number, last_stage, last_stage_number)
+            const updateProgress = await updateUserPackageGameProgress(realm, userPackage, last_season, last_season_number, last_stage, last_stage_number)
             if(updateProgress == true){
                 const data = {
                     lastStage: last_stage,
@@ -54,13 +54,12 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     lastSeasonNumber: last_season_number  
                 }
                 const numberCoins = state.coins.numberCoins;
-                const coinsReward = state.constants.coins_reward_from_stage_completed_stage_game
+                const coinsReward = state.constants.coins_reward_from_stage_completed_package_game
                 const totalCoins = numberCoins + coinsReward
-                await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
                 GameAlertHelper.showAlertGame({
                     title:`پایان مرحله ${stageNumber}`,
                     admiration: "درود بر شما!",
-                    description: `جملات مرحله ${stageNumber} زبان ${state.stageGamePersist.stageGameLanguageName} با موفقیت ساخته شد.`,
+                    description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} با موفقیت ساخته شد.`,
                     completedSentences: sentences,
                     buttons: [
                         {
@@ -80,7 +79,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                                 goBack()
                                 if(next.endCurrentSeason == true){
                                     setTimeout(()=>{
-                                        endOfASeasonInStageGame({seasonNumber:last_season_number-1})
+                                        endOfASeasonInStageGame({seasonNumber:last_season_number-1, packageName})
                                     }, 500)
                                 }
                             },
@@ -95,7 +94,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     },
                 });
                 setTimeout(()=>{
-                    updateUserStageGameProgressInServer(data, language_ref, totalCoins)
+                    updateUserPackageGameProgressInServer(data, userPackage, totalCoins)
                 }, 1000)
             }
         }
@@ -103,7 +102,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
         GameAlertHelper.showAlertGame({
             title:`پایان مرحله ${stageNumber}`,
             admiration: "درود بر شما!",
-            description: `جملات مرحله ${stageNumber} زبان ${state.stageGamePersist.stageGameLanguageName} مجددا، با موفقیت ساخته شد.`,
+            description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} مجددا، با موفقیت ساخته شد.`,
             completedSentences: sentences,
             buttons: [
                 {
@@ -127,17 +126,17 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
             },
         });
     }
-    makingStageContentReplayableInStageGame(realm, stageId)
+    makingStageContentReplayableInPackageGame(realm, stageId)
     setTimeout(()=>{
         successfulCompletionOfStageSound()
     }, 1000)
 }
-const endOfASeasonInStageGame = ({seasonNumber})=>{
+const endOfASeasonInStageGame = ({seasonNumber, packageName})=>{
     const state = store.getState()
     GameAlertHelper.showAlertGame({
         title:`پایان فصل ${seasonNumber}`,
         admiration: "تبریک!",
-        description: `مراحل فصل ${seasonNumber} زبان ${state.stageGamePersist.stageGameLanguageName} با موفقیت به اتمام رسید.`,
+        description: `مراحل فصل ${seasonNumber} بستهٔ ${packageName} با موفقیت به اتمام رسید.`,
         buttons: [
             {
                 text: "شروع فصل جدید",
@@ -149,7 +148,7 @@ const endOfASeasonInStageGame = ({seasonNumber})=>{
         ],
         options : {
             type: 'unlocked',
-            reward : state.constants.coins_reward_from_season_completed_stage_game,
+            reward : state.constants.coins_reward_from_season_completed_package_game,
             cancelable: false,
         },
     });
@@ -157,7 +156,7 @@ const endOfASeasonInStageGame = ({seasonNumber})=>{
         successfulCompletionOfSeasonSound()
     }, 1000)
 }
-const updateUserStageGameProgressInServer = (data, language_ref, totalCoins)=>{
+const updateUserPackageGameProgressInServer = (data, userPackage, totalCoins)=>{
     InteractionManager.runAfterInteractions(()=>{
         const run = async ()=>{
             await axios({
@@ -165,17 +164,17 @@ const updateUserStageGameProgressInServer = (data, language_ref, totalCoins)=>{
                 method:'post',
                 data: {
                     query : `
-                    mutation updateUserStageGameProgress(
+                    mutation updateUserPackageGameProgress(
                         $number_coin : Int,
-                        $language_ref : ID!,
+                        $user_package : ID!,
                         $last_season : ID!,
                         $last_season_number : Int!,
                         $last_stage : ID!,
                         $last_stage_number : Int!,
                     ){
-                        updateUserStageGameProgress(
+                        updateUserPackageGameProgress(
                             number_coin : $number_coin,
-                            language_ref : $language_ref,
+                            user_package : $user_package,
                             last_season : $last_season,
                             last_season_number : $last_season_number,
                             last_stage : $last_stage,
@@ -187,7 +186,7 @@ const updateUserStageGameProgressInServer = (data, language_ref, totalCoins)=>{
                     `,
                     variables : {
                         "number_coin" : totalCoins,
-                        "language_ref" : language_ref,
+                        "user_package" : userPackage,
                         "last_season" : data.lastSeason,
                         "last_season_number" : data.lastSeasonNumber,
                         "last_stage" : data.lastStage,

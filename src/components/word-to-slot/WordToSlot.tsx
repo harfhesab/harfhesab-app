@@ -17,18 +17,22 @@ import {
   DISTANCE_BOUNDARY_AND_SLOT
 } from './constants/constants';
 import SentenceDisplay from './components/SentenceDisplay';
-import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const WordToSlot = ({
   id,
   currentStageId,
   type,
+  packageRef,
+  userPackage,
+  packageName,
 }:{
   id:string;
   currentStageId:string;
   type:string; // "stage-game" | "package-game"
+  packageRef:string | undefined | null;
+  userPackage:string | undefined | null;
+  packageName:string | undefined | null;
 }) => {
-  const colors = useAppTheme();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -36,6 +40,9 @@ const WordToSlot = ({
         stageId={id}
         currentStageId={currentStageId}
         type={type}
+        packageRef={packageRef}
+        userPackage={userPackage}
+        packageName={packageName}
       >
         <SafeAreaView style={styles.container}>
           <SentenceDisplay />

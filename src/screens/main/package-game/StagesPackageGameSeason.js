@@ -99,7 +99,13 @@ function StagesPackageGameSeason(props){
             number={item.stage_number_in_package}
             onPress={()=>{
                 if(item.stage_number_in_package > lastStageNumber)return
-                props.navigation.navigate("WordToSlotPackageGame", {stage:item?._id.toHexString()})
+                props.navigation.navigate("WordToSlotPackageGame", {
+                    stage:item?._id.toHexString(),
+                    lastStage:lastStage?.toHexString()??item?._id.toHexString(),
+                    packageRef: userPackage.package_ref.toHexString(),
+                    userPackage:props?.route?.params?.userPackageId,
+                    packageName:props?.route?.params?.packageName
+                })
             }}
         />
     )

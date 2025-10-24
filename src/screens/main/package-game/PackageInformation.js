@@ -105,7 +105,8 @@ function PackageInformation(props){
                             user_package_status{
                                 status,
                                 button_text,
-                                user_package_id
+                                user_package_id,
+                                access_type
                             }
                         }
                     }
@@ -151,7 +152,8 @@ function PackageInformation(props){
         } else if(data?.user_package_status.status == "redownload-content"){
             redownloadContent()
         } else if(data?.user_package_status.status == "recreate-and-download-content"){
-            recreateAndDownloadContent()
+            const accessType = data.user_package_status.access_type
+            recreateAndDownloadContent(accessType)
         } else if(data?.user_package_status.status == "start-game"){
             props.navigation.navigate("StartPackageGame", {_id:localData?.user_package._id.toHexString(), packageId:localData?.package._id.toHexString() })
         }
@@ -305,7 +307,8 @@ function PackageInformation(props){
                                 button_text: "دانلود مجدد محتوا",
                             },
                         }));
-                        recreateAndDownloadContent()
+                        const accessType = "coin-payment"
+                        recreateAndDownloadContent(accessType)
                     }
                 }
             } else {
@@ -516,8 +519,10 @@ function PackageInformation(props){
             await startSetPackageGameForUserAndGetIt({ dispatch, realm, packageId:packageParamId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
         }
     }
-    const recreateAndDownloadContent = async()=>{
+    const recreateAndDownloadContent = async(accessType)=>{
+        console.log("11111111111111")
         const color = colors.primary.a1
+        console.log("222222222222222")
         const packageInfo = {
             _id : data.package._id,
             title : data.package.title,
@@ -537,14 +542,16 @@ function PackageInformation(props){
             version_updated : data.package.doc_version_updated,
             version_deleted : data.package.doc_version_deleted,
         }
+        console.log("3333333333333333")
         const userPackageInfo = {
             _id : data?.user_package_status?.user_package_id,
             package_ref : packageParamId,
-            access_type : selectedAccessType,
+            access_type : accessType,
             version_created : data.package.version_created,
             version_updated : data.package.version_updated,
             version_deleted : data.package.version_deleted,
         }
+        console.log("4444444444444444")
         await recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
     const redownloadContent = async()=>{

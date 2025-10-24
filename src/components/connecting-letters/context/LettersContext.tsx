@@ -21,6 +21,8 @@ import {
   saveUserHelpRequestsInStageGame
 } from '../../../realm/repositories/user/user-stage-game-progress.repository';
 import { unknownWordCompletedInStageGame } from '../functions/StageGameFunctions';
+import { saveMainWordBuildedInPackageGame, saveNewAdditionalWordsBuildedInPackageGame, saveNewHiddenWordsBuildedInPackageGame, saveUnknownWordCompletedInPackageGame } from '../../../realm/repositories/user/user-package-game-progress.repository';
+import { unknownWordCompletedInPackageGame } from '../functions/PackageGameFunctions';
 
 interface Position { x: number; y: number; }
 interface Velocity { vx: number; vy: number; }
@@ -101,6 +103,8 @@ export const LettersProvider: React.FC<{
     });
     if(type == "stage-game"){
       saveMainWordBuildedInStageGame( realm, stageId, partIndex, wordId );
+    } else if(type == "package-game"){
+      saveMainWordBuildedInPackageGame( realm, stageId, partIndex, wordId );
     }
   };
   const handleNewAdditionalWordFound = (word: string) => {
@@ -113,6 +117,8 @@ export const LettersProvider: React.FC<{
     });
     if(type == "stage-game"){
       saveNewAdditionalWordsBuildedInStageGame( realm, stageId, partIndex, wordId, word );
+    } else if(type == "package-game"){
+      saveNewAdditionalWordsBuildedInPackageGame( realm, stageId, partIndex, wordId, word );
     }
   };
   const handleNewHiddenWordFound = (word: string) => {
@@ -123,6 +129,8 @@ export const LettersProvider: React.FC<{
     });
     if(type == "stage-game"){
       saveNewHiddenWordsBuildedInStageGame( realm, stageId, partIndex, wordId, word );
+    } else if(type == "package-game"){
+      saveNewHiddenWordsBuildedInPackageGame( realm, stageId, partIndex, wordId, word );
     }
   };
   const checkCompleted = (newState: FoundWords): void => {
@@ -132,6 +140,11 @@ export const LettersProvider: React.FC<{
         saveUnknownWordCompletedInStageGame( realm, stageId, partIndex, wordId );
         setTimeout(()=>{
           unknownWordCompletedInStageGame()
+        }, 500)
+      } else if(type == "package-game"){
+        saveUnknownWordCompletedInPackageGame( realm, stageId, partIndex, wordId );
+        setTimeout(()=>{
+          unknownWordCompletedInPackageGame()
         }, 500)
       }
     }
