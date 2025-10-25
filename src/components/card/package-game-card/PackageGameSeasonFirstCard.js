@@ -33,7 +33,7 @@ function PackageGameSeasonFirstCard({
   image,
   numberStage,
   numberSeason,
-  lastStageNumber,
+  progress,
   startPackage,
 }) {
   const colors = useAppTheme();
@@ -61,7 +61,7 @@ function PackageGameSeasonFirstCard({
               image={image}
               numberStage={numberStage}
               numberSeason={numberSeason}
-              lastStageNumber={lastStageNumber}
+              progress={progress}
               colors={colors}
             />
         </View>
@@ -101,7 +101,7 @@ const CardContent = memo(({
   image,
   numberStage,
   numberSeason,
-  lastStageNumber,
+  progress,
   colors,
 }) => {
   return (
@@ -162,7 +162,7 @@ const CardContent = memo(({
       <View style={{alignItems:'center', width:'100%', paddingBottom:"30%"}}>
         <WoodProgressBar
           progressWidth={PACKAGE_GAME_CARD_WIDTH*0.8}
-          progress={lastStageNumber??0}
+          progress={progress??0}
           maxValue={numberStage}
           showValue={true}
         />
@@ -178,7 +178,7 @@ const CardContent = memo(({
     p.image === n.image &&
     p.numberStage === n.numberStage &&
     p.numberSeason === n.numberSeason &&
-    p.lastStageNumber === n.lastStageNumber
+    p.progress === n.progress
   );
 });
 

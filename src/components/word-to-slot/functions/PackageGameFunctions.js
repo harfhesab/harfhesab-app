@@ -11,7 +11,6 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
     const state = store.getState()
     if(stageId.toString() === currentStageId.toString()){
         const next = getCurrentPackageNextStageInformation(realm, packageRef, userPackage)
-        console.log("sssssssssss", next)
         if(next.endAllStage == true){
             GameAlertHelper.showAlertGame({
                 title:`پایان مرحله ${stageNumber}`,

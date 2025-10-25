@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { useDispatch, useSelector } from "react-redux";
@@ -98,18 +98,25 @@ function UserPackagesList(props){
                 coin={true}
                 title={"بسته‌های من"}
             />
-            <View style={styles.container}>
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={keyExtractor}
-                    contentContainerStyle={{alignItems:'center'}}
-                    renderItem={memoizedValue}
-                    data={data}
-                    onEndReachedThreshold={0.5}
-                    removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                    style={{width:width, paddingHorizontal:15}}
-                />
-            </View>
+                <View style={styles.container}>
+                    <ImageBackground
+                        source={require("../../../assets/image/frame_list.png")}
+                        style={{ width: width - 20, height: height-80}}
+                        imageStyle={{ resizeMode: "stretch" }}
+                        resizeMode="stretch"
+                    >
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={keyExtractor}
+                            contentContainerStyle={{alignItems:'center'}}
+                            renderItem={memoizedValue}
+                            data={data}
+                            onEndReachedThreshold={0.5}
+                            removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                            style={{width:width, paddingHorizontal:15}}
+                        />
+                    </ImageBackground>
+                </View>
         </View>
     )
 }
@@ -117,6 +124,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
+      justifyContent:'center'
     }
 });
 export default UserPackagesList;

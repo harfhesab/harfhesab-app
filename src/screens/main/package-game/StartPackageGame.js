@@ -158,7 +158,7 @@ function StartPackageGame(props){
                 image={packageInfo?.banner_image}
                 numberStage={packageInfo?.number_stage}
                 numberSeason={packageInfo?.number_season}
-                lastStageNumber={lastStageNumber??0}
+                progress={lastStageNumber?lastStageNumber-1:0}
                 startPackage={()=>{
                     const targetIndex = Math.max(0, lastSeasonNumber-1);
                     if (targetIndex < seasons.length) {
