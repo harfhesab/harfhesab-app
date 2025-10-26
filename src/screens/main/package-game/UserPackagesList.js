@@ -15,6 +15,7 @@ import { useIsFocused } from '@react-navigation/native';
 import UserPackageItem from '../../../components/card/package-game-card/UserPackageItem';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
+import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 
 const {width, height} = Dimensions.get("window")
 function useUserPackage() {
@@ -70,6 +71,7 @@ function UserPackagesList(props){
                 price={item?.packag?.price}
                 numberStage={item?.packag?.number_stage}
                 numberSeason={item?.packag?.number_season}
+                progress={item?.last_stage_number?item.last_stage_number-1:0}
                 click={()=>{props.navigation.navigate("StartPackageGame", {_id:item._id.toHexString(), packageId:item.packag._id.toHexString()})}}
             />
         )
@@ -96,26 +98,45 @@ function UserPackagesList(props){
                 back={true}
                 height={60}
                 coin={true}
-                title={"بسته‌های من"}
             />
                 <View style={styles.container}>
                     <ImageBackground
                         source={require("../../../assets/image/frame_list.png")}
-                        style={{ width: width - 20, height: height-80}}
+                        style={{ width: width - 20, height: height-115, paddingTop:"3.2%", paddingBottom:"4.1%"}}
                         imageStyle={{ resizeMode: "stretch" }}
                         resizeMode="stretch"
                     >
-                        <FlatList
-                            showsVerticalScrollIndicator={false}
-                            keyExtractor={keyExtractor}
-                            contentContainerStyle={{alignItems:'center'}}
-                            renderItem={memoizedValue}
-                            data={data}
-                            onEndReachedThreshold={0.5}
-                            removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                            style={{width:width, paddingHorizontal:15}}
-                        />
+                        <View style={{width:"100%", height:"100%", borderRadius:69, overflow:'hidden'}}>
+                            <FlatList
+                                showsVerticalScrollIndicator={false}
+                                keyExtractor={keyExtractor}
+                                contentContainerStyle={{alignItems:'center', paddingTop:30, paddingBottom:50, gap:20}}
+                                renderItem={memoizedValue}
+                                data={data}
+                                onEndReachedThreshold={0.5}
+                                removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                                style={{}}
+                            />
+                        </View>
                     </ImageBackground>
+                    <View style={{alignSelf:'center', position:'absolute', top:10}}>
+                        <ImageBackground
+                            source={require("../../../assets/image/header_title_frame.png")}
+                            style={{ width: width - 100, height: 60, alignItems:'center', justifyContent:'center', paddingBottom:15}}
+                            imageStyle={{ resizeMode: "stretch" }}
+                            resizeMode="stretch"
+                        >
+                            <SimpleBorderText
+                                text={"بسته های بازی من"}
+                                width={width - 100}
+                                height={20*1.6}
+                                fontSize={20}
+                                borderWidth={2}
+                                textColor={colors.primary.a3}
+                                borderColor={"#4d2719"}
+                            />
+                        </ImageBackground>
+                    </View>
                 </View>
         </View>
     )
@@ -124,7 +145,8 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       alignItems: 'center',
-      justifyContent:'center'
+      justifyContent:'flex-end',
+      paddingBottom:10
     }
 });
 export default UserPackagesList;
