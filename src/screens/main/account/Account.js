@@ -44,12 +44,11 @@ function Account(props){
         },
         {
             title: "بسته‌های بازی من",
-            icon_name: "grid-outline",
-            icon_type: "Ionicons",
-            icon_size: 25,
-            icon_backgroun_color:"#ff730099",
+            image_icon: require('../../../assets/image/my-package.png'),
+            icon_size: 30,
+            icon_backgroun_color:"transparent",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("UserPackagesList")}
         },
         {
             title: "دریافت سکه رایگان",
@@ -97,12 +96,11 @@ function Account(props){
         },
         {
             title: "بسته‌های بازی من",
-            icon_name: "grid-outline",
-            icon_type: "Ionicons",
-            icon_size: 25,
-            icon_backgroun_color:"#ff730099",
+            image_icon: require('../../../assets/image/my-package.png'),
+            icon_size: 30,
+            icon_backgroun_color:"transparent",
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("UserPackagesList")}
         },
         {
             title: "دریافت سکه رایگان",

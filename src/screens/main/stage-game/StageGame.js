@@ -186,7 +186,7 @@ function StageGame(props){
             <View style={{height:'100%', alignItems:'center', justifyContent:'center'}}>
                 <TouchableOpacity activeOpacity={0.85} onPress={getLanguages}>
                     <ImageBackground
-                        source={require("../../../assets/image/frame_language.png")}
+                        source={require("../../../assets/image/rtl_thumb_frame.png")}
                         style={{ width: 115, height: 40, justifyContent: "center", alignItems: "center" }}
                         imageStyle={{ resizeMode: "stretch" }}
                         resizeMode="stretch"
