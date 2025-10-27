@@ -24,7 +24,6 @@ const veryIntensiveTask1 = async (taskDataArguments) => {
 };
 
 export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color }) => {
-            console.log("PPPPPPPPPPPPPP4444444444444444444444")
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask1, {
             ...options,
@@ -37,7 +36,6 @@ export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, pack
 // ===============================================================================================================================================
 
 const veryIntensiveTask2 = async (taskDataArguments) => {
-    console.log("66666666666666666")
     const { dispatch, realm, packageId, packageInfo, userPackageInfo } = taskDataArguments;
     try {
         await recreatePackageGameForUser({ dispatch, realm, packageId, packageInfo, userPackageInfo });
@@ -47,7 +45,6 @@ const veryIntensiveTask2 = async (taskDataArguments) => {
 };
 
 export const recreateAndDownloadContentUserPackage = async ({ dispatch, realm, packageId, packageInfo, userPackageInfo, color }) => {
-        console.log("555555555555555")
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask2, {
             ...options,
