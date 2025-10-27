@@ -141,7 +141,7 @@ function StartPackageGame(props){
 
 
   
-    const ListEmptyComponent = ()=>{
+    const ListEmptyComponent = ()=>(
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
                 loading={loading}
@@ -150,7 +150,7 @@ function StartPackageGame(props){
                 tryAgain={()=>{}}
             />
         </View>
-    }
+    )
     const ListHeaderComponent = useMemo(()=>(
         <View style={{width:width, alignItems:'center'}}>
             <PackageGameSeasonFirstCard

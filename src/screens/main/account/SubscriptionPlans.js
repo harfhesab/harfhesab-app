@@ -49,7 +49,7 @@ function SubscriptionPlans(props){
     
 
     
-    const ListEmptyComponent = ()=>{
+    const ListEmptyComponent = ()=>(
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
                 loading={false}
@@ -58,7 +58,7 @@ function SubscriptionPlans(props){
                 tryAgain={()=>{}}
             />
         </View>
-    }
+    )
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader

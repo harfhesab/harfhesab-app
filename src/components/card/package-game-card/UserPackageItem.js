@@ -79,7 +79,7 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
                                 />
                         </View>
                     </View>
-                    <View style={{width:"100%", alignItems:'center', bottom:-10}}>
+                    <View style={{width:"100%", alignItems:'flex-end', bottom:-8, paddingEnd:20}}>
                         <TouchableOpacity onPress={click} activeOpacity={0.8} style={{}}>
                             <ImageBackground
                                 source={require("../../../assets/image/wood_blue_button.png")}

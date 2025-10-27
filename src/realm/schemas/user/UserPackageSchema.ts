@@ -5,6 +5,7 @@ export class UserPackage extends Realm.Object<UserPackage> {
   package_ref!: BSON.ObjectId;
   content_completed?: boolean;
   access_type!: "subscription" | "free" | "coin-payment";
+  number_coin_paid?: number;
   last_season?: BSON.ObjectId;
   last_season_number?: number;
   last_stage?: BSON.ObjectId;
@@ -23,6 +24,7 @@ export class UserPackage extends Realm.Object<UserPackage> {
       package_ref: "objectId",
       content_completed: "bool?",
       access_type: "string",
+      number_coin_paid: "int?",
       last_season: "objectId?",
       last_season_number: "int?",
       last_stage: "objectId?",

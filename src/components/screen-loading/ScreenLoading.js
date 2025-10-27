@@ -41,7 +41,7 @@ function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErr
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
-                                borderRadius={5}
+                                borderRadius={10}
                             />
                         </View>
                     }
@@ -54,14 +54,14 @@ function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErr
                         :
                         <View style={{ width:"100%", height:"100%", flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10}}>
                             <Text style={[styles.text1, {color:colors.text.a1}]}>{"موردی یافت نشد"}</Text>
-                            <Text style={[styles.text2, {color:colors.text.a3}]}>{"موردی برای نمایش یافت نشد."}</Text>
+                            <Text style={[styles.text2, {color:colors.text.a3}]}>{"آیتمی برای نمایش وجود ندارد."}</Text>
                             <ButtonGradient
                                 text={"تلاش مجدد"}
                                 textSize={14}
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
-                                borderRadius={5}
+                                borderRadius={10}
                             />
                         </View>
                     }
@@ -88,15 +88,15 @@ const styles = StyleSheet.create({
     },
     text1:{
         fontFamily: Font.bold,
-        fontSize: 16,
+        fontSize: 15,
         textAlign: 'center',
-        maxWidth:"60%",
+        maxWidth:"70%",
     },
     text2:{
         fontFamily: Font.medium,
-        fontSize: 12,
+        fontSize: 11,
         textAlign: 'center',
-        maxWidth:"60%",
+        maxWidth:"70%",
         lineHeight:24
     },
 })

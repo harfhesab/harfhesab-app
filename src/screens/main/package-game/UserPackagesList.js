@@ -44,7 +44,7 @@ function UserPackagesList(props){
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const realm = useRealm();
-    const data = useUserPackage()
+    const [data, setData] = useState(useUserPackage())
     const [loading, setLoading] = useState(true)
     const [noItem, setNoItem] = useState(false)
 
@@ -58,6 +58,84 @@ function UserPackagesList(props){
             }, 3000)
         }
     }, [data])
+
+    const syncData = async()=>{
+        await axios({
+            url:'/',
+            method:'post',
+            data: {
+                query : `
+                    query getUserPackageGameList(
+                        $_id : ID,
+                    ){
+                        getUserPackageGameList(
+                            _id : $_id,
+                        ) {
+                            package_info{
+                                _id,
+                                title,
+                                taken_source : TypeTakenSource,
+                                content_source_type : String,
+                                publication_status: String,
+                                completion_status: String,
+                                language_ref : ID,
+                                language_info : Language,
+                                topic_category : [ID],
+                                package_collection : [ID],
+                                icon_image : String,
+                                banner_image : String,
+                                music : FileType,
+                                free: Boolean,
+                                free_with_subscription: Boolean,
+                                price: Int,
+                                testable: Boolean,
+                                number_stage: Int,
+                                number_season: Int,
+                                is_visible: Boolean,
+                                is_active: Boolean,
+                                order: Int,
+                                doc_version_created: Int,
+                                doc_version_updated: Int,
+                                doc_version_deleted: Int,
+                                version_created: Int,
+                                version_updated: Int,
+                                version_deleted: Int,
+                                force_version_created: Int,
+                                force_version_updated: Int,
+                                force_version_deleted: Int,
+                                version_created_pending_diff: Int,
+                                version_updated_pending_diff: Int,
+                                version_deleted_pending_diff: Int,
+                                createdAt : Date,
+                                updatedAt : Date,
+                                rating_number : Int,
+                                rating_average : Float,
+                                rating_info : [Int],
+                                rating_some : [PackageRating],
+                                seasons : [PackageSeason],
+                            },
+                            access_type,
+                            last_season,
+                            last_season_number,
+                            last_stage,
+                            last_stage_number,
+                            version_created,
+                            version_updated,
+                            version_deleted,
+                        }
+                    }
+                `,
+                variables : {
+                    "_id" : null,
+                }
+            }
+        }).then(async(response)=>{
+            const dataReceived = response.data.data?.getUserPackageGameList
+            
+        }).catch((e)=>{
+            
+        })
+    }
 
 
     const renderItem = ({item, index})=>{
@@ -81,8 +159,8 @@ function UserPackagesList(props){
     
 
     
-    const ListEmptyComponent = ()=>{
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+    const ListEmptyComponent = ()=>(
+        <View style={{width:"100%", height:(height-115)*0.75, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
                 loading={loading}
                 getError={false}
@@ -90,7 +168,7 @@ function UserPackagesList(props){
                 tryAgain={()=>{}}
             />
         </View>
-    }
+    )
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
@@ -110,12 +188,12 @@ function UserPackagesList(props){
                             <FlatList
                                 showsVerticalScrollIndicator={false}
                                 keyExtractor={keyExtractor}
-                                contentContainerStyle={{alignItems:'center', paddingTop:30, paddingBottom:50, gap:20}}
+                                contentContainerStyle={{alignItems:'center', paddingTop:30, paddingBottom:50, gap:30}}
                                 renderItem={memoizedValue}
+                                ListEmptyComponent={ListEmptyComponent}
                                 data={data}
                                 onEndReachedThreshold={0.5}
                                 removeClippedSubviews={Platform.OS == 'ios' ? false : true}
-                                style={{}}
                             />
                         </View>
                     </ImageBackground>

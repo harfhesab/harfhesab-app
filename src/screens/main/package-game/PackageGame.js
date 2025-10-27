@@ -223,18 +223,16 @@ function PackageGame(props){
     ), [])
     const memoizedValue = useMemo(() => renderItem, [collection]);
     const keyExtractor = (item,index)=>index.toString()
-    const ListEmptyComponent = ()=>{
-        return(
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                <ScreenLoading
-                    loading={loading}
-                    getError={getError}
-                    noItem={noItem}
-                    tryAgain={tryAgain}
-                />
-            </View>
-        )
-    }
+    const ListEmptyComponent = ()=>(
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <ScreenLoading
+                loading={loading}
+                getError={getError}
+                noItem={noItem}
+                tryAgain={tryAgain}
+            />
+        </View>
+    )
     return(
          <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
