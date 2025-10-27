@@ -13,6 +13,7 @@ export class UserPackage extends Realm.Object<UserPackage> {
   version_created?: number;
   version_updated?: number;
   version_deleted?: number;
+  activation_date?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 
@@ -32,6 +33,7 @@ export class UserPackage extends Realm.Object<UserPackage> {
       version_created: "int?",
       version_updated: "int?",
       version_deleted: "int?",
+      activation_date: "date?",
       createdAt: "date?",
       updatedAt: "date?",
     },

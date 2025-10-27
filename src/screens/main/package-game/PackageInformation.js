@@ -106,7 +106,9 @@ function PackageInformation(props){
                                 status,
                                 button_text,
                                 user_package_id,
-                                access_type
+                                access_type,
+                                number_coin_paid,
+                                activation_date,
                             }
                         }
                     }
@@ -142,7 +144,8 @@ function PackageInformation(props){
     const onClickGetPackage = ()=>{
         if(data?.user_package_status.status == "get-free"){
             const accessType = "free"
-            getForFirst(accessType)
+            const numberCoinPaid = undefined
+            getForFirst(accessType, numberCoinPaid)
         } else if(data?.user_package_status.status == "get-subscription"){
             getPackageWithSubscription()
         } else if(data?.user_package_status.status == "get-coin-payment"){
@@ -330,6 +333,7 @@ function PackageInformation(props){
     }
 
     const getPackageWithSubscription = ()=>{
+        const packagePrice = data?.package?.price
         const previousSelected = selectedPaymentMethod?{
             _id:[selectedPaymentMethod?._id],
             text1:[selectedPaymentMethod?.text1]
@@ -355,7 +359,7 @@ function PackageInformation(props){
                 },
                 {
                     _id: "2",
-                    text1: `پرداخت ${data?.package?.price} سکه`,
+                    text1: `پرداخت ${packagePrice} سکه`,
                     text2: `با یکبار پرداخت سکه، به شکل دائمی به بستهٔ بازی دسترسی خواهید داشت`,
                     image: require('../../../assets/image/coin.png'),
                     localImage: true,
@@ -363,7 +367,7 @@ function PackageInformation(props){
                     width:gridSize,
                     blank_background: true,
                     onPress : ()=>{
-                        setSelectedPaymentMethod({_id:"2", text1:`پرداخت ${data?.package?.price} سکه`})
+                        setSelectedPaymentMethod({_id:"2", text1:`پرداخت ${packagePrice} سکه`})
                     }
                 },
             ],
@@ -372,10 +376,12 @@ function PackageInformation(props){
                     onPress : ({data})=>{
                         if(data._id[0] == "1"){
                             const accessType = "subscription"
-                            getForFirst(accessType)
+                            const numberCoinPaid = undefined
+                            getForFirst(accessType, numberCoinPaid)
                         } else if(data._id[0] == "2"){
                             const accessType = "coin-payment"
-                            getForFirst(accessType)
+                            const numberCoinPaid = packagePrice
+                            getForFirst(accessType, numberCoinPaid)
                         }
                     },
                     text: data?.user_package_status?.button_text,
@@ -394,19 +400,20 @@ function PackageInformation(props){
     }
 
     const getPackageWithCoinPayment = ()=>{
+        const packagePrice = data?.package?.price
         const previousSelected = selectedPaymentMethod?{
             _id:[selectedPaymentMethod?._id],
             text1:[selectedPaymentMethod?.text1]
         }:{
             _id:["1"],
-            text1:[`پرداخت ${data?.package?.price} سکه`]
+            text1:[`پرداخت ${packagePrice} سکه`]
         }
         BottomDrawerGridHelper.showBottomDrawer({
             title:"دریافت بستهٔ بازی",
             list:[
                 {
                     _id: "1",
-                    text1: `پرداخت ${data?.package?.price} سکه`,
+                    text1: `پرداخت ${packagePrice} سکه`,
                     text2: `دسترسی دائمی به بستهٔ بازی بعد از دریافت بازی`,
                     image: require('../../../assets/image/coin.png'),
                     localImage: true,
@@ -414,7 +421,7 @@ function PackageInformation(props){
                     width:gridSize,
                     blank_background: true,
                     onPress : ()=>{
-                        setSelectedPaymentMethod({_id:"1", text1:`پرداخت ${data?.package?.price} سکه`})
+                        setSelectedPaymentMethod({_id:"1", text1:`پرداخت ${packagePrice} سکه`})
                     }
                 },
                 {
@@ -438,7 +445,8 @@ function PackageInformation(props){
                     onPress : ({data})=>{
                         if(data._id[0] == "1"){
                             const accessType = "coin-payment"
-                            getForFirst(accessType)
+                            const numberCoinPaid = packagePrice
+                            getForFirst(accessType, numberCoinPaid)
                         }
                     },
                     text: data?.user_package_status?.button_text,
@@ -456,7 +464,7 @@ function PackageInformation(props){
         })
     }
     
-    const getForFirst = async(accessType)=>{
+    const getForFirst = async(accessType, numberCoinPaid)=>{
         if(accessType == "coin-payment" && data?.package?.price > numberCoins){
             AlertHelper.showAlert({
                 body: "تعداد سکهٔ شما برای فعال سازی این بستهٔ بازی کافی نمیباشد.",
@@ -482,7 +490,6 @@ function PackageInformation(props){
                 },
             });
         } else {
-            console.log("PPPPPPPPPPPPPP000000000000000000")
             const color = colors.primary.a1
             const status = data?.user_package_status.status
             const selectedAccessType = accessType
@@ -505,24 +512,21 @@ function PackageInformation(props){
                 version_updated : data.package.doc_version_updated,
                 version_deleted : data.package.doc_version_deleted,
             }
-            console.log("PPPPPPPPPPPPPP11111111111111111111")
             const userPackageInfo = {
                 package_ref : packageParamId,
                 access_type : selectedAccessType,
+                number_coin_paid : numberCoinPaid,
+                activation_date : new Date(),
                 version_created : data.package.version_created,
                 version_updated : data.package.version_updated,
                 version_deleted : data.package.version_deleted,
             }
-            console.log("PPPPPPPPPPPPPP2222222222222222222")
             dispatch(startProgressLoading())
-            console.log("PPPPPPPPPPPPPP333333333333333333333333")
             await startSetPackageGameForUserAndGetIt({ dispatch, realm, packageId:packageParamId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
         }
     }
-    const recreateAndDownloadContent = async(accessType)=>{
-        console.log("11111111111111")
+    const recreateAndDownloadContent = async(accessType, numberCoinPaid, activationDate)=>{
         const color = colors.primary.a1
-        console.log("222222222222222")
         const packageInfo = {
             _id : data.package._id,
             title : data.package.title,
@@ -542,16 +546,16 @@ function PackageInformation(props){
             version_updated : data.package.doc_version_updated,
             version_deleted : data.package.doc_version_deleted,
         }
-        console.log("3333333333333333")
         const userPackageInfo = {
             _id : data?.user_package_status?.user_package_id,
             package_ref : packageParamId,
             access_type : accessType,
+            number_coin_paid : numberCoinPaid,
+            activation_date : activationDate,
             version_created : data.package.version_created,
             version_updated : data.package.version_updated,
             version_deleted : data.package.version_deleted,
         }
-        console.log("4444444444444444")
         await recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
     const redownloadContent = async()=>{
