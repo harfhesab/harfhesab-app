@@ -11,7 +11,7 @@ import WoodProgressBar from '../../WoodProgressBar';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 
 const width = Dimensions.get('window').width
-function UserPackageItem({_id, packageId, title, image, accessType, price, numberStage, numberSeason, click, progress}){
+function UserPackageItem({_id, packageId, title, image, accessType, price, numberStage, numberSeason, click, progress, contentCompleted}){
     const colors = useAppTheme();
     const accessTypeText = 
     accessType == "free"?"دسترسی رایگان":
@@ -87,7 +87,7 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:15, color:"#fcb900"}}>{'بازی'}</Text>
+                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:15, color:"#fcb900"}}>{contentCompleted==true?'بازی':'دانلود محتوا'}</Text>
                             </ImageBackground>
                         </TouchableOpacity>
                     </View>

@@ -153,10 +153,15 @@ function PackageInformation(props){
         } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
             subscriptionRenewalOrCoinPayment()
         } else if(data?.user_package_status.status == "redownload-content"){
-            redownloadContent()
+            const accessType = data.user_package_status.access_type
+            const numberCoinPaid = data.user_package_status.number_coin_paid
+            const activationDate = data.user_package_status.activation_date
+            redownloadContent(accessType, numberCoinPaid, activationDate)
         } else if(data?.user_package_status.status == "recreate-and-download-content"){
             const accessType = data.user_package_status.access_type
-            recreateAndDownloadContent(accessType)
+            const numberCoinPaid = data.user_package_status.number_coin_paid
+            const activationDate = data.user_package_status.activation_date
+            recreateAndDownloadContent(accessType, numberCoinPaid, activationDate)
         } else if(data?.user_package_status.status == "start-game"){
             props.navigation.navigate("StartPackageGame", {_id:localData?.user_package._id.toHexString(), packageId:localData?.package._id.toHexString() })
         }
@@ -247,6 +252,9 @@ function PackageInformation(props){
         }
     }
     const coinPaymentOperation = async()=>{
+        const accessType = "coin-payment"
+        const numberCoinPaid = data?.package?.price
+        const activationDate = data.user_package_status.activation_date
         await axios({
             url:'/',
             method:'post',
@@ -300,7 +308,7 @@ function PackageInformation(props){
                                 button_text: "دانلود مجدد محتوا",
                             },
                         }));
-                        redownloadContent()
+                        redownloadContent(accessType, numberCoinPaid, activationDate)
                     } else {
                         setData(prev => ({
                             ...(prev || {}),
@@ -310,8 +318,7 @@ function PackageInformation(props){
                                 button_text: "دانلود مجدد محتوا",
                             },
                         }));
-                        const accessType = "coin-payment"
-                        recreateAndDownloadContent(accessType)
+                        recreateAndDownloadContent(accessType, numberCoinPaid, activationDate)
                     }
                 }
             } else {
@@ -558,7 +565,7 @@ function PackageInformation(props){
         }
         await recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
-    const redownloadContent = async()=>{
+    const redownloadContent = async(accessType, numberCoinPaid, activationDate)=>{
         const color = colors.primary.a1
         const packageInfo = {
             _id : data.package._id,
@@ -582,7 +589,9 @@ function PackageInformation(props){
         const userPackageInfo = {
             _id : data?.user_package_status?.user_package_id,
             package_ref : packageParamId,
-            access_type : selectedAccessType,
+            access_type : accessType,
+            number_coin_paid : numberCoinPaid,
+            activation_date : activationDate,
             version_created : data.package.version_created,
             version_updated : data.package.version_updated,
             version_deleted : data.package.version_deleted,

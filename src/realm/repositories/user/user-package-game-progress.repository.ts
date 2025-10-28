@@ -388,3 +388,15 @@ export const saveUnknownWordCompletedInPackageGame = (
         return false;
     }
 };
+export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
+    realm: Realm,
+    dataList: Array<Object>
+): boolean => {
+    try {
+        
+        
+        return true;
+    } catch (e) {
+        return false;
+    }
+};

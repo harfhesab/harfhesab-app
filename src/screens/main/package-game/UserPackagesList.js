@@ -74,45 +74,18 @@ function UserPackagesList(props){
                             package_info{
                                 _id,
                                 title,
-                                taken_source : TypeTakenSource,
-                                content_source_type : String,
-                                publication_status: String,
-                                completion_status: String,
-                                language_ref : ID,
-                                language_info : Language,
-                                topic_category : [ID],
-                                package_collection : [ID],
-                                icon_image : String,
-                                banner_image : String,
-                                music : FileType,
-                                free: Boolean,
-                                free_with_subscription: Boolean,
-                                price: Int,
-                                testable: Boolean,
-                                number_stage: Int,
-                                number_season: Int,
-                                is_visible: Boolean,
-                                is_active: Boolean,
-                                order: Int,
-                                doc_version_created: Int,
-                                doc_version_updated: Int,
-                                doc_version_deleted: Int,
-                                version_created: Int,
-                                version_updated: Int,
-                                version_deleted: Int,
-                                force_version_created: Int,
-                                force_version_updated: Int,
-                                force_version_deleted: Int,
-                                version_created_pending_diff: Int,
-                                version_updated_pending_diff: Int,
-                                version_deleted_pending_diff: Int,
-                                createdAt : Date,
-                                updatedAt : Date,
-                                rating_number : Int,
-                                rating_average : Float,
-                                rating_info : [Int],
-                                rating_some : [PackageRating],
-                                seasons : [PackageSeason],
+                                language_ref,
+                                icon_image,
+                                banner_image,
+                                free,
+                                free_with_subscription,
+                                price,
+                                testable,
+                                number_stage,
+                                number_season,
+                                doc_version_created,
+                                doc_version_updated,
+                                doc_version_deleted,
                             },
                             access_type,
                             last_season,
@@ -136,8 +109,6 @@ function UserPackagesList(props){
             
         })
     }
-
-
     const renderItem = ({item, index})=>{
         return(
             <UserPackageItem
@@ -150,7 +121,14 @@ function UserPackagesList(props){
                 numberStage={item?.packag?.number_stage}
                 numberSeason={item?.packag?.number_season}
                 progress={item?.last_stage_number?item.last_stage_number-1:0}
-                click={()=>{props.navigation.navigate("StartPackageGame", {_id:item._id.toHexString(), packageId:item.packag._id.toHexString()})}}
+                click={()=>{
+                    if(item?.content_completed == true){
+                        props.navigation.navigate("StartPackageGame", {_id:item._id.toHexString(), packageId:item.packag._id.toHexString()})
+                    } else {
+                        props.navigation.navigate("PackageInformation", {_id:item.packag._id.toHexString()})
+                    }
+                }}
+                contentCompleted={item?.content_completed??false}
             />
         )
     }
