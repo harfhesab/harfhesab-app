@@ -16,6 +16,8 @@ import UserPackageItem from '../../../components/card/package-game-card/UserPack
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
+import { creatingMultiplePackageAndUsePackageDocumentsInSameTime } from '../../../realm/repositories/user/user-package-game-progress.repository';
+import { updateSyncUserPackage } from '../../../redux/slices/accountSlice';
 
 const {width, height} = Dimensions.get("window")
 function useUserPackage() {
@@ -42,6 +44,7 @@ function UserPackagesList(props){
     const isFocused = useIsFocused();
     const colors = useAppTheme()
     const state = useSelector((state) => state.stageGameDownload);
+    const {syncUserPackage} = useSelector((state) => state.account);
     const dispatch = useDispatch();
     const realm = useRealm();
     const [data, setData] = useState(useUserPackage())
@@ -59,6 +62,13 @@ function UserPackagesList(props){
         }
     }, [data])
 
+    useEffect(()=>{
+        const now = new Date.now()
+        if(!syncUserPackage || (syncUserPackage && now - Number(syncUserPackage) > 2592000000)){
+            syncData()
+        }
+    }, [])
+
     const syncData = async()=>{
         await axios({
             url:'/',
@@ -71,6 +81,17 @@ function UserPackagesList(props){
                         getUserPackageGameList(
                             _id : $_id,
                         ) {
+                            _id,
+                            access_type,
+                            number_coin_paid,
+                            last_season,
+                            last_season_number,
+                            last_stage,
+                            last_stage_number,
+                            version_created,
+                            version_updated,
+                            version_deleted,
+                            activation_date,
                             package_info{
                                 _id,
                                 title,
@@ -87,14 +108,6 @@ function UserPackagesList(props){
                                 doc_version_updated,
                                 doc_version_deleted,
                             },
-                            access_type,
-                            last_season,
-                            last_season_number,
-                            last_stage,
-                            last_stage_number,
-                            version_created,
-                            version_updated,
-                            version_deleted,
                         }
                     }
                 `,
@@ -103,10 +116,13 @@ function UserPackagesList(props){
                 }
             }
         }).then(async(response)=>{
-            const dataReceived = response.data.data?.getUserPackageGameList
-            
+            const dataList = response.data.data?.getUserPackageGameList
+            const syncData = creatingMultiplePackageAndUsePackageDocumentsInSameTime(realm, dataList)
+            if(syncData == true){
+                dispatch(updateSyncUserPackage({sync:`${new Date.now()}`}))
+            }
         }).catch((e)=>{
-            
+            null
         })
     }
     const renderItem = ({item, index})=>{

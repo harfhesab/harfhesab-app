@@ -7,6 +7,7 @@ interface AccountState {
   phone: string | null;
   firstName: string | null;
   lastName: string | null;
+  syncUserPackage: string | null;
 }
 
 const initialState: AccountState = {
@@ -16,6 +17,7 @@ const initialState: AccountState = {
   phone: null,
   firstName: null,
   lastName: null,
+  syncUserPackage: null,
 };
 
 const accountSlice = createSlice({
@@ -59,9 +61,15 @@ const accountSlice = createSlice({
       state.lastName = action.payload.lastName;
       state.loginType = "registered";
     },
+    updateSyncUserPackage(
+      state,
+      action: PayloadAction<{ sync: string }>
+    ) {
+      state.syncUserPackage = action.payload.sync;
+    },
   },
 });
 
-export const { login, logout, loginAsGuest, convertGuestToRegistered } = accountSlice.actions;
+export const { login, logout, loginAsGuest, convertGuestToRegistered, updateSyncUserPackage } = accountSlice.actions;
 
 export default accountSlice.reducer;

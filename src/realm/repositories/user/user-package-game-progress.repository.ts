@@ -388,15 +388,104 @@ export const saveUnknownWordCompletedInPackageGame = (
         return false;
     }
 };
+type DataItem = {
+  _id: string;
+  access_type: "subscription" | "free" | "coin-payment";
+  number_coin_paid?: number;
+  last_season?: BSON.ObjectId;
+  last_season_number?: number;
+  last_stage?: BSON.ObjectId;
+  last_stage_number?: number;
+  version_created?: number;
+  version_updated?: number;
+  version_deleted?: number;
+  activation_date?: Date;
+  package_info: {
+    _id: string;
+    title: string;
+    description?: string;
+    subject?: string;
+    badg?: string;
+    language_ref?: BSON.ObjectId;
+    icon_image?: string;
+    banner_image?: string;
+    music?: any;
+    free: boolean;
+    free_with_subscription: boolean;
+    price: number;
+    testable: boolean;
+    number_stage?: number;
+    number_season?: number;
+    is_visible?: boolean;
+    is_active?: boolean;
+    doc_version_created?: number;
+    doc_version_updated?: number;
+    doc_version_deleted?: number;
+  };
+};
+
 export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
-    realm: Realm,
-    dataList: Array<Object>
+  realm: Realm,
+  dataList: Array<DataItem>
 ): boolean => {
-    try {
-        
-        
-        return true;
-    } catch (e) {
-        return false;
-    }
+  try {
+    if (!dataList || dataList.length === 0) return true;
+    realm.write(() => {
+      dataList.forEach((item) => {
+        const pkgInfo = item.package_info;
+        const packageId = typeof pkgInfo._id === "string"? new BSON.ObjectId(pkgInfo._id): pkgInfo._id;
+        const existingPackageDoc = realm.objectForPrimaryKey("Package", packageId);
+        if(!existingPackageDoc){
+            realm.create("Package", {
+                _id: packageId,
+                title: pkgInfo.title,
+                description: pkgInfo.description ?? "",
+                subject: pkgInfo.subject ?? "",
+                badg: pkgInfo.badg ?? "",
+                language_ref: pkgInfo.language_ref ?? null,
+                icon_image: pkgInfo.icon_image ?? "",
+                banner_image: pkgInfo.banner_image ?? "",
+                music: pkgInfo.music ?? null,
+                free: pkgInfo.free ?? false,
+                free_with_subscription: pkgInfo.free_with_subscription ?? true,
+                price: pkgInfo.price ?? 0,
+                testable: pkgInfo.testable ?? true,
+                number_stage: pkgInfo.number_stage ?? null,
+                number_season: pkgInfo.number_season ?? null,
+                is_visible: pkgInfo.is_visible ?? false,
+                is_active: pkgInfo.is_active ?? false,
+                version_created: pkgInfo.doc_version_created ?? null,
+                version_updated: pkgInfo.doc_version_updated ?? null,
+                version_deleted: pkgInfo.doc_version_deleted ?? null,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        }
+        const userPackageId = typeof item._id === "string" ? new BSON.ObjectId(item._id) : item._id;
+        const existingUserPackage = realm.objectForPrimaryKey("UserPackage",userPackageId);
+        if (!existingUserPackage) {
+            realm.create("UserPackage", {
+                _id: userPackageId,
+                package_ref: packageId,
+                content_completed: false,
+                access_type: item?.access_type,
+                number_coin_paid: item?.number_coin_paid ?? null,
+                last_season: item.last_season ?? null,
+                last_season_number: item.last_season_number ?? null,
+                last_stage: item.last_stage ?? null,
+                last_stage_number: item.last_stage_number ?? null,
+                version_created: item.version_created ?? null,
+                version_updated: item.version_updated ?? null,
+                version_deleted: item.version_deleted ?? null,
+                activation_date: item?.activation_date ?? null,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        }
+      });
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
 };
