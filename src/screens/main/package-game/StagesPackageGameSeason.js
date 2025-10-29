@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo} from 'react';
 import { BSON } from 'realm';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, NativeModules, StatusBar} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, StatusBar} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -22,7 +22,6 @@ import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 
 const {width, height} = Dimensions.get("screen");
 
-const { ImmersiveMode } = NativeModules;
 function useUserPackageGameData({ userPackageId }) {
   const validUserPackageId = useMemo(() => {
     try {
@@ -49,7 +48,6 @@ function StagesPackageGameSeason(props){
 
     useEffect(() => {
         getData()
-        ImmersiveMode.enterImmersiveMode();
     }, []);
 
     const getData = async (selected)=>{

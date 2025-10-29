@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, NativeModules, StatusBar, ImageBackground} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, StatusBar, ImageBackground} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -27,6 +27,7 @@ import ImageComponent from '../../../components/image-components/ImageComponent'
 import PackageHeader from '../../../components/header/PackageHeader';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import PackageGameSeasonFirstCard from '../../../components/card/package-game-card/PackageGameSeasonFirstCard';
+import { useImmersiveMode } from '../../../hooks/useImmersiveMode';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -62,8 +63,8 @@ function useUserPackageGameData({ _id, packageId }) {
   return { seasons, packageInfo, userPackage };
 }
 
-const { ImmersiveMode } = NativeModules;
 function StartPackageGame(props){
+    useImmersiveMode()
     const isFocused = useIsFocused();
     const colors = useAppTheme()
     const dispatch = useDispatch();
@@ -88,12 +89,6 @@ function StartPackageGame(props){
         }
     }, [seasons])
 
-    useEffect(() => {
-        ImmersiveMode.enterImmersiveMode();
-        return () => {
-            ImmersiveMode.exitImmersiveMode();
-        };
-    }, []);
 
     useEffect(() => {
         if(lastSeasonNumber == 1){

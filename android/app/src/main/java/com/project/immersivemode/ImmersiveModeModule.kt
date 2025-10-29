@@ -13,12 +13,18 @@ import com.facebook.react.bridge.ReactMethod
 
 class ImmersiveModeModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
+    companion object {
+        private var immersiveActive = false
+    }
+
     override fun getName() = "ImmersiveMode"
 
     @ReactMethod
     fun enterImmersiveMode() {
         val activity = currentActivity ?: return
         val window = activity.window ?: return
+
+        immersiveActive = true
 
         activity.runOnUiThread {
             // تنظیم رنگ‌های transparent برای bars (API 21+)
@@ -60,6 +66,8 @@ class ImmersiveModeModule(reactContext: ReactApplicationContext) : ReactContextB
         val activity = currentActivity ?: return
         val window = activity.window ?: return
 
+        immersiveActive = false
+
         activity.runOnUiThread {
             // بازگردانی رنگ‌ها به پیش‌فرض (می‌توانید رنگ دلخواه بگذارید)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -83,5 +91,10 @@ class ImmersiveModeModule(reactContext: ReactApplicationContext) : ReactContextB
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             }
         }
+    }
+
+    @ReactMethod(isBlockingSynchronousMethod = true)
+    fun isImmersiveModeActive(): Boolean {
+        return immersiveActive
     }
 }

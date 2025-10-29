@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, NativeModules, StatusBar} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, StatusBar} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
@@ -18,11 +18,12 @@ import SeasonHeader from '../../../components/header/SeasonHeader';
 import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import SeasonMediaSwiper from '../../../components/swiper/SeasonMediaSwiper';
+import { useImmersiveMode } from '../../../hooks/useImmersiveMode';
 
 const {width, height} = Dimensions.get("screen");
 
-const { ImmersiveMode } = NativeModules;
 function StagesStageGameSeason(props){
+    useImmersiveMode()
     const colors = useAppTheme()
     const realm = useRealm();
     const { stageGameLanguage, stageGameLanguageName } = useSelector((state) => state.stageGamePersist);
@@ -35,10 +36,6 @@ function StagesStageGameSeason(props){
 
     useEffect(() => {
         getData()
-        ImmersiveMode.enterImmersiveMode();
-        return () => {
-            ImmersiveMode.exitImmersiveMode();
-        };
     }, []);
 
     const getData = async (selected)=>{

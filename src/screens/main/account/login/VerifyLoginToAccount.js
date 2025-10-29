@@ -23,7 +23,7 @@ import {
 } from 'react-native-otp-verify';
 import Globals from '../../../../utils/Globals';
 import { useSelector, useDispatch } from 'react-redux';
-import { convertGuestToRegistered, login } from '../../../../redux/slices/accountSlice';
+import { convertGuestToRegistered, login, updateSyncUserPackage } from '../../../../redux/slices/accountSlice';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import { updateNumberCoins } from '../../../../redux/slices/coinSlice';
 import { useRealm } from '../../../../realm';
@@ -257,6 +257,7 @@ function VerifyLoginToAccount(props){
                         text1 : "ورود به حساب",
                         text2 : "ورود به حساب کاربری با موفقیت انجام شد."
                     })
+                    dispatch(updateSyncUserPackage({sync:null}))
                     props.navigation.goBack()
                     props.navigation.goBack()
                 } else {

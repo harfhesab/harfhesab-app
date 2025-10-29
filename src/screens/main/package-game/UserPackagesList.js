@@ -63,11 +63,15 @@ function UserPackagesList(props){
     }, [data])
 
     useEffect(()=>{
-        const now = new Date.now()
+        checkSyncData()
+    }, [])
+
+    const checkSyncData = ()=>{
+        const now = Date.now()
         if(!syncUserPackage || (syncUserPackage && now - Number(syncUserPackage) > 2592000000)){
             syncData()
         }
-    }, [])
+    }
 
     const syncData = async()=>{
         await axios({

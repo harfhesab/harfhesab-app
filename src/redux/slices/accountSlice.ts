@@ -63,7 +63,7 @@ const accountSlice = createSlice({
     },
     updateSyncUserPackage(
       state,
-      action: PayloadAction<{ sync: string }>
+      action: PayloadAction<{ sync: string | null}>
     ) {
       state.syncUserPackage = action.payload.sync;
     },
