@@ -83,7 +83,7 @@ function StagesPackageGameSeason(props){
                 >
                     <View style={{width:"100%", height:"100%", alignItems:'center', justifyContent:'center', paddingHorizontal:5, gap:5}}>
                         <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{`${props?.route?.params?.packageName}`}</Text>
-                        <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12}}>{`فصل ${info?.season_number}  -  مرحله ${info?.stage_number_from} تا ${info?.stage_number_to}`}</Text>
+                        <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12}}>{info?`فصل ${info?.season_number}  -  مرحله ${info?.stage_number_from} تا ${info?.stage_number_to}`:""}</Text>
                     </View>
                 </ImageBackground>
             </View>

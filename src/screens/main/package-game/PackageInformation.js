@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -22,9 +22,11 @@ import { recreateAndDownloadContentUserPackage, redownloadContentUserPackage, st
 import { startProgressLoading } from '../../../redux/slices/packageGameDownloadSlice';
 import Toast from 'react-native-toast-message';
 import { updateNumberCoins } from '../../../redux/slices/coinSlice';
+import Icon from '../../../utils/Icon';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
+const SEASON_ITEM_WIDTH = IS_TABLET_CONDITION? (width-60)/3 : (width - 45)/2
 function PackageInformation(props){
     const realm = useRealm();
     const colors = useAppTheme()
@@ -65,7 +67,7 @@ function PackageInformation(props){
                                 title,
                                 description,
                                 subject,
-                                badg,
+                                badge,
                                 language_ref,
                                 language_info{name},
                                 icon_image,
@@ -109,6 +111,10 @@ function PackageInformation(props){
                                 access_type,
                                 number_coin_paid,
                                 activation_date,
+                                last_season,
+                                last_season_number,
+                                last_stage,
+                                last_stage_number,
                             }
                         }
                     }
@@ -166,7 +172,6 @@ function PackageInformation(props){
             props.navigation.navigate("StartPackageGame", {_id:localData?.user_package._id.toHexString(), packageId:localData?.package._id.toHexString() })
         }
     }
-
     const subscriptionRenewalOrCoinPayment = ()=>{
         const previousSelected = {
             _id:["1"],
@@ -338,7 +343,6 @@ function PackageInformation(props){
             })
         })
     }
-
     const getPackageWithSubscription = ()=>{
         const packagePrice = data?.package?.price
         const previousSelected = selectedPaymentMethod?{
@@ -405,7 +409,6 @@ function PackageInformation(props){
             }
         })
     }
-
     const getPackageWithCoinPayment = ()=>{
         const packagePrice = data?.package?.price
         const previousSelected = selectedPaymentMethod?{
@@ -470,7 +473,6 @@ function PackageInformation(props){
             }
         })
     }
-    
     const getForFirst = async(accessType, numberCoinPaid)=>{
         if(accessType == "coin-payment" && data?.package?.price > numberCoins){
             AlertHelper.showAlert({
@@ -505,7 +507,7 @@ function PackageInformation(props){
                 title : data.package.title,
                 description : data.package.description,
                 subject : data.package.subject,
-                badg : data.package.badg,
+                badge : data.package.badge,
                 language_ref : data.package.language_ref,
                 icon_image : data.package.icon_image,
                 banner_image : data.package.banner_image,
@@ -539,7 +541,7 @@ function PackageInformation(props){
             title : data.package.title,
             description : data.package.description,
             subject : data.package.subject,
-            badg : data.package.badg,
+            badge : data.package.badge,
             language_ref : data.package.language_ref,
             icon_image : data.package.icon_image,
             banner_image : data.package.banner_image,
@@ -562,6 +564,10 @@ function PackageInformation(props){
             version_created : data.package.version_created,
             version_updated : data.package.version_updated,
             version_deleted : data.package.version_deleted,
+            last_season : data?.user_package_status?.last_season,
+            last_season_number : data?.user_package_status?.last_season_number,
+            last_stage : data?.user_package_status?.last_stage,
+            last_stage_number : data?.user_package_status?.last_stage_number,
         }
         await recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
@@ -572,7 +578,7 @@ function PackageInformation(props){
             title : data.package.title,
             description : data.package.description,
             subject : data.package.subject,
-            badg : data.package.badg,
+            badge : data.package.badge,
             language_ref : data.package.language_ref,
             icon_image : data.package.icon_image,
             banner_image : data.package.banner_image,
@@ -595,6 +601,10 @@ function PackageInformation(props){
             version_created : data.package.version_created,
             version_updated : data.package.version_updated,
             version_deleted : data.package.version_deleted,
+            last_season : data?.user_package_status?.last_season,
+            last_season_number : data?.user_package_status?.last_season_number,
+            last_stage : data?.user_package_status?.last_stage,
+            last_stage_number : data?.user_package_status?.last_stage_number,
         }
         await redownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
@@ -616,7 +626,7 @@ function PackageInformation(props){
                         tryAgain={tryAgain}
                     />
                     :
-                    <ScrollView>
+                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:50}}>
                         <View style={{width:width, alignItems:'center'}}>
                             <ImageComponent
                                 uri={data?.package?.banner_image}
@@ -686,28 +696,42 @@ function PackageInformation(props){
                                 />
                             }
                         </View>
-                        <RatingInfo
-                            rating_average={data?.package?.rating_average}
-                            rating_info={data?.package?.rating_info}
-                            reviews={data?.package?.rating_number}
-                        />
+                        <View style={{width:width, paddingTop:30}}>
+                            <TouchableNativeFeedback style={{width:width}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
+                                <View style={{width:width, height:50, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
+                                    <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{"نظرات و امتیازها"}</Text>
+                                    <View style={{flexDirection:"row", alignItems:"center", gap:8}}>
+                                        <Text style={{fontSize:14, color:colors.primary.a1, fontFamily:Font.medium}}>{"بیشتر"}</Text>
+                                        <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.primary.a1, fontSize:25}}/>
+                                    </View>
+                                </View>
+                            </TouchableNativeFeedback>
+                            <RatingInfo
+                                rating_average={data?.package?.rating_average}
+                                rating_info={data?.package?.rating_info}
+                                reviews={data?.package?.rating_number}
+                            />
+                        </View>
                         {
-                            data?.seasons?.length > 0&&
-                            <View style={{width:width, flexDirection:'row', flexWrap:'wrap'}}>
-                                {
-                                    data?.seasons.map((item, index)=>(
-                                        <View key={index.toString()}>
-                                            <ImageComponent
-                                                uri={item?.first_media?.path}
-                                                width={width/2 - 20}
-                                                height={100}
-                                                resizeMode="cover"
-                                                borderRadius={10}
-                                            />
-                                            <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a3}}>{item.title}</Text>
-                                        </View>
-                                    ))
-                                }
+                            data?.package?.seasons?.length > 0&&
+                            <View style={{width:width, marginTop:30, paddingHorizontal:15}}>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14, lineHeight:50}}>{"فصل‌های بازی"}</Text>
+                                <View style={{width:width, flexDirection:'row', flexWrap:'wrap', rowGap:30, columnGap:15, justifyContent:'flex-start'}}>
+                                    {
+                                        data?.package?.seasons.map((item, index)=>(
+                                            <View key={index.toString()}>
+                                                <ImageComponent
+                                                    uri={item?.first_media?.path}
+                                                    width={SEASON_ITEM_WIDTH}
+                                                    height={SEASON_ITEM_WIDTH * 0.6}
+                                                    resizeMode="cover"
+                                                    borderRadius={10}
+                                                />
+                                                <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a3, lineHeight:20}}>{item.title}</Text>
+                                            </View>
+                                        ))
+                                    }
+                                </View>
                             </View>
                         }
                     </ScrollView>

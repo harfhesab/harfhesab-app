@@ -173,7 +173,7 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, realm, disp
                             language_ref,
                             media{path, file_type, duration, order},
                             music{path, file_type, duration, order},
-                            badg,
+                            badge,
                             season_number,
                             stage_number_from,
                             stage_number_to,

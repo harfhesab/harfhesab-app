@@ -5,7 +5,7 @@ export interface ISubscriptionPlan {
     product_id: string;
     title?: string;
     description?: string;
-    badg?: string;
+    badge?: string;
     icon_image?: string;
     duration: number;
     price: number;

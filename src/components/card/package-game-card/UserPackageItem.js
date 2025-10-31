@@ -83,11 +83,11 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
                         <TouchableOpacity onPress={click} activeOpacity={0.8} style={{}}>
                             <ImageBackground
                                 source={require("../../../assets/image/wood_blue_button.png")}
-                                style={{ width: IS_TABLET_CONDITION?180:140, height: IS_TABLET_CONDITION?70:54, alignItems:'center', justifyContent:'center', paddingBottom:7}}
+                                style={{ width: IS_TABLET_CONDITION?180:140, height: IS_TABLET_CONDITION?70:54, alignItems:'center', justifyContent:'center', paddingBottom:5}}
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:15, color:"#fcb900"}}>{contentCompleted==true?'بازی':'دانلود محتوا'}</Text>
+                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:14, color:"#fcb900"}}>{contentCompleted==true?'بازی':'بارگیری محتوا'}</Text>
                             </ImageBackground>
                         </TouchableOpacity>
                     </View>

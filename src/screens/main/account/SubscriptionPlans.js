@@ -37,7 +37,7 @@ function SubscriptionPlans(props){
                 _id={item._id}
                 productId={item.product_id}
                 title={item.title}
-                badg={item.badg}
+                badge={item.badge}
                 image={item.icon_image}
                 duration={item.duration}
                 price={item.price}
@@ -85,7 +85,7 @@ function SubscriptionPlans(props){
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                             columnWrapperStyle={{justifyContent:'space-between', gap:15}}
                             style={{width:"100%", paddingHorizontal:20}}
-                            contentContainerStyle={{ rowGap:15, paddingTop:35, paddingBottom:50, justifyContent:'space-between'}}
+                            contentContainerStyle={{direction:'ltr', rowGap:15, paddingTop:35, paddingBottom:50, justifyContent:'space-between'}}
                         />
                     </View>
                 </ImageBackground>

@@ -5,7 +5,7 @@ export class CoinPlan extends Realm.Object<CoinPlan> {
     product_id!: string;
     title?: string;
     description?: string;
-    badg?: string;
+    badge?: string;
     icon_image?: string;
     number_coin!: number;
     price!: number;
@@ -25,7 +25,7 @@ export class CoinPlan extends Realm.Object<CoinPlan> {
             product_id: "string",
             title: "string?",
             description: "string?",
-            badg: "string?",
+            badge: "string?",
             icon_image: "string?",
             number_coin: "int",
             price: "int",

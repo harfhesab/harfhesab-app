@@ -17,21 +17,21 @@ import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import CoinPlanItem from '../../../components/card/general/CoinPlanItem';
 import { getAllCoinPlansList } from '../../../realm/repositories/user/coin-plan-repository';
-import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import Globals from '../../../utils/Globals';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 
 const { ImmersiveMode } = NativeModules;
-const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
 const numColumns = IS_TABLET_CONDITION ? 4 : 2
-
 function CoinPlans(props){
+    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const realm = useRealm();
     const isFocused = useIsFocused();
     const colors = useAppTheme()
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const data = getAllCoinPlansList(realm)
+    
 
     const clickItem = (item)=>{
         if(Globals.install_source == "direct") {
@@ -64,7 +64,7 @@ function CoinPlans(props){
                 click={()=>clickItem(item)}
                 productId={item.product_id}
                 title={item.title}
-                badg={item.badg}
+                badge={item.badge}
                 image={item.icon_image}
                 numberCoin={item.number_coin}
                 price={item.price}
@@ -88,17 +88,17 @@ function CoinPlans(props){
         </View>
     )
     return(
-        <View style={{flex:1, backgroundColor:colors.background.a1}}>
+        <View style={{flex:1, backgroundColor:colors.background.a2, paddingTop:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
             <GeneralHeader
                 paddingHorizontal={10}
                 back={true}
                 height={60}
                 coin={true}
             />
-            <View style={styles.container}>
+            <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
                 <ImageBackground
                     source={require("../../../assets/image/frame_list.png")}
-                    style={{ width: width - 20, height: height-115, paddingTop:"3.2%", paddingBottom:"4.1%"}}
+                    style={{ width: width - 20, height:ImmersiveMode.isImmersiveModeActive()?height-(115 + STATUS_BAR_HEIGHT):height-115, paddingTop:"3.2%", paddingBottom:"4.1%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
@@ -113,7 +113,7 @@ function CoinPlans(props){
                         removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                         columnWrapperStyle={{justifyContent:'space-between', gap:15}}
                         style={{width:"100%", paddingHorizontal:20}}
-                        contentContainerStyle={{ rowGap:15, paddingTop:35, paddingBottom:50, justifyContent:'space-between'}}
+                        contentContainerStyle={{direction:'ltr', rowGap:15, paddingTop:35, paddingBottom:50, justifyContent:'space-between'}}
                     />
                 </View>
             </ImageBackground>

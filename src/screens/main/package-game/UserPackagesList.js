@@ -18,26 +18,28 @@ import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import { creatingMultiplePackageAndUsePackageDocumentsInSameTime } from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { updateSyncUserPackage } from '../../../redux/slices/accountSlice';
+import axios from 'axios';
 
 const {width, height} = Dimensions.get("window")
 function useUserPackage() {
-  const allUserPackage = useQuery(UserPackage);
-  const allPackage = useQuery(Package);
+    const isFocused = useIsFocused();
+    const allUserPackage = useQuery(UserPackage);
+    const allPackage = useQuery(Package);
 
-  // داده ترکیب‌ شده
-  const data = useMemo(() => {
-    return allUserPackage.map(userPkg => {
-      const packag = allPackage.find(p => 
-        p._id.toHexString() === userPkg.package_ref.toHexString()
-      );
-      return {
-        ...userPkg.toJSON(),
-        packag,
-      };
-    });
-  }, [allUserPackage, allPackage]);
+    // داده ترکیب‌ شده
+    const data = useMemo(() => {
+        return allUserPackage.map(userPkg => {
+            const packag = allPackage.find(p => 
+                p._id.toHexString() === userPkg.package_ref.toHexString()
+            );
+            return {
+                ...userPkg.toJSON(),
+                packag,
+            };
+        });
+    }, [allUserPackage, allPackage, isFocused]);
 
-  return data;
+    return data;
 }
 
 function UserPackagesList(props){
@@ -47,9 +49,9 @@ function UserPackagesList(props){
     const {syncUserPackage} = useSelector((state) => state.account);
     const dispatch = useDispatch();
     const realm = useRealm();
-    const [data, setData] = useState(useUserPackage())
     const [loading, setLoading] = useState(true)
     const [noItem, setNoItem] = useState(false)
+    const data = useUserPackage()
 
     useEffect(()=>{
         if(data.length > 0){
@@ -123,7 +125,7 @@ function UserPackagesList(props){
             const dataList = response.data.data?.getUserPackageGameList
             const syncData = creatingMultiplePackageAndUsePackageDocumentsInSameTime(realm, dataList)
             if(syncData == true){
-                dispatch(updateSyncUserPackage({sync:`${new Date.now()}`}))
+                dispatch(updateSyncUserPackage({sync:`${Date.now()}`}))
             }
         }).catch((e)=>{
             null

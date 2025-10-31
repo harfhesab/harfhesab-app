@@ -16,7 +16,7 @@ const size = IS_TABLET_CONDITION?(width-105)/4:(width-75)/2
 function reverseString(str) {
   return str.split("").reverse().join("");
 }
-function SubscriptionPlanItem({_id, productId, title, badg, image, duration, price, active}){
+function SubscriptionPlanItem({_id, productId, title, badge, image, duration, price, active}){
     const colors = useAppTheme();
 
     const click = ()=>{
@@ -27,7 +27,7 @@ function SubscriptionPlanItem({_id, productId, title, badg, image, duration, pri
             <TouchableOpacity activeOpacity={0.95} onPress={click}>
                 <ImageBackground
                     source={require("../../../assets/image/card_3.png")}
-                    style={{ width: size, height: size*1.75, paddingTop:"4%", paddingBottom:"9%", paddingStart:"1.3%"}}
+                    style={{ width: size, height: size*1.75, paddingTop:"4%", paddingBottom:"9%", paddingEnd:"1.3%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
@@ -43,7 +43,7 @@ function SubscriptionPlanItem({_id, productId, title, badg, image, duration, pri
                             />
                         </View>
                         <View>
-                            <Text numberOfLines={2} style={{fontFamily:Font.bold, color:colors.primary.a3, fontSize:18, textAlign:"center"}}>{`${priceDigitSeperator(duration)} روز اشتراک`}</Text>
+                            <Text numberOfLines={2} style={{fontFamily:Font.bold, color:colors.primary.a3, fontSize:14, textAlign:"center"}}>{`${priceDigitSeperator(duration)} روز اشتراک`}</Text>
                             <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:8, textAlign:"center", marginBottom:10}}>{`( ${title} )`}</Text>
                             <ButtonImgSrc
                                 onPress={click}

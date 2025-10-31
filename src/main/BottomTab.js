@@ -46,7 +46,7 @@ const BottomTab = (props) => {
               <Text style={[styles.lable, {color:color}]}>{"بازی مرحله‌ای"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
-              <Icon name={focused?'game-controller':'game-controller-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
+              <Icon name={focused?'game-controller':'game-controller-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>
             )
           }}
         />
@@ -58,7 +58,7 @@ const BottomTab = (props) => {
               <Text style={[styles.lable, {color:color}]}>{"بسته‌های بازی"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
-              <Icon name={focused?'grid':'grid-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
+              <Icon name={focused?'grid':'grid-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>
             )
           }}
         />
@@ -70,7 +70,7 @@ const BottomTab = (props) => {
               <Text style={[styles.lable, {color:color}]}>{"بازی آنلاین"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
-              <Icon name={focused?'trail-sign':'trail-sign-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
+              <Icon name={focused?'trail-sign':'trail-sign-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>
             )
           }}
         />
@@ -82,7 +82,7 @@ const BottomTab = (props) => {
               <Text style={[styles.lable, {color:color}]}>{"حساب کاربری"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
-              <Icon name={focused?'person':'person-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.1}}/>
+              <Icon name={focused?'person':'person-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>
             )
           }}
         />
@@ -91,7 +91,7 @@ const BottomTab = (props) => {
 };
 const styles = StyleSheet.create({
   lable: {
-    fontSize:10,
+    fontSize:9,
     fontFamily:Font.medium,
   },
 });

@@ -9,7 +9,7 @@ export class PackageSeason extends Realm.Object<PackageSeason> {
   language_ref?: BSON.ObjectId;
   media!: Media[];
   music?: Media;
-  badg?: string;
+  badge?: string;
   season_number!: number;
   stage_number_from!: number;
   stage_number_to!: number;
@@ -33,7 +33,7 @@ export class PackageSeason extends Realm.Object<PackageSeason> {
       language_ref: "objectId?",
       media: "Media[]",
       music: "Media",
-      badg: "string?",
+      badge: "string?",
       season_number: "int",
       stage_number_from: "int",
       stage_number_to: "int",

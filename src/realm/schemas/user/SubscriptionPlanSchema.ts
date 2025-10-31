@@ -5,7 +5,7 @@ export class SubscriptionPlan extends Realm.Object<SubscriptionPlan> {
     product_id!: string;
     title?: string;
     description?: string;
-    badg?: string;
+    badge?: string;
     icon_image?: string;
     duration!: number;
     price!: number;
@@ -25,7 +25,7 @@ export class SubscriptionPlan extends Realm.Object<SubscriptionPlan> {
             product_id: "string",
             title: "string?",
             description: "string?",
-            badg: "string?",
+            badge: "string?",
             icon_image: "string?",
             duration: "int",
             price: "int",

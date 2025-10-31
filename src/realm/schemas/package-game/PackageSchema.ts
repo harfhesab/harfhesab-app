@@ -6,7 +6,7 @@ export class Package extends Realm.Object<Package> {
   title!: string;
   description?: string;
   subject?: string;
-  badg?: string;
+  badge?: string;
   language_ref?: BSON.ObjectId;
   icon_image?: string;
   banner_image?: string;
@@ -33,7 +33,7 @@ export class Package extends Realm.Object<Package> {
       title: "string",
       description: "string?",
       subject: "string?",
-      badg: "string?",
+      badge: "string?",
       language_ref: "objectId?",
       icon_image: "string?",
       banner_image: "string?",

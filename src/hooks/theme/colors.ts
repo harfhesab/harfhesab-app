@@ -34,7 +34,7 @@ export const themes = {
       },
       bottom_tab: {
         background: '#001012',
-        active: '#dbdfdf',
+        active: '#40bf42',
         inactive: '#87989a',
       },
       button_gradient: {

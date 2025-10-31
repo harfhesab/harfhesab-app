@@ -6,7 +6,7 @@ export interface IPackage {
   title: string;
   description?: string;
   subject?: string;
-  badg?: string;
+  badge?: string;
   language_ref?: BSON.ObjectId;
   topic_category: BSON.ObjectId[];
   package_collection: BSON.ObjectId[];

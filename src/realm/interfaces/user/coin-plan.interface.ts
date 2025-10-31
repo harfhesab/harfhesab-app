@@ -5,7 +5,7 @@ export interface ICoinPlan {
     product_id: string;
     title?: string;
     description?: string;
-    badg?: string;
+    badge?: string;
     icon_image?: string;
     number_coin: number;
     price: number;

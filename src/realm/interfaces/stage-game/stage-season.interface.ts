@@ -8,7 +8,7 @@ export interface IStageSeason {
   language_ref?: BSON.ObjectId;
   media: IMedia[];
   music?: IMedia;
-  badg?: string;
+  badge?: string;
   season_number: number;
   stage_number_from: number;
   stage_number_to: number;

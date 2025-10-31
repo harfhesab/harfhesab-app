@@ -63,12 +63,16 @@ export const createUserPackage = (
     const packageId = typeof data.package_ref === "string"? new BSON.ObjectId(data.package_ref) : data.package_ref;
     const exists = realm.objectForPrimaryKey("UserPackage", objectId);
     if (exists) return true;
-
+    
+    const lastSeasonId = typeof data?.last_season === "string"? new BSON.ObjectId(data?.last_season): data?.last_season;
+    const lastStageId = typeof data?.last_stage === "string"? new BSON.ObjectId(data?.last_stage): data?.last_stage;
     realm.write(() => {
       realm.create("UserPackage", {
         ...data,
         _id: objectId,
         package_ref: packageId,
+        last_season: lastSeasonId ?? null,
+        last_stage: lastStageId ?? null,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -405,7 +409,7 @@ type DataItem = {
     title: string;
     description?: string;
     subject?: string;
-    badg?: string;
+    badge?: string;
     language_ref?: BSON.ObjectId;
     icon_image?: string;
     banner_image?: string;
@@ -423,7 +427,6 @@ type DataItem = {
     doc_version_deleted?: number;
   };
 };
-
 export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
   realm: Realm,
   dataList: Array<DataItem>
@@ -434,17 +437,18 @@ export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
       dataList.forEach((item) => {
         const pkgInfo = item.package_info;
         const packageId = typeof pkgInfo._id === "string"? new BSON.ObjectId(pkgInfo._id): pkgInfo._id;
+        const languageRefId = typeof pkgInfo?.language_ref === "string"? new BSON.ObjectId(pkgInfo?.language_ref): pkgInfo?.language_ref;
         const existingPackageDoc = realm.objectForPrimaryKey("Package", packageId);
         if(!existingPackageDoc){
             realm.create("Package", {
                 _id: packageId,
                 title: pkgInfo.title,
-                description: pkgInfo.description ?? "",
-                subject: pkgInfo.subject ?? "",
-                badg: pkgInfo.badg ?? "",
-                language_ref: pkgInfo.language_ref ?? null,
-                icon_image: pkgInfo.icon_image ?? "",
-                banner_image: pkgInfo.banner_image ?? "",
+                description: pkgInfo.description ?? null,
+                subject: pkgInfo.subject ?? null,
+                badge: pkgInfo.badge ?? null,
+                language_ref: languageRefId ?? null,
+                icon_image: pkgInfo.icon_image ?? null,
+                banner_image: pkgInfo.banner_image ?? null,
                 music: pkgInfo.music ?? null,
                 free: pkgInfo.free ?? false,
                 free_with_subscription: pkgInfo.free_with_subscription ?? true,
@@ -464,15 +468,17 @@ export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
         const userPackageId = typeof item._id === "string" ? new BSON.ObjectId(item._id) : item._id;
         const existingUserPackage = realm.objectForPrimaryKey("UserPackage",userPackageId);
         if (!existingUserPackage) {
+            const lastSeasonId = typeof item?.last_season === "string"? new BSON.ObjectId(item?.last_season): item?.last_season;
+            const lastStageId = typeof item?.last_stage === "string"? new BSON.ObjectId(item?.last_stage): item?.last_stage;
             realm.create("UserPackage", {
                 _id: userPackageId,
                 package_ref: packageId,
                 content_completed: false,
                 access_type: item?.access_type,
                 number_coin_paid: item?.number_coin_paid ?? null,
-                last_season: item.last_season ?? null,
+                last_season: lastSeasonId ?? null,
                 last_season_number: item.last_season_number ?? null,
-                last_stage: item.last_stage ?? null,
+                last_stage: lastStageId ?? null,
                 last_stage_number: item.last_stage_number ?? null,
                 version_created: item.version_created ?? null,
                 version_updated: item.version_updated ?? null,

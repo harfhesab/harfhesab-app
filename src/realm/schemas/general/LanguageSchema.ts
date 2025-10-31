@@ -3,7 +3,7 @@ import Realm, { BSON } from "realm";
 export class Language extends Realm.Object<Language> {
   _id!: BSON.ObjectId;
   name!: string;
-  badg?: string;
+  badge?: string;
   icon_image?: string;
   stage_game?: boolean;
   package_game?: boolean;
@@ -25,7 +25,7 @@ export class Language extends Realm.Object<Language> {
     properties: {
       _id: "objectId",
       name: "string",
-      badg: "string?",
+      badge: "string?",
       icon_image: "string?",
       stage_game: { type: "bool", optional: true },
       package_game: { type: "bool", optional: true },
