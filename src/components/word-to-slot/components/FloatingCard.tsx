@@ -50,10 +50,16 @@ interface Position {
   y: number;
 }
 
+function getFontScale(word:string) {
+  const len = (word?.length || 0);
+  const scale = 1.8 - 0.13 * len + 0.003 * len * len;
+  return Math.max(0.8, Math.min(1.6, scale));
+}
+
 function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
   const colors = useAppTheme()
   const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards, lockedPan, type, stageId, playingPartIndex } = useDragDrop();
-  const fontSizeScale = (word.length < 3)?1.6:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
+  const fontSizeScale = getFontScale(word);
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
   const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;

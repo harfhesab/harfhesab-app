@@ -76,6 +76,11 @@ interface ContextProps {
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
+function getFontScale(word:string) {
+  const len = (word?.length || 0);
+  const scale = 1.8 - 0.13 * len + 0.003 * len * len;
+  return Math.max(0.8, Math.min(1.6, scale));
+}
 
 export const DragDropProvider: React.FC<{
   children: React.ReactNode;
@@ -201,7 +206,6 @@ export const DragDropProvider: React.FC<{
           const language_ref = languageId
           endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})
         } else if(type == "package-game"){
-          console.log("111111111111111111111111")
           endOfAStageInPackageGame({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences})
         }
       }, 1000)
@@ -310,7 +314,7 @@ export const DragDropProvider: React.FC<{
       if (fromUpperZone) {
         // قانون A: کارت از منطقه بالایی آمده است
         unassignCardFromSlot(slotIndex); // صراحتاً کارت قبلی را حذف کن
-        const fontSizeScale = occupyingCard.word.length < 3 ? 1.6 : occupyingCard.word.length < 4 ? 1.5 : occupyingCard.word.length < 5 ? 1.4 : occupyingCard.word.length < 6 ? 1.3 : occupyingCard.word.length < 7 ? 1.2 : occupyingCard.word.length < 8 ? 1.1 : occupyingCard.word.length > 12 ?0.8:0.9;
+        const fontSizeScale = getFontScale(occupyingCard.word)
         const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
         occupyingCard.isAssigned.value = false;
         occupyingCard.position.value = withSpring(
@@ -355,7 +359,7 @@ export const DragDropProvider: React.FC<{
     }
 
     // تخصیص کارت جدید به اسلات مقصد
-    const fontSizeScale = cards[cardId].word.length < 3 ? 1.6 : cards[cardId].word.length < 4 ? 1.5 : cards[cardId].word.length < 5 ? 1.4 : cards[cardId].word.length < 6 ? 1.3 : cards[cardId].word.length < 7 ? 1.2 : cards[cardId].word.length < 8 ? 1.1 : cards[cardId].word.length > 12 ?0.8:0.9;
+    const fontSizeScale = getFontScale(cards[cardId].word);
     const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;
     const target = getSlotPosition(slotIndex);
     if (target) {
