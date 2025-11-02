@@ -11,6 +11,8 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import axios from 'axios';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
 import MyPackageButton from '../../../components/buttons/MyPackageButton';
+import OnlineGameCard from '../../../components/card/online-game/OnlineGameCard';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 
 const {width, height} = Dimensions.get("window")
 function OnlineGame(props){
@@ -36,7 +38,11 @@ function OnlineGame(props){
                         getAllOnlineGame(
                             _id : $_id,
                         ) {
-                            
+                            title,
+                            description,
+                            badge,
+                            icon_image,
+                            is_active,
                         }
                     }
                 `,
@@ -45,8 +51,13 @@ function OnlineGame(props){
                 }
             }
         }).then(async(response)=>{
+            console.log(response.data)
             const dataReceived = response.data.data?.getAllOnlineGame
-           
+            setData(dataReceived || [])
+            if(dataReceived.length == 0){
+                setNoItem(true)
+            }
+            setLoading(false)
         }).catch((e)=>{
             setLoading(true)
             setGetError(true)
@@ -59,9 +70,11 @@ function OnlineGame(props){
         getData()
     }
     const renderItem = useCallback(({item})=>(
-        <View>
-
-        </View>
+        <OnlineGameCard
+            _id={item._id}
+            title={item.title}
+            image={item.icon_image}
+        />
     ), [])
     const memoizedValue = useMemo(() => renderItem, [data]);
     const keyExtractor = (item,index)=>index.toString()
@@ -84,19 +97,21 @@ function OnlineGame(props){
             />
             <View style={styles.container}>
                 <FlatList
-                    style={{flex:1}}
+                    style={{flex:1, width:"100%", paddingHorizontal:15}}
                     contentContainerStyle={[
-                        {width: width, gap: 5, paddingBottom:70},
+                        {width: width, paddingBottom:70, paddingTop:20,  rowGap:15, justifyContent:'space-between'},
                         data.length === 0 && {flex: 1}
                     ]}
                     showsVerticalScrollIndicator={false}
                     data={data}
                     keyExtractor={keyExtractor}
+                    numColumns={IS_TABLET_CONDITION?3:2}
                     renderItem={memoizedValue}
                     onEndReachedThreshold={0.5}
                     initialNumToRender={20}
                     removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                     ListEmptyComponent={ListEmptyComponent}
+                    columnWrapperStyle={{ gap:15}}
                 /> 
             </View>
         </View>
