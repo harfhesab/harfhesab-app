@@ -201,7 +201,7 @@ function VerifyLoginToAccount(props){
                             status,
                             message,
                             token,
-                            user{first_name, last_name, number_coins, active_subscription, subscription_expiration},
+                            user{name, number_coins, active_subscription, subscription_expiration},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                         }
                     }
@@ -226,8 +226,7 @@ function VerifyLoginToAccount(props){
                 setLoading(false)
                 const data = response?.data?.data?.verifyUserLoginWithOTPAndMergeGuestAndRegistered
                 if(data?.status == 200) {
-                    const firstName = data?.user?.firstName ?? null
-                    const lastName = data?.user?.lastName ?? null
+                    const name = data?.user?.name ?? null
                     const numberCoins = data?.user?.number_coins
                     const activeSubscription = data?.usre?.active_subscription;
                     if(activeSubscription == true){
@@ -251,7 +250,7 @@ function VerifyLoginToAccount(props){
                             await dispatch(updateCurrentLanguageLastStageAndLastSeason(currentProgressData))
                         }
                     }
-                    dispatch(convertGuestToRegistered({ phone, firstName, lastName}))
+                    dispatch(convertGuestToRegistered({ phone, name}))
                     Toast.show({
                         type: "success",
                         text1 : "ورود به حساب",

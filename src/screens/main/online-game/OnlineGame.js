@@ -99,7 +99,7 @@ function OnlineGame(props){
                 <FlatList
                     style={{flex:1, width:"100%", paddingHorizontal:15}}
                     contentContainerStyle={[
-                        {width: width, paddingBottom:70, paddingTop:20,  rowGap:15, justifyContent:'space-between'},
+                        { paddingBottom:70, paddingTop:20,  rowGap:15, justifyContent:'space-between'},
                         data.length === 0 && {flex: 1}
                     ]}
                     showsVerticalScrollIndicator={false}

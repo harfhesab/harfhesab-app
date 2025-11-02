@@ -15,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 const {width, height} = Dimensions.get("window")
 function Account(props){
     const colors = useAppTheme()
-    const { loginType } = useSelector((state) => state.account);
+    const { loginType, name, phone } = useSelector((state) => state.account);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
 
@@ -177,14 +177,14 @@ function Account(props){
                                         <Icon name={"person"} type={"Ionicons"} style={{fontSize:25, color:colors.text.a5}}/>
                                     </View>
                                     <View style={{ flexDirection:'column', alignItems:'flex-start'}}>
-                                        <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1}}>{"کامران ربیعی"}</Text>
-                                        <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a1}}>{"09353845285"}</Text>
+                                        <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1}}>{name}</Text>
+                                        <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a1}}>{phone}</Text>
                                     </View>
                                 </View>
                                 <ButtonGradient
                                     text={"مدیریت حساب"}
                                     textSize={13}
-                                    onPress={()=>{}}
+                                    onPress={()=>{props.navigation.navigate("AccountManagement")}}
                                     width={120}
                                     height={35}
                                     borderRadius={20}

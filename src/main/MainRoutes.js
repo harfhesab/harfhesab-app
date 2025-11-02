@@ -12,6 +12,7 @@ import UserPackagesList from '../screens/main/package-game/UserPackagesList';
 import StagesPackageGameSeason from '../screens/main/package-game/StagesPackageGameSeason';
 import ConnectingLettersPackageGame from '../screens/main/package-game/game/ConnectingLettersPackageGame';
 import WordToSlotPackageGame from '../screens/main/package-game/game/WordToSlotPackageGame';
+import AccountManagement from '../screens/main/account/AccountManagement';
 // ==================================================================================================
 import { AppState, NativeModules } from 'react-native';
 import { getCurrentRouteName } from './navigationService';
@@ -57,6 +58,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"StagesPackageGameSeason"} component={StagesPackageGameSeason} />
       <Stack.Screen name={"ConnectingLettersPackageGame"} component={ConnectingLettersPackageGame} />
       <Stack.Screen name={"WordToSlotPackageGame"} component={WordToSlotPackageGame} />
+      <Stack.Screen name={"AccountManagement"} component={AccountManagement} />
     </Stack.Navigator>
   )
 }

@@ -209,7 +209,7 @@ function VerifyWithOTP(props){
                             status,
                             message,
                             token,
-                            user{first_name, last_name, number_coins, active_subscription, subscription_expiration},
+                            user{name, number_coins, active_subscription, subscription_expiration},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                             game_constants{
                                 constants_version,
@@ -283,8 +283,7 @@ function VerifyWithOTP(props){
                 const data = response?.data?.data?.verifyUserLoginWithOTP
                 if(data?.status == 200) {
                     const token = data?.token
-                    const firstName = data?.user?.firstName ?? null
-                    const lastName = data?.user?.lastName ?? null
+                    const name = data?.user?.name ?? null
                     const activeSubscription = data?.usre?.active_subscription;
                     if(activeSubscription == true){
                         const subscriptionExpiration = data?.user?.subscription_expiration;
@@ -322,7 +321,7 @@ function VerifyWithOTP(props){
                     if(progressData?.length > 0){
                         updateUserStageGameProgressInLogin(realm, progressData)
                     }
-                    dispatch(login({token, phone, firstName, lastName}))
+                    dispatch(login({token, phone, name}))
                     axios.defaults.headers.post['token'] = token;
                     Toast.show({
                         type: "success",

@@ -5,8 +5,7 @@ interface AccountState {
   loginType: "registered" | "guest" | null; 
   token: string | null;
   phone: string | null;
-  firstName: string | null;
-  lastName: string | null;
+  name: string | null;
   syncUserPackage: string | null;
 }
 
@@ -15,8 +14,7 @@ const initialState: AccountState = {
   loginType: null,
   token: null,
   phone: null,
-  firstName: null,
-  lastName: null,
+  name: null,
   syncUserPackage: null,
 };
 
@@ -34,31 +32,29 @@ const accountSlice = createSlice({
     },
     login(
       state,
-      action: PayloadAction<{ token: string, phone: string, firstName: string | null; lastName: string | null; }>
+      action: PayloadAction<{ token: string, phone: string, name: string | null; }>
     ) {
       state.isLoggedIn = true;
       state.token = action.payload.token;
       state.phone = action.payload.phone;
-      state.firstName = action.payload.firstName;
-      state.lastName = action.payload.lastName;
+      state.name = action.payload.name;
       state.loginType = "registered";
     },
     logout(state) {
       state.isLoggedIn = false;
       state.token = null;
       state.phone = null;
-      state.firstName = null;
-      state.lastName = null;
+      state.name = null;
       state.loginType = null;
+      state.syncUserPackage = null;
     },
     convertGuestToRegistered(
       state,
-      action: PayloadAction<{ phone: string, firstName: string | null; lastName: string | null; }>
+      action: PayloadAction<{ phone: string, name: string | null; }>
     ) {
       state.isLoggedIn = true;
       state.phone = action.payload.phone;
-      state.firstName = action.payload.firstName;
-      state.lastName = action.payload.lastName;
+      state.name = action.payload.name;
       state.loginType = "registered";
     },
     updateSyncUserPackage(
