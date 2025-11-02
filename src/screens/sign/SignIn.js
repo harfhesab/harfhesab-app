@@ -85,7 +85,7 @@ function SignIn(props){
                         status,
                         message,
                         token,
-                        user{number_coins},
+                        user{name, number_coins},
                         game_constants{
                             constants_version,
                             coins_for_get_help_word_to_slot_stage_game,
@@ -156,8 +156,7 @@ function SignIn(props){
             const data = response?.data?.data?.loginAsGuestByUser
             if(data?.status == 200) {
                 const token = data?.token
-                const firstName = data?.user?.firstName ?? null
-                const lastName = data?.user?.lastName ?? null
+                const name = data?.user?.name ?? null
                 if(data?.game_constants){
                     const variables = data.game_constants
                     dispatch(updateConstantsVersion(variables))
@@ -186,7 +185,7 @@ function SignIn(props){
                 if(typeof numberCoins === "number"){
                     dispatch(updateNumberCoins({number:numberCoins}))
                 }
-                dispatch(loginAsGuest({token}))
+                dispatch(loginAsGuest({token, name}))
                 axios.defaults.headers.post['token'] = token;
                 Toast.show({
                     type: "success",

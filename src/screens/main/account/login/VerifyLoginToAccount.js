@@ -228,7 +228,7 @@ function VerifyLoginToAccount(props){
                 if(data?.status == 200) {
                     const name = data?.user?.name ?? null
                     const numberCoins = data?.user?.number_coins
-                    const activeSubscription = data?.usre?.active_subscription;
+                    const activeSubscription = data?.user?.active_subscription;
                     if(activeSubscription == true){
                         const subscriptionExpiration = data?.user?.subscription_expiration;
                         dispatch(updateSubscriptionStatus({activeSubscription, subscriptionExpiration}))

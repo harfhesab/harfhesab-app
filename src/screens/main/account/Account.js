@@ -153,7 +153,8 @@ function Account(props){
                                         <Icon name={"person"} type={"Ionicons"} style={{fontSize:25, color:colors.text.a5}}/>
                                     </View>
                                     <View style={{ flexDirection:'column', alignItems:'flex-start'}}>
-                                        <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1}}>{"کاربر میهمان"}</Text>
+                                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{"کاربر میهمان"}</Text>
+                                        <Text style={{fontFamily:Font.black, fontSize:10, color:colors.text.a1}}>{name}</Text>
                                     </View>
                                 </View>
                                 <ButtonGradient
@@ -177,7 +178,7 @@ function Account(props){
                                         <Icon name={"person"} type={"Ionicons"} style={{fontSize:25, color:colors.text.a5}}/>
                                     </View>
                                     <View style={{ flexDirection:'column', alignItems:'flex-start'}}>
-                                        <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1}}>{name}</Text>
+                                        <Text style={{fontFamily:Font.black, fontSize:12, color:colors.text.a1}}>{name}</Text>
                                         <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a1}}>{phone}</Text>
                                     </View>
                                 </View>

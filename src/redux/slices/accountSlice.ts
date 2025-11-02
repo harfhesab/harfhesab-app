@@ -24,10 +24,11 @@ const accountSlice = createSlice({
   reducers: {
     loginAsGuest(
       state,
-      action: PayloadAction<{ token: string; }>
+      action: PayloadAction<{ token: string; name: string | null; }>
     ) {
       state.isLoggedIn = true;
       state.token = action.payload.token;
+      state.name = action.payload.name;
       state.loginType = "guest";
     },
     login(

@@ -284,7 +284,7 @@ function VerifyWithOTP(props){
                 if(data?.status == 200) {
                     const token = data?.token
                     const name = data?.user?.name ?? null
-                    const activeSubscription = data?.usre?.active_subscription;
+                    const activeSubscription = data?.user?.active_subscription;
                     if(activeSubscription == true){
                         const subscriptionExpiration = data?.user?.subscription_expiration;
                         dispatch(updateSubscriptionStatus({activeSubscription, subscriptionExpiration}))
