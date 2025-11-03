@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TouchableNativeFeedback} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TouchableNativeFeedback, ImageBackground} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store/RootReducer';
 import { login, logout } from '../../../redux/slices/accountSlice';
@@ -11,6 +11,7 @@ import SimpleItem from '../../../components/list-view-items/SimpleItem';
 import Border from '../../../components/Border';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
 import LinearGradient from 'react-native-linear-gradient';
+import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
@@ -25,12 +26,11 @@ function Account(props){
         getData()
     }
 
-    const GuestAccountOptions = [
+    const AccountOptions = [
         {
             title: "خرید سکه",
             image_icon: require('../../../assets/image/coin.png'),
             icon_size: 35,
-            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{props.navigation.navigate("CoinPlans")}
         },
@@ -38,7 +38,6 @@ function Account(props){
             title: "اشتراک بازی",
             image_icon: require('../../../assets/image/diamond.png'),
             icon_size: 35,
-            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{props.navigation.navigate("SubscriptionPlans")}
         },
@@ -46,7 +45,6 @@ function Account(props){
             title: "بسته‌های بازی من",
             image_icon: require('../../../assets/image/my-package.png'),
             icon_size: 30,
-            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{props.navigation.navigate("UserPackagesList")}
         },
@@ -54,93 +52,92 @@ function Account(props){
             title: "دریافت سکه رایگان",
             image_icon: require('../../../assets/image/coin.png'),
             icon_size: 35,
-            icon_backgroun_color:"transparent",
             arrow: true,
             onPress:()=>{}
         },
         {
             title: "بروزرسانی بازی مرحله‌ای",
-            icon_name: "game-controller-outline",
-            icon_type: "Ionicons",
+            image_icon: require('../../../assets/image/download.png'),
             icon_size: 25,
-            icon_backgroun_color:"#2196f399",
+            image_width: 18,
             arrow: true,
             onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")}
         },
         {
             title: "تنظیمات",
-            icon_name: "settings-outline",
-            icon_type: "Ionicons",
-            icon_size: 25,
-            icon_backgroun_color:"#00968899",
-            arrow: true,
-            onPress:()=>{}
-        },
-    ]
-    const RegisteredAccountOptions = [
-        {
-            title: "خرید سکه",
-            image_icon: require('../../../assets/image/coin.png'),
-            icon_size: 25,
-            icon_backgroun_color:"transparent",
-            arrow: true,
-            onPress:()=>{props.navigation.navigate("CoinPlans")}
-        },
-        {
-            title: "اشتراک بازی",
-            image_icon: require('../../../assets/image/diamond.png'),
-            icon_size: 25,
-            icon_backgroun_color:"transparent",
-            arrow: true,
-            onPress:()=>{props.navigation.navigate("SubscriptionPlans")}
-        },
-        {
-            title: "بسته‌های بازی من",
-            image_icon: require('../../../assets/image/my-package.png'),
-            icon_size: 30,
-            icon_backgroun_color:"transparent",
-            arrow: true,
-            onPress:()=>{props.navigation.navigate("UserPackagesList")}
-        },
-        {
-            title: "دریافت سکه رایگان",
-            image_icon: require('../../../assets/image/coin.png'),
-            icon_size: 25,
-            icon_backgroun_color:"transparent",
-            arrow: true,
-            onPress:()=>{}
-        },
-        {
-            title: "بروزرسانی بازی مرحله‌ای",
-            icon_name: "game-controller-outline",
-            icon_type: "Ionicons",
-            icon_size: 25,
-            icon_backgroun_color:"#2196f399",
-            arrow: true,
-            onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")}
-        },
-        {
-            title: "تنظیمات",
-            icon_name: "settings-outline",
-            icon_type: "Ionicons",
-            icon_size: 25,
-            icon_backgroun_color:"#00968899",
+            image_icon: require('../../../assets/image/setting_yellow.png'),
             arrow: true,
             onPress:()=>{}
         },
         {
             title: "خروج از حساب کاربری",
-            title_color: colors.alert.a1,
-            icon_name: "log-out-outline",
-            icon_type: "Ionicons",
-            icon_size: 25,
-            icon_backgroun_color:"#b8000099",
+            title_color: colors.primary.a1,
+            icon_name: "sign-out",
+            icon_type: "FontAwesome",
+            icon_color: colors.primary.a1,
             arrow: false,
             onPress:()=>{}
         }
     ]
-    const AccountOptions = loginType == "guest"?GuestAccountOptions:loginType == "registered"?RegisteredAccountOptions:[]
+    
     const account = ()=>{
+        return(
+            <View style={{width:width, alignItems:'center', paddingVertical:10}}>
+                <ImageBackground
+                    source={require("../../../assets/image/horizontal_frame2.png")}
+                    style={{ width: width - 20, height: 135}}
+                    imageStyle={{ resizeMode: "stretch" }}
+                    resizeMode="stretch"
+                >
+                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%", height:"100%", paddingHorizontal:"6%"}}>
+                        <ImageBackground
+                                source={require("../../../assets/image/circle_button.png")}
+                                style={{ width:100, height: 100, alignItems:'center', justifyContent:'center', paddingBottom:3}}
+                                imageStyle={{ resizeMode: "stretch" }}
+                                resizeMode="stretch"
+                            >
+                            <Icon name={"person"} type={"Ionicons"} style={{fontSize:50, color:"#ffc107"}}/>
+                        </ImageBackground>
+                        <View style={{flexDirection:'column', alignItems:'flex-end', gap:10}}>
+                            <View style={{ flexDirection:'column', alignItems:'flex-end'}}>
+                                <Text style={{fontFamily:Font.black, fontSize:12, color:colors.text.a1}}>{name}</Text>
+                                <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{loginType == "registered" ? phone : "کاربر میهمان"}</Text>
+                            </View>
+                            <TouchableOpacity 
+                                onPress={()=>{
+                                    if(loginType == "registered"){
+                                        props.navigation.navigate("AccountManagement")
+                                    }else{
+                                        props.navigation.navigate("LoginToAccount")
+                                    }
+                                }} 
+                                activeOpacity={0.8} 
+                                style={{ alignSelf:'center', justifyContent:'center'}}
+                            >
+                                <ImageBackground
+                                    source={require("../../../assets/image/button_2.png")}
+                                    style={{ width: 135, height: 40, alignItems:'center', justifyContent:'center'}}
+                                    imageStyle={{ resizeMode: "stretch" }}
+                                    resizeMode="stretch"
+                                >
+                                    <SimpleBorderText
+                                        text={loginType == "registered"?"مدیریت حساب":"ورود به حساب"}
+                                        width={140}
+                                        height={14*1.6}
+                                        fontSize={14}
+                                        textColor={"#FFFFFF"}
+                                        borderColor={"#311b92"}
+                                        borderWidth={2.5}
+                                    />
+                                </ImageBackground>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </ImageBackground>
+            </View>
+        )
+    }
+    const accountttt = ()=>{
         return(
             <View style={{width:width, alignItems:'center', paddingVertical:15}}>
                 {
@@ -206,35 +203,42 @@ function Account(props){
                 coin={true}
             />
             <View style={{flex:1, alignItems:'center'}}>
-                <ScrollView>
-                    {account()}
-                    {
-                        AccountOptions.map((item, index)=>(
-                            <View key={index.toString()}>
-                                <SimpleItem
-                                    iconBackColor={item.icon_backgroun_color}
-                                    title={item.title}
-                                    titleColor={item?.title_color??colors.text.a2}
-                                    arrow={item.arrow}
-                                    height={55}
-                                    horizontal={15}
-                                    icon_name={item?.icon_name}
-                                    icon_type={item?.icon_type}
-                                    image_icon={item?.image_icon}
-                                    icon_size={item.icon_size}
-                                    textSize={14}
-                                    click={item.onPress}
-                                />
-                                <Border
-                                    height={0.5}
-                                    end={15}
-                                    start={60}
-                                    color={colors.border.a1}
-                                />
-                            </View>
-                        ))
-                    }
-                </ScrollView>
+                
+                {account()}
+                <ImageBackground
+                    source={require("../../../assets/image/menu_frame.png")}
+                    style={{ width: width - 20, height: height-295, paddingVertical:"3.5%"}}
+                    imageStyle={{ resizeMode: "stretch" }}
+                    resizeMode="stretch"
+                >
+                    <View style={{borderRadius:"10%", overflow:'hidden', width:width-40, alignItems:'center', alignSelf:'center'}}>
+                        <ScrollView 
+                            contentContainerStyle={{alignItems:'center', paddingVertical:5, gap:10}} 
+                            showsVerticalScrollIndicator={false}
+                        >
+                            
+                            {
+                                AccountOptions.map((item, index)=>(
+                                    <View key={index.toString()}>
+                                        <SimpleItem
+                                            title={item.title}
+                                            title_color={item?.title_color}
+                                            arrow={item.arrow}
+                                            icon_name={item?.icon_name}
+                                            icon_type={item?.icon_type}
+                                            image_icon={item?.image_icon}
+                                            icon_size={item.icon_size}
+                                            click={item.onPress}
+                                            image_width={item?.image_width}
+                                            image_height={item?.image_height}
+                                            icon_color={item?.icon_color}
+                                        />
+                                    </View>
+                                ))
+                            }
+                        </ScrollView>
+                    </View>
+                </ImageBackground>
             </View>
         </View>
     )

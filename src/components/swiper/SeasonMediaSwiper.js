@@ -12,7 +12,7 @@ const width = Dimensions.get("screen").width;
 function SeasonMediaSwiper({items, title, height}){
     const bannerWidth = IS_TABLET_CONDITION?460:width - 20
     const mediaWidth = bannerWidth*0.94
-    const mediaHeight = height*0.87
+    const mediaHeight = height*0.85
     const titleWidth = bannerWidth - 100
     const colors = useAppTheme();
     const onClickItem = (item)=>{

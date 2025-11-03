@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {View, Text, TouchableNativeFeedback, Dimensions, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Dimensions, Image, ImageBackground} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import useAppTheme from '../../hooks/theme/useAppTheme';
@@ -11,51 +11,60 @@ function SimpleItem({
     value,
     valueColor,
     title,
-    titleColor,
+    title_color="#ffc107",
     icon_name,
     icon_type,
     image_icon,
+    image_width=25,
+    image_height=25,
     icon_size=25,
-    horizontal,
+    icon_color="#ffc107",
     disabled,
-    textSize=14,
-    height = 55,
-    iconBackColor
 }){
     const colors = useAppTheme();
     return (
-        <TouchableNativeFeedback disabled={disabled == true?true:false} onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-            <View style={{ height:height, width:width, flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal:horizontal}}>
-                <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
-                    {
-                        icon_name && icon_type&&
-                        <View style={{width:35, height:35, borderRadius:10, alignItems:'center', backgroundColor:iconBackColor, justifyContent:'center'}}>
-                            <Icon name={icon_name} type={icon_type} style={{color:"#FFFFFF", fontSize:icon_size}}/>
-                        </View>
-                    }
-                    {
-                        image_icon &&
-                        <View style={{width:35, height:35, borderRadius:10, alignItems:'center', backgroundColor:iconBackColor, justifyContent:'center'}}>
-                            <Image
-                                style={{height:icon_size, width:icon_size}}
-                                source={image_icon}
-                            />
-                        </View>
-                    }
-                    <Text style={{fontSize:textSize, color:titleColor??colors.text.a2, fontFamily:Font.medium}}>{title}</Text>
+        <TouchableOpacity activeOpacity={0.8} disabled={disabled == true?true:false} onPress={click}>
+            <ImageBackground
+                source={require("../../assets/image/simple_list_item.png")}
+                style={{ width: width - 55, height: 70}}
+                imageStyle={{ resizeMode: "stretch" }}
+                resizeMode="stretch"
+            >
+                <View style={{ height:70, width:"100%", flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal:10}}>
+                    <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                        <ImageBackground
+                            source={require("../../assets/image/circle_button.png")}
+                            style={{ width:50, height: 50, alignItems:'center', justifyContent:'center', paddingBottom:3}}
+                            imageStyle={{ resizeMode: "stretch" }}
+                            resizeMode="stretch"
+                        >
+                            {
+                            icon_name && icon_type&&
+                                <Icon name={icon_name} type={icon_type} style={{color:icon_color, fontSize:icon_size}}/>
+                            }
+                            {
+                                image_icon &&
+                                <Image
+                                    style={{height:image_height, width:image_width}}
+                                    source={image_icon}
+                                />
+                            }
+                        </ImageBackground>
+                        <Text style={{fontSize:16, color:title_color, fontFamily:Font.black}}>{title}</Text>
+                    </View>
+                    <View style={{flexDirection:'row', alignItems:'center', gap:15}}>
+                        {
+                            value&&
+                            <Text style={{fontSize:textSize, color:valueColor??colors.text.a4, fontFamily:Font.medium}}>{value}</Text>
+                        }
+                        {
+                            arrow == true&&
+                            <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.text.a4, fontSize:30}}/>
+                        }
+                    </View>
                 </View>
-                <View style={{flexDirection:'row', alignItems:'center', gap:15}}>
-                    {
-                        value&&
-                        <Text style={{fontSize:textSize, color:valueColor??colors.text.a4, fontFamily:Font.medium}}>{value}</Text>
-                    }
-                    {
-                        arrow == true&&
-                        <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.text.a4, fontSize:25}}/>
-                    }
-                </View>
-            </View>
-        </TouchableNativeFeedback> 
+            </ImageBackground>
+        </TouchableOpacity> 
     );
 };
 export default memo(SimpleItem)
