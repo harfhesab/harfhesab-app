@@ -124,7 +124,7 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
             }}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
         >
-            <TouchableOpacity activeOpacity={1} style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
+            <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
                 <View>
                     <View style={{width:width * 0.25, height:4, backgroundColor:colors.border.a1, marginTop:30, marginBottom:15, alignSelf:'center', borderRadius:2}}/>                  
                     {
@@ -237,7 +237,7 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                         }
                     </View>
                 }
-            </TouchableOpacity>   
+            </View>   
         </Modal>
     )
 })
