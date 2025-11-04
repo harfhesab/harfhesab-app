@@ -254,7 +254,7 @@ function StageGame(props){
         }
     }).current;
     const ListEmptyComponent = ()=>(
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <View style={{flex:1, height:"100%", width:"100%", alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
                 loading={false}
                 getError={false}

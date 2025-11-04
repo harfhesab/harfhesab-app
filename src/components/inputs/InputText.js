@@ -55,7 +55,7 @@ function InputText({
             <View style={{backgroundColor:`${colors.primary.a1}25`, width:"100%", flexDirection:'row', alignItems:'center', borderWidth:borderWidth, borderRadius:borderRadius, borderColor:focused == true?colors.primary.a1:checkValueState == true?colors.alert.a1:colors.border.a1, paddingHorizontal:10}}>
                 <TextInput
                     placeholder={placeholder}
-                    placeholderTextColor={placeholderTextColor??colors.text.a5}
+                    placeholderTextColor={placeholderTextColor??colors.text.a6}
                     onFocus={()=>{
                         setFocused(true)
                         setCheckValueState(false)
