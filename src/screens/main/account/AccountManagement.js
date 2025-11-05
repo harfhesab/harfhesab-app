@@ -20,6 +20,7 @@ import Toast from 'react-native-toast-message';
 import { increaseNumberCoins } from '../../../redux/slices/coinSlice';
 import Calendar from '../../../components/calendar/Calendar';
 import CalendarHelper from '../../../components/calendar/CalendarHelper';
+import { toGregorian } from 'jalaali-js';
 
 const {width, height} = Dimensions.get("window")
 function AccountManagement(props){
@@ -42,7 +43,7 @@ function AccountManagement(props){
     
 
     useEffect(()=>{
-        // getData()
+        getData()
     }, [])
     
     const getData = async()=>{
@@ -75,7 +76,16 @@ function AccountManagement(props){
                 setFirstName(dataReceived?.first_name??"")
                 setLastName(dataReceived?.last_name??"")
                 setGender(dataReceived?.gender??null)
-                setBirthday(dataReceived?.birthday??null)
+                if(dataReceived?.birthday){
+                    const date = new Date(dataReceived?.birthday);
+                    const { jy, jm, jd } = toJalaali(
+                        date.getFullYear(),
+                        date.getMonth() + 1,
+                        date.getDate()
+                    );
+                    const shamsiDate = `${jy}/${jm.toString().padStart(2, '0')}/${jd.toString().padStart(2, '0')}`;
+                    setBirthday(shamsiDate)
+                }
             }
             setLoading(false)
         }).catch((e)=>{
@@ -122,6 +132,14 @@ function AccountManagement(props){
     }
 
     const confirmInformation = async()=>{
+        let convertBirthday = undefined
+        const test = new Date()
+        if(birthday){
+            const shamsiDate = birthday;
+            const [jy, jm, jd] = shamsiDate.split('/').map(Number);
+            const { gy, gm, gd } = toGregorian(jy, jm, jd);
+            convertBirthday = new Date(gy, gm - 1, gd);
+        }
         setLoading2(true)
         await axios({
             url:'/',
@@ -153,7 +171,7 @@ function AccountManagement(props){
                     "first_name" : firstName.trim()?.length > 1?firstName:undefined,
                     "last_name" : lastName.trim()?.length > 1?lastName:undefined,
                     "gender" : gender?.type??undefined,
-                    "birthday" : birthday??undefined,
+                    "birthday" : convertBirthday,
                     "number_coins" : numberCoins
                 }
             }
@@ -253,17 +271,20 @@ function AccountManagement(props){
                         </View>
                     </ScrollView>
                 }
-                <View style={{width:width, height:70, backgroundColor:colors.header.background, alignItems:'center', justifyContent:'center'}}>
-                    <ButtonGradient
-                        text={"ثبت اطلاعات"}
-                        height={55}
-                        borderRadius={10}
-                        width={width-40}
-                        loading={loading2}
-                        onPress={confirmInformation}
-                        textSize={14}
-                    />
-                </View>
+                {
+                    !loading&&
+                    <View style={{width:width, height:70, backgroundColor:colors.header.background, alignItems:'center', justifyContent:'center'}}>
+                        <ButtonGradient
+                            text={"ثبت اطلاعات"}
+                            height={55}
+                            borderRadius={10}
+                            width={width-40}
+                            loading={loading2}
+                            onPress={confirmInformation}
+                            textSize={14}
+                        />
+                    </View>
+                }
             </View>
             <BottomDrawer ref = {Ref => {BottomDrawerHelper.setRef(Ref)}}/>
             <Calendar ref = {Ref => {CalendarHelper.setRef(Ref)}}/>
