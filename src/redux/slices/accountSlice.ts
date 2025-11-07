@@ -64,9 +64,15 @@ const accountSlice = createSlice({
     ) {
       state.syncUserPackage = action.payload.sync;
     },
+    changeName(
+      state,
+      action: PayloadAction<{ name: string | null; }>
+    ) {
+      state.name = action.payload.name;
+    },
   },
 });
 
-export const { login, logout, loginAsGuest, convertGuestToRegistered, updateSyncUserPackage } = accountSlice.actions;
+export const { login, logout, loginAsGuest, convertGuestToRegistered, updateSyncUserPackage, changeName } = accountSlice.actions;
 
 export default accountSlice.reducer;

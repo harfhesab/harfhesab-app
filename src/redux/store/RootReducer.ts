@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import accountReducer from '../slices/accountSlice';
-import uiReducer from '../slices/uiSlice';
+import settingReducer from '../slices/settingSlice';
 import mainReducer from '../slices/mainSlice';
 import stageGameReducer from '../slices/stageGameSlice';
 import stageGamePersistReducer from '../slices/stageGamePersistSlice';
@@ -12,7 +12,7 @@ import packageGameDownloadReducer from '../slices/packageGameDownloadSlice';
 
 const rootReducer = combineReducers({
   account: accountReducer,
-  ui: uiReducer,
+  setting: settingReducer,
   main: mainReducer,
   stageGame: stageGameReducer,
   stageGamePersist: stageGamePersistReducer,

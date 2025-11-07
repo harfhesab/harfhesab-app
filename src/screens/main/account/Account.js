@@ -17,14 +17,6 @@ const {width, height} = Dimensions.get("window")
 function Account(props){
     const colors = useAppTheme()
     const { loginType, name, phone } = useSelector((state) => state.account);
-    const [loading, setLoading] = useState(true)
-    const [getError, setGetError] = useState(false)
-
-    const tryAgain = ()=>{
-        setLoading(true)
-        setGetError(false)
-        getData()
-    }
 
     const AccountOptions = [
         {
@@ -32,28 +24,32 @@ function Account(props){
             image_icon: require('../../../assets/image/coin.png'),
             icon_size: 35,
             arrow: true,
-            onPress:()=>{props.navigation.navigate("CoinPlans")}
+            onPress:()=>{props.navigation.navigate("CoinPlans")},
+            is_visible:true
         },
         {
             title: "اشتراک بازی",
             image_icon: require('../../../assets/image/diamond.png'),
             icon_size: 35,
             arrow: true,
-            onPress:()=>{props.navigation.navigate("SubscriptionPlans")}
+            onPress:()=>{props.navigation.navigate("SubscriptionPlans")},
+            is_visible:true
         },
         {
             title: "بسته‌های بازی من",
             image_icon: require('../../../assets/image/my-package.png'),
             icon_size: 30,
             arrow: true,
-            onPress:()=>{props.navigation.navigate("UserPackagesList")}
+            onPress:()=>{props.navigation.navigate("UserPackagesList")},
+            is_visible:true
         },
         {
             title: "دریافت سکه رایگان",
             image_icon: require('../../../assets/image/coin.png'),
             icon_size: 35,
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("FreeCoin")},
+            is_visible:true
         },
         {
             title: "بروزرسانی بازی مرحله‌ای",
@@ -61,13 +57,15 @@ function Account(props){
             icon_size: 25,
             image_width: 18,
             arrow: true,
-            onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")}
+            onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")},
+            is_visible:true
         },
         {
             title: "تنظیمات",
             image_icon: require('../../../assets/image/setting_yellow.png'),
             arrow: true,
-            onPress:()=>{}
+            onPress:()=>{props.navigation.navigate("Setting")},
+            is_visible:true
         },
         {
             title: "خروج از حساب کاربری",
@@ -76,7 +74,8 @@ function Account(props){
             icon_type: "FontAwesome",
             icon_color: colors.primary.a1,
             arrow: false,
-            onPress:()=>{}
+            onPress:()=>{},
+            is_visible:loginType == "registered"?true:false
         }
     ]
     
@@ -137,63 +136,6 @@ function Account(props){
             </View>
         )
     }
-    const accountttt = ()=>{
-        return(
-            <View style={{width:width, alignItems:'center', paddingVertical:15}}>
-                {
-                    loginType == "guest"?
-                    <LinearGradient colors={['#1b0b6395', '#311b9295', '#512da895']} style={{width:width-30, borderRadius:15}}>
-                        <View style={{ width:width-30, borderWidth:1, borderColor:colors.border.a1, borderRadius:15, paddingHorizontal:10, paddingVertical:15, gap:20}}>
-                            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%"}}>
-                                <View style={{ flexDirection:'row', alignItems:'center', gap:10}}>
-                                    <View style={{alignItems:'center', justifyContent:'center', padding:10, borderColor:colors.border.a1, borderWidth:0.5, borderRadius:50, backgroundColor:`${colors.primary.a1}25`}}>
-                                        <Icon name={"person"} type={"Ionicons"} style={{fontSize:25, color:colors.text.a5}}/>
-                                    </View>
-                                    <View style={{ flexDirection:'column', alignItems:'flex-start'}}>
-                                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{"کاربر میهمان"}</Text>
-                                        <Text style={{fontFamily:Font.black, fontSize:10, color:colors.text.a1}}>{name}</Text>
-                                    </View>
-                                </View>
-                                <ButtonGradient
-                                    text={"ورود به حساب"}
-                                    textSize={13}
-                                    onPress={()=>{props.navigation.navigate("LoginToAccount")}}
-                                    width={120}
-                                    height={35}
-                                    borderRadius={20}
-                                />
-                            </View>
-                            <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a5, lineHeight:24, textAlign:'justify'}}>{"با ورود به حساب کاربری خود، اطلاعات و پیشرفت بازی‌هایتان را ثبت و قابل بازیابی کنید."}</Text>
-                        </View>
-                    </LinearGradient>
-                    :loginType == "registered" &&
-                    <LinearGradient colors={['#1b0b6399', '#311b9299', '#512da899']}  style={{width:width-30, borderRadius:15}}>
-                        <View style={{ width:width-30, borderWidth:1, borderColor:colors.border.a1, borderRadius:15, paddingHorizontal:10, paddingVertical:15, gap:20}}>
-                            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%"}}>
-                                <View style={{ flexDirection:'row', alignItems:'center', gap:10}}>
-                                    <View style={{alignItems:'center', justifyContent:'center', padding:10, borderColor:colors.border.a1, borderWidth:0.5, borderRadius:50, backgroundColor:`${colors.primary.a1}25`}}>
-                                        <Icon name={"person"} type={"Ionicons"} style={{fontSize:25, color:colors.text.a5}}/>
-                                    </View>
-                                    <View style={{ flexDirection:'column', alignItems:'flex-start'}}>
-                                        <Text style={{fontFamily:Font.black, fontSize:12, color:colors.text.a1}}>{name}</Text>
-                                        <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a1}}>{phone}</Text>
-                                    </View>
-                                </View>
-                                <ButtonGradient
-                                    text={"مدیریت حساب"}
-                                    textSize={13}
-                                    onPress={()=>{props.navigation.navigate("AccountManagement")}}
-                                    width={120}
-                                    height={35}
-                                    borderRadius={20}
-                                />
-                            </View>
-                        </View>
-                    </LinearGradient>
-                }
-            </View>
-        )
-    }
     
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
@@ -207,18 +149,18 @@ function Account(props){
                 {account()}
                 <ImageBackground
                     source={require("../../../assets/image/menu_frame.png")}
-                    style={{ width: width - 20, height: height-295, paddingVertical:"3.5%"}}
+                    style={{ width: width - 20, height: height-295, paddingVertical:"3.4%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                    <View style={{borderRadius:"10%", overflow:'hidden', width:width-40, alignItems:'center', alignSelf:'center'}}>
+                    <View style={{borderRadius:"9.8%", overflow:'hidden', width:width-40, alignItems:'center', alignSelf:'center'}}>
                         <ScrollView 
                             contentContainerStyle={{alignItems:'center', paddingVertical:5, gap:10}} 
                             showsVerticalScrollIndicator={false}
                         >
                             
                             {
-                                AccountOptions.map((item, index)=>(
+                                AccountOptions.filter((i)=>i.is_visible == true).map((item, index)=>(
                                     <View key={index.toString()}>
                                         <SimpleItem
                                             title={item.title}

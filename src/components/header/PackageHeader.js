@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import {StyleSheet, View, Text, Dimensions, TouchableNativeFeedback, TouchableOpacity, ImageBackground} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, NativeModules} from 'react-native';
 import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
 import useAppTheme from "../../hooks/theme/useAppTheme";
@@ -9,10 +9,16 @@ import Setting from "../icon/Setting";
 import ImageComponent from "../image-components/ImageComponent";
 import SimpleBorderText from "../text-components/SimpleBorderText";
 import { STATUS_BAR_HEIGHT } from "../../utils/constants/constants";
+import { navigate } from "../../main/navigationService";
 
 const {width} = Dimensions.get('screen');
-function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true, packageIcon}){
+const { ImmersiveMode } = NativeModules;
+function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true, packageIcon, packageId}){
     const colors = useAppTheme();
+    const packageInfoClick = ()=>{
+        ImmersiveMode.exitImmersiveMode()
+        navigate("PackageInformation", {_id:packageId});
+    }
     return(
         <View style={{backgroundColor:colors.header.background, paddingTop:STATUS_BAR_HEIGHT}}>
             <View style={{backgroundColor:colors.header.background, shadowColor:colors.shadow.a2, elevation:5, height:height, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
@@ -24,7 +30,7 @@ function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, t
                     }
                     {
                         packageIcon&&
-                        <View>
+                        <TouchableOpacity activeOpacity={0.7} onPress={packageInfoClick}>
                             <ImageBackground
                                 source={require("../../assets/image/free_button.png")}
                                 style={{ width: 40, height: 40, justifyContent: "center", alignItems: "center", paddingStart:1, paddingBottom:1}}
@@ -47,7 +53,7 @@ function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, t
                             >
                                 <Text numberOfLines={1} style={{color:"#FFF", fontFamily:Font.medium, fontSize:6}}>{"بستهٔ بازی"}</Text>
                             </ImageBackground>
-                        </View>
+                        </TouchableOpacity>
                     }
                 </View>
                 <View style={{height:"100%", flexDirection:'row', alignItems:'center', gap:7}}>

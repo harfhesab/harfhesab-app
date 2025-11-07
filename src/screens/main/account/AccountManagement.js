@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TouchableNativeFeedback} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store/RootReducer';
-import { login, logout } from '../../../redux/slices/accountSlice';
+import { changeName, login, logout } from '../../../redux/slices/accountSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
@@ -20,7 +20,8 @@ import Toast from 'react-native-toast-message';
 import { increaseNumberCoins } from '../../../redux/slices/coinSlice';
 import Calendar from '../../../components/calendar/Calendar';
 import CalendarHelper from '../../../components/calendar/CalendarHelper';
-import { toGregorian } from 'jalaali-js';
+import { toGregorian, toJalaali} from 'jalaali-js';
+import AlertHelper from '../../../components/alert/AlertHelper';
 
 const {width, height} = Dimensions.get("window")
 function AccountManagement(props){
@@ -70,12 +71,20 @@ function AccountManagement(props){
                 }
             }
         }).then(async(response)=>{
-            console.log(response.data)
             const dataReceived = response.data.data?.getUserAccountInformation
             if(dataReceived){
                 setFirstName(dataReceived?.first_name??"")
                 setLastName(dataReceived?.last_name??"")
-                setGender(dataReceived?.gender??null)
+                if(dataReceived?.first_name || dataReceived?.last_name){
+                    const name = [ dataReceived?.first_name, dataReceived?.last_name ].filter(Boolean).join(' ')
+                    dispatch(changeName({name: name}))
+                }
+                if(dataReceived?.gender){
+                    const genderItem = genderList.find((i)=>i.type == dataReceived?.gender)
+                    if(genderItem){
+                        setGender(genderItem)
+                    }
+                }
                 if(dataReceived?.birthday){
                     const date = new Date(dataReceived?.birthday);
                     const { jy, jm, jd } = toJalaali(
@@ -184,7 +193,9 @@ function AccountManagement(props){
                     buttons: [
                         {
                             text: "متوجه شدم",
-                            onPress: () => {},
+                            onPress: () => {
+                                props.navigation.goBack()
+                            },
                             type:'bold'
                         },
                     ],
@@ -195,6 +206,10 @@ function AccountManagement(props){
                 });
                 if(data?.reward == true){
                     dispatch(increaseNumberCoins({number:data?.number}))
+                }
+                if(firstName.trim()?.length > 1 || lastName.trim()?.length > 1){
+                    const name = [ firstName, lastName ].filter(Boolean).join(' ')
+                    dispatch(changeName({name: name}))
                 }
             }
         }).catch((error)=>{

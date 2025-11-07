@@ -1,5 +1,7 @@
 import React, {useEffect} from 'react';
+import { AppState, NativeModules } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { getCurrentRouteName } from './navigationService';
 import BottomTab from './BottomTab';
 import StageGameUpdateScreen from '../screens/main/update-center/StageGameUpdateScreen';
 import WordToSlotStageGame from '../screens/main/stage-game/game/WordToSlotStageGame';
@@ -13,12 +15,11 @@ import StagesPackageGameSeason from '../screens/main/package-game/StagesPackageG
 import ConnectingLettersPackageGame from '../screens/main/package-game/game/ConnectingLettersPackageGame';
 import WordToSlotPackageGame from '../screens/main/package-game/game/WordToSlotPackageGame';
 import AccountManagement from '../screens/main/account/AccountManagement';
-// ==================================================================================================
-import { AppState, NativeModules } from 'react-native';
-import { getCurrentRouteName } from './navigationService';
 import CoinPlans from '../screens/main/account/CoinPlans';
 import SubscriptionPlans from '../screens/main/account/SubscriptionPlans';
 import StartPackageGame from '../screens/main/package-game/StartPackageGame';
+import Setting from '../screens/main/account/Setting';
+import FreeCoin from '../screens/main/account/FreeCoin';
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,8 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"ConnectingLettersPackageGame"} component={ConnectingLettersPackageGame} />
       <Stack.Screen name={"WordToSlotPackageGame"} component={WordToSlotPackageGame} />
       <Stack.Screen name={"AccountManagement"} component={AccountManagement} />
+      <Stack.Screen name={"Setting"} component={Setting} />
+      <Stack.Screen name={"FreeCoin"} component={FreeCoin} />
     </Stack.Navigator>
   )
 }

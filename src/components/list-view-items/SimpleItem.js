@@ -19,11 +19,11 @@ function SimpleItem({
     image_height=25,
     icon_size=25,
     icon_color="#ffc107",
-    disabled,
+    disabled = false,
 }){
     const colors = useAppTheme();
     return (
-        <TouchableOpacity activeOpacity={0.8} disabled={disabled == true?true:false} onPress={click}>
+        <TouchableOpacity activeOpacity={0.8} disabled={disabled} onPress={click}>
             <ImageBackground
                 source={require("../../assets/image/simple_list_item.png")}
                 style={{ width: width - 55, height: 70}}
@@ -59,7 +59,7 @@ function SimpleItem({
                         }
                         {
                             arrow == true&&
-                            <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.text.a4, fontSize:30}}/>
+                            <Icon name={'angle-left'} type={'FontAwesome'} style={{color:icon_color, fontSize:30}}/>
                         }
                     </View>
                 </View>

@@ -174,6 +174,7 @@ function StartPackageGame(props){
             <PackageHeader
                 packageIcon={packageInfo?.icon_image}
                 title={packageInfo?.title}
+                packageId={packageId}
             />
             <View style={styles.container}>
                 <FlatList
