@@ -3,13 +3,14 @@ import {View, Text, TouchableOpacity, Dimensions, Image, ImageBackground} from '
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import LocalImageComponent from '../image-components/LocalImageComponent';
 
 const width = Dimensions.get('window').width
 function SimpleItem({
     click,
     arrow,
     value,
-    valueColor,
+    valueColor="#ffc107",
     title,
     title_color="#ffc107",
     icon_name,
@@ -20,6 +21,7 @@ function SimpleItem({
     icon_size=25,
     icon_color="#ffc107",
     disabled = false,
+    ValueComponent
 }){
     const colors = useAppTheme();
     return (
@@ -44,18 +46,25 @@ function SimpleItem({
                             }
                             {
                                 image_icon &&
-                                <Image
-                                    style={{height:image_height, width:image_width}}
-                                    source={image_icon}
+                                <LocalImageComponent
+                                    path={image_icon}
+                                    width={image_width}
+                                    height={image_height}
+                                    resizeMode="stretch"
+                                    blank_background
                                 />
                             }
                         </ImageBackground>
                         <Text style={{fontSize:16, color:title_color, fontFamily:Font.black}}>{title}</Text>
                     </View>
-                    <View style={{flexDirection:'row', alignItems:'center', gap:15}}>
+                    <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
                         {
                             value&&
-                            <Text style={{fontSize:textSize, color:valueColor??colors.text.a4, fontFamily:Font.medium}}>{value}</Text>
+                            <Text style={{fontSize:14, color:valueColor, fontFamily:Font.medium}}>{value}</Text>
+                        }
+                        {
+                            ValueComponent&&
+                            <ValueComponent/>
                         }
                         {
                             arrow == true&&

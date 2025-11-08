@@ -12,11 +12,17 @@ import Border from '../../../components/Border';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
 import LinearGradient from 'react-native-linear-gradient';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
+import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
+import Toast from 'react-native-toast-message';
+import { useRealm } from '../../../realm';
+import { persistor, store } from '../../../redux/store/Store';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
     const colors = useAppTheme()
+    const realm = useRealm();
     const { loginType, name, phone } = useSelector((state) => state.account);
+    const { numberCoins } = useSelector((state) => state.coins);
 
     const AccountOptions = [
         {
@@ -70,14 +76,100 @@ function Account(props){
         {
             title: "خروج از حساب کاربری",
             title_color: colors.primary.a1,
-            icon_name: "sign-out",
-            icon_type: "FontAwesome",
+            icon_name: "sign-out-alt",
+            icon_type: "FontAwesome5",
             icon_color: colors.primary.a1,
             arrow: false,
-            onPress:()=>{},
+            onPress:()=>{logoutAlert()},
             is_visible:loginType == "registered"?true:false
         }
     ]
+
+    const logoutAlert = ()=>{
+        const btn = [
+            {
+                onPress : ()=>{
+                    logoutOperation()
+                },
+                text: "خروج از حساب",
+                loading: true,
+                stayOpen: true,
+                type: "bold",
+            },
+            {
+                onPress : ()=>{},
+                text: "لغو",
+                loading: false,
+                type: "border",
+            },
+        ]
+        const msg = [
+            {
+                text:"آیا از حساب کاربری خود خارج میشوید؟",
+                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:18, color:colors.text.a2, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
+            },
+            {
+                text:"توجه کنید برای ذخیره‌ی آخرین اطلاعات بازی روی حساب کاربری، از اتصال دستگاه خود به اینترنت مطمعن شوید تا همه‌ی اطلاعات روی حسابتان ذخیره شود.",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:10, color:colors.text.a5, alignSelf:'flex-start', textAlign:'justify', lineHeight:22},
+            }
+        ]
+        AlertBottomDrawerHelper.showAlert({
+            title:"خروج از حساب کاربری",
+            message: msg,
+            buttons:btn,
+            options:{
+                cancelable: true,
+                icon:{
+                    Icon:()=>(
+                        <Icon name={"sign-out-alt"} type={"FontAwesome5"} style={{fontSize:50, color:colors.text.a5}}/>
+                    )
+                }
+            }
+        })
+    }
+
+    const logoutOperation = async()=>{
+        await axios({
+            url:'/',
+            method:'post',
+            data: {
+                query : `
+                mutation logOutFromUserAccount(
+                        $number_coins : Int,
+                    ){
+                    logOutFromUserAccount(
+                        number_coins : $number_coins
+                    ) {
+                        status,
+                        message
+                    }
+                }
+                `,
+                variables : {
+                    "number_coins" : numberCoins,
+                }
+            }
+        }).then(async(response)=>{
+            const data = response.data.data?.logOutFromUserAccount
+            if(data?.status == 200){
+                realm.write(() => {
+                    realm.deleteAll();
+                });
+                await resetReduxStore()
+            }
+        }).catch((error)=>{
+            Toast.show({
+                type: "error",
+                text1 : "خطا در خروج از حساب",
+                text2: "مشکلی پیش آمد، پس از اطمینان از اتصال دستگاه خود به اینترنت دوباره تلاش کنید.",
+            })
+        })
+    }
+
+    const resetReduxStore = async () => {
+        await persistor.purge();
+        store.dispatch({ type: "RESET_APP" });
+    };
     
     const account = ()=>{
         return(

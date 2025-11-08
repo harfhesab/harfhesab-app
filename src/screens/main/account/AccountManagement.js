@@ -215,8 +215,8 @@ function AccountManagement(props){
         }).catch((error)=>{
             Toast.show({
                 type: "error",
-                text1 : "خطا در ورود",
-                text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
+                text1 : "خطا در ثبت اطلاعات",
+                text2: "مشکلی پیش آمد، پس از اطمینان از اتصال دستگاه خود به اینترنت دوباره تلاش کنید.",
             })
             setLoading2(false)
         })

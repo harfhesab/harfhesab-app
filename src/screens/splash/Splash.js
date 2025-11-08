@@ -84,6 +84,10 @@ function Splash(props){
                             coins_reward_from_season_completed_stage_game,
                             coins_reward_from_stage_completed_package_game,
                             coins_reward_from_season_completed_package_game,
+                            free_coin_completed_account_info,
+                            free_coin_follow_instagram,
+                            free_coin_View_ads,
+                            free_coin_first_rating_in_store,
                         },
                         coin_plans{
                             _id,

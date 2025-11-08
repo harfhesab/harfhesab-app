@@ -6,15 +6,23 @@ import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
 import SimpleItem from '../../../components/list-view-items/SimpleItem';
+import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
 
 function FreeCoin(props){
     const dispatch = useDispatch();
     const { width, height } = Dimensions.get('window');
     const colors = useAppTheme()
-    const { loginType, name, phone } = useSelector((state) => state.account);
-    const { sound, music, vibration } = useSelector((state) => state.setting);
+    const { free_coin_completed_account_info, free_coin_follow_instagram, free_coin_View_ads, free_coin_first_rating_in_store } = useSelector((state) => state.constants);
 
-    
+    const coinComponent = ()=>(
+        <LocalImageComponent
+            path={require("../../../assets/image/coin.png")}
+            width={20}
+            height={20}
+            resizeMode="stretch"
+            blank_background
+        />
+    )
     
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
@@ -40,38 +48,42 @@ function FreeCoin(props){
                             <SimpleItem
                                 title={"تکمیل اطلاعات حساب"}
                                 arrow={false}
-                                value={""}
+                                value={`${free_coin_completed_account_info}`}
                                 icon_name={"person"}
                                 icon_type={"Ionicons"}
                                 icon_size={25}
                                 click={()=>{}}
+                                ValueComponent={coinComponent}
                             />
                             <SimpleItem
                                 title={"مشاهده تبلیغ"}
                                 arrow={false}
-                                value={""}
-                                icon_name={"person"}
-                                icon_type={"Ionicons"}
+                                value={`${free_coin_View_ads}`}
+                                icon_name={"video"}
+                                icon_type={"Entypo"}
                                 icon_size={25}
                                 click={()=>{}}
+                                ValueComponent={coinComponent}
                             />
                             <SimpleItem
-                                title={"دنبال کردن صفحه اینستاگرام"}
+                                title={"دنبال کردن اینستاگرام"}
                                 arrow={false}
-                                value={""}
-                                icon_name={"person"}
-                                icon_type={"Ionicons"}
+                                value={`${free_coin_follow_instagram}`}
+                                icon_name={"instagram"}
+                                icon_type={"Entypo"}
                                 icon_size={25}
                                 click={()=>{}}
+                                ValueComponent={coinComponent}
                             />
                             <SimpleItem
-                                title={"دنبال کردن کانال تلگرام"}
+                                title={"ثبت بازخورد از بازی"}
                                 arrow={false}
-                                value={""}
-                                icon_name={"person"}
-                                icon_type={"Ionicons"}
+                                value={`${free_coin_first_rating_in_store}`}
+                                icon_name={"star-half-alt"}
+                                icon_type={"FontAwesome5"}
                                 icon_size={25}
                                 click={()=>{}}
+                                ValueComponent={coinComponent}
                             />
                         </ScrollView>
                     </View>
