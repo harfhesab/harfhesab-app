@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid, ImageBackground} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import Globals from '../../utils/Globals';
@@ -13,17 +12,18 @@ import ButtonGradient from '../buttons/ButtonGradient';
 import InputText from '../inputs/InputText';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { navigate } from '../../main/navigationService';
+import LocalImageComponent from '../image-components/LocalImageComponent';
 
 const width = Dimensions.get('window').width;
-const Rating = (props) => {
+const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:editProps, previous, successOperation}) => {
     const colors = useAppTheme()
     const { loginType } = useSelector((state) => state.account);
-    const [defaultRating, setDefaultRating] = useState(props.defaultRating)
+    const [defaultRating, setDefaultRating] = useState(defaultRatingProps)
     const [modalVisible, setModalVisible] = useState(false)
-    const [comment, setComment] = useState(props.comment)
+    const [comment, setComment] = useState(commentProps)
     const [focus, setFocus] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [edit, setEdit] = useState(props.edit)
+    const [edit, setEdit] = useState(editProps)
 
     const setRatingRecordForPackage = async()=>{
         if(loginType == "registered") {
@@ -37,8 +37,7 @@ const Rating = (props) => {
                     }
                   `,
                 variables : {
-                    "_id" : props.previous,
-                    "agency" : props.agency,
+                    "_id" : previous,
                     "grade" : defaultRating,
                     "comment" : comment.trim() !== ''?comment:null
                 }
@@ -52,7 +51,7 @@ const Rating = (props) => {
                     ToastAndroid.showWithGravity(response.data.errors[0].data[0].message, ToastAndroid.SHORT,ToastAndroid.BOTTOM)
                 } else {
                     ToastAndroid.showWithGravity(response.data.data.setRecordRatingForAgency.message, ToastAndroid.SHORT,ToastAndroid.BOTTOM)
-                    props.successOperation()
+                    successOperation()
                     setFocus(false)
                     setModalVisible(false)
                     setEdit(true)
@@ -64,7 +63,7 @@ const Rating = (props) => {
             })
         } else {
             ToastAndroid.showWithGravity('برای استفاده از همهٔ امکانات و سرویس‌های منوملک ابتدا وارد حساب کاربری خود شوید.', ToastAndroid.SHORT,ToastAndroid.BOTTOM)
-            props.navigation.navigate('Login')
+            navigate('Login')
         }
     }
     const setRating = ()=>{
@@ -103,19 +102,19 @@ const Rating = (props) => {
     }
     const ratingBarRender = (i)=>{
         return(
-          <View key={i} style={{flexDirection:'column', alignItems:'center', marginHorizontal:5}}>
-            <TouchableOpacity onPress={()=>setScoreWithRating(i)} activeOpacity={0.3} style={{alignItems:'center', justifyContent:'center', width:35}}>
+          <View key={i} style={{flexDirection:'column', alignItems:'center'}}>
+            <TouchableOpacity onPress={()=>setScoreWithRating(i)} activeOpacity={0.3} style={{alignItems:'center', justifyContent:'center', width:45}}>
                 {
                     (i <= defaultRating)?
-                    <Icon name='star' type='AntDesign' style={{fontSize:35, color:colors.primary.a1}} />
+                    <Icon name='star' type='AntDesign' style={{fontSize:45, color:colors.primary.a3}} />
                     :
                     <View style={{alignItems:'center', justifyContent:'center'}}>
-                      <Icon name='star' type='AntDesign' style={{fontSize:35, color:`${colors.primary.a1}20`}} />
-                      <Icon name='staro' type='AntDesign' style={{fontSize:35, color:`${colors.primary.a1}99`, position:'absolute'}} />
+                      <Icon name='star' type='AntDesign' style={{fontSize:45, color:`${colors.primary.a3}25`}} />
+                      <Icon name='staro' type='AntDesign' style={{fontSize:45, color:`${colors.primary.a3}99`, position:'absolute'}} />
                     </View>
                 }
             </TouchableOpacity> 
-            <Text style={{color:colors.text.a5, fontFamily:Font.medium, fontSize:12}}>{i}</Text>
+            <Text style={{color:colors.primary.a3, fontFamily:Font.medium, fontSize:12}}>{i}</Text>
 
           </View>
         )
@@ -134,54 +133,115 @@ const Rating = (props) => {
         return(
             <Modal 
                 isVisible={modalVisible}
-                swipeDirection={['down']}
                 swipeThreshold={100}
+                animationIn="slideInDown"
+                animationOut="slideOutDown"
                 backdropOpacity={0.7}
                 onBackButtonPress={closeDrawer}
                 onSwipeComplete={closeDrawer}
                 onBackdropPress={closeDrawer}
                 useNativeDriverForBackdrop={true}
-                style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
+                style={{justifyContent:'center', alignItems:'center'}}
             >
-                <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
-                    <View style={{borderWidth:1, borderRadius:5, borderStyle:'dashed', borderColor:colors.border.a1, alignItems:'center', width:width-40, alignSelf:'center', backgroundColor:colors.background5, marginTop:10}}>
-                        <View style={styles.starContent}>
-                            {ratingBar}
+                <View>
+                    <ImageBackground
+                            source={require("../../assets/image/frame_rating.png")}
+                            style={{ width: width-20, height: (width-20)*0.9 }}
+                            imageStyle={{ resizeMode: "stretch" }}
+                            resizeMode="stretch"
+                        >
+                        <View style={[styles.modalContainer]}>
+                            <View style={{alignItems:'center', width:"100%", alignSelf:'center', paddingTop:50}}>
+                                <View style={styles.starContent}>
+                                    {ratingBar}
+                                </View>
+                            </View>
+                            <View style={{width:width - 60, alignSelf:'center',}}>
+                                <InputText
+                                    placeholder={"نظر و بازخورد خود را بنویسید..."}
+                                    value={comment}
+                                    maxLength={400}
+                                    onChangeText={(text)=>setComment(text)}
+                                    borderWidth={1}
+                                    fontSize={12}
+                                    autoFocus={true}
+                                    borderRadius={10}
+                                    multiline={true}
+                                    numberOfLines={6}
+                                    maxHeight={300}
+                                    height={80}
+                                    textColor={colors.text.a2}
+                                    color={colors.primary.a3}
+                                    backgroundOpacity={10}
+                                />
+                                <View style={{width:"100%", alignItems:'flex-end'}}>
+                                    <Text style={{color:colors.text.a5, fontFamily:Font.black, fontSize:10}}>{`${comment.length}/300`}</Text>
+                                </View>
+                            </View>
+                            <View style={{width:"100%", alignItems:'center', justifyContent:'center', alignSelf:'center', bottom:-25}}>
+                                <TouchableOpacity activeOpacity={0.9} onPress={setRating}>
+                                    <ImageBackground
+                                        source={require("../../assets/image/wood_blue_button.png")}
+                                        style={{ width: 200, height: 70, alignItems:'center', justifyContent:'center', paddingBottom:5 }}
+                                        imageStyle={{ resizeMode: "stretch" }}
+                                        resizeMode="stretch"
+                                    >
+                                        <Text style={{fontFamily:Font.black, fontSize:15, color:colors.primary.a3}}>{edit == true?'ویرایش نظر و امتیاز':'ثبت نظر و امتیاز'}</Text>
+                                    </ImageBackground>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                    <InputText
-                        placeholder={"نظر و بازخورد خود را بنویسید..."}
-                        value={comment}
-                        maxLength={400}
-                        onChangeText={(text)=>setComment(text)}
-                        borderWidth={1}
-                        fontSize={14}
-                        maxHeight={120}
-                        numberOfLines={6}
-                        multiline={true}
-                        borderRadius={5}
-                    />
-                    <View style={{width:width - 40, alignItems:'flex-end', alignSelf:'center'}}>
-                        <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:14}}>{`${comment.length}/400`}</Text>
-                    </View>
-                    <View style={{width:width, alignItems:'center', marginTop:5}}>
-                        <ButtonGradient
+                    </ImageBackground>
+                    <View style={{width:"100%", flexDirection:'row', alignItems:'flex-end', justifyContent:'center', gap:5, position:'absolute', top:-40}}>
+                        <LocalImageComponent
+                            path={require("../../assets/image/star.png")}
+                            width={47.5}
                             height={50}
-                            width={width - 40}
-                            text={edit == true?'ویرایش نظر و امتیاز':'ثبت نظر و امتیاز'}
-                            onPress={setRating}
-                            loading={loading}
-                            textSize={14}
-                            borderRadius={5}
+                            resizeMode="stretch"
+                            blank_background
+                            style={{marginBottom:6}}
                         />
+                        <LocalImageComponent
+                            path={require("../../assets/image/star.png")}
+                            width={76}
+                            height={80}
+                            resizeMode="stretch"
+                            blank_background
+                        />
+                        <LocalImageComponent
+                            path={require("../../assets/image/star.png")}
+                            width={47.5}
+                            height={50}
+                            resizeMode="stretch"
+                            blank_background
+                            style={{marginBottom:6}}
+                        />
+                    </View>
+                    <View style={{position:'absolute'}}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={closeDrawer} style={{top:-10}}>
+                            <ImageBackground
+                                source={require("../../assets/image/circle_button2.png")}
+                                style={{ width: 55, height: 55, alignItems:'center', justifyContent:'center', paddingBottom:5 }}
+                                imageStyle={{ resizeMode: "stretch" }}
+                                resizeMode="stretch"
+                            >
+                                <LocalImageComponent
+                                    path={require("../../assets/image/close_in_wood.png")}
+                                    width={20}
+                                    height={20}
+                                    resizeMode="stretch"
+                                    blank_background
+                                />
+                            </ImageBackground>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
         )
     }
     return (
-        <View style={[styles.container, {borderColor:colors.border.a1}]}>
-            <Text style={{color:colors.text.a1, fontFamily:Font.medium, fontSize:12, textAlign:"center"}}>{props.title}</Text>
+        <View style={[styles.container, {borderColor:colors.border.a2, backgroundColor:colors.background.a2}]}>
+            <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:12, textAlign:'justify'}}>{"با توجه به اینکه شما سابق این بستهٔ بازی را دریافت کرده‌اید میتوانید نظر و بازخوردتان را نسبت به آن در قالب یک نظر و امتیاز ثبت کنید."}</Text>
             <View style={styles.starContent}>
                 {ratingBar}
             </View>
@@ -207,29 +267,25 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         alignItems:'center',
         justifyContent:'center',
-        borderWidth:2,
-        borderRadius:15,
-        borderStyle:'dashed',
+        borderWidth:0.5,
+        borderRadius:10,
         paddingBottom:15,
         paddingTop:10,
         paddingHorizontal:10,
-        marginVertical:10
     },
     starContent:{
-        width:width-40,
+        width:"100%",
         alignSelf:'center',
         flexDirection:'row-reverse',
         alignItems:'center',
         justifyContent:'center',
-        marginVertical:10
+        gap:5
     },
     modalContainer:{
-        width:width,
+        width:"100%",
+        height:"100%",
         alignSelf:'center',
-        verticalAlign:'flex-end',
-        borderTopLeftRadius:20,
-        borderTopRightRadius:20,
-        paddingVertical:20
+        justifyContent:'space-between'
     },
 })
 export default React.memo(Rating)

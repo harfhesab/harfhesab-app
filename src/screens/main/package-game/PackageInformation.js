@@ -23,6 +23,7 @@ import { startProgressLoading } from '../../../redux/slices/packageGameDownloadS
 import Toast from 'react-native-toast-message';
 import { updateNumberCoins } from '../../../redux/slices/coinSlice';
 import Icon from '../../../utils/Icon';
+import Rating from '../../../components/rating/Rating';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -99,7 +100,6 @@ function PackageInformation(props){
                                     dis_like,
                                     me_set_like,
                                     me_set_dis_like,
-                                    answers,
                                     createdAt,
                                 },
                                 seasons{title, first_media{path}},
@@ -697,6 +697,21 @@ function PackageInformation(props){
                             }
                         </View>
                         <View style={{width:width, paddingTop:30}}>
+                            {
+                                (
+                                    data?.user_package_status.status == "subscription-renewal-or-coin-payment" ||
+                                    data?.user_package_status.status == "redownload-content" ||
+                                    data?.user_package_status.status == "recreate-and-download-content" ||
+                                    data?.user_package_status.status == "start-game"
+                                ) && 
+                                <Rating
+                                    successOperation={getData}
+                                    edit={true}
+                                    previous={null}
+                                    defaultRating={0}
+                                    comment={''}
+                                />
+                            }
                             <TouchableNativeFeedback style={{width:width}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                                 <View style={{width:width, height:50, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
                                     <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{"نظرات و امتیازها"}</Text>

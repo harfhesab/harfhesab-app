@@ -13,19 +13,13 @@ import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
 const width = Dimensions.get('window').width
-function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt, answerNumbers, user}){
+function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt, user}){
     const colors = useAppTheme();
     const [likeNumber, setLikeNumber] = useState(likeNumbers?likeNumbers:0)
     const [disLikeNumber, setDisLikeNumber] = useState(disLikeNumbers?disLikeNumbers:0)
     const [liked, setLiked] = useState(likedIt?likedIt:false)
     const [disLiked, setDisLiked] = useState(disLikedIt?disLikedIt:false)
-    const [answerNumber, setAnswerNumber] = useState(answerNumbers?answerNumbers:0)
 
-    useEffect( () => {
-        if(answerNumbers) {
-            setAnswerNumber(answerNumbers)
-        }
-    }, [answerNumbers])
     useEffect( () => {
         if(likeNumbers) {
             setLikeNumber(likeNumbers)
@@ -183,70 +177,6 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
             })
         })
     }
-    const setAnswerForRating = ()=>{
-        ModalInput.showInput({
-            title: 'ارسال پاسخ',
-            description: "پاسخ خود را بنویسید",
-            buttons: [
-                {
-                    text: 'تایید',
-                    onPress: (call) => {
-                        operationAnswerRating(call)
-                    },
-                },
-                {
-                    text: 'انصراف',
-                    onPress: () => {},
-                },
-            ],
-            options : {
-                value: null,
-                keyboardType: 'default',
-                placeholder: "پاسخ خود را بنویسید...",
-                multiline: true,
-                numberOfLines: 4,
-                maxLength: 300,
-            },
-        })
-    }
-    const operationAnswerRating = async(call)=>{
-        let data = {
-            query : `
-                mutation userSetAnswerForRating($_id : ID!, $answer : String!){
-                    userSetAnswerForRating(_id : $_id, answer : $answer) {
-                        status,
-                        message
-                    }
-                }
-              `,
-            variables : {
-                "_id" : _id,
-                "answer" : call
-            }
-        }
-        await axios({
-            url:'/',
-            method:'post',
-            data: data,
-        }).then(async(response)=>{
-            if(response.data?.data.userSetAnswerForRating.status == 200){
-                Toast.show({
-                    type: 'toast',
-                    text1: 'پاسخ شما ارسال شد. پس از تایید نمایش داده میشود.'
-                })
-            } else {
-                Toast.show({
-                    type: 'toast',
-                    text1: 'مشکلی پیش آمد دوباره تلاش کند'
-                })
-            }
-        }).catch(()=>{
-            Toast.show({
-                type: 'toast',
-                text1: 'مشکلی پیش آمد دوباره تلاش کند'
-            })
-        })
-    }
     return (
         <View style={{width:width, flexDirection:'column', marginVertical:40}}>
             <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'space-between'}}>
@@ -320,18 +250,6 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                         <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a5, marginStart:5}}>{disLikeNumber}</Text>
                     </View>
                 </View>
-                <View style={{flexDirection:'row', alignItems:'center'}}>
-                    {
-                        answerNumber > 0&&
-                        <TouchableOpacity style={{flexDirection:'row', alignItems:'center', marginEnd:25}}>
-                            <Text style={{fontFamily:Font.medium, fontSize:11, color:colors.text.a4}}>{`مشاهده (${answerNumber}) پاسخ`}</Text>
-                        </TouchableOpacity>
-                    }
-                    <TouchableOpacity onPress={setAnswerForRating} style={{flexDirection:'row', alignItems:'center'}}>
-                        <Text style={{fontFamily:Font.medium, fontSize:11, color:colors.text.a4, marginEnd:5}}>{'ارسال پاسخ'}</Text>
-                        <Icon name={'reply'} type={'Entypo'}  style={{color:colors.text.a4, fontSize:20}}/>
-                    </TouchableOpacity>
-                </View>
             </View>
         </View>
     );
@@ -340,7 +258,6 @@ const areEqual = (prevProps, nextProps) => {
     if (prevProps._id !== nextProps._id) return false;
     if (prevProps.likeNumbers !== nextProps.likeNumbers) return false;
     if (prevProps.disLikeNumbers !== nextProps.disLikeNumbers) return false;
-    if (prevProps.answerNumbers !== nextProps.answerNumbers) return false;
     if (prevProps.grade !== nextProps.grade) return false;
     if (prevProps.date !== nextProps.date) return false;
     if (prevProps.comment !== nextProps.comment) return false;

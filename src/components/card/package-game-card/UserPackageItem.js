@@ -16,8 +16,8 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
     const accessTypeText = 
     accessType == "free"?"دسترسی رایگان":
     accessType == "subscription"?"دسترسی با اشتراک":
-    (accessType == "coin-payment" && price && price > 0)?`دسترسی با پرداخت ${price} سکه`:
-    (accessType == "coin-payment" && (!price || price == 0))?"دسترسی با پرداخت سکه":null
+    (accessType == "coin-payment" && price && price > 0)?`${price} سکه برای فعال سازی پرداخت شده است`:
+    (accessType == "coin-payment" && (!price || price == 0))?`سکه برای فعال سازی پرداخت شده است`:null
 
     
     return (
@@ -53,22 +53,22 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
                                         accessType == "subscription"?
                                         <LocalImageComponent
                                             path={require('../../../assets/image/diamond.png')}
-                                            width={12}
-                                            height={12}
+                                            width={10}
+                                            height={10}
                                             resizeMode={'cover'}
                                             blank_background={true}
                                         />
                                         :accessType == "coin-payment"?
                                         <LocalImageComponent
                                             path={require('../../../assets/image/coin.png')}
-                                            width={12}
-                                            height={12}
+                                            width={10}
+                                            height={10}
                                             resizeMode={'cover'}
                                             blank_background={true}
                                         />
-                                        :<Icon name={"cruelty-free"} type={"MaterialIcons"} style={{fontSize:12, color:colors.primary.a1}}/>
+                                        :<Icon name={"cruelty-free"} type={"MaterialIcons"} style={{fontSize:10, color:colors.primary.a1}}/>
                                     }
-                                    {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a4, fontSize:10}}>{accessTypeText}</Text>}
+                                    {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a4, fontSize:8}}>{accessTypeText}</Text>}
                                 </View>
                             </View>
                             <WoodProgressBar

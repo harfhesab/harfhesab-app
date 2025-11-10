@@ -5,6 +5,7 @@ import { DotIndicator, UIActivityIndicator } from 'react-native-indicators';
 import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
+const colors = useAppTheme();
 function InputText({
         value,
         onChangeText,
@@ -29,9 +30,13 @@ function InputText({
         search,
         loading,
         title,
-        required
+        required,
+        color = colors.primary.a1,
+        titleColor = colors.primary.a1,
+        textColor = colors.text.a1,
+        backgroundOpacity = 25
     }){
-    const colors = useAppTheme();
+    
     const [focused, setFocused] = useState(false)
     const [checkValueState, setCheckValueState] = useState(checkValue)
     const [secureTextEntryState, setSecureTextEntryState] = useState(secureTextEntry)
@@ -48,11 +53,11 @@ function InputText({
             {
                 title&&(
                 <View style={{with:"100%", alignItems:"flex-start", paddingBottom:5}}>
-                    <Text style={{fontFamily:Font.medium, fontSize:14, color:focused == true?colors.primary.a1:colors.text.a1}}>{title}{required==true&&(<Text style={{color:colors.alert.a1}}>{" * "}</Text>)}</Text>
+                    <Text style={{fontFamily:Font.medium, fontSize:14, color:focused == true?titleColor:textColor}}>{title}{required==true&&(<Text style={{color:colors.alert.a1}}>{" * "}</Text>)}</Text>
                 </View>
                 )
             }
-            <View style={{backgroundColor:`${colors.primary.a1}25`, width:"100%", flexDirection:'row', alignItems:'center', borderWidth:borderWidth, borderRadius:borderRadius, borderColor:focused == true?colors.primary.a1:checkValueState == true?colors.alert.a1:colors.border.a1, paddingHorizontal:10}}>
+            <View style={{backgroundColor:`${color}${backgroundOpacity}`, width:"100%", flexDirection:'row', alignItems:'center', borderWidth:borderWidth, borderRadius:borderRadius, borderColor:focused == true?color:checkValueState == true?colors.alert.a1:colors.border.a1, paddingHorizontal:5}}>
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={placeholderTextColor??colors.text.a6}
@@ -61,8 +66,8 @@ function InputText({
                         setCheckValueState(false)
                     }}
                     onBlur={()=>setFocused(false)}
-                    selectionColor={colors.rgb.a1}
-                    cursorColor={colors.primary.a1}
+                    selectionColor={`${color}99`}
+                    cursorColor={color}
                     value={value}
                     onChangeText={onChangeText}
                     maxLength={maxLength}
@@ -75,13 +80,14 @@ function InputText({
                     onSubmitEditing={onSubmitEditing}
                     style={{
                         flex:1,
-                        color:colors.text.a1,
+                        color:textColor,
                         fontFamily:fontFamily,
                         fontSize:fontSize,
                         alignSelf:'center',
                         height:height,
                         maxHeight:maxHeight,
                         paddingHorizontal:5,
+                        textAlignVertical:multiline == true?'top':'center'
                     }}
                 />
                 {(clearText && !search && value.length > 0)&&(
@@ -98,7 +104,7 @@ function InputText({
                     <View style={{width:30, alignItems:'center'}}>
                         {
                             loading?(
-                            <ActivityIndicator size={22} color={colors.primary.a1} />
+                            <ActivityIndicator size={22} color={color} />
                             ):(value?.length > 0 && clearText)?(
                                 <TouchableOpacity activeOpacity={0.6} onPress={clearText} style={{width:30, alignItems:'center'}}>
                                     <Icon name={"delete"} type={"Feather"} style={{fontSize:20, color:colors.text.a2}}/>

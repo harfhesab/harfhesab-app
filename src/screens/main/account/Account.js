@@ -16,6 +16,7 @@ import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/Ale
 import Toast from 'react-native-toast-message';
 import { useRealm } from '../../../realm';
 import { persistor, store } from '../../../redux/store/Store';
+import axios from 'axios';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
@@ -105,12 +106,16 @@ function Account(props){
         ]
         const msg = [
             {
-                text:"آیا از حساب کاربری خود خارج میشوید؟",
-                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:18, color:colors.text.a2, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
+                text:"آیا از حسابتان خارج میشوید؟",
+                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.primary.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
             },
             {
-                text:"توجه کنید برای ذخیره‌ی آخرین اطلاعات بازی روی حساب کاربری، از اتصال دستگاه خود به اینترنت مطمعن شوید تا همه‌ی اطلاعات روی حسابتان ذخیره شود.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:10, color:colors.text.a5, alignSelf:'flex-start', textAlign:'justify', lineHeight:22},
+                text:"توجه کنید برای ذخیره‌ی آخرین اطلاعات بازی روی حساب کاربری، از اتصال دستگاه خود به اینترنت مطمعن شوید تا همه‌ی اطلاعات، روی حسابتان ذخیره شود.",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:10, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:22},
+            },
+            {
+                text:"لازم به ذکر است، اگر در آخرین مرحله از بازی‌ها، چه در بازی مرحله‌ای و چه در بسته‌های بازی، چنانچه دستگاهتان به اینترنت دسترسی نداشته است، ممکن است ذخیره‌ی روند پیشرفت بازی هایتان به درستی انجام نشده باشد.",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:10, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:22},
             }
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -150,14 +155,17 @@ function Account(props){
                 }
             }
         }).then(async(response)=>{
+            console.log(response)
             const data = response.data.data?.logOutFromUserAccount
             if(data?.status == 200){
+                AlertBottomDrawerHelper.hideAlert()
                 realm.write(() => {
                     realm.deleteAll();
                 });
                 await resetReduxStore()
             }
         }).catch((error)=>{
+            AlertBottomDrawerHelper.hideAlert()
             Toast.show({
                 type: "error",
                 text1 : "خطا در خروج از حساب",
