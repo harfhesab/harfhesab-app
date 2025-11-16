@@ -20,6 +20,8 @@ import SubscriptionPlans from '../screens/main/account/SubscriptionPlans';
 import StartPackageGame from '../screens/main/package-game/StartPackageGame';
 import Setting from '../screens/main/account/Setting';
 import FreeCoin from '../screens/main/account/FreeCoin';
+import ImageScreen from '../screens/single-page/ImageScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +64,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"AccountManagement"} component={AccountManagement} />
       <Stack.Screen name={"Setting"} component={Setting} />
       <Stack.Screen name={"FreeCoin"} component={FreeCoin} />
+      <Stack.Screen name={"ImageScreen"} component={ImageScreen} />
     </Stack.Navigator>
   )
 }

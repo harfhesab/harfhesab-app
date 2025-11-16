@@ -86,6 +86,7 @@ class ImmersiveModeModule(reactContext: ReactApplicationContext) : ReactContextB
                 WindowCompat.setDecorFitsSystemWindows(window, true)
                 val controller = WindowInsetsControllerCompat(window, window.decorView)
                 controller.show(WindowInsetsCompat.Type.systemBars())
+                window.decorView.requestApplyInsets()
             } else {
                 @Suppress("DEPRECATION")
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE

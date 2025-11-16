@@ -51,11 +51,13 @@ const accountSlice = createSlice({
     },
     convertGuestToRegistered(
       state,
-      action: PayloadAction<{ phone: string, name: string | null; }>
+      action: PayloadAction<{ phone: string; name: string | null }>
     ) {
       state.isLoggedIn = true;
       state.phone = action.payload.phone;
-      state.name = action.payload.name;
+      if (typeof action.payload.name === 'string') {
+        state.name = action.payload.name;
+      }
       state.loginType = "registered";
     },
     updateSyncUserPackage(

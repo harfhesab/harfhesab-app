@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, StatusBar} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -101,6 +101,11 @@ function PackageInformation(props){
                                     me_set_like,
                                     me_set_dis_like,
                                     createdAt,
+                                },
+                                me_previous_rating{
+                                    _id,
+                                    grade,
+                                    comment,
                                 },
                                 seasons{title, first_media{path}},
                             },
@@ -610,6 +615,7 @@ function PackageInformation(props){
     }
     
     return(
+        <SafeAreaView style={{flex:1}}>
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 height={60}
@@ -706,13 +712,13 @@ function PackageInformation(props){
                                 ) && 
                                 <Rating
                                     successOperation={getData}
-                                    edit={true}
-                                    previous={null}
-                                    defaultRating={0}
-                                    comment={''}
+                                    edit={data?.package?.me_previous_rating?true:false}
+                                    previous={data?.package?.me_previous_rating?._id}
+                                    defaultRating={data?.package?.me_previous_rating?.grade??0}
+                                    comment={data?.package?.me_previous_rating?.comment??""}
                                 />
                             }
-                            <TouchableNativeFeedback style={{width:width}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
+                            <TouchableNativeFeedback style={{width:width, marginTop:10}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                                 <View style={{width:width, height:50, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
                                     <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{"نظرات و امتیازها"}</Text>
                                     <View style={{flexDirection:"row", alignItems:"center", gap:8}}>
@@ -754,6 +760,7 @@ function PackageInformation(props){
             </View>
             <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </View>
+        </SafeAreaView>
     )
 }
 const InfoBox = ({title, value, width})=>{

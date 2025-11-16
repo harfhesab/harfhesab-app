@@ -8,16 +8,35 @@ import NumberCoins from "../coin/NumberCoins";
 import Back from "../icon/Back";
 
 const {width} = Dimensions.get('window');
-
-function GeneralHeader({height, hideShadow, Image, paddingHorizontal = 10, RightComponent, LeftComponent, back, coin, title, titleFontFamily, titleFontSize, description, descriptionFontFamily, descriptionFontSize}){
-    const colors = useAppTheme();
+const colors = useAppTheme();
+function GeneralHeader({
+    height=65,
+    hideShadow,
+    Image,
+    paddingHorizontal = 10,
+    RightComponent,
+    LeftComponent,
+    back,
+    coin,
+    title,
+    titleFontFamily,
+    titleFontSize,
+    description,
+    descriptionFontFamily,
+    descriptionFontSize,
+    backgroundColor=colors.header.background,
+    shadowColor=colors.shadow.a2,
+    borderBottomColor=colors.border.a2,
+    borderBottomWidth=0.5
+}){
+    
 
     const goBackOnClick = ()=>{
         goBack()
     }
 
     return(
-        <View style={{backgroundColor:colors.header.background, height:height??65, width:width, shadowColor:colors.shadow.a2, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:100, borderBottomColor:colors.border.a2, borderBottomWidth:0.5}}>
+        <View style={{backgroundColor:backgroundColor, height:height, width:width, shadowColor:shadowColor, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:100, borderBottomColor:borderBottomColor, borderBottomWidth:borderBottomWidth}}>
             
             {/* این کانتینر اصلی برای بخش راست و وسط است */}
             {/* 1. این ویو را "انعطاف‌پذیر" می‌کنیم تا فضای خالی را پر کند */}

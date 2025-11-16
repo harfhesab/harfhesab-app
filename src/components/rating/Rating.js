@@ -240,20 +240,26 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
         )
     }
     return (
-        <View style={[styles.container, {borderColor:colors.border.a2, backgroundColor:colors.background.a2}]}>
-            <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:12, textAlign:'justify'}}>{"با توجه به اینکه شما سابق این بستهٔ بازی را دریافت کرده‌اید میتوانید نظر و بازخوردتان را نسبت به آن در قالب یک نظر و امتیاز ثبت کنید."}</Text>
-            <View style={styles.starContent}>
-                {ratingBar}
+        <View>
+            <View style={[styles.container, {borderColor:colors.border.a2, backgroundColor:colors.background.a2}]}>
+                <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:12, textAlign:'justify'}}>{"با توجه به اینکه شما سابق این بستهٔ بازی را دریافت کرده‌اید میتوانید نظر و بازخوردتان را نسبت به آن در قالب یک نظر و امتیاز ثبت کنید."}</Text>
+                <View style={styles.starContent}>
+                    {ratingBar}
+                </View>
             </View>
-            <ButtonBorder
-                text={edit == true?'ویرایش نظر و امتیاز':'ثبت نظر و امتیاز'}
-                onPress={openDrawer}
-                loading={false}
-                textSize={12}
-                width={210}
-                height={35}
-                borderRadius={5}
-            />
+            <View style={{width:width, alignItems:'center', marginTop:10}}>
+                <ButtonBorder
+                    text={edit == true?'ویرایش نظر و امتیاز':'ثبت نظر و امتیاز'}
+                    onPress={openDrawer}
+                    loading={false}
+                    textSize={15}
+                    width={width-30}
+                    height={50}
+                    borderRadius={5}
+                    borderWidth={0.5}
+                    borderColor={colors.border.a1}
+                />
+            </View>
             {
                 drawer()
             }
@@ -268,10 +274,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         borderWidth:0.5,
-        borderRadius:10,
-        paddingBottom:15,
-        paddingTop:10,
-        paddingHorizontal:10,
+        borderRadius:8,
+        padding:10,
     },
     starContent:{
         width:"100%",

@@ -177,8 +177,8 @@ function AccountManagement(props){
                 }
                 `,
                 variables : {
-                    "first_name" : firstName.trim()?.length > 1?firstName:undefined,
-                    "last_name" : lastName.trim()?.length > 1?lastName:undefined,
+                    "first_name" : firstName.trim()?.length > 0?firstName:undefined,
+                    "last_name" : lastName.trim()?.length > 0?lastName:undefined,
                     "gender" : gender?.type??undefined,
                     "birthday" : convertBirthday,
                     "number_coins" : numberCoins
@@ -207,7 +207,7 @@ function AccountManagement(props){
                 if(data?.reward == true){
                     dispatch(increaseNumberCoins({number:data?.number}))
                 }
-                if(firstName.trim()?.length > 1 || lastName.trim()?.length > 1){
+                if(firstName.trim()?.length > 0 || lastName.trim()?.length > 0){
                     const name = [ firstName, lastName ].filter(Boolean).join(' ')
                     dispatch(changeName({name: name}))
                 }

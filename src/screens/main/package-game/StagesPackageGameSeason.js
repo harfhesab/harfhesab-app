@@ -77,11 +77,11 @@ function StagesPackageGameSeason(props){
             <View style={{width:width, alignItems:'center'}}>
                 <ImageBackground
                     source={require("../../../assets/image/frame_stages_title.png")}
-                    style={{ width: width*0.55, height: (width*0.55)/2.22, justifyContent: "center", alignItems: "center" }}
+                    style={{ width: width*0.55, height: (width*0.55)/2.5, justifyContent: "center", alignItems: "center" }}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                    <View style={{width:"100%", height:"100%", alignItems:'center', justifyContent:'center', paddingHorizontal:5, gap:5}}>
+                    <View style={{width:"100%", height:"100%", alignItems:'center', justifyContent:'center', paddingHorizontal:5, gap:5, paddingBottom:5}}>
                         <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{`${props?.route?.params?.packageName}`}</Text>
                         <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12}}>{info?`فصل ${info?.season_number}  -  مرحله ${info?.stage_number_from} تا ${info?.stage_number_to}`:""}</Text>
                     </View>
@@ -126,7 +126,7 @@ function StagesPackageGameSeason(props){
                             <SeasonMediaSwiper
                                 items={info?.media}
                                 title={seasonName}
-                                height={height - (STATUS_BAR_HEIGHT + 65 + ((width-20)*1.21) + (((width*0.55)/2.22)/2) + 40)}
+                                height={height - (STATUS_BAR_HEIGHT + 65 + ((width-20)*1.21) + (((width*0.55)/2.5)/3) + 40)}
                             />
                             <ImageBackground
                                 source={require("../../../assets/image/frame_stages.png")}
@@ -150,7 +150,7 @@ function StagesPackageGameSeason(props){
                                         extraData={{lastStage, lastStageNumber}}
                                     />
                                 </View>
-                                <View style={{ position: 'absolute', top: -((width*0.55)/2.22)/2, alignSelf: 'center', zIndex: 50 }}>
+                                <View style={{ position: 'absolute', top: -((width*0.55)/2.5)/3, alignSelf: 'center', zIndex: 50 }}>
                                     {listHeaderComponent()}
                                 </View>
                             </ImageBackground>

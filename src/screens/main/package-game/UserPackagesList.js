@@ -60,7 +60,7 @@ function UserPackagesList(props){
         } else {
             setTimeout(()=>{
                 setNoItem(true)
-            }, 3000)
+            }, 1000)
         }
     }, [data])
 

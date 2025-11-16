@@ -495,3 +495,16 @@ export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
     return false;
   }
 };
+export const deleteAllUserPackages = (
+  realm: Realm,
+): boolean => {
+  try {
+    realm.write(() => {
+      const allUserPackages = realm.objects("UserPackage");
+      realm.delete(allUserPackages);
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

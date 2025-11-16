@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, NativeModules} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, NativeModules, StatusBar} from 'react-native';
 import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
 import useAppTheme from "../../hooks/theme/useAppTheme";
@@ -17,6 +17,7 @@ function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, t
     const colors = useAppTheme();
     const packageInfoClick = ()=>{
         ImmersiveMode.exitImmersiveMode()
+        StatusBar.setHidden(false);
         navigate("PackageInformation", {_id:packageId});
     }
     return(

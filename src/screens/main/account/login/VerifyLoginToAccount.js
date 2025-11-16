@@ -31,6 +31,7 @@ import { updateUserStageGameProgressInLogin } from '../../../../realm/repositori
 import GeneralHeader from '../../../../components/header/GeneralHeader';
 import { updateSubscriptionStatus } from '../../../../redux/slices/subscriptionSlice';
 import { updateCurrentLanguageLastStageAndLastSeason } from '../../../../redux/slices/stageGameSlice';
+import { deleteAllUserPackages } from '../../../../realm/repositories/user/user-package-game-progress.repository';
   
   
 const {width, height} = Dimensions.get('window');
@@ -47,6 +48,7 @@ function VerifyLoginToAccount(props){
     const [seconds, setSeconds] = useState(props.route.params?.seconds)
     const { stopListener } = useOtpVerify({numberOfDigits: 6});
     const phone = props.route.params?.phone
+    const { numberCoins } = useSelector((state) => state.coins);
     const { stageGameLanguage } = useSelector((state) => state.stageGamePersist);
 
 
@@ -171,6 +173,7 @@ function VerifyLoginToAccount(props){
                     mutation verifyUserLoginWithOTPAndMergeGuestAndRegistered(
                         $phone : String!,
                         $code : String!,
+                        $number_coins : Int,
                         $firebase_token : String,
                         $app_version : String,
                         $app_build_number : Int,
@@ -186,6 +189,7 @@ function VerifyLoginToAccount(props){
                         verifyUserLoginWithOTPAndMergeGuestAndRegistered(
                             phone : $phone,
                             code : $code,
+                            number_coins : $number_coins,
                             firebase_token : $firebase_token,
                             app_version : $app_version,
                             app_build_number : $app_build_number,
@@ -203,12 +207,14 @@ function VerifyLoginToAccount(props){
                             token,
                             user{name, number_coins, active_subscription, subscription_expiration},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
+                            command_to_remove_user_packages_in_client
                         }
                     }
                     `,
                     variables : {
                         "phone" : phone,
                         "code" : otp,
+                        "number_coins" : numberCoins,
                         "firebase_token" : "",
                         "app_version" : app_version,
                         "app_build_number" : Number(app_build_number),
@@ -257,6 +263,9 @@ function VerifyLoginToAccount(props){
                         text2 : "ورود به حساب کاربری با موفقیت انجام شد."
                     })
                     dispatch(updateSyncUserPackage({sync:null}))
+                    if(data?.command_to_remove_user_packages_in_client == true){
+                        deleteAllUserPackages(realm)
+                    }
                     props.navigation.goBack()
                     props.navigation.goBack()
                 } else {
