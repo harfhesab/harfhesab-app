@@ -4,12 +4,12 @@ import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import { DotIndicator } from 'react-native-indicators';
 import axios from 'axios';
-import Toast from 'react-native-toast-message';
 import LinearGradient from 'react-native-linear-gradient';
 import ButtonGradient from '../../components/buttons/ButtonGradient';
 import InputText from '../../components/inputs/InputText';
 import { getHash } from 'react-native-otp-verify';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { showToast } from '../../components/custom-toast/ToastRef';
 
 
 const {width, height} = Dimensions.get('window');
@@ -30,12 +30,14 @@ function Login(props){
     const loginWithOtp = async() => {
         if(phone.length < 11){
             const text = phone.length == 0?"شماره موبایل خود را وارد کنید.":"شماره موبایل خود را به صورت صحیح وارد کنید."
-            Toast.show({
+            showToast({
+                title: "خطا در ورود",
+                message: text,
                 type: "error",
-                text1 : "خطا در ورود",
-                text2: text,
-                visibilityTime: 6000
-            })
+                animationType: "slide",
+                position: "top",
+                duration: 6000
+            });
         } else {
             setLoading(true)
             await axios({
@@ -60,35 +62,43 @@ function Login(props){
             }).then((response)=>{
                 setLoading(false)
                 if(response.data?.data == null){
-                    Toast.show({
+                    showToast({
+                        title: "خطا در ورود",
+                        message: response.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
                         type: "error",
-                        text1 : "خطا در ورود",
-                        text2: response.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
-                    })
+                        animationType: "slide",
+                        position: "top",
+                    });
                 } else {
                     const data = response.data.data?.requestOtpForUserLogin
                     if(data?.status == 200) {
                         const minutes = data?.minutes;
                         const seconds = data?.seconds;
-                        Toast.show({
+                        showToast({
+                            message: data?.message??"کد تایید ارسال شد.",
                             type: "success",
-                            text1 : data?.message??"کد تایید ارسال شد.",
-                        })
+                            animationType: "slide",
+                            position: "top",
+                        });
                         props.navigation.navigate('VerifyWithOTP', {phone: phone, minutes: minutes, seconds: seconds})
                     } else {
-                        Toast.show({
+                        showToast({
+                            title: "خطا در ورود",
+                            message: 'مشکلی پیش آمد دوباره تلاش کنید.',
                             type: "error",
-                            text1 : "خطا در ورود",
-                            text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
-                        })
+                            animationType: "slide",
+                            position: "top",
+                        });
                     }
                 }
             }).catch((error)=>{
-                Toast.show({
+                showToast({
+                    title: "خطا در ورود",
+                    message: 'مشکلی پیش آمد دوباره تلاش کنید.',
                     type: "error",
-                    text1 : "خطا در ورود",
-                    text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
-                })
+                    animationType: "slide",
+                    position: "top",
+                });
                 setLoading(false)
             })
         }

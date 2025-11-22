@@ -6,7 +6,6 @@ import {setToken} from '../../../redux/actions/MainAction';
 import { DotIndicator } from 'react-native-indicators';
 import TimerShowOTP from '../../components/timer/TimerShowOTP';
 import axios from 'axios';
-import Toast from 'react-native-toast-message';
 import { phoneDigitSeperator } from '../../utils/PhoneDigitSeprator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,6 +30,7 @@ import { updateUserStageGameProgressInLogin } from '../../realm/repositories/use
 import { changeSubscriptionPlansVersion, updateSubscriptionStatus } from '../../redux/slices/subscriptionSlice';
 import { createCoinPlansList } from '../../realm/repositories/user/coin-plan-repository';
 import { createSubscriptionPlansList } from '../../realm/repositories/user/subscription-plan-repository';
+import { showToast } from '../../components/custom-toast/ToastRef';
   
   
 const {width, height} = Dimensions.get('window');
@@ -107,20 +107,24 @@ function VerifyWithOTP(props){
         }).then((response)=>{
             setNewOtpLoading(false)
             if(!response.data?.data){
-                Toast.show({
+                showToast({
+                    title:"خطا در ارسال کد",
+                    message: response.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
                     type: "error",
-                    text1 : "خطا در ارسال کد",
-                    text2: response.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
-                    visibilityTime: 6000
-                })
+                    animationType: "slide",
+                    position: "top",
+                    duration:6000
+                });
                 setNewOtp(true)
             } else {
                 const data = response.data.data?.requestOtpForUserLogin
                 if(data?.status == 200) {
-                    Toast.show({
+                    showToast({
+                        message: data?.message??"کد تایید ارسال شد.",
                         type: "success",
-                        text1 : data?.message??"کد تایید ارسال شد.",
-                    })
+                        animationType: "slide",
+                        position: "top",
+                    });
                     const minutes = data?.minutes;
                     const seconds = data?.seconds;
                     setMinutes(minutes)
@@ -129,11 +133,13 @@ function VerifyWithOTP(props){
                 }
             }
         }).catch((error)=>{
-            Toast.show({
+            showToast({
+                title:"خطا در ارسال کد",
+                message: 'مشکلی پیش آمد دوباره تلاش کنید.',
                 type: "error",
-                text1 : "خطا در ارسال کد",
-                text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
-            })
+                animationType: "slide",
+                position: "top",
+            });
             setNewOtpLoading(false)
             setNewOtp(true)
         })
@@ -141,19 +147,23 @@ function VerifyWithOTP(props){
     const verifyUserLoginWithOTP = async (text)=>{
         const otp = text??value
         if(newOtp == true) {
-            Toast.show({
+            showToast({
+                title:"خطای کد تایید",
+                message: 'اعتبار کد تاییدی که برایتان ارسال شده، تمام شده است. لطفا مجدد درخواست کد تایید کنید.',
                 type: "error",
-                text1 : "خطای کد تایید",
-                text2: 'اعتبار کد تاییدی که برایتان ارسال شده، تمام شده است. لطفا مجدد درخواست کد تایید کنید.',
-                visibilityTime: 6000
-            })
+                animationType: "slide",
+                position: "top",
+                duration:6000
+            });
         } else if(otp.length < 6) {
-            Toast.show({
+            showToast({
+                title:"خطای کد تایید",
+                message: 'یک کد تایید 6 رقمی به شماره موبایلتان ارسال شده است. آن را به صورت صحیح وارد کنید.',
                 type: "error",
-                text1 : "خطای کد تایید",
-                text2: 'یک کد تایید 6 رقمی به شماره موبایلتان ارسال شده است. آن را به صورت صحیح وارد کنید.',
-                visibilityTime: 6000
-            })
+                animationType: "slide",
+                position: "top",
+                duration:6000
+            });
         } else {
             setLoading(true)
             // const firebase_token = await messaging().getToken()
@@ -327,27 +337,31 @@ function VerifyWithOTP(props){
                     }
                     dispatch(login({token, phone, name}))
                     axios.defaults.headers.post['token'] = token;
-                    Toast.show({
+                    showToast({
+                        title:"ورود به حساب",
+                        message: "ورود به حساب کاربری با موفقیت انجام شد.",
                         type: "success",
-                        text1 : "ورود به حساب",
-                        text2 : "ورود به حساب کاربری با موفقیت انجام شد."
-                    })
+                        animationType: "slide",
+                        position: "top",
+                    });
                 } else {
-                    Toast.show({
-                        type: "error",
-                        text1 : "خطا در ورود",
-                        text2: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
-                        visibilityTime: 6000
-                    })
+                    showToast({
+                        title:"خطا در ورود",
+                        message: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
+                        type: "success",
+                        animationType: "slide",
+                        position: "top",
+                    });
                 }
             }).catch(()=>{
                 setLoading(false)
-                Toast.show({
-                    type: "error",
-                    text1 : "خطا در ورود",
-                    text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
-                    visibilityTime: 6000
-                })
+                showToast({
+                    title:"خطا در ورود",
+                    message: 'مشکلی پیش آمد دوباره تلاش کنید.',
+                    type: "success",
+                    animationType: "slide",
+                    position: "top",
+                });
             })
         }
     }

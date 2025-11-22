@@ -16,12 +16,12 @@ import InputText from '../../../components/inputs/InputText';
 import BottomDrawer from '../../../components/bottom-drawer/BottomDrawer';
 import BottomDrawerHelper from '../../../components/bottom-drawer/BottomDrawerHelper';
 import axios from 'axios';
-import Toast from 'react-native-toast-message';
 import { increaseNumberCoins } from '../../../redux/slices/coinSlice';
 import Calendar from '../../../components/calendar/Calendar';
 import CalendarHelper from '../../../components/calendar/CalendarHelper';
 import { toGregorian, toJalaali} from 'jalaali-js';
 import AlertHelper from '../../../components/alert/AlertHelper';
+import { showToast } from '../../../components/custom-toast/ToastRef';
 
 const {width, height} = Dimensions.get("window")
 function AccountManagement(props){
@@ -213,11 +213,14 @@ function AccountManagement(props){
                 }
             }
         }).catch((error)=>{
-            Toast.show({
+            showToast({
+                title: "خطا در ثبت اطلاعات",
+                message: "مشکلی پیش آمد، پس از اطمینان از اتصال دستگاه خود به اینترنت دوباره تلاش کنید.",
                 type: "error",
-                text1 : "خطا در ثبت اطلاعات",
-                text2: "مشکلی پیش آمد، پس از اطمینان از اتصال دستگاه خود به اینترنت دوباره تلاش کنید.",
-            })
+                animationType: "slide",
+                position: "top",
+                duration:7000
+            });
             setLoading2(false)
         })
     }

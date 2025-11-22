@@ -14,21 +14,18 @@ import {
     MIN_VELOCITY,
     FONT_SIZE_SLOTTED,
 } from "../constants/constants";
-import Realm from 'realm';
 import { endOfAStageInStageGame } from '../functions/StageGameFunctions';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from '../../../redux/store/Store';
 import { useRealm } from '../../../realm';
-import { getStageById } from '../../../realm/repositories/stage-game/stage.repository';
-
 import { useObject } from '../../../realm';
 import { BSON } from 'realm';
 import { Stage } from '../../../realm/schemas/stage-game/StageSchema';
 import { saveCompletedPartAndSentenceBuilded, saveWordHelpUsedInStageGame } from '../../../realm/repositories/user/user-stage-game-progress.repository';
-import Toast from 'react-native-toast-message';
 import { PackageStage } from '../../../realm/schemas/package-game/PackageStageSchema';
 import { saveCompletedPartAndSentenceBuildedInPackageGame, saveWordHelpUsedInPackageGame } from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { endOfAStageInPackageGame } from '../functions/PackageGameFunctions';
+import { showToast } from '../../custom-toast/ToastRef';
 
 interface Position {
   x: number;
@@ -141,11 +138,13 @@ export const DragDropProvider: React.FC<{
       const element = currentWords[index];
       if(element.word_help_used == true){
         if(index == currentWords.length - 1){
-          Toast.show({
-            type: "error",
-            text1 : "آیتمی برای راهنمایی موجود نیست!",
-            topOffset : 10
-          })
+          showToast({
+              title: "راهنما یافت نشد",
+              message: "آیتمی برای راهنمایی موجود نیست!",
+              type: "error",
+              animationType: "slide",
+              position: "top",
+          });
           return false
         }
         continue

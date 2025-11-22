@@ -4,7 +4,6 @@ import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import { DotIndicator } from 'react-native-indicators';
 import axios from 'axios';
-import Toast from 'react-native-toast-message';
 import LinearGradient from 'react-native-linear-gradient';
 import ButtonGradient from '../../components/buttons/ButtonGradient';
 import InputText from '../../components/inputs/InputText';
@@ -191,28 +190,32 @@ function SignIn(props){
                 }
                 dispatch(loginAsGuest({token, name}))
                 axios.defaults.headers.post['token'] = token;
-                Toast.show({
+                showToast({
+                    title: "ورود به عنوان میهمان",
+                    message: "ورود به عنوان میهمان با موفقیت انجام شد.",
                     type: "success",
-                    text1 : "ورود به عنوان میهمان",
-                    text2 : "ورود به عنوان میهمان با موفقیت انجام شد."
-                })
+                    animationType: "slide",
+                    position: "top",
+                });
             } else {
-                Toast.show({
+                showToast({
+                    title: "خطا در ورود",
+                    message: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
                     type: "error",
-                    text1 : "خطا در ورود",
-                    text2: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
-                    visibilityTime: 6000
-                })
+                    animationType: "slide",
+                    position: "top",
+                });
             }
         }).catch((error)=>{
                 console.log(error)
             setLoading(false)
-            Toast.show({
+            showToast({
+                title: "خطا در ورود",
+                message: 'مشکلی پیش آمد دوباره تلاش کنید.',
                 type: "error",
-                text1 : "خطا در ورود",
-                text2: 'مشکلی پیش آمد دوباره تلاش کنید.',
-                visibilityTime: 6000
-            })
+                animationType: "slide",
+                position: "top",
+            });
         })
     }
     return(

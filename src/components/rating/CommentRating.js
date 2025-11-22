@@ -4,13 +4,13 @@ import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import GradeNumber from './GradeNumber';
 import { convertDate } from '../../utils/ConvertDate';
-import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import BottomDrawer from '../bottomDrawer/BottomDrawerHelper';
 import ModalInput from '../modalInput/ModalInputHelper';
 import FastImage from 'react-native-fast-image';
 import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { showToast } from '../custom-toast/ToastRef';
 
 const width = Dimensions.get('window').width
 function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt, user}){
@@ -70,10 +70,6 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                 setLikeNumber((p)=> p - 1)
             }
         }).catch((error)=>{
-            Toast.show({
-                type: 'toast',
-                text1: 'مشکلی پیش آمد دوباره تلاش کند'
-            })
             setLiked(false)
             setLikeNumber((p)=> p - 1)
         })
@@ -116,10 +112,6 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                 setDisLikeNumber((p)=> p - 1)
             }
         }).catch((error)=>{
-            Toast.show({
-                type: 'toast',
-                text1: 'مشکلی پیش آمد دوباره تلاش کند'
-            })
             setDisLiked(false)
             setDisLikeNumber((p)=> p - 1)
         })
@@ -159,22 +151,31 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
         }).then(async(response)=>{
             BottomDrawer.hideDrawer()
             if(response.data?.data.userSetReportRating.status == 200){
-                Toast.show({
-                    type: 'toast',
-                    text1: 'از بازخورد شما سپاس گذاریم'
-                })
+                showToast({
+                    title: "با موفقیت ثبت شد!",
+                    message: "از ثبت بازخورد شما سپاس گذاریم.",
+                    type: "success",
+                    animationType: "slide",
+                    position: "top",
+                });
             } else {
-                Toast.show({
-                    type: 'toast',
-                    text1: 'مشکلی پیش آمد دوباره تلاش کند'
-                })
+                showToast({
+                    title: "مشکلی پیش آمد!",
+                    message: "مشکلی در ثبت بازخوردتان پیش آمد. لطفا دوباره تلاش کنید.",
+                    type: "error",
+                    animationType: "slide",
+                    position: "top",
+                });
             }
         }).catch((error)=>{
             BottomDrawer.hideDrawer()
-            Toast.show({
-                type: 'toast',
-                text1: 'مشکلی پیش آمد دوباره تلاش کند'
-            })
+            showToast({
+                title: "مشکلی پیش آمد!",
+                message: "مشکلی در ثبت بازخوردتان پیش آمد. لطفا دوباره تلاش کنید.",
+                type: "error",
+                animationType: "slide",
+                position: "top",
+            });
         })
     }
     return (

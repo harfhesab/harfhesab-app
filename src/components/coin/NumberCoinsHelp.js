@@ -4,7 +4,7 @@ import useAppTheme from "../../hooks/theme/useAppTheme";
 import { useDispatch, useSelector } from "react-redux";
 import Font from "../../utils/Font";
 import { reduceNumberCoins } from "../../redux/slices/coinSlice";
-import Toast from "react-native-toast-message";
+import { showToast } from "../custom-toast/ToastRef";
 
 function NumberCoinsHelp({ onPress = () => {}, transparent = 40, numberCoinsHelp }) {
     const colors = useAppTheme();
@@ -17,11 +17,13 @@ function NumberCoinsHelp({ onPress = () => {}, transparent = 40, numberCoinsHelp
                 dispatch(reduceNumberCoins({number:numberCoinsHelp}))
             }
         } else {
-            Toast.show({
+            showToast({
+                title: "عدم موجودی سکه",
+                message: "موجودی سکهٔ شما برای دریافت راهنمایی کافی نیست!",
                 type: "error",
-                text1: "موجودی سکهٔ شما برای دریافت راهنمایی کافی نیست!",
-                visibilityTime: 4000
-            })
+                animationType: "slide", // یا 'fade'
+                position: "top",
+            });
         }
     };
 

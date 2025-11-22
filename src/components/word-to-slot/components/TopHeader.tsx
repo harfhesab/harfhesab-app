@@ -1,12 +1,9 @@
 import React from 'react';
 import {Dimensions, ImageBackground, StyleSheet} from 'react-native';
 import { TouchableOpacity, View } from 'react-native';
-import Icon from '../../../utils/Icon';
-import useAppTheme from '../../../hooks/theme/useAppTheme';
 import NumberCoins from '../../coin/NumberCoins';
 import Font from '../../../utils/Font';
 import { useDragDrop } from '../context/DragDropContext';
-import Toast from 'react-native-toast-message';
 import NumberCoinsHelp from '../../coin/NumberCoinsHelp';
 import { RootState } from '../../../redux/store/RootReducer';
 import { useSelector } from 'react-redux';
@@ -15,10 +12,10 @@ import Setting from '../../icon/Setting';
 import LocalImageComponent from '../../image-components/LocalImageComponent';
 import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import { Text } from '@react-navigation/elements';
+import { showToast } from '../../custom-toast/ToastRef';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
-  const colors = useAppTheme();
   const {coins_for_get_help_word_to_slot_stage_game, coins_for_get_help_word_to_slot_package_game} = useSelector((state: RootState) => state.constants);
   const { changePlayingIndex, completedSentences, currentPartIndex, playingPartIndex, numberParts, type, applyForHelp } = useDragDrop();
 
@@ -27,11 +24,13 @@ const TopHeader = () => {
     if(index <= currentPartIndex){
       changePlayingIndex(index)
     } else {
-      Toast.show({
-        type: "error",
-        text1 : "جملات باید به ترتیب کامل شوند!",
-        topOffset : 10
-      })
+      showToast({
+          title: "عدم دسترسی",
+          message: "جملات باید به ترتیب کامل شوند!",
+          type: "error",
+          animationType: "slide",
+          position: "top",
+      });
     }
   }
   return (

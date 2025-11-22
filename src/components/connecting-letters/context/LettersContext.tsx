@@ -7,12 +7,10 @@ import {
   BOUNDARY_HEIGHT,
   CARD_SIZE_FLOATING,
   CARD_SELECTION_DURATION,
-  CARD_SIZE_SELECTED,
   MAX_VELOCITY,
   MIN_VELOCITY,
 } from '../constants/constants';
 import { deselectCardSoundInLettersConnecting, tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
-import Toast from 'react-native-toast-message';
 import {
   saveMainWordBuildedInStageGame,
   saveNewAdditionalWordsBuildedInStageGame,
@@ -21,8 +19,15 @@ import {
   saveUserHelpRequestsInStageGame
 } from '../../../realm/repositories/user/user-stage-game-progress.repository';
 import { unknownWordCompletedInStageGame } from '../functions/StageGameFunctions';
-import { saveMainWordBuildedInPackageGame, saveNewAdditionalWordsBuildedInPackageGame, saveNewHiddenWordsBuildedInPackageGame, saveUnknownWordCompletedInPackageGame } from '../../../realm/repositories/user/user-package-game-progress.repository';
+import {
+  saveMainWordBuildedInPackageGame,
+  saveNewAdditionalWordsBuildedInPackageGame,
+  saveNewHiddenWordsBuildedInPackageGame,
+  saveUnknownWordCompletedInPackageGame,
+  saveUserHelpRequestsInPackageGame
+} from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { unknownWordCompletedInPackageGame } from '../functions/PackageGameFunctions';
+import { showToast } from '../../custom-toast/ToastRef';
 
 interface Position { x: number; y: number; }
 interface Velocity { vx: number; vy: number; }
@@ -63,11 +68,13 @@ interface ContextProps {
 }
 
 const LettersContext = createContext<ContextProps>({} as ContextProps);
+
 interface FoundWords {
   main: boolean;
   additional: Set<string>;
   hidden: Set<string>;
 }
+
 export const LettersProvider: React.FC<{
   children: React.ReactNode;
   realm: Realm;
@@ -85,8 +92,9 @@ export const LettersProvider: React.FC<{
   const selectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // استفاده از آرایه برای دسترسی سریع در frameCallback
   const cardsRefArray = useRef<Card[]>([]);
-  const cardsMapRef = useRef<Record<string, Card>>({}); // برای دسترسی سریع بر اساس id
+  const cardsMapRef = useRef<Record<string, Card>>({}); 
 
   const selectionProgressRN = useSharedValue(0);
 
@@ -95,6 +103,7 @@ export const LettersProvider: React.FC<{
     additional: new Set(data.additional_words_builded || []),
     hidden: new Set(data.hidden_words_builded || [])
   });
+
   const handleMainWordFound = () => {
     setFoundWords(prevState => {
       const newState = { ...prevState, main: true };
@@ -107,6 +116,7 @@ export const LettersProvider: React.FC<{
       saveMainWordBuildedInPackageGame( realm, stageId, partIndex, wordId );
     }
   };
+
   const handleNewAdditionalWordFound = (word: string) => {
     setFoundWords(prevState => {
       const newAdditional = new Set(prevState.additional);
@@ -121,6 +131,7 @@ export const LettersProvider: React.FC<{
       saveNewAdditionalWordsBuildedInPackageGame( realm, stageId, partIndex, wordId, word );
     }
   };
+
   const handleNewHiddenWordFound = (word: string) => {
     setFoundWords(prevState => {
       const newHidden = new Set(prevState.hidden);
@@ -133,6 +144,7 @@ export const LettersProvider: React.FC<{
       saveNewHiddenWordsBuildedInPackageGame( realm, stageId, partIndex, wordId, word );
     }
   };
+
   const checkCompleted = (newState: FoundWords): void => {
     const { additional_words } = data;
     if (newState.main && additional_words.every((word: string) => newState.additional.has(word))) {
@@ -181,20 +193,29 @@ export const LettersProvider: React.FC<{
               wordId,
               newLettersHelpUsed
             );
+          } else if(type === "package-game"){
+            saveUserHelpRequestsInPackageGame(
+              realm,
+              stageId,
+              partIndex,
+              wordId,
+              newLettersHelpUsed
+            );
           }
           return true;
         }
       }
       currentIndex = end + 1;
     }
-    Toast.show({
-      type: "error",
-      text1: "آیتمی برای راهنمایی موجود نیست!",
-      topOffset: 10,
+    showToast({
+        title: "راهنما یافت نشد",
+        message: "آیتمی برای راهنمایی موجود نیست!",
+        type: "error",
+        animationType: "slide",
+        position: "top",
     });
     return false;
   }
-
 
   const startSelectionProgress = useCallback(() => {
     selectionProgressRN.value = 0;
@@ -209,7 +230,7 @@ export const LettersProvider: React.FC<{
   }, [connectedLetters]);
 
   const registerCard = useCallback((card: Card) => {
-    if (cardsMapRef.current[card.id]) return; // جلوگیری از اضافه شدن مجدد
+    if (cardsMapRef.current[card.id]) return;
     cardsRefArray.current.push(card);
     cardsMapRef.current[card.id] = card;
   }, []);
@@ -231,7 +252,8 @@ export const LettersProvider: React.FC<{
     }
     setConnectedLetters([]);
 
-    // فقط SharedValue ها را آپدیت کن، بدون setState اضافی
+    // تغییر مقدار selected به 0. انیمیشن بزرگ شدن در FloatingCard هندل می شود.
+    // فریم کال‌بک به صورت خودکار با تغییر سایز کارت‌ها، از همپوشانی جلوگیری می‌کند.
     for (const c of cardsRefArray.current) {
       try {
         if (c.selected.value === 1) c.selected.value = 0;
@@ -246,12 +268,9 @@ export const LettersProvider: React.FC<{
 
   const manualDeselectAll = useCallback(() => {
     deselectAll();
-    if (selectionTimerRef.current) {
-      clearTimeout(selectionTimerRef.current);
-      selectionTimerRef.current = null;
-    }
+    clearSelectionTimer();
     tabScreenSoundInOnClick()
-  }, []);
+  }, [deselectAll, clearSelectionTimer]);
 
   const manualStartProgressTimer = useCallback(()=>{
     clearSelectionTimer();
@@ -262,7 +281,7 @@ export const LettersProvider: React.FC<{
       selectionTimerRef.current = null;
     }, CARD_SELECTION_DURATION);
     tabScreenSoundInOnClick()
-  }, []);
+  }, [clearSelectionTimer, startSelectionProgress, deselectAll]);
 
   const selectCard = useCallback((id: string) => {
     if (submittedInfo) setSubmittedInfo(null);
@@ -279,24 +298,31 @@ export const LettersProvider: React.FC<{
       deselectAll();
       selectionTimerRef.current = null;
     }, CARD_SELECTION_DURATION);
-  }, [clearSelectionTimer, deselectAll, submittedInfo]);
+  }, [clearSelectionTimer, deselectAll, submittedInfo, startSelectionProgress]);
 
-  // ---------- frameCallback: حرکت و برخورد ----------
+  // =========================================================================
+  // Frame Callback: مدیریت فیزیک و برخورد (برگرفته از منطق DragDropContext)
+  // =========================================================================
   const frameCallback = useFrameCallback(() => {
     'worklet';
-    const dt = 0.016; // عدد ثابت برای ثبات حرکت کارت‌ها
     const cards = cardsRefArray.current;
     const n = cards.length;
     if (n === 0) return;
+    const dt = 0.016; 
 
     // مرحله 1: حرکت و برخورد با دیواره‌ها
     for (let i = 0; i < n; i++) {
       const card = cards[i];
       const pos = card.position.value;
       const vel = card.velocity.value;
+      const currentSize = card.cardSize.value ?? CARD_SIZE_FLOATING; // سایز لحظه‌ای کارت
 
-      if (!pos || !vel) continue;
+      // بررسی NaN برای جلوگیری از کرش
+      if (isNaN(pos.x) || isNaN(pos.y) || isNaN(vel.vx) || isNaN(vel.vy)) {
+        continue;
+      }
 
+      // محدود کردن سرعت (Velocity Clamping)
       let speed = Math.sqrt(vel.vx * vel.vx + vel.vy * vel.vy);
       if (speed > MAX_VELOCITY) {
         const scale = MAX_VELOCITY / speed;
@@ -308,70 +334,87 @@ export const LettersProvider: React.FC<{
         vel.vy *= scale;
       }
 
-      const size = card.cardSize.value ?? CARD_SIZE_FLOATING;
       let newX = pos.x + vel.vx * dt;
       let newY = pos.y + vel.vy * dt;
 
+      // برخورد با دیواره‌ها
       if (newX < 0) { newX = 0; vel.vx *= -1; }
-      else if (newX > BOUNDARY_WIDTH - size) { newX = BOUNDARY_WIDTH - size; vel.vx *= -1; }
+      else if (newX > BOUNDARY_WIDTH - currentSize) { newX = BOUNDARY_WIDTH - currentSize; vel.vx *= -1; }
 
       if (newY < 0) { newY = 0; vel.vy *= -1; }
-      else if (newY > BOUNDARY_HEIGHT - size) { newY = BOUNDARY_HEIGHT - size; vel.vy *= -1; }
+      else if (newY > BOUNDARY_HEIGHT - currentSize) { newY = BOUNDARY_HEIGHT - currentSize; vel.vy *= -1; }
 
       card.position.value = { x: newX, y: newY };
       card.velocity.value = { vx: vel.vx, vy: vel.vy };
     }
 
-    // مرحله 2: برخورد کارت‌ها (O(n^2) اما فقط SharedValue ها)
+    // مرحله 2: برخورد کارت‌ها با یکدیگر (منطق DragDrop)
     for (let i = 0; i < n; i++) {
       const cardA = cards[i];
       for (let j = i + 1; j < n; j++) {
         const cardB = cards[j];
 
+        // منطق مهم: کارت‌های کوچک فقط با هم، کارت‌های بزرگ فقط با هم
+        // اگر وضعیت انتخاب یکی نباشد (یکی کوچک یکی بزرگ)، از هم رد می‌شوند
         if (cardA.selected.value !== cardB.selected.value) continue;
 
         const posA = cardA.position.value;
         const posB = cardB.position.value;
+        const velA = cardA.velocity.value;
+        const velB = cardB.velocity.value;
+        
         const sizeA = cardA.cardSize.value ?? CARD_SIZE_FLOATING;
         const sizeB = cardB.cardSize.value ?? CARD_SIZE_FLOATING;
 
-        const cardRect = { left: posA.x, right: posA.x + sizeA, top: posA.y, bottom: posA.y + sizeA };
-        const otherRect = { left: posB.x, right: posB.x + sizeB, top: posB.y, bottom: posB.y + sizeB };
+        // تعریف مستطیل‌ها
+        const rectA = { left: posA.x, right: posA.x + sizeA, top: posA.y, bottom: posA.y + sizeA };
+        const rectB = { left: posB.x, right: posB.x + sizeB, top: posB.y, bottom: posB.y + sizeB };
 
         const isColliding =
-          cardRect.left < otherRect.right &&
-          cardRect.right > otherRect.left &&
-          cardRect.top < otherRect.bottom &&
-          cardRect.bottom > otherRect.top;
-        if (!isColliding) continue;
+          rectA.left < rectB.right &&
+          rectA.right > rectB.left &&
+          rectA.top < rectB.bottom &&
+          rectA.bottom > rectB.top;
 
-        const overlapX = Math.min(cardRect.right - otherRect.left, otherRect.right - cardRect.left);
-        const overlapY = Math.min(cardRect.bottom - otherRect.top, otherRect.bottom - cardRect.top);
+        if (isColliding) {
+          // محاسبه همپوشانی
+          const overlapX = Math.min(rectA.right - rectB.left, rectB.right - rectA.left);
+          const overlapY = Math.min(rectA.bottom - rectB.top, rectB.bottom - rectA.top);
 
-        let dx = 0, dy = 0;
-        if (overlapX < overlapY) dx = cardRect.left < otherRect.left ? -overlapX/2 : overlapX/2;
-        else dy = cardRect.top < otherRect.top ? -overlapY/2 : overlapY/2;
+          // جابه‌جایی برای رفع همپوشانی (Position Correction) - این بخش جلوی گیر کردن را می‌گیرد
+          let dx = 0;
+          let dy = 0;
+          if (overlapX < overlapY) {
+            dx = rectA.left < rectB.left ? -overlapX / 2 : overlapX / 2;
+          } else {
+            dy = rectA.top < rectB.top ? -overlapY / 2 : overlapY / 2;
+          }
 
-        posA.x += dx; posA.y += dy;
-        posB.x -= dx; posB.y -= dy;
+          posA.x += dx;
+          posA.y += dy;
+          posB.x -= dx;
+          posB.y -= dy;
 
-        const nx = dx !== 0 ? (dx>0?1:-1) : 0;
-        const ny = dy !== 0 ? (dy>0?1:-1) : 0;
+          const nx = dx !== 0 ? (dx > 0 ? 1 : -1) : 0;
+          const ny = dy !== 0 ? (dy > 0 ? 1 : -1) : 0;
 
-        const velA = cardA.velocity.value;
-        const velB = cardB.velocity.value;
+          // برخورد الاستیک
+          const relativeVx = velA.vx - velB.vx;
+          const relativeVy = velA.vy - velB.vy;
+          const dot = relativeVx * nx + relativeVy * ny;
 
-        const dot = (velA.vx - velB.vx)*nx + (velA.vy - velB.vy)*ny;
-        if (dot < 0) {
-          const impulse = dot;
-          velA.vx -= impulse * nx; velA.vy -= impulse * ny;
-          velB.vx += impulse * nx; velB.vy += impulse * ny;
+          if (dot < 0) {
+            const impulse = dot;
+            velA.vx -= impulse * nx; velA.vy -= impulse * ny;
+            velB.vx += impulse * nx; velB.vy += impulse * ny;
+          }
+
+          // اعمال مقادیر جدید به SharedValues
+          cardA.position.value = { x: posA.x, y: posA.y };
+          cardB.position.value = { x: posB.x, y: posB.y };
+          cardA.velocity.value = { vx: velA.vx, vy: velA.vy };
+          cardB.velocity.value = { vx: velB.vx, vy: velB.vy };
         }
-
-        cardA.position.value = { x: posA.x, y: posA.y };
-        cardB.position.value = { x: posB.x, y: posB.y };
-        cardA.velocity.value = velA;
-        cardB.velocity.value = velB;
       }
     }
   }, false);

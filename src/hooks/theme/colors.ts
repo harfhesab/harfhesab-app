@@ -68,14 +68,6 @@ export const themes = {
         a1: '#00000095',
         a2: '#000000',
       },
-      toast: {
-        background: '#3f51b5',
-        text1: '#FFFFFF',
-        text2: '#d1d1d1',
-        error: '#ff4444',
-        info: '#0088cc',
-        success: '#40bf42',
-      },
       alert_component: {
         background: '#00252a',
         background2: '#00373f',

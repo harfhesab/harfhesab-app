@@ -20,10 +20,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { recreateAndDownloadContentUserPackage, redownloadContentUserPackage, startSetPackageGameForUserAndGetIt } from '../../../utils/background-task/PackageGameContentTask';
 import { startProgressLoading } from '../../../redux/slices/packageGameDownloadSlice';
-import Toast from 'react-native-toast-message';
 import { updateNumberCoins } from '../../../redux/slices/coinSlice';
 import Icon from '../../../utils/Icon';
 import Rating from '../../../components/rating/Rating';
+import { showToast } from '../../../components/custom-toast/ToastRef';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -333,19 +333,23 @@ function PackageInformation(props){
                 }
             } else {
                 BottomDrawerGridHelper.hideBottomDrawer()
-                Toast.show({
+                showToast({
+                    title: "خطا در پرداخت سکه",
+                    message: response.data?.data?.message??"مشکلی در پرداخت سکه پیش آمد. دوباره تلاش کنید.",
                     type: "error",
-                    text1 : "خطا در پرداخت سکه",
-                    text2: response.data?.data?.message??"مشکلی در پرداخت سکه پیش آمد. دوباره تلاش کنید.",
-                })
+                    animationType: "slide",
+                    position: "top",
+                });
             }
         }).catch((err)=>{
             BottomDrawerGridHelper.hideBottomDrawer()
-            Toast.show({
+            showToast({
+                title: "خطا در پرداخت سکه",
+                message: "مشکلی در پرداخت سکه پیش آمد. دوباره تلاش کنید.",
                 type: "error",
-                text1 : "خطا در پرداخت سکه",
-                text2: "مشکلی در پرداخت سکه پیش آمد. دوباره تلاش کنید.",
-            })
+                animationType: "slide",
+                position: "top",
+            });
         })
     }
     const getPackageWithSubscription = ()=>{

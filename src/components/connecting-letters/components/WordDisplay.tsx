@@ -1,12 +1,9 @@
-// /components/WordDisplay.tsx
-
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  runOnJS,
 } from 'react-native-reanimated';
 import { useLetters } from '../context/LettersContext';
 import Font from '../../../utils/Font';
@@ -20,7 +17,6 @@ import { connectingLetterDuplicateSound, connectingLetterErrorSound, connectingL
 
 const { width } = Dimensions.get('screen');
 
-// --- تعریف وضعیت‌های بازخورد ---
 const FEEDBACK_STATE = {
   NORMAL: 0,
   SUCCESS: 1,
@@ -28,7 +24,6 @@ const FEEDBACK_STATE = {
   DUPLICATE: 3,
 };
 
-// --- پالت رنگی برای بازخورد ---
 const COLORS = {
   NORMAL: "#86442d",
   SUCCESS: "#40bf42",
@@ -39,6 +34,7 @@ const COLORS = {
   GRADIENT_DUPLICATE: ['#0099CC', '#33b5e5'],
   GRADIENT_NORMAL: ['#86442d', '#4d2719'],
 };
+
 const chunkArray = (arr: any[], size: number) => {
   const chunks = [];
   for (let i = 0; i < arr.length; i += size) {
@@ -46,23 +42,32 @@ const chunkArray = (arr: any[], size: number) => {
   }
   return chunks;
 };
-// =================================================================
-// کامپوننت اصلی WordDisplay
-// =================================================================
+
 const WordDisplay = () => {
   const colors = useAppTheme();
-  const { connectedLetters, data, submittedInfo, setSubmittedInfo, lettersHelpUsed, foundWords, handleMainWordFound, handleNewAdditionalWordFound, handleNewHiddenWordFound } = useLetters();
+  const { 
+    connectedLetters, 
+    data, 
+    submittedInfo, 
+    setSubmittedInfo, 
+    lettersHelpUsed, 
+    foundWords, 
+    handleMainWordFound, 
+    handleNewAdditionalWordFound, 
+    handleNewHiddenWordFound 
+  } = useLetters();
 
   const feedbackProgress = useSharedValue(FEEDBACK_STATE.NORMAL);
   const selectedCardsOpacity = useSharedValue(1);
   const [gradientColors, setGradientColors] = useState<string[]>(COLORS.GRADIENT_NORMAL);
-  const chunks = chunkArray(data.additional_words, 5);
+  const chunks = useMemo(() => chunkArray(data.additional_words, 5), [data.additional_words]);
 
   useEffect(() => {
     if (!submittedInfo) return;
 
     const { word } = submittedInfo;
     let state = FEEDBACK_STATE.ERROR;
+    let isCorrect = false;
 
     if (word === data.word) {
       if(foundWords.main){
@@ -71,6 +76,7 @@ const WordDisplay = () => {
       } else {
         handleMainWordFound()
         state = FEEDBACK_STATE.SUCCESS
+        isCorrect = true;
         connectingLetterSucccessSound()
       }
     } else if (data.additional_words.includes(word)) {
@@ -80,6 +86,7 @@ const WordDisplay = () => {
       } else {
         handleNewAdditionalWordFound(word)
         state = FEEDBACK_STATE.SUCCESS
+        isCorrect = true;
         connectingLetterSucccessSound()
       }
     } else if (data.hidden_words.includes(word)) {
@@ -89,41 +96,39 @@ const WordDisplay = () => {
       } else {
         handleNewHiddenWordFound(word)
         state = FEEDBACK_STATE.SUCCESS
+        isCorrect = true;
         connectingLetterSucccessSound()
       }
     } else {
       connectingLetterErrorSound()
     }
+
     let newGradientColors = COLORS.GRADIENT_NORMAL;
     if (state === FEEDBACK_STATE.SUCCESS) newGradientColors = COLORS.GRADIENT_SUCCESS;
     else if (state === FEEDBACK_STATE.ERROR) newGradientColors = COLORS.GRADIENT_ERROR;
     else if (state === FEEDBACK_STATE.DUPLICATE) newGradientColors = COLORS.GRADIENT_DUPLICATE;
     
-    setGradientColors(newGradientColors); // <-- فراخوانی مستقیم
-    
-    // آپدیت shared value برای انیمیشن‌ها در UI Thread
+    setGradientColors(newGradientColors);
     feedbackProgress.value = withTiming(state, { duration: 300 });
     
     const feedbackTimer = setTimeout(() => {
       selectedCardsOpacity.value = withTiming(0, { duration: 400 });
       const cleanupTimer = setTimeout(() => {
-        // این توابع React State را آپدیت می‌کنند، پس باید مستقیم فراخوانی شوند
         setSubmittedInfo(null);
         setGradientColors(COLORS.GRADIENT_NORMAL);
-        // این یک shared value است و باید مستقیم مقداردهی شود
         feedbackProgress.value = withTiming(FEEDBACK_STATE.NORMAL);
       }, 400);
       return () => clearTimeout(cleanupTimer);
     }, 1500);
 
     return () => clearTimeout(feedbackTimer);
-  }, [submittedInfo]);
+  }, [submittedInfo]); // وابستگی‌ها کنترل شوند
 
   useEffect(() => {
     if (connectedLetters.length > 0) {
       selectedCardsOpacity.value = withTiming(1, { duration: 100 });
     }
-  }, [connectedLetters]);
+  }, [connectedLetters.length]);
 
   const animatedContainerStyle = useAnimatedStyle(() => ({
     opacity: selectedCardsOpacity.value,
@@ -131,7 +136,6 @@ const WordDisplay = () => {
 
   const lettersToRender = submittedInfo?.letters || connectedLetters;
   
-  // --- محاسبات اندازه کارت‌ها (بدون تغییر) ---
   const { CARD_WIDTH, CARD_FONT_SIZE, WORD_SQUARE_WIDTH, WORD_SQUARE_FONT_SIZE } = useMemo(() => {
     const letterCount = data?.letters?.length || 0;
     if (letterCount === 0) return { CARD_WIDTH: 35, CARD_FONT_SIZE: 20, WORD_SQUARE_WIDTH: 40, WORD_SQUARE_FONT_SIZE: 25 };
@@ -147,9 +151,8 @@ const WordDisplay = () => {
     };
   }, [data?.letters?.length]);
   
-  function handleExistNumberHelpedWord() {
+  const numberHelped = useMemo(() => {
     const { additional_words, word } = data;
-
     const allWords = [...additional_words, word];
     const results = new Array(allWords.length).fill(0);
 
@@ -161,7 +164,6 @@ const WordDisplay = () => {
     }
 
     for (const idx of lettersHelpUsed) {
-      // پیدا کردن اینکه idx متعلق به کدوم کلمه است
       for (let i = 0; i < allWords.length; i++) {
         const start = startIndexes[i];
         const end = start + allWords[i].length - 1;
@@ -172,10 +174,8 @@ const WordDisplay = () => {
       }
     }
     return results;
-  }
+  }, [data.additional_words, data.word, lettersHelpUsed]);
 
-  // استفاده در JSX
-  const numberHelped = handleExistNumberHelpedWord();
   return (
     <View style={styles.container}>
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', justifyContent:'space-between'}}>
@@ -191,6 +191,7 @@ const WordDisplay = () => {
                     isWordFound={foundWords.additional.has(word)}
                     size={WORD_SQUARE_WIDTH - 20}
                     mainWord={false}
+                    // اینجا به جای کل آرایه فقط عدد مربوطه را پاس می‌دهیم که عالی است
                     numberHelped={numberHelped[colIndex * 5 + index]}
                   />
                 ))}
@@ -253,11 +254,11 @@ const styles = StyleSheet.create({
   rowContainer: {
     width: '100%',
     alignItems:'flex-end',
-    flexDirection: "row", // ستون‌ها کنار هم
+    flexDirection: "row",
     gap: 20,
   },
   columnContainer: {
-    flexDirection: "column", // هر ستون عمودی
+    flexDirection: "column",
     alignItems: "center",
     gap: 8,
   },
@@ -282,17 +283,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 3
   },
-  wordContainer: {
-    paddingHorizontal: 15,
-  },
   wordText: {
     fontFamily: Font.bakh_black,
     fontSize: 18,
     color: "#FFF",
-  },
-  cardContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

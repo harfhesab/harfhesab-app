@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid, ImageBackground} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
@@ -6,17 +6,18 @@ import Globals from '../../utils/Globals';
 import ButtonBorder from '../buttons/ButtonBorder';
 import Modal from "react-native-modal";
 import { useSelector} from 'react-redux';
-import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import ButtonGradient from '../buttons/ButtonGradient';
 import InputText from '../inputs/InputText';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { navigate } from '../../main/navigationService';
 import LocalImageComponent from '../image-components/LocalImageComponent';
+import Toast from '../custom-toast/Toast';
 
 const width = Dimensions.get('window').width;
 const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:editProps, previous, successOperation}) => {
     const colors = useAppTheme()
+    const localToastRef = useRef(null);
     const { loginType } = useSelector((state) => state.account);
     const [defaultRating, setDefaultRating] = useState(defaultRatingProps)
     const [modalVisible, setModalVisible] = useState(false)
@@ -68,7 +69,14 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
     }
     const setRating = ()=>{
         if(defaultRating == 0){
-            ToastAndroid.showWithGravity('ثبت یک امتیاز از 1 تا 5 الزامی است', ToastAndroid.SHORT,ToastAndroid.BOTTOM)
+            if (localToastRef.current) {
+                localToastRef.current.show({
+                    message: 'این تست روی مودال ظاهر می‌شود!',
+                    type: 'error',
+                    animationType: 'slide', // تست حالت فید
+                    position: 'top'
+                });
+            }
         } else {
             setLoading(true)
             setRatingRecordForPackage()
@@ -78,10 +86,14 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
         if(loginType == "registered") {
             setModalVisible(true)
         } else {
-            Toast.show({
-                type:'info',
-                text1:"برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید."
-            })
+            if (localToastRef.current) {
+                localToastRef.current.show({
+                    message: "برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید.",
+                    type: 'info',
+                    animationType: 'slide', // تست حالت فید
+                    position: 'top'
+                });
+            }
             navigate('LoginToAccount')
         }
     }
@@ -93,10 +105,14 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
                 clearTimeout(time)
             }, 50)
         } else {
-            Toast.show({
-                type:'info',
-                text1:"برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید."
-            })
+            if (localToastRef.current) {
+                localToastRef.current.show({
+                    message: "برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید.",
+                    type: 'info',
+                    animationType: 'slide', // تست حالت فید
+                    position: 'top'
+                });
+            }
             navigate('LoginToAccount')
         }
     }
@@ -143,6 +159,7 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
                 useNativeDriverForBackdrop={true}
                 style={{justifyContent:'center', alignItems:'center'}}
             >
+                <Toast ref={localToastRef} defaultPosition="top" />
                 <View>
                     <ImageBackground
                             source={require("../../assets/image/frame_rating.png")}

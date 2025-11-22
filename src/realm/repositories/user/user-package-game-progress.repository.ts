@@ -508,3 +508,39 @@ export const deleteAllUserPackages = (
     return false;
   }
 };
+export const saveUserHelpRequestsInPackageGame = (
+    realm: Realm,
+    stageId: BSON.ObjectId | string,
+    partIndex: number,
+    wordId: BSON.ObjectId | string,
+    lettersHelpUsed: number[]
+): boolean => {
+    try {
+        // اطمینان از اینکه stageId و wordId به objectId یا string درست تبدیل بشن
+        const stageObjectId =
+            typeof stageId === "string" ? new BSON.ObjectId(stageId) : stageId;
+        const wordIdStr =
+            typeof wordId === "string" ? wordId : wordId.toHexString();
+
+        // پیدا کردن stage
+        const stage = realm.objectForPrimaryKey<PackageStage>("PackageStage", stageObjectId);
+        if (!stage) throw new Error("Stage not found");
+
+        // گرفتن part
+        const part = stage.parts[partIndex];
+        if (!part) throw new Error("Part not found");
+
+        // پیدا کردن word
+        const word = part.words.find((w) => w._id === wordIdStr);
+        if (!word) throw new Error("Word not found");
+
+        // آپدیت داخل realm.write
+        realm.write(() => {
+            word.letters_help_used = lettersHelpUsed;
+        });
+
+        return true;
+    } catch (e) {
+        return false;
+    }
+};

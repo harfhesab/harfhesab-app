@@ -5,8 +5,6 @@ import {NavigationContainer, DefaultTheme as NavigationDefaultTheme} from '@reac
 import SplashRoutes from './SplashRoutes';
 import MainRoutes from './MainRoutes';
 import SignRoutes from './SignRoutes';
-import Toast from 'react-native-toast-message';
-import ToastConfig from '../components/ToastConfig';
 import Globals from '../utils/Globals';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -18,6 +16,9 @@ import GameAlertHelper from '../components/game-alert/GameAlertHelper';
 import useAppTheme from '../hooks/theme/useAppTheme';
 import AlertBottomDrawer from '../components/alert-bottom-drawer/AlertBottomDrawer';
 import AlertBottomDrawerHelper from '../components/alert-bottom-drawer/AlertBottomDrawerHelper';
+import Toast from '../components/custom-toast/Toast';
+import { toastRef } from '../components/custom-toast/ToastRef';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.account);
@@ -27,7 +28,7 @@ const Main = (props) => {
   axios.defaults.headers.post['token'] = token;
   
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaProvider>
         <StatusBar backgroundColor={colors.status_bar.background} barStyle={colors.status_bar.bar_style}/>
         <NavigationContainer 
           ref={navigationRef}
@@ -42,11 +43,11 @@ const Main = (props) => {
               <SignRoutes/>
             }
         </NavigationContainer>
-        <Toast config={ToastConfig}/>
+        <Toast ref={toastRef} />
         <Alert ref = {Ref => {AlertHelper.setRef(Ref)}}/>
         <GameAlert ref={ref => GameAlertHelper.setRef(ref)} />
         <AlertBottomDrawer ref = {Ref => {AlertBottomDrawerHelper.setRef(Ref)}}/>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

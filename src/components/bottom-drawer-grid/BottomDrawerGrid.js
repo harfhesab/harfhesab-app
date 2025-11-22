@@ -2,7 +2,6 @@ import React, { useState, useImperativeHandle, memo } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView, StyleSheet} from 'react-native';
 import Modal from "react-native-modal";
 import Font from '../../utils/Font';
-import Toast from 'react-native-toast-message';
 import Icon from '../../utils/Icon';
 import ButtonBorder from '../buttons/ButtonBorder';
 import ButtonGradient from '../buttons/ButtonGradient';

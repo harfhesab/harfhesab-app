@@ -13,10 +13,10 @@ import ButtonGradient from '../../../components/buttons/ButtonGradient';
 import LinearGradient from 'react-native-linear-gradient';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
-import Toast from 'react-native-toast-message';
 import { useRealm } from '../../../realm';
 import { persistor, store } from '../../../redux/store/Store';
 import axios from 'axios';
+import { showToast } from '../../../components/custom-toast/ToastRef';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
@@ -166,11 +166,14 @@ function Account(props){
             }
         }).catch((error)=>{
             AlertBottomDrawerHelper.hideAlert()
-            Toast.show({
+            showToast({
+                title: "خطا در خروج از حساب",
+                message: "مشکلی پیش آمد، پس از اطمینان از اتصال دستگاه خود به اینترنت دوباره تلاش کنید.",
                 type: "error",
-                text1 : "خطا در خروج از حساب",
-                text2: "مشکلی پیش آمد، پس از اطمینان از اتصال دستگاه خود به اینترنت دوباره تلاش کنید.",
-            })
+                animationType: "slide",
+                position: "top",
+                duration:7000
+            });
         })
     }
 
