@@ -4,6 +4,7 @@ import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import RatingGraph from './RatingGraph';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { priceDigitSeperator } from '../../utils/PriceDigitSeperator';
 
 const width = Dimensions.get('window').width;
 const RatingInfo = ({reviews, rating_info, rating_average}) => {
@@ -24,17 +25,17 @@ const RatingInfo = ({reviews, rating_info, rating_average}) => {
     }
     return (
         <View style={styles.container}>
-            <View style={{flexDirection:'column', alignItems:'center', justifyContent:'space-between', height:100, width:width * 0.25}}>
-                <View style={{height:50, alignItems:'center', alignSelf:'center', marginTop:5}}>
-                    <Text style={{fontSize:8, color:colors.text.a2, fontFamily:Font.light}}>{'میانگین امتیاز'}</Text>
+            <View style={{flexDirection:'column', alignItems:'flex-start', justifyContent:'space-between', height:120, width:90}}>
+                <View style={{height:60, alignItems:'flex-start', alignSelf:'center', width:"100%"}}>
+                    <Text style={{fontSize:10, color:colors.text.a4, fontFamily:Font.light}}>{'میانگین امتیاز'}</Text>
                     <Text style={{fontSize:18, color:colors.text.a2, fontFamily:Font.black}}>{rating_average?`${rating_average.toFixed(1).toString().replace('.', '/')} `:''}<Icon name='staro' type='AntDesign' style={{color:colors.text.a2, fontSize:18}}/></Text>
                 </View>
-                <View style={{height:40, alignItems:'center', alignSelf:'center'}}>
-                    <Text style={{fontSize:8, color:colors.text.a2, fontFamily:Font.light}}>{'امتیاز ها و نظرات'}</Text>
-                    <Text style={{fontSize:12, color:colors.text.a3, fontFamily:Font.bold}}>{`${reviews.toString()} مرتبه`}</Text>
+                <View style={{height:40, alignItems:'flex-start', alignSelf:'center', width:"100%"}}>
+                    <Text style={{fontSize:10, color:colors.text.a4, fontFamily:Font.light}}>{'امتیاز ها و نظرات'}</Text>
+                    <Text style={{fontSize:12, color:colors.text.a3, fontFamily:Font.bold}}>{`${reviews>0?priceDigitSeperator(reviews):reviews} مرتبه`}</Text>
                 </View>
             </View>
-            <View style={{flexDirection:'column', alignItems:'flex-end', width:width * 0.75}}>
+            <View style={{flexDirection:'column', alignItems:'flex-end', width:width-120, gap:5}}>
                 {rating}
             </View>
         </View>
@@ -45,7 +46,8 @@ const styles = StyleSheet.create({
         width:width,
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        paddingHorizontal:15
     },
 })
 export default React.memo(RatingInfo)

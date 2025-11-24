@@ -127,6 +127,7 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
                                     }}
                                     borderRadius={item?.borderRadius??10}
                                     textSize={item?.textSize??14}
+                                    textColor={item?.color??colors.text.a2}
                                     borderColor={item?.color??colors.alert.a1}
                                     iconName={item?.iconName??undefined}
                                     iconType={item?.iconType??undefined}

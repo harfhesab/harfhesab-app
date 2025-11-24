@@ -1,11 +1,11 @@
 import React, {useRef, useState} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid, ImageBackground} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ToastAndroid, ImageBackground, Image} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import Globals from '../../utils/Globals';
 import ButtonBorder from '../buttons/ButtonBorder';
 import Modal from "react-native-modal";
-import { useSelector} from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import ButtonGradient from '../buttons/ButtonGradient';
 import InputText from '../inputs/InputText';
@@ -13,14 +13,28 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 import { navigate } from '../../main/navigationService';
 import LocalImageComponent from '../image-components/LocalImageComponent';
 import Toast from '../custom-toast/Toast';
+import { DotIndicator } from 'react-native-indicators';
+import { showToast } from '../custom-toast/ToastRef';
+import { increaseNumberCoins, reduceNumberCoins } from '../../redux/slices/coinSlice';
 
 const width = Dimensions.get('window').width;
-const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:editProps, previous, successOperation}) => {
+const Rating = ({
+    defaultRating:defaultRatingProps,
+    comment:commentProps,
+    edit:editProps,
+    previous,
+    successOperation,
+    packageId,
+    ratingReward=0
+}) => {
     const colors = useAppTheme()
+    const dispatch = useDispatch();
     const localToastRef = useRef(null);
     const { loginType } = useSelector((state) => state.account);
+    const [defaultRatingBackup, setDefaultRatingBackup] = useState(defaultRatingProps)
     const [defaultRating, setDefaultRating] = useState(defaultRatingProps)
     const [modalVisible, setModalVisible] = useState(false)
+    const [commentBackup, setCommentBackup] = useState(commentProps)
     const [comment, setComment] = useState(commentProps)
     const [focus, setFocus] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -30,17 +44,31 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
         if(loginType == "registered") {
             let data = {
                 query : `
-                    mutation setRecordRatingForAgency($_id : ID, $agency : ID, $grade : Int, $comment : String){
-                        setRecordRatingForAgency(_id : $_id,  agency : $agency, grade : $grade, comment : $comment) {
+                    mutation setRatingPackageGameByUser(
+                        $previous : ID,
+                        $package : ID!,
+                        $grade : Int!,
+                        $comment : String
+                    ){
+                        setRatingPackageGameByUser(
+                            previous : $previous,
+                            package : $package,
+                            grade : $grade,
+                            comment : $comment
+                        ) {
                             status,
-                            message
+                            message,
+                            reward,
+                            remove_reward
+                            number,
                         }
                     }
-                  `,
+                `,
                 variables : {
-                    "_id" : previous,
+                    "previous" : previous,
+                    "package" : packageId,
                     "grade" : defaultRating,
-                    "comment" : comment.trim() !== ''?comment:null
+                    "comment" : comment.trim() !== ''?comment:undefined
                 }
             }
             await axios({
@@ -48,22 +76,56 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
                 method:'post',
                 data: data,
             }).then(async(response)=>{
-                if(response.data?.data == null){
-                    ToastAndroid.showWithGravity(response.data.errors[0].data[0].message, ToastAndroid.SHORT,ToastAndroid.BOTTOM)
-                } else {
-                    ToastAndroid.showWithGravity(response.data.data.setRecordRatingForAgency.message, ToastAndroid.SHORT,ToastAndroid.BOTTOM)
+                const data = response?.data?.data?.setRatingPackageGameByUser
+                if(data?.status == 200){
+                    setDefaultRatingBackup(defaultRating)
+                    setCommentBackup(comment)
                     successOperation()
                     setFocus(false)
                     setModalVisible(false)
                     setEdit(true)
+                    showToast({
+                        title:"ثبت امتیاز",
+                        message: data?.message??"دادن امتیاز به بستهٔ بازی با موفقیت انجام شد.",
+                        type: 'success',
+                        animationType: 'slide',
+                        position: 'top',
+                        duration:(data?.reward == true || data?.remove_reward == true)?9000:6000
+                    });
+                    if(data?.reward == true){
+                        dispatch(increaseNumberCoins({number:data?.number}))
+                    }
+                    if(data?.remove_reward == true){
+                        dispatch(reduceNumberCoins({number:data?.number}))
+                    }
+                } else {
+                    localToastRef.current.show({
+                        title:"امتیاز ثبت نشد",
+                        message: "مشکلی در ثبت امتیاز پیش آمد. دوباره تلاش کنید!",
+                        type: 'error',
+                        animationType: 'slide',
+                        position: 'top'
+                    });
                 }
                 setLoading(false)
             }).catch((error)=>{
-                ToastAndroid.showWithGravity('مشکلی پیش آمد دوباره تلاش کند', ToastAndroid.SHORT,ToastAndroid.BOTTOM)
+                localToastRef.current.show({
+                    title:"امتیاز ثبت نشد",
+                    message: "مشکلی در ثبت امتیاز پیش آمد. دوباره تلاش کنید!",
+                    type: 'error',
+                    animationType: 'slide',
+                    position: 'top'
+                });
                 setLoading(false)
             })
         } else {
-            ToastAndroid.showWithGravity('برای استفاده از همهٔ امکانات و سرویس‌های منوملک ابتدا وارد حساب کاربری خود شوید.', ToastAndroid.SHORT,ToastAndroid.BOTTOM)
+            localToastRef.current.show({
+                title:"ورود به حساب کاربری",
+                message: "برای دادن امتیاز به بستهٔ بازی، باید وارد حساب کاربری خود شوید.",
+                type: 'info',
+                animationType: 'slide',
+                position: 'top'
+            });
             navigate('Login')
         }
     }
@@ -71,10 +133,12 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
         if(defaultRating == 0){
             if (localToastRef.current) {
                 localToastRef.current.show({
-                    message: 'این تست روی مودال ظاهر می‌شود!',
+                    title: "انتخاب امتیاز",
+                    message: "برای ثبت امتیاز، انتخاب یک امتیاز از 1 تا 5 اجباری است.",
                     type: 'error',
-                    animationType: 'slide', // تست حالت فید
-                    position: 'top'
+                    animationType: 'slide',
+                    position: 'top',
+                    duration:6000
                 });
             }
         } else {
@@ -143,6 +207,8 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
         if(loading == false){
             setModalVisible(false)
             setFocus(false)
+            setDefaultRating(defaultRatingBackup)
+            setComment(commentBackup)
         }
     }
     const drawer = ()=>{
@@ -175,24 +241,23 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
                             </View>
                             <View style={{width:width - 60, alignSelf:'center',}}>
                                 <InputText
-                                    placeholder={"نظر و بازخورد خود را بنویسید..."}
+                                    placeholder={"نظر خود را بنویسید"}
                                     value={comment}
                                     maxLength={400}
                                     onChangeText={(text)=>setComment(text)}
                                     borderWidth={1}
-                                    fontSize={12}
-                                    autoFocus={true}
+                                    fontSize={14}
                                     borderRadius={10}
                                     multiline={true}
                                     numberOfLines={6}
                                     maxHeight={300}
                                     height={80}
-                                    textColor={colors.text.a2}
+                                    textColor={colors.text.a4}
                                     color={colors.primary.a3}
                                     backgroundOpacity={10}
                                 />
                                 <View style={{width:"100%", alignItems:'flex-end'}}>
-                                    <Text style={{color:colors.text.a5, fontFamily:Font.black, fontSize:10}}>{`${comment.length}/300`}</Text>
+                                    <Text style={{color:colors.text.a5, fontFamily:Font.black, fontSize:10}}>{`${comment.length}/400`}</Text>
                                 </View>
                             </View>
                             <View style={{width:"100%", alignItems:'center', justifyContent:'center', alignSelf:'center', bottom:-25}}>
@@ -203,7 +268,14 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
                                         imageStyle={{ resizeMode: "stretch" }}
                                         resizeMode="stretch"
                                     >
-                                        <Text style={{fontFamily:Font.black, fontSize:15, color:colors.primary.a3}}>{edit == true?'ویرایش نظر و امتیاز':'ثبت نظر و امتیاز'}</Text>
+                                        {
+                                            loading == true?
+                                            <View style={{width:"100%", height:"100%", alignItems:"center", justifyContent:"center"}}>
+                                                <DotIndicator color={colors.primary.a3} count={3} size={8}/>
+                                            </View>
+                                            :
+                                            <Text style={{fontFamily:Font.black, fontSize:15, color:colors.primary.a3}}>{edit == true?'ویرایش نظر و امتیاز':'ثبت نظر و امتیاز'}</Text>
+                                        }
                                     </ImageBackground>
                                 </TouchableOpacity>
                             </View>
@@ -259,8 +331,14 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
     return (
         <View>
             <View style={[styles.container, {borderColor:colors.border.a2, backgroundColor:colors.background.a2}]}>
-                <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:12, textAlign:'justify'}}>{"با توجه به اینکه شما سابق این بستهٔ بازی را دریافت کرده‌اید میتوانید نظر و بازخوردتان را نسبت به آن در قالب یک نظر و امتیاز ثبت کنید."}</Text>
-                <View style={styles.starContent}>
+                <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:11, textAlign:'justify', lineHeight:20}}>{"با توجه به اینکه شما سابق این بستهٔ بازی را دریافت کرده‌اید میتوانید نظر و بازخوردتان را نسبت به آن در قالب یک نظر و امتیاز ثبت کنید."}</Text>
+                {
+                    ((edit !== true || (edit == true && comment?.length == 0)) && ratingReward > 0)&&
+                    <View style={{width:"100%", alignItems:'flex-start'}}>
+                        <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:11, textAlign:'justify', lineHeight:20}}>{`با افزودن "نظرتان" در مورد محتوای این بستهٔ بازی ${ratingReward} سکه پاداش دریافت کنید.`}</Text>
+                    </View>
+                }
+                <View style={[styles.starContent, {marginTop:10}]}>
                     {ratingBar}
                 </View>
             </View>
@@ -272,9 +350,20 @@ const Rating = ({defaultRating:defaultRatingProps, comment:commentProps, edit:ed
                     textSize={15}
                     width={width-30}
                     height={50}
-                    borderRadius={5}
                     borderWidth={0.5}
                     borderColor={colors.border.a1}
+                    justifyContent={((edit !== true || (edit == true && comment?.length == 0)) && ratingReward > 0)?"space-between":"center"}
+                    CustomContent={((edit !== true || (edit == true && comment?.length == 0)) && ratingReward > 0)?()=>{
+                        return(
+                            <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                                <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1}}>{`${ratingReward} +`}</Text>
+                                <Image
+                                    style={{height:20, width:20}}
+                                    source={require('../../assets/image/coin.png')}
+                                />
+                            </View>
+                        )
+                    }:null}
                 />
             </View>
             {

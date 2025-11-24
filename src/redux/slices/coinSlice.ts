@@ -24,7 +24,7 @@ const coinSlice = createSlice({
       state,
       action: PayloadAction<{ number: number }>
     ) {
-      state.numberCoins = state.numberCoins - action.payload.number;
+      state.numberCoins = Math.max(state.numberCoins - action.payload.number, 0);
     },
     increaseNumberCoins(
       state,

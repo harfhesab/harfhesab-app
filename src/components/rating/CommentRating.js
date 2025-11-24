@@ -5,15 +5,13 @@ import Font from '../../utils/Font';
 import GradeNumber from './GradeNumber';
 import { convertDate } from '../../utils/ConvertDate';
 import axios from 'axios';
-import BottomDrawer from '../bottomDrawer/BottomDrawerHelper';
-import ModalInput from '../modalInput/ModalInputHelper';
-import FastImage from 'react-native-fast-image';
 import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { showToast } from '../custom-toast/ToastRef';
+import AlertBottomDrawerHelper from '../alert-bottom-drawer/AlertBottomDrawerHelper';
 
 const width = Dimensions.get('window').width
-function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt, user}){
+function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt}){
     const colors = useAppTheme();
     const [likeNumber, setLikeNumber] = useState(likeNumbers?likeNumbers:0)
     const [disLikeNumber, setDisLikeNumber] = useState(disLikeNumbers?disLikeNumbers:0)
@@ -49,15 +47,15 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
     const operationLike = async()=>{
         let data = {
             query : `
-                mutation userLikeRatingItem($_id : ID!){
-                    userLikeRatingItem(_id : $_id) {
+                mutation setLikeRatingPackageGameByUser($rating : ID!){
+                    setLikeRatingPackageGameByUser(rating : $rating) {
                         status,
                         message
                     }
                 }
               `,
             variables : {
-                "_id" : _id,
+                "rating" : _id,
             }
         }
         await axios({
@@ -65,7 +63,9 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
             method:'post',
             data: data,
         }).then(async(response)=>{
-            if(response.data?.data == null){
+            if(response.data?.data?.setLikeRatingPackageGameByUser?.status == 200){
+                null
+            } else {
                 setLiked(false)
                 setLikeNumber((p)=> p - 1)
             }
@@ -91,15 +91,15 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
     const operationDisLike = async()=>{
         let data = {
             query : `
-                mutation userDisLikeRatingItem($_id : ID!){
-                    userDisLikeRatingItem(_id : $_id) {
+                mutation setDisLikeRatingPackageGameByUser($rating : ID!){
+                    setDisLikeRatingPackageGameByUser(rating : $rating) {
                         status,
                         message
                     }
                 }
               `,
             variables : {
-                "_id" : _id,
+                "rating" : _id,
             }
         }
         await axios({
@@ -107,7 +107,9 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
             method:'post',
             data: data,
         }).then(async(response)=>{
-            if(response.data?.data == null){
+            if(response.data?.data?.setDisLikeRatingPackageGameByUser?.status == 200){
+                null
+            } else {
                 setDisLiked(false)
                 setDisLikeNumber((p)=> p - 1)
             }
@@ -117,31 +119,55 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
         })
     }
     const reportModal = ()=>{
-        BottomDrawer.showDrawer({
-            title: 'ثبت گزارش بازخورد نامناسب و نامرتبط',
-            btn:{
-                text: 'ثبت گزارش',
-                onPress: () => {reportRating()},
-                load: true,
-            },
-            options : {
+        const msg = [
+            {
+                text:"آیا محتوای این نظر نسبت به بستهٔ بازی، نامناسب است؟",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
+            }
+        ]
+        AlertBottomDrawerHelper.showAlert({
+            title:"ثبت گزارش بازخورد نامناسب",
+            message: msg,
+            buttons:[
+                {
+                    onPress : ()=>{
+                       reportRating()
+                    },
+                    text: "ثبت گزارش",
+                    loading: true,
+                    stayOpen: true,
+                    type: "bold",
+                },
+                {
+                    onPress : ()=>{},
+                    text: 'لغو',
+                    loading: false,
+                    stayOpen: false,
+                    type: "border",
+                },
+            ],
+            options:{
                 cancelable: true,
-                closed: false,
-            },
+                icon:{
+                    Icon:()=>(
+                        <Icon name={"report"} type={"MaterialIcons"} style={{fontSize:100, color:colors.alert.a1}}/>
+                    )
+                }
+            }
         })
     }
     const reportRating = async() =>{
         let data = {
             query : `
-                mutation userSetReportRating($_id : ID!){
-                    userSetReportRating(_id : $_id) {
+                mutation setReportCommentRatingPackageGameByUser($rating : ID!){
+                    setReportCommentRatingPackageGameByUser(rating : $rating) {
                         status,
                         message
                     }
                 }
               `,
             variables : {
-                "_id" : _id,
+                "rating" : _id,
             }
         }
         await axios({
@@ -149,29 +175,29 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
             method:'post',
             data: data,
         }).then(async(response)=>{
-            BottomDrawer.hideDrawer()
-            if(response.data?.data.userSetReportRating.status == 200){
+            AlertBottomDrawerHelper.hideAlert()
+            if(response.data?.data.setReportCommentRatingPackageGameByUser.status == 200){
                 showToast({
-                    title: "با موفقیت ثبت شد!",
-                    message: "از ثبت بازخورد شما سپاس گذاریم.",
+                    title: "ثبت گزارش",
+                    message: "از ثبت گزارش شما سپاس گذاریم.",
                     type: "success",
                     animationType: "slide",
                     position: "top",
                 });
             } else {
                 showToast({
-                    title: "مشکلی پیش آمد!",
-                    message: "مشکلی در ثبت بازخوردتان پیش آمد. لطفا دوباره تلاش کنید.",
+                    title: "مشکلی پیش آمد",
+                    message: "مشکلی در ثبت گزارش پیش آمد. لطفا دوباره تلاش کنید.",
                     type: "error",
                     animationType: "slide",
                     position: "top",
                 });
             }
         }).catch((error)=>{
-            BottomDrawer.hideDrawer()
+            AlertBottomDrawerHelper.hideAlert()
             showToast({
-                title: "مشکلی پیش آمد!",
-                message: "مشکلی در ثبت بازخوردتان پیش آمد. لطفا دوباره تلاش کنید.",
+                title: "مشکلی پیش آمد",
+                message: "مشکلی در ثبت گزارش پیش آمد. لطفا دوباره تلاش کنید.",
                 type: "error",
                 animationType: "slide",
                 position: "top",
@@ -179,12 +205,12 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
         })
     }
     return (
-        <View style={{width:width, flexDirection:'column', marginVertical:40}}>
+        <View style={{width:width, flexDirection:'column', marginVertical:30}}>
             <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'space-between'}}>
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginStart:15}}>
-                    <Icon name={'person'} type={'Ionicons'} style={{color:colors.primary.a1, fontSize:30}}/>
+                    <Icon name={'person'} type={'Ionicons'} style={{color:colors.text.a6, fontSize:40}}/>
                     <View style={{flexDirection:'column', alignItems:'flex-start', marginStart:5}}>
-                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a4}}>{name?name:'کاربر منوملک'}</Text>
+                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a5}}>{name?name:'کاربر بی‌زبون'}</Text>
                         <GradeNumber
                             size={12}
                             grade={grade}
@@ -192,7 +218,7 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                     </View>
                 </View>
                 <View style={{flexDirection:'row', alignItems:'center', marginEnd:2}}>
-                    <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a4, marginEnd:10}}>{convertDate(date)}</Text>
+                    <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a6, marginEnd:10}}>{convertDate(date)}</Text>
                     <TouchableNativeFeedback onPress={reportModal} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                         <View pointerEvents='box-only' style={{justifyContent:'center', alignItems:'center', padding:10}}>
                             <Icon name={'dots-three-vertical'} type={'Entypo'} style={{color:colors.text.a5, fontSize:15}}/>
@@ -201,55 +227,34 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                 </View>
             </View>
             <View style={{marginVertical:15, paddingHorizontal:15}}>
-                {
-                    user&&
-                    <View style={{flexDirection:'row', alignItems:'center'}}>
-                        {
-                            user?.avatar_img?
-                            <FastImage
-                                style={{width:15, height:15, borderRadius:3}}
-                                source={{
-                                    uri: `${Globals.uri}${user.avatar_img}`,
-                                    priority: FastImage.priority.normal,
-                                }}
-                                resizeMode={FastImage.resizeMode.cover}
-                            />
-                            :
-                            <Icon name='user-tie' type='FontAwesome5' style={{color:colors.text.a4, fontSize:13}}/>
-                        }
-                        <Text style={{color:colors.text.a4, fontFamily:Font.medium, fontSize:11, marginStart:5}}>{`${user.f_name} ${user.l_name}`}</Text>
-                    </View>
-                }
                 <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a5}}>{comment}</Text>
             </View>
-            <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'space-between', paddingHorizontal:15}}>
-                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start'}}>
-                    <View style={{flexDirection:'row', alignItems:'center'}}>
-                        {
-                            liked == true?
-                            <TouchableOpacity>
-                                <Icon name={'like1'} type={'AntDesign'}  style={{color:colors.primary.a1, fontSize:25}}/>
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity onPress={like}>
-                                <Icon name={'like2'} type={'AntDesign'}  style={{color:colors.text.a4, fontSize:25}}/>
-                            </TouchableOpacity>
-                        }
-                        <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a5, marginStart:5}}>{likeNumber}</Text>
-                    </View>
-                    <View style={{flexDirection:'row', alignItems:'center', marginStart:15}}>
-                        {
-                            disLiked == true?
-                            <TouchableOpacity>
-                                <Icon name={'dislike1'} type={'AntDesign'}  style={{color:colors.primary.a1, fontSize:25}}/>
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity onPress={disLike}>
-                                <Icon name={'dislike2'} type={'AntDesign'}  style={{color:colors.text.a4, fontSize:25}}/>
-                            </TouchableOpacity>
-                        }
-                        <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a5, marginStart:5}}>{disLikeNumber}</Text>
-                    </View>
+            <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'flex-start', paddingHorizontal:15, gap:30}}>
+                <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                    {
+                        liked == true?
+                        <TouchableOpacity>
+                            <Icon name={'like1'} type={'AntDesign'}  style={{color:colors.primary.a1, fontSize:25}}/>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity onPress={like}>
+                            <Icon name={'like2'} type={'AntDesign'}  style={{color:colors.text.a4, fontSize:25}}/>
+                        </TouchableOpacity>
+                    }
+                    <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a5}}>{likeNumber}</Text>
+                </View>
+                <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                    {
+                        disLiked == true?
+                        <TouchableOpacity>
+                            <Icon name={'dislike1'} type={'AntDesign'}  style={{color:colors.alert.a1, fontSize:25}}/>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity onPress={disLike}>
+                            <Icon name={'dislike2'} type={'AntDesign'}  style={{color:colors.text.a4, fontSize:25}}/>
+                        </TouchableOpacity>
+                    }
+                    <Text style={{fontFamily:Font.black, fontSize:11, color:colors.text.a5}}>{disLikeNumber}</Text>
                 </View>
             </View>
         </View>

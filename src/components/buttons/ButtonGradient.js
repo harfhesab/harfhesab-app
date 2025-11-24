@@ -7,7 +7,7 @@ import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
 function ButtonGradient(
-    {loading, loadingType, onPress, borderRadius=5, width, height, text, text2, iconName, iconType, iconSize=25, ComplateContent, backgorundGradinte, textSize=16, fontFamily=Font.medium, justifyContent='center', flexDirection='row', activeOpacity=0.8}
+    {loading, loadingType, onPress, borderRadius=8, width, height, text, text2, iconName, iconType, iconSize=25, backgorundGradinte, textSize=16, fontFamily=Font.medium, justifyContent='center', flexDirection='row', activeOpacity=0.8}
 ){
     const colors = useAppTheme();
 
@@ -31,9 +31,6 @@ function ButtonGradient(
                     {
                         (loading == true)?
                         (renderLoading())
-                        :
-                        ComplateContent?
-                        (<ComplateContent/>)
                         :
                         (iconName && iconType)?
                         (<View style={{flexDirection:flexDirection, alignItems:'center', width:'100%', justifyContent:justifyContent, paddingHorizontal:15, gap:15}}>

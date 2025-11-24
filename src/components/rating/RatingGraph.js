@@ -1,64 +1,68 @@
-import React,{useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Animated, Dimensions} from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, Dimensions, I18nManager } from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
-import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { priceDigitSeperator } from '../../utils/PriceDigitSeperator';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withTiming,
+} from 'react-native-reanimated';
 
 const width = Dimensions.get('window').width;
-const RatingGraph = (props) => {
-    const colors = useAppTheme()
-    const [numberRating, setNumberRating] = useState(props.number_rating)
-    const [reviews, setReviews] = useState(props.reviews)
-    const [Animation, setAnimation] = useState(new Animated.Value(0))
+
+const RatingGraph = ({ number_rating, reviews, index }) => {
+    const colors = useAppTheme();
+    const maxWidth = width - 185;
+    const RTL = I18nManager.isRTL;
+
+    const output = reviews > 0 ? (number_rating / reviews) * maxWidth : 0;
+
+    const animatedWidth = useSharedValue(0);
+
     useEffect(() => {
-        setReviews(props.reviews)
-    }, [props.reviews])
-    useEffect(() => {
-        setNumberRating(props.number_rating)
-    }, [props.number_rating])
-    const ShowScorse = ()=>{
-        const output = numberRating / reviews * (width * 0.57) 
-        const Animation_Interpolate = Animation.interpolate({
-            inputRange:[0, 1], 
-            outputRange: [-(width * 0.57),output - width * 0.57]
-        })
-        Animated.timing(
-            Animation,
-            {
-                toValue:1,
-                duration:1200,
-                useNativeDriver: true
-            }
-        ).start()
-        return(
-            <Animated.View style={[ styles.Root_Sliding_Drawer_Container,{ transform :[{ translateX: Animation_Interpolate }],width:output, height:7}]}>
-                <View style={[{borderRadius:2},{width:output, height:7, backgroundColor:colors.primary.a1, alignSelf:'flex-start'}]}/>
-            </Animated.View>
-        )
-    }
+        animatedWidth.value = 0;
+
+        animatedWidth.value = withTiming(output, {
+            duration: 2500,
+        });
+    }, [reviews, number_rating]);
+
+    const animStyle = useAnimatedStyle(() => {
+        return {
+            width: animatedWidth.value,
+            alignSelf: RTL ? 'flex-end' : 'flex-start',
+        };
+    });
+
     return (
-        <View style={{ height:20, width:width * 0.75 -20, flexDirection:'row', justifyContent:'flex-end', alignItems:'center', paddingEnd:width * 0.11}}>
-            <Text style={{fontSize:10, color:colors.text.a4, fontFamily:Font.medium, height:20, textAlignVertical:'center', marginEnd:5}}>{numberRating}</Text>
-            <View style={[{borderRadius:2},{width:width * 0.57, height:7, backgroundColor:colors.border.a1}]}>
-            {
-                reviews > 0?
-                ShowScorse()
-                :null
-            }
+        <View style={{ height: 20, width: width - 120, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <View style={{ width: 40, height: 20, alignItems: 'flex-end', justifyContent: 'center', marginEnd: 5 }}>
+                <Text style={{ fontSize: 10, color: colors.text.a6, fontFamily: Font.medium }}>
+                    {number_rating > 0 ? priceDigitSeperator(number_rating) : number_rating}
+                </Text>
             </View>
-            <View style={{width:width * 0.11, height:20 ,position:'absolute', flexDirection:'row', alignItems:'center', justifyContent:'flex-end'}}>
-                <Icon name='star' type='AntDesign' style={{fontSize:10, color:colors.text.a4}}/>
-                <Text style={{fontSize:10, color:colors.text.a4, fontFamily:Font.medium, textAlign:'right', width:width*0.025, textAlignVertical:'center', marginEnd:20}}>{props.index}</Text>
+            <View style={[{ borderRadius: 5 }, { width: maxWidth, height: 10, backgroundColor: colors.border.a1, overflow: 'hidden' }]}>
+                {reviews > 0 && (
+                    <Animated.View
+                        style={[
+                            animStyle,
+                            {
+                                height: 10,
+                                backgroundColor: colors.primary.a1,
+                                borderRadius: 5,
+                            }
+                        ]}
+                    />
+                )}
+            </View>
+            <View style={{ width: 25, height: 20, flexDirection:'row', alignItems:'center', justifyContent:'center', gap:2 }}>
+                <Icon name='star' type='AntDesign' style={{ fontSize: 12, color: colors.border.a1 }} />
+                <Text style={{ fontSize: 10, color: colors.text.a6, fontFamily: Font.black }}>{index}</Text>
             </View>
         </View>
     );
 };
-const styles = StyleSheet.create({
-    Root_Sliding_Drawer_Container:{
-        position:'absolute',
-        zIndex:-1,
-        left:0
-    },
-})
-export default React.memo(RatingGraph)
+
+export default React.memo(RatingGraph);

@@ -24,6 +24,8 @@ import { updateNumberCoins } from '../../../redux/slices/coinSlice';
 import Icon from '../../../utils/Icon';
 import Rating from '../../../components/rating/Rating';
 import { showToast } from '../../../components/custom-toast/ToastRef';
+import CommentRating from '../../../components/rating/CommentRating';
+import Border from '../../../components/Border';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -107,6 +109,7 @@ function PackageInformation(props){
                                     grade,
                                     comment,
                                 },
+                                rating_reward,
                                 seasons{title, first_media{path}},
                             },
                             user_package_status{
@@ -137,10 +140,10 @@ function PackageInformation(props){
                 setLoading(false)
             }
             if(checkExist?.user_package?._id){
-                if(checkExist.user_package?.version_created < data.force_version_created || checkExist.user_package?.version_updated < data.force_version_updated || checkExist.user_package?.version_deleted < data.force_version_deleted){
-                    setCheckUpdate("need-update")
-                } else if(checkExist.user_package?.version_created < data.version_created || checkExist.user_package?.version_updated < data.version_updated || checkExist.user_package?.version_deleted < data.version_deleted){
+                if(checkExist.user_package?.version_created < data?.package?.force_version_created || checkExist.user_package?.version_updated < data?.package?.force_version_updated || checkExist.user_package?.version_deleted < data?.package?.force_version_deleted){
                     setCheckUpdate("force-update")
+                } else if(checkExist.user_package?.version_created < data?.package?.version_created || checkExist.user_package?.version_updated < data?.package?.version_updated || checkExist.user_package?.version_deleted < data?.package?.version_deleted){
+                    setCheckUpdate("need-update")
                 }
             }
         }).catch((e)=>{
@@ -617,6 +620,15 @@ function PackageInformation(props){
         }
         await redownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
+    const viewAllPackageRating = ()=>{
+        props.navigation.navigate("ViewAllPackageRating",{
+            _id:packageParamId,
+            title:data?.package?.title,
+            rating_average:data?.package?.rating_average,
+            rating_info:data?.package?.rating_info,
+            rating_number:data?.package?.rating_number
+        })
+    }
     
     return(
         <SafeAreaView style={{flex:1}}>
@@ -684,28 +696,36 @@ function PackageInformation(props){
                             />
                         </View>
                         <View style={{width:width, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15, paddingTop:20}}>
-                            <ButtonGradient
-                                text={data?.user_package_status?.button_text}
-                                textSize={14}
-                                onPress={onClickGetPackage}
-                                width={checkUpdate == "need-update" || checkUpdate =="force-update"?width/2 - 20:width - 30}
-                                height={50}
-                                borderRadius={5}
-                                loading={checkUpdate == "need-update" || checkUpdate =="force-update"?false:progressLoading}
-                            />
+                            {
+                                (checkUpdate !== "force-update")&&
+                                <ButtonGradient
+                                    text={data?.user_package_status?.button_text}
+                                    textSize={14}
+                                    onPress={onClickGetPackage}
+                                    width={checkUpdate == "need-update" ?width/2 - 20:width - 30}
+                                    height={50}
+                                    loading={checkUpdate == "need-update"?false:progressLoading}
+                                />
+                            }
                             {
                                 (checkUpdate == "need-update" || checkUpdate =="force-update")&&
                                 <ButtonBorder
                                     text={"بروزرسانی محتوا"}
                                     height={50}
-                                    width={width/2 - 20}
+                                    width={checkUpdate == "force-update" ?width - 30:width/2 - 20}
                                     loading={progressLoading}
                                     onPress={()=>{}}
-                                    borderRadius={5}
                                     textSize={14}
                                 />
                             }
                         </View>
+                        {
+                            data?.package.description?.length>0&&
+                            <View style={{width:width, paddingHorizontal:15, marginTop:30}}>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:16, lineHeight:30}}>{"دربارهٔ بستهٔ بازی"}</Text>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:14, textAlign:'justify', lineHeight:26}}>{data?.package.description}</Text>
+                            </View>
+                        }
                         <View style={{width:width, paddingTop:30}}>
                             {
                                 (
@@ -715,32 +735,82 @@ function PackageInformation(props){
                                     data?.user_package_status.status == "start-game"
                                 ) && 
                                 <Rating
+                                    packageId={packageParamId}
                                     successOperation={getData}
                                     edit={data?.package?.me_previous_rating?true:false}
                                     previous={data?.package?.me_previous_rating?._id}
                                     defaultRating={data?.package?.me_previous_rating?.grade??0}
                                     comment={data?.package?.me_previous_rating?.comment??""}
+                                    ratingReward={data?.package?.rating_reward??0}
                                 />
                             }
-                            <TouchableNativeFeedback style={{width:width, marginTop:10}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                                <View style={{width:width, height:50, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
-                                    <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{"نظرات و امتیازها"}</Text>
-                                    <View style={{flexDirection:"row", alignItems:"center", gap:8}}>
-                                        <Text style={{fontSize:14, color:colors.primary.a1, fontFamily:Font.medium}}>{"بیشتر"}</Text>
-                                        <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.primary.a1, fontSize:25}}/>
+                            <View style={{marginTop:10}}>
+                                <TouchableNativeFeedback onPress={viewAllPackageRating} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
+                                    <View style={{width:width, height:55, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
+                                        <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{"نظرات و امتیازها"}</Text>
+                                        <View style={{flexDirection:"row", alignItems:"center", gap:8}}>
+                                            <Text style={{fontSize:14, color:colors.primary.a1, fontFamily:Font.medium}}>{"بیشتر"}</Text>
+                                            <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.primary.a1, fontSize:25}}/>
+                                        </View>
                                     </View>
-                                </View>
-                            </TouchableNativeFeedback>
-                            <RatingInfo
-                                rating_average={data?.package?.rating_average}
-                                rating_info={data?.package?.rating_info}
-                                reviews={data?.package?.rating_number}
-                            />
+                                </TouchableNativeFeedback>
+                                <TouchableNativeFeedback onPress={viewAllPackageRating} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
+                                    <View style={{paddingVertical:10}}>
+                                        <RatingInfo
+                                            rating_average={data?.package?.rating_average}
+                                            rating_info={data?.package?.rating_info}
+                                            reviews={data?.package?.rating_number}
+                                        />
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
+                            {
+                                data?.package?.rating_some?.length > 0 &&
+                                    data?.package?.rating_some.map((item, index)=>(
+                                        <View key={index.toString()}>
+                                            <CommentRating
+                                                _id={item?._id}
+                                                name={item?.user?.name}
+                                                grade={item?.grade}
+                                                date={item?.createdAt}
+                                                comment={item?.comment}
+                                                likeNumbers={item?.like}
+                                                disLikeNumbers={item?.dis_like}
+                                                likedIt={item?.me_set_like}
+                                                disLikedIt={item?.me_set_dis_like}
+                                            />
+                                            {
+                                                index < data?.package?.rating_some?.length - 1&&
+                                                <Border
+                                                    height={1}
+                                                    horizontal={15}
+                                                    top={0}
+                                                    bottom={0}
+                                                />
+                                            }
+                                        </View>
+                                ))
+                            }
+                            <View style={{width:width, alignItems:'center'}}> 
+                                {
+                                    data?.package?.rating_some?.length > 0&&
+                                    <ButtonBorder
+                                        text={"همهٔ نظرات"}
+                                        height={50}
+                                        width={width-30}
+                                        loading={false}
+                                        onPress={viewAllPackageRating}
+                                        textSize={14}
+                                        textColor={colors.text.a2}
+                                        borderColor={colors.border.a1}
+                                    />
+                                }
+                            </View>
                         </View>
                         {
                             data?.package?.seasons?.length > 0&&
                             <View style={{width:width, marginTop:30, paddingHorizontal:15}}>
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14, lineHeight:50}}>{"فصل‌های بازی"}</Text>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:16, lineHeight:50}}>{"فصل‌های بستهٔ بازی"}</Text>
                                 <View style={{width:width, flexDirection:'row', flexWrap:'wrap', rowGap:30, columnGap:15, justifyContent:'flex-start'}}>
                                     {
                                         data?.package?.seasons.map((item, index)=>(
