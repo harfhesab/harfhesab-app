@@ -9,6 +9,7 @@ import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { showToast } from '../custom-toast/ToastRef';
 import AlertBottomDrawerHelper from '../alert-bottom-drawer/AlertBottomDrawerHelper';
+import { vibrate } from '../../utils/vibrationManager';
 
 const width = Dimensions.get('window').width
 function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNumbers, likedIt, disLikedIt}){
@@ -31,6 +32,7 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
     
 
     const like = ()=>{
+        vibrate()
         if(liked == false){
             setLiked(true)
             setLikeNumber((p)=> p + 1)
@@ -75,6 +77,7 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
         })
     }
     const disLike = ()=>{
+        vibrate()
         if(disLiked == false) {
             setDisLiked(true)
             setDisLikeNumber((p)=> p + 1)

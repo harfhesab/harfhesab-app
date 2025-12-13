@@ -110,9 +110,6 @@ function UserPackagesList(props){
                                 testable,
                                 number_stage,
                                 number_season,
-                                doc_version_created,
-                                doc_version_updated,
-                                doc_version_deleted,
                             },
                         }
                     }

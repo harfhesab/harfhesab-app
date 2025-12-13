@@ -19,9 +19,6 @@ export class Package extends Realm.Object<Package> {
   number_season?: number;
   is_visible!: boolean;
   is_active!: boolean;
-  version_created?: number;
-  version_updated?: number;
-  version_deleted?: number;
   createdAt!: Date;
   updatedAt!: Date;
 
@@ -46,9 +43,6 @@ export class Package extends Realm.Object<Package> {
       number_season: "int?",
       is_visible: { type: "bool", default: false },
       is_active: { type: "bool", default: false },
-      version_created: "int?",
-      version_updated: "int?",
-      version_deleted: "int?",
       createdAt: "date",
       updatedAt: "date",
     },

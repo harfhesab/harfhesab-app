@@ -18,7 +18,7 @@ import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawe
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import AlertHelper from '../../../components/alert/AlertHelper';
-import { recreateAndDownloadContentUserPackage, redownloadContentUserPackage, startSetPackageGameForUserAndGetIt } from '../../../utils/background-task/PackageGameContentTask';
+import { recreateAndDownloadContentUserPackage, startSetPackageGameForUserAndGetIt, startUpdatePackageGameContent } from '../../../utils/background-task/PackageGameContentTask';
 import { startProgressLoading } from '../../../redux/slices/packageGameDownloadSlice';
 import { updateNumberCoins } from '../../../redux/slices/coinSlice';
 import Icon from '../../../utils/Icon';
@@ -26,6 +26,7 @@ import Rating from '../../../components/rating/Rating';
 import { showToast } from '../../../components/custom-toast/ToastRef';
 import CommentRating from '../../../components/rating/CommentRating';
 import Border from '../../../components/Border';
+import LoadingBar from '../../../components/screen-loading/LoadingBar';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -42,11 +43,41 @@ function PackageInformation(props){
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null)
     const packageParamId = props?.route?.params?._id
     const { numberCoins } = useSelector((state) => state.coins);
-    const { packageId, userPackageId, status, progressLoading } = useSelector((state) => state.packageGameDownload);
+    const { packageId, userPackageId, status, contentSyncState, progressLoading, lastPackageSyncingId } = useSelector((state) => state.packageGameDownload);
 
     useEffect(()=>{
         getData()
     }, [])
+    useEffect(()=>{
+        if(status == "downloaded" && lastPackageSyncingId == packageParamId){
+            updateLoacalData()
+        }
+    }, [status])
+    const updateLoacalData = async()=>{
+        const checkExist = await checkExistUserPackageWithPakcageId(realm, packageParamId)
+        setLocalData(checkExist)
+        if(contentSyncState == "initial-sync"){
+            setData(prev => ({
+                ...prev,
+                user_package_status: {
+                    ...(prev?.user_package_status ?? {}),
+                    status: "start-game",
+                    button_text: "شروع بازی"
+                }
+            }));
+        } else if(contentSyncState == "delta-sync"){
+            if(checkExist?.user_package?._id && data){
+                if(checkExist.user_package?.version_created < data?.package?.force_version_created || checkExist.user_package?.version_updated < data?.package?.force_version_updated || checkExist.user_package?.version_deleted < data?.package?.force_version_deleted){
+                    setCheckUpdate("force-update")
+                } else if(checkExist.user_package?.version_created < data?.package?.version_created || checkExist.user_package?.version_updated < data?.package?.version_updated || checkExist.user_package?.version_deleted < data?.package?.version_deleted){
+                    setCheckUpdate("need-update")
+                } else {
+                    setCheckUpdate(null)
+                }
+            }
+        }
+        
+    }
     const getData = async()=>{
         const checkExist = await checkExistUserPackageWithPakcageId(realm, packageParamId)
         setLocalData(checkExist)
@@ -81,9 +112,6 @@ function PackageInformation(props){
                                 testable,
                                 number_stage,
                                 number_season,
-                                doc_version_created,
-                                doc_version_updated,
-                                doc_version_deleted,
                                 version_created,
                                 version_updated,
                                 version_deleted,
@@ -134,15 +162,15 @@ function PackageInformation(props){
                 }
             }
         }).then(async(response)=>{
-            const data = response.data.data?.getPackageInformationAndUserPackageStatus
-            if(data){
-                setData(data)
+            const dataReceived = response.data.data?.getPackageInformationAndUserPackageStatus
+            if(dataReceived){
+                setData(dataReceived)
                 setLoading(false)
             }
-            if(checkExist?.user_package?._id){
-                if(checkExist.user_package?.version_created < data?.package?.force_version_created || checkExist.user_package?.version_updated < data?.package?.force_version_updated || checkExist.user_package?.version_deleted < data?.package?.force_version_deleted){
+            if(checkExist?.user_package?._id && dataReceived?.user_package_status.status == "start-game"){
+                if(checkExist.user_package?.version_created < dataReceived?.package?.force_version_created || checkExist.user_package?.version_updated < dataReceived?.package?.force_version_updated || checkExist.user_package?.version_deleted < dataReceived?.package?.force_version_deleted){
                     setCheckUpdate("force-update")
-                } else if(checkExist.user_package?.version_created < data?.package?.version_created || checkExist.user_package?.version_updated < data?.package?.version_updated || checkExist.user_package?.version_deleted < data?.package?.version_deleted){
+                } else if(checkExist.user_package?.version_created < dataReceived?.package?.version_created || checkExist.user_package?.version_updated < dataReceived?.package?.version_updated || checkExist.user_package?.version_deleted < dataReceived?.package?.version_deleted){
                     setCheckUpdate("need-update")
                 }
             }
@@ -156,28 +184,42 @@ function PackageInformation(props){
         getData()
     }
     const onClickGetPackage = ()=>{
-        if(data?.user_package_status.status == "get-free"){
-            const accessType = "free"
-            const numberCoinPaid = undefined
-            getForFirst(accessType, numberCoinPaid)
-        } else if(data?.user_package_status.status == "get-subscription"){
-            getPackageWithSubscription()
-        } else if(data?.user_package_status.status == "get-coin-payment"){
-            getPackageWithCoinPayment()
-        } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
-            subscriptionRenewalOrCoinPayment()
-        } else if(data?.user_package_status.status == "redownload-content"){
-            const accessType = data.user_package_status.access_type
-            const numberCoinPaid = data.user_package_status.number_coin_paid
-            const activationDate = data.user_package_status.activation_date
-            redownloadContent(accessType, numberCoinPaid, activationDate)
-        } else if(data?.user_package_status.status == "recreate-and-download-content"){
-            const accessType = data.user_package_status.access_type
-            const numberCoinPaid = data.user_package_status.number_coin_paid
-            const activationDate = data.user_package_status.activation_date
-            recreateAndDownloadContent(accessType, numberCoinPaid, activationDate)
-        } else if(data?.user_package_status.status == "start-game"){
+        if(data?.user_package_status.status == "start-game"){
             props.navigation.navigate("StartPackageGame", {_id:localData?.user_package._id.toHexString(), packageId:localData?.package._id.toHexString() })
+        } else if(!packageId || progressLoading !== true){
+            if(data?.user_package_status.status == "get-free"){
+                const accessType = "free"
+                const numberCoinPaid = undefined
+                getForFirst(accessType, numberCoinPaid)
+            } else if(data?.user_package_status.status == "get-subscription"){
+                getPackageWithSubscription()
+            } else if(data?.user_package_status.status == "get-coin-payment"){
+                getPackageWithCoinPayment()
+            } else if(data?.user_package_status.status == "subscription-renewal-or-coin-payment"){
+                subscriptionRenewalOrCoinPayment()
+            } else if(data?.user_package_status.status == "redownload-content"){
+                const accessType = data.user_package_status.access_type
+                const numberCoinPaid = data.user_package_status.number_coin_paid
+                const activationDate = data.user_package_status.activation_date
+                recreateAndDownloadContent(accessType, numberCoinPaid, activationDate)
+            }
+        } else {
+            AlertHelper.showAlert({
+                body: "در حال حاضر بستهٔ بازی دیگری در حال بارگیری و ذخیره سازی است. لطفا کمی منتظر بمانید.",
+                buttons: [
+                    {
+                        text: 'متوجه شدم',
+                        onPress: () => {},
+                        type:'bold'
+                    },
+                ],
+                options : {
+                    type: 'warning',
+                    cancelable: true,
+                    bodyAlign:'center',
+                    textAlign:'center'
+                },
+            });
         }
     }
     const subscriptionRenewalOrCoinPayment = ()=>{
@@ -312,27 +354,15 @@ function PackageInformation(props){
                         },
                     }));
                 } else {
-                    if(localData?.user_package?._id){
-                        setData(prev => ({
-                            ...(prev || {}),
-                            user_package_status: {
-                                ...(prev?.user_package_status || {}),
-                                status: "redownload-content",
-                                button_text: "دانلود مجدد محتوا",
-                            },
-                        }));
-                        redownloadContent(accessType, numberCoinPaid, activationDate)
-                    } else {
-                        setData(prev => ({
-                            ...(prev || {}),
-                            user_package_status: {
-                                ...(prev?.user_package_status || {}),
-                                status: "recreate-and-download-content",
-                                button_text: "دانلود مجدد محتوا",
-                            },
-                        }));
-                        recreateAndDownloadContent(accessType, numberCoinPaid, activationDate)
-                    }
+                    setData(prev => ({
+                        ...(prev || {}),
+                        user_package_status: {
+                            ...(prev?.user_package_status || {}),
+                            status: "redownload-content",
+                            button_text: "دانلود مجدد محتوا",
+                        },
+                    }));
+                    recreateAndDownloadContent(accessType, numberCoinPaid, activationDate)
                 }
             } else {
                 BottomDrawerGridHelper.hideBottomDrawer()
@@ -529,9 +559,6 @@ function PackageInformation(props){
                 testable : data.package.testable,
                 number_stage : data.package.number_stage,
                 number_season : data.package.number_season,
-                version_created : data.package.doc_version_created,
-                version_updated : data.package.doc_version_updated,
-                version_deleted : data.package.doc_version_deleted,
             }
             const userPackageInfo = {
                 package_ref : packageParamId,
@@ -542,7 +569,7 @@ function PackageInformation(props){
                 version_updated : data.package.version_updated,
                 version_deleted : data.package.version_deleted,
             }
-            dispatch(startProgressLoading())
+            dispatch(startProgressLoading({packageId:packageParamId, contentSyncState:"initial-sync"}))
             await startSetPackageGameForUserAndGetIt({ dispatch, realm, packageId:packageParamId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
         }
     }
@@ -563,9 +590,6 @@ function PackageInformation(props){
             testable : data.package.testable,
             number_stage : data.package.number_stage,
             number_season : data.package.number_season,
-            version_created : data.package.doc_version_created,
-            version_updated : data.package.doc_version_updated,
-            version_deleted : data.package.doc_version_deleted,
         }
         const userPackageInfo = {
             _id : data?.user_package_status?.user_package_id,
@@ -581,44 +605,8 @@ function PackageInformation(props){
             last_stage : data?.user_package_status?.last_stage,
             last_stage_number : data?.user_package_status?.last_stage_number,
         }
+        dispatch(startProgressLoading({packageId:packageParamId, contentSyncState:"initial-sync"}))
         await recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
-    }
-    const redownloadContent = async(accessType, numberCoinPaid, activationDate)=>{
-        const color = colors.primary.a1
-        const packageInfo = {
-            _id : data.package._id,
-            title : data.package.title,
-            description : data.package.description,
-            subject : data.package.subject,
-            badge : data.package.badge,
-            language_ref : data.package.language_ref,
-            icon_image : data.package.icon_image,
-            banner_image : data.package.banner_image,
-            free : data.package.free,
-            free_with_subscription : data.package.free_with_subscription,
-            price : data.package.price,
-            testable : data.package.testable,
-            number_stage : data.package.number_stage,
-            number_season : data.package.number_season,
-            version_created : data.package.doc_version_created,
-            version_updated : data.package.doc_version_updated,
-            version_deleted : data.package.doc_version_deleted,
-        }
-        const userPackageInfo = {
-            _id : data?.user_package_status?.user_package_id,
-            package_ref : packageParamId,
-            access_type : accessType,
-            number_coin_paid : numberCoinPaid,
-            activation_date : activationDate,
-            version_created : data.package.version_created,
-            version_updated : data.package.version_updated,
-            version_deleted : data.package.version_deleted,
-            last_season : data?.user_package_status?.last_season,
-            last_season_number : data?.user_package_status?.last_season_number,
-            last_stage : data?.user_package_status?.last_stage,
-            last_stage_number : data?.user_package_status?.last_stage_number,
-        }
-        await redownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
     }
     const viewAllPackageRating = ()=>{
         props.navigation.navigate("ViewAllPackageRating",{
@@ -629,7 +617,42 @@ function PackageInformation(props){
             rating_number:data?.package?.rating_number
         })
     }
-    
+    // ====================================================================================================
+    // ====================================================================================================
+    const onClickUpdatePackage = async()=>{
+        if(localData?.user_package){
+            dispatch(startProgressLoading({packageId:packageParamId, contentSyncState:"delta-sync"}))
+            const color = colors.primary.a1
+            const packageInfo = {
+                title : data.package.title,
+                description : data.package.description,
+                subject : data.package.subject,
+                badge : data.package.badge,
+                language_ref : data.package.language_ref,
+                icon_image : data.package.icon_image,
+                banner_image : data.package.banner_image,
+                free : data.package.free,
+                free_with_subscription : data.package.free_with_subscription,
+                price : data.package.price,
+                testable : data.package.testable,
+                number_stage : data.package.number_stage,
+                number_season : data.package.number_season,
+            }
+            const userPackageInfo = {
+                packageId : packageParamId,
+                userPackageId : localData?.user_package?._id,
+                versionCreatedContent : localData?.user_package?.version_created,
+                versionUpdatedContent : localData?.user_package?.version_updated,
+                versionDeletedContent : localData?.user_package?.version_deleted,
+            }
+            const newVersions = {
+                version_created : data?.package?.version_created,
+                version_updated : data?.package?.version_updated,
+                version_deleted : data?.package?.version_deleted,
+            }
+            await startUpdatePackageGameContent({ dispatch, realm, userPackageInfo, newVersions, packageInfo, color })         
+        }
+    }
     return(
         <SafeAreaView style={{flex:1}}>
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
@@ -699,29 +722,51 @@ function PackageInformation(props){
                             {
                                 (checkUpdate !== "force-update")&&
                                 <ButtonGradient
-                                    text={data?.user_package_status?.button_text}
+                                    text={
+                                        (packageId == packageParamId && progressLoading == true && contentSyncState == "initial-sync")?"در حال بارگیری":
+                                        (packageId == packageParamId && status == "get-error" && contentSyncState == "initial-sync")?"تلاش مجدد":
+                                        data?.user_package_status?.button_text
+                                    }
                                     textSize={14}
                                     onPress={onClickGetPackage}
                                     width={checkUpdate == "need-update" ?width/2 - 20:width - 30}
                                     height={50}
-                                    loading={checkUpdate == "need-update"?false:progressLoading}
+                                    loading={false}
                                 />
                             }
                             {
                                 (checkUpdate == "need-update" || checkUpdate =="force-update")&&
                                 <ButtonBorder
-                                    text={"بروزرسانی محتوا"}
+                                    text={
+                                        (packageId == packageParamId && progressLoading == true && contentSyncState == "delta-sync")?"در حال بارگیری":
+                                        (packageId == packageParamId && status == "get-error" && contentSyncState == "delta-sync")?"تلاش مجدد":
+                                        "بروزرسانی محتوا"
+                                    }
                                     height={50}
                                     width={checkUpdate == "force-update" ?width - 30:width/2 - 20}
-                                    loading={progressLoading}
-                                    onPress={()=>{}}
+                                    loading={false}
+                                    onPress={onClickUpdatePackage}
                                     textSize={14}
+                                />
+                            }
+                        </View>
+                        <View style={{marginTop:10, width:width, alignItems:'center', height:15}}>
+                            {
+                                (packageId == packageParamId && progressLoading == true)&&
+                                <LoadingBar 
+                                    barColor={colors.primary.a1}
+                                    width={width-30}
+                                    height={10}
+                                    barWidthStart={0.25}
+                                    barWidthEnd={0.85}
+                                    isComplete={false}
+                                    onComplete={()=>{}}
                                 />
                             }
                         </View>
                         {
                             data?.package.description?.length>0&&
-                            <View style={{width:width, paddingHorizontal:15, marginTop:30}}>
+                            <View style={{width:width, paddingHorizontal:15, marginTop:20}}>
                                 <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:16, lineHeight:30}}>{"دربارهٔ بستهٔ بازی"}</Text>
                                 <Text style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:14, textAlign:'justify', lineHeight:26}}>{data?.package.description}</Text>
                             </View>
@@ -731,7 +776,7 @@ function PackageInformation(props){
                                 (
                                     data?.user_package_status.status == "subscription-renewal-or-coin-payment" ||
                                     data?.user_package_status.status == "redownload-content" ||
-                                    data?.user_package_status.status == "recreate-and-download-content" ||
+                                    data?.user_package_status.status == "redownload-content" ||
                                     data?.user_package_status.status == "start-game"
                                 ) && 
                                 <Rating

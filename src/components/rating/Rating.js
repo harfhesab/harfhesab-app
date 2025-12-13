@@ -239,7 +239,7 @@ const Rating = ({
                                     {ratingBar}
                                 </View>
                             </View>
-                            <View style={{width:width - 60, alignSelf:'center',}}>
+                            <View style={{width:width - 60, alignSelf:'center'}}>
                                 <InputText
                                     placeholder={"نظر خود را بنویسید"}
                                     value={comment}
@@ -254,7 +254,7 @@ const Rating = ({
                                     height={80}
                                     textColor={colors.text.a4}
                                     color={colors.primary.a3}
-                                    backgroundOpacity={10}
+                                    backgroundOpacity={25}
                                 />
                                 <View style={{width:"100%", alignItems:'flex-end'}}>
                                     <Text style={{color:colors.text.a5, fontFamily:Font.black, fontSize:10}}>{`${comment.length}/400`}</Text>

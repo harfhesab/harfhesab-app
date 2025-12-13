@@ -56,17 +56,21 @@ export const changeCompletionStatusUserPackage = (
 };
 export const createUserPackage = (
   realm: Realm,
-  data: Partial<Omit<UserPackage, "createdAt" | "updatedAt">> & { _id: BSON.ObjectId | string }
+  data: Partial<Omit<UserPackage, "createdAt" | "updatedAt">> & {
+    _id: BSON.ObjectId | string;
+  }
 ): boolean => {
   try {
-    const objectId = typeof data._id === "string" ? new BSON.ObjectId(data._id) : data._id;
-    const packageId = typeof data.package_ref === "string"? new BSON.ObjectId(data.package_ref) : data.package_ref;
-    const exists = realm.objectForPrimaryKey("UserPackage", objectId);
-    if (exists) return true;
-    
-    const lastSeasonId = typeof data?.last_season === "string"? new BSON.ObjectId(data?.last_season): data?.last_season;
+    const objectId = typeof data._id === "string"? new BSON.ObjectId(data._id):data._id;
+    const packageId = typeof data.package_ref === "string"? new BSON.ObjectId(data.package_ref):data.package_ref;
+    const lastSeasonId =typeof data?.last_season === "string"? new BSON.ObjectId(data?.last_season): data?.last_season;
     const lastStageId = typeof data?.last_stage === "string"? new BSON.ObjectId(data?.last_stage): data?.last_stage;
+
     realm.write(() => {
+      const exists = realm.objectForPrimaryKey("UserPackage", objectId);
+      if (exists) {
+        realm.delete(exists);
+      }
       realm.create("UserPackage", {
         ...data,
         _id: objectId,
@@ -82,6 +86,28 @@ export const createUserPackage = (
   } catch (e) {
     return false;
   }
+};
+export const updateUserPackageVersions = (
+    realm: Realm,
+    userPackage: BSON.ObjectId | string,
+    version_created: number,
+    version_updated: number,
+    version_deleted: number,
+): boolean => {
+    try {
+        const userPackageId = typeof userPackage === 'string' ? new BSON.ObjectId(userPackage) : userPackage;
+        const existingDocument = realm.objectForPrimaryKey<UserPackage>("UserPackage", userPackageId);
+        realm.write(() => {
+            if (existingDocument) {
+                existingDocument.version_created = version_created;
+                existingDocument.version_updated = version_updated;
+                existingDocument.version_deleted = version_deleted;
+            }
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
 export const saveWordHelpUsedInPackageGame = (
     realm: Realm,
@@ -422,9 +448,6 @@ type DataItem = {
     number_season?: number;
     is_visible?: boolean;
     is_active?: boolean;
-    doc_version_created?: number;
-    doc_version_updated?: number;
-    doc_version_deleted?: number;
   };
 };
 export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
@@ -458,9 +481,6 @@ export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
                 number_season: pkgInfo.number_season ?? null,
                 is_visible: pkgInfo.is_visible ?? false,
                 is_active: pkgInfo.is_active ?? false,
-                version_created: pkgInfo.doc_version_created ?? null,
-                version_updated: pkgInfo.doc_version_updated ?? null,
-                version_deleted: pkgInfo.doc_version_deleted ?? null,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             });

@@ -1,5 +1,5 @@
 import BackgroundService from 'react-native-background-actions';
-import { recreatePackageGameForUser, redownloadContentPackageGameForUser, setPackageGameForUser } from '../api/PackageGameApi';
+import { recreatePackageGameForUser, setPackageGameForUser, updatePackageGameContent } from '../api/PackageGameApi';
 
 const options = {
     taskName: 'دریافت محتوا',
@@ -15,9 +15,9 @@ const options = {
 };
 
 const veryIntensiveTask1 = async (taskDataArguments) => {
-    const { dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType } = taskDataArguments;
+    const { dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color } = taskDataArguments;
     try {
-        await setPackageGameForUser({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType });
+        await setPackageGameForUser({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
     } catch (e) {
         null
     }
@@ -28,11 +28,13 @@ export const startSetPackageGameForUserAndGetIt = async ({ dispatch, realm, pack
         await BackgroundService.start(veryIntensiveTask1, {
             ...options,
             color:color,
-            parameters: { dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType },
+            parameters: { dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color },
         });
     }
 };
 
+// ===============================================================================================================================================
+// ===============================================================================================================================================
 // ===============================================================================================================================================
 
 const veryIntensiveTask2 = async (taskDataArguments) => {
@@ -55,26 +57,30 @@ export const recreateAndDownloadContentUserPackage = async ({ dispatch, realm, p
 };
 
 // ===============================================================================================================================================
+// ===============================================================================================================================================
+// ===============================================================================================================================================
 
 const veryIntensiveTask3 = async (taskDataArguments) => {
-    const { dispatch, realm, packageId, packageInfo, userPackageInfo } = taskDataArguments;
+    const { dispatch, realm, userPackageInfo, newVersions, packageInfo, color } = taskDataArguments;
     try {
-        await redownloadContentPackageGameForUser({ dispatch, realm, packageId, packageInfo, userPackageInfo });
+        await updatePackageGameContent({ dispatch, realm, userPackageInfo, newVersions, packageInfo, color });
     } catch (e) {
         null
     }
 };
 
-export const redownloadContentUserPackage = async ({ dispatch, realm, packageId, packageInfo, userPackageInfo, color }) => {
+export const startUpdatePackageGameContent = async ({ dispatch, realm, userPackageInfo, newVersions, packageInfo, color }) => {
     if (!BackgroundService.isRunning()) {
         await BackgroundService.start(veryIntensiveTask3, {
             ...options,
             color:color,
-            parameters: { dispatch, realm, packageId, packageInfo, userPackageInfo },
+            parameters: { dispatch, realm, userPackageInfo, newVersions, packageInfo, color },
         });
     }
 };
 
+// ===============================================================================================================================================
+// ===============================================================================================================================================
 // ===============================================================================================================================================
 
 export const stopSetPackageGameForUser = async () => {

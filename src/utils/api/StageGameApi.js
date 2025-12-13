@@ -308,9 +308,7 @@ const getNewVersionCreatedStageGameContent = async ({page, dispatch, realm, stat
                         getNewVersionDeletedStageGameContent({page, dispatch, realm, state, versionContent})
                     } else {
                         const newVersionContent = {versionCreatedContent:version_created, versionUpdatedContent:version_updated, versionDeletedContent:version_deleted}
-                        dispatch(setDownloadFinished())
-                        dispatch(changeVersionContent(newVersionContent))
-                        upgradeStageGameContentVersion(newVersionContent)
+                        upgradeStageGameContentVersion({dispatch, newVersionContent})
                     }
                 }
             }
@@ -464,9 +462,7 @@ const getNewVersionUpdatedStageGameContent = async ({page, dispatch, realm, stat
                         getNewVersionDeletedStageGameContent({page, dispatch, realm, state, versionContent})
                     } else {
                         const newVersionContent = {versionCreatedContent:version_created, versionUpdatedContent:version_updated, versionDeletedContent:version_deleted}
-                        dispatch(setDownloadFinished())
-                        dispatch(changeVersionContent(newVersionContent))
-                        upgradeStageGameContentVersion(newVersionContent)
+                        upgradeStageGameContentVersion({dispatch, newVersionContent})
                     }
                 }
             }
@@ -558,9 +554,7 @@ const getNewVersionDeletedStageGameContent = async ({page, dispatch, realm, stat
                 } else {
                     dispatch(setVersionDeletedDownloded({downloaded:true}))
                     const newVersionContent = {versionCreatedContent:version_created, versionUpdatedContent:version_updated, versionDeletedContent:version_deleted}
-                    dispatch(setDownloadFinished())
-                    dispatch(changeVersionContent(newVersionContent))
-                    upgradeStageGameContentVersion(newVersionContent)
+                    upgradeStageGameContentVersion({dispatch, newVersionContent})
                 }
             }
         } else {
@@ -709,9 +703,8 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
                 } else {
                     dispatch(setVersionCreatedDownloded({downloaded:true}))
                     const newVersionContent = {versionCreatedContent:version_created, versionUpdatedContent:version_updated, versionDeletedContent:version_deleted}
-                    dispatch(setDownloadFinished())
-                    dispatch(changeVersionContent(newVersionContent))
-                    upgradeStageGameContentVersion(newVersionContent)
+                    const firstGetContent = true
+                    upgradeStageGameContentVersion({dispatch, newVersionContent, firstGetContent})
                 }
             }
         } else {
@@ -721,52 +714,51 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
         dispatch(setGetError())
     })
 }
-export const upgradeStageGameContentVersion = async(newVersionContent) => {
-    // InteractionManager.runAfterInteractions(() => {
-    //     const run = async ()=>{
-            const {
-                versionCreatedContent,
-                versionUpdatedContent,
-                versionDeletedContent,
-            } = newVersionContent;
-            await axios({
-                url:'/',
-                method:'post',
-                data: {
-                    query : `
-                        mutation upgradeStageGameContentVersion(
-                            $version_created : Int!,
-                            $version_updated : Int!,
-                            $version_deleted : Int!,
-                        ){
-                            upgradeStageGameContentVersion(
-                                version_created : $version_created,
-                                version_updated : $version_updated,
-                                version_deleted : $version_deleted,
-                            ) {
-                                status,
-                                message
-                            }
-                        }
-                    `,
-                    variables : {
-                        "version_created" : versionCreatedContent,
-                        "version_updated" : versionUpdatedContent,
-                        "version_deleted" : versionDeletedContent
+export const upgradeStageGameContentVersion = async({dispatch, newVersionContent, firstGetContent}) => {
+    const {
+        versionCreatedContent,
+        versionUpdatedContent,
+        versionDeletedContent,
+    } = newVersionContent;
+    await axios({
+        url:'/',
+        method:'post',
+        data: {
+            query : `
+                mutation upgradeStageGameContentVersion(
+                    $version_created : Int!,
+                    $version_updated : Int!,
+                    $version_deleted : Int!,
+                ){
+                    upgradeStageGameContentVersion(
+                        version_created : $version_created,
+                        version_updated : $version_updated,
+                        version_deleted : $version_deleted,
+                    ) {
+                        status,
+                        message
                     }
                 }
-            }).then((response)=>{
-                showSuccessAlertForDownloaded()
-            }).catch((err)=>{
-                showSuccessAlertForDownloaded()
-            })
-    //     }
-    //     run();
-    // });
+            `,
+            variables : {
+                "version_created" : versionCreatedContent,
+                "version_updated" : versionUpdatedContent,
+                "version_deleted" : versionDeletedContent
+            }
+        }
+    }).then((response)=>{
+        dispatch(setDownloadFinished())
+        dispatch(changeVersionContent(newVersionContent))
+        showSuccessAlertForDownloaded(firstGetContent)
+    }).catch((err)=>{
+        dispatch(setDownloadFinished())
+        dispatch(changeVersionContent(newVersionContent))
+        showSuccessAlertForDownloaded(firstGetContent)
+    })
 }
-const showSuccessAlertForDownloaded = ()=>{
+const showSuccessAlertForDownloaded = (firstGetContent)=>{
     AlertHelper.showAlert({
-        body: "بروزرسانی محتوای بازی مرحله‌ای با موفقیت انجام شد!",
+        body:firstGetContent==true?"محتوای بازی مرحله‌ای با موفقیت دریافت شد!":"بروزرسانی محتوای بازی مرحله‌ای با موفقیت انجام شد!",
         buttons: [
             {
                 text: "متوجه شدم",
