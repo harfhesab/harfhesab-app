@@ -28,6 +28,7 @@ function Splash(props){
     const { constants_version } = useSelector((state) => state.constants);
     const { numberCoins, coinPlansVersion } = useSelector((state) => state.coins);
     const { subscriptionPlansVersion } = useSelector((state) => state.subscription);
+    const { totalHiddenWords, newHiddenWords } = useSelector((state) => state.hiddenWords);
     
     useEffect(()=>{
         startUpCheck()
@@ -58,6 +59,8 @@ function Splash(props){
                     $coin_plans_version : Int,
                     $subscription_plans_version : Int,
                     $number_coins : Int,
+                    $total_hidden_words : Int,
+                    $new_hidden_words : Int,
                 ){
                     necessaryCheckAtStartGameApplication(
                         constants_version : $constants_version,
@@ -68,6 +71,8 @@ function Splash(props){
                         coin_plans_version : $coin_plans_version,
                         subscription_plans_version : $subscription_plans_version,
                         number_coins : $number_coins,
+                        total_hidden_words : $total_hidden_words,
+                        new_hidden_words : $new_hidden_words,
                     ) {
                         status,
                         message,
@@ -139,6 +144,8 @@ function Splash(props){
                     "coin_plans_version" : coinPlansVersion,
                     "subscription_plans_version" : subscriptionPlansVersion,
                     "number_coins" : numberCoins,
+                    "total_hidden_words" : totalHiddenWords,
+                    "new_hidden_words" : newHiddenWords,
                 }
             }
         }).then(async(response)=>{

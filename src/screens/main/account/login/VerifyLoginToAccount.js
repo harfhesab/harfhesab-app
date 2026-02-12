@@ -32,6 +32,7 @@ import { updateSubscriptionStatus } from '../../../../redux/slices/subscriptionS
 import { updateCurrentLanguageLastStageAndLastSeason } from '../../../../redux/slices/stageGameSlice';
 import { deleteAllUserPackages } from '../../../../realm/repositories/user/user-package-game-progress.repository';
 import { showToast } from '../../../../components/custom-toast/ToastRef';
+import { updateNumberHiddenWords } from '../../../../redux/slices/hiddenWordSlice';
   
   
 const {width, height} = Dimensions.get('window');
@@ -50,6 +51,7 @@ function VerifyLoginToAccount(props){
     const phone = props.route.params?.phone
     const { numberCoins } = useSelector((state) => state.coins);
     const { stageGameLanguage } = useSelector((state) => state.stageGamePersist);
+    const { totalHiddenWords, newHiddenWords } = useSelector((state) => state.hiddenWords);
 
 
     const removeListener = ()=>{
@@ -184,6 +186,8 @@ function VerifyLoginToAccount(props){
                         $phone : String!,
                         $code : String!,
                         $number_coins : Int,
+                        $total_hidden_words : Int,
+                        $new_hidden_words : Int,
                         $firebase_token : String,
                         $app_version : String,
                         $app_build_number : Int,
@@ -200,6 +204,8 @@ function VerifyLoginToAccount(props){
                             phone : $phone,
                             code : $code,
                             number_coins : $number_coins,
+                            total_hidden_words : $total_hidden_words,
+                            new_hidden_words : $new_hidden_words,
                             firebase_token : $firebase_token,
                             app_version : $app_version,
                             app_build_number : $app_build_number,
@@ -215,7 +221,7 @@ function VerifyLoginToAccount(props){
                             status,
                             message,
                             token,
-                            user{name, number_coins, active_subscription, subscription_expiration},
+                            user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                             command_to_remove_user_packages_in_client
                         }
@@ -225,6 +231,8 @@ function VerifyLoginToAccount(props){
                         "phone" : phone,
                         "code" : otp,
                         "number_coins" : numberCoins,
+                        "total_hidden_words" : totalHiddenWords,
+                        "new_hidden_words" : newHiddenWords,
                         "firebase_token" : "",
                         "app_version" : app_version,
                         "app_build_number" : Number(app_build_number),
@@ -251,6 +259,11 @@ function VerifyLoginToAccount(props){
                     }
                     if(typeof numberCoins === "number"){
                         dispatch(updateNumberCoins({number:numberCoins}))
+                    }
+                    const totalHiddenWords = data?.user?.total_hidden_words
+                    const newHiddenWords = data?.user?.new_hidden_words
+                    if(totalHiddenWords > 0 || newHiddenWords > 0){
+                        dispatch(updateNumberHiddenWords({newHiddenWords, totalHiddenWords}))
                     }
                     const progressData = data?.user_stage_game_progress?.stage_game
                     if(progressData?.length > 0){

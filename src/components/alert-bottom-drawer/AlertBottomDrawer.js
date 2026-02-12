@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
-import { View, Dimensions, Text, ScrollView, StyleSheet} from 'react-native';
+import { View, Dimensions, Text, ScrollView, StyleSheet, NativeModules} from 'react-native';
 import Modal from "react-native-modal";
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
@@ -10,10 +10,11 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 
 
-const {width, height} = Dimensions.get('window');
+const { ImmersiveMode } = NativeModules;
 const AlertBottomDrawer = React.forwardRef((props, ref)=>{
+    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const colors = useAppTheme();
-    const maxHeight = height*0.9 - 160;
+    const maxHeight = height*0.5;
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(true)
     const [title, setTitle] = useState(null)
@@ -77,8 +78,11 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
                 }
             }}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
+            deviceHeight={height}
+            statusBarTranslucent={true}
+            coverScreen={true}
         >
-            <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
+            <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background, width:width}]}>
                 <View>
                     <View style={{width:width * 0.25, height:4, backgroundColor:colors.border.a1, marginTop:30, marginBottom:5, alignSelf:'center', borderRadius:2}}/>                  
                     {
@@ -170,7 +174,6 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
 })
 const styles = StyleSheet.create({
     modalContainer:{
-      width:width,
       borderRadius:5,
       alignSelf:'center',
       verticalAlign:'flex-end',

@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -27,7 +27,6 @@ import {
   FONT_SIZE_SLOTTED,
 } from "../constants/constants";
 import AnimatedSkiaText from '../../text-components/AnimatedSkiaText';
-import useAppTheme from '../../../hooks/theme/useAppTheme';
 import { dropWordToSlotCardInFloatingSound, dropWordToSlotCardInSlotSound, onStartDragWordToSlotCardSound, tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import { vibrate } from '../../../utils/vibrationManager';
 import { navigate } from '../../../main/navigationService';
@@ -57,7 +56,6 @@ function getFontScale(word:string) {
 }
 
 function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
-  const colors = useAppTheme()
   const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards, lockedPan, type, stageId, playingPartIndex } = useDragDrop();
   const fontSizeScale = getFontScale(word);
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
@@ -77,6 +75,11 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   const dragFromSlot = useSharedValue<number | null>(null);
   const cardSize = useSharedValue(CARD_SIZE_FLOATING);
   const fontSize = useSharedValue(FONT_SIZE_FLOATING_SCALED);
+
+  
+  const completedRef = useRef(false);
+  completedRef.current ||= unknown_word === true && unknown_word_completed === true;
+  const effectiveUnknownCompleted = unknown_word ? completedRef.current : false;
 
   useEffect(() => {
     registerCard({
@@ -176,7 +179,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
 
   const pan = Gesture.Pan()
     .minDistance(0)
-    .enabled(!lockedPan && ((unknown_word && unknown_word_completed) || (!unknown_word)))
+    .enabled(!lockedPan && ((unknown_word && effectiveUnknownCompleted) || (!unknown_word)))
     .onStart(() => {
       'worklet';
       isDragging.value = true;
@@ -228,7 +231,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   };
 
   const touch = Gesture.Tap()
-  .enabled(unknown_word == true && unknown_word_completed == false)
+  .enabled(unknown_word == true && effectiveUnknownCompleted == false)
   .onTouchesDown(() => {
     'worklet';
     runOnJS(tabScreenSoundInOnClick)()
@@ -245,14 +248,14 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
           style={{ width: '100%', height: '100%', alignItems:'center', justifyContent:'center' }}
         >
           {
-            (unknown_word && !unknown_word_completed)?
-            <View style={{width:CARD_SIZE_FLOATING-25, height:CARD_SIZE_FLOATING-25, borderColor:"#b71c1c", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
-              <Icon name={"question"} type={"Fontisto"} style={{color:"#b71c1c", fontSize:CARD_SIZE_FLOATING-35}}/>
+            (unknown_word && !effectiveUnknownCompleted)?
+            <View style={{width:CARD_SIZE_FLOATING-25, height:CARD_SIZE_FLOATING-25, borderColor:"#CC0000", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
+              <Icon name={"question"} type={"Fontisto"} style={{color:"#CC0000", fontSize:CARD_SIZE_FLOATING-45}}/>
             </View>
             :
             <AnimatedSkiaText
               text={word}
-              gradientColors={unknown_word ? ['#FF8800',  '#ff0f0f'] : undefined}
+              gradientColors={unknown_word ? ['#FF8800',  '#CC0000'] : undefined}
               fontSize={fontSize}
               initialFontSize={FONT_SIZE_FLOATING_SCALED}
               initialWidth={CARD_SIZE_FLOATING*1.3}

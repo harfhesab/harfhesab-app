@@ -70,7 +70,6 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
   const glowFilterId = `glow-${Math.random().toString(36).substring(7)}`;
 
   useEffect(() => {
-    // reset width when relevant props change so measure runs again
     setTextWidth(null);
   }, [renderedText, fontSize, fontFamily]);
 
@@ -79,7 +78,6 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
     const handle = findNodeHandle(hiddenTextRef.current);
     if (!handle) return;
 
-    // UIManager.measure signature: (node, callback(x, y, width, height, pageX, pageY))
     UIManager.measure(handle, (_x: number, _y: number, width: number, _height: number, _pX: number, _pY: number) => {
       setTextWidth(width);
     });
@@ -102,12 +100,12 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
   }
 
   const totalWidth = textWidth + paddingHorizontal * 2;
+  // ارتفاع کل ویو محاسبه می‌شود
   const totalHeight = (height || fontSize * 1.5) + paddingVertical * 2;
   const textX = rtl && !ltr ? totalWidth - paddingHorizontal : paddingHorizontal;
   const textY = (y || fontSize) + paddingVertical;
   const textAnchor = rtl && !ltr ? 'end' : 'start';
 
-  // helper to compute gradient stop offset
   const stopOffset = (i: number, arrLen: number) =>
     arrLen > 1 ? `${(i / (arrLen - 1)) * 100}%` : '100%';
 
@@ -115,7 +113,18 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
     <View style={{ width: totalWidth, height: totalHeight }}>
       <Svg height={totalHeight} width={totalWidth}>
         <Defs>
-          <LinearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+          {/* اصلاح مهم:
+            1. gradientUnits="userSpaceOnUse" اضافه شد تا مختصات بر اساس کل بوم SVG باشد نه فقط متن.
+            2. y2={totalHeight} قرار گرفت تا گرادینت از بالای کادر تا پایین کادر کشیده شود.
+          */}
+          <LinearGradient 
+            id={gradientId} 
+            x1="0" 
+            y1="0" 
+            x2="0" 
+            y2={totalHeight} 
+            gradientUnits="userSpaceOnUse"
+          >
             {colors.map((color, index) => (
               <Stop
                 key={index}
@@ -126,7 +135,6 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
             ))}
           </LinearGradient>
 
-          {/* Drop shadow filter (only created if dropShadow true) */}
           {dropShadow && (
             <Filter id={dropFilterId} x="-50%" y="-50%" width="200%" height="200%">
               <FeDropShadow
@@ -138,12 +146,9 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
             </Filter>
           )}
 
-          {/* Glow filter (only created if glowShadow true) */}
           {glowShadow && (
             <Filter id={glowFilterId} x="-50%" y="-50%" width="200%" height="200%">
-              {/* Blur the SourceGraphic (the duplicate colored text) */}
               <FeGaussianBlur in="SourceGraphic" stdDeviation={glowBlur} result="gblur" />
-              {/* merge blurred graphic (so filter returns the blur result) */}
               <FeMerge>
                 <FeMergeNode in="gblur" />
               </FeMerge>
@@ -151,7 +156,6 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
           )}
         </Defs>
 
-        {/* ---------- GLOW LAYER: a colored copy of the text, blurred ---------- */}
         {glowShadow && (
           <SvgText
             fill={glowColor}
@@ -166,7 +170,6 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
           </SvgText>
         )}
 
-        {/* 👇 لایه زیرین: بوردر (همان کد تو — بدون تغییر) */}
         {borderWidth > 0 &&
           [-1, 1, 0, 0, -1, 1, -1, 1].map((offset, index) => (
             <SvgText
@@ -182,8 +185,6 @@ const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
             </SvgText>
           ))}
 
-        {/* 👇 لایه رویی: متن اصلی با گرادینت
-               اگر dropShadow فعال باشه، به این عنصر filter مربوطه اعمال می‌شود */}
         <SvgText
           fill={`url(#${gradientId})`}
           fontSize={fontSize}

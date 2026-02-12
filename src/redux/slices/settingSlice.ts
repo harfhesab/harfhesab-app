@@ -5,6 +5,12 @@ interface UiState {
   sound: boolean;
   music: boolean;
   vibration: boolean;
+  // ====================================================================
+  // ====================================================================
+  firstGuide: boolean;
+  wordToSlotGuide: boolean;
+  unknownWordGuide: boolean;
+  connectingLetterGuide: boolean;
 }
 
 const initialState: UiState = {
@@ -12,6 +18,12 @@ const initialState: UiState = {
   sound: true,
   music: true,
   vibration: true,
+  // =====================================================================
+  // =====================================================================
+  firstGuide: false,
+  wordToSlotGuide: false,
+  unknownWordGuide: false,
+  connectingLetterGuide: false
 };
 
 const settingSlice = createSlice({
@@ -42,9 +54,49 @@ const settingSlice = createSlice({
     ) {
       state.vibration = action.payload.vibration;
     },
+    // =====================================================================
+    // =====================================================================
+    seenFirstGuide(
+      state,
+    ) {
+      state.firstGuide = true;
+    },
+    seenWordToSlotGuide(
+      state,
+    ) {
+      state.wordToSlotGuide = true;
+    },
+    seenUnknownWordGuide(
+      state,
+    ) {
+      state.unknownWordGuide = true;
+    },
+    seenConnectingLetterGuide(
+      state,
+    ) {
+      state.connectingLetterGuide = true;
+    },
+    seenAllGuide(
+      state,
+    ) {
+      state.firstGuide = true;
+      state.wordToSlotGuide = true;
+      state.unknownWordGuide = true;
+      state.connectingLetterGuide = true;
+    },
   },
 });
 
-export const { changeTheme, changeSoundGame, changeMusicGame, changeVibrationGame } = settingSlice.actions;
+export const {
+  changeTheme,
+  changeSoundGame,
+  changeMusicGame,
+  changeVibrationGame,
+  // ===========================================================================
+  seenWordToSlotGuide,
+  seenUnknownWordGuide,
+  seenConnectingLetterGuide,
+  seenAllGuide
+} = settingSlice.actions;
 
 export default settingSlice.reducer;

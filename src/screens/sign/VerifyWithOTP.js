@@ -31,6 +31,7 @@ import { changeSubscriptionPlansVersion, updateSubscriptionStatus } from '../../
 import { createCoinPlansList } from '../../realm/repositories/user/coin-plan-repository';
 import { createSubscriptionPlansList } from '../../realm/repositories/user/subscription-plan-repository';
 import { showToast } from '../../components/custom-toast/ToastRef';
+import { updateNumberHiddenWords } from '../../redux/slices/hiddenWordSlice';
   
   
 const {width, height} = Dimensions.get('window');
@@ -219,7 +220,7 @@ function VerifyWithOTP(props){
                             status,
                             message,
                             token,
-                            user{name, number_coins, active_subscription, subscription_expiration},
+                            user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                             game_constants{
                                 constants_version,
@@ -330,6 +331,11 @@ function VerifyWithOTP(props){
                     const numberCoins = data?.user?.number_coins
                     if(typeof numberCoins === "number"){
                         dispatch(updateNumberCoins({number:numberCoins}))
+                    }
+                    const totalHiddenWords = data?.user?.total_hidden_words
+                    const newHiddenWords = data?.user?.new_hidden_words
+                    if(totalHiddenWords > 0 || newHiddenWords > 0){
+                        dispatch(updateNumberHiddenWords({newHiddenWords, totalHiddenWords}))
                     }
                     const progressData = data?.user_stage_game_progress?.stage_game
                     if(progressData?.length > 0){

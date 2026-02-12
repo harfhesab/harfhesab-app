@@ -11,9 +11,7 @@ import Animated, {
   useAnimatedProps,
   Easing,
 } from "react-native-reanimated";
-import useAppTheme from "../../hooks/theme/useAppTheme";
 import { useSelector } from "react-redux";
-import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
 import { coinCountUpdateSound } from "../../utils/sound/SoundFunctions";
 import { priceDigitSeperator } from "../../utils/PriceDigitSeperator";
@@ -46,7 +44,6 @@ function NumberCoins({
 }: {
   onPress?: () => void;
 }) {
-  const colors = useAppTheme();
   
   const { numberCoins } = useSelector((state: any) => state.coins);
 
@@ -164,7 +161,7 @@ function NumberCoins({
                 style={{
                   fontFamily: Font.black,
                   fontSize: numberCoins.toString().length > 5?12:numberCoins.toString().length>4?13:15,
-                  color: colors.text.a1,
+                  color: "#FFFFFF",
                   padding: 0,
                   textAlign: "center",
                 }}

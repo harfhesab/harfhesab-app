@@ -12,7 +12,8 @@ import Font from '../utils/Font';
 function WoodProgressBar({progressWidth, progress, maxValue, showValue=true}){
     const colors = useAppTheme();
 
-    const progressPercent = progress*100/maxValue
+    const safeProgress = Math.max(0, Math.min(progress, maxValue));
+    const progressPercent = (safeProgress * 100) / maxValue;
 
     return(
         <ImageBackground

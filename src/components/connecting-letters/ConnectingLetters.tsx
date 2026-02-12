@@ -15,6 +15,8 @@ import {
 import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
 import { useRealm } from '../../realm';
 import { getPackageStageById } from '../../realm/repositories/package-game/package-stage.repository';
+import { Stage } from '../../realm/schemas/stage-game/StageSchema';
+import { PackageStage } from '../../realm/schemas/package-game/PackageStageSchema';
 
 interface Props {
   type: string;
@@ -25,10 +27,20 @@ interface Props {
 const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
   const realm = useRealm();
   
-
-  const partWords = type == "stage-game"? getStageById(realm, stageId)?.parts[partIndex]?.words:type == "package-game"?getPackageStageById(realm, stageId)?.parts[partIndex]?.words:undefined
+  const stageData = type == "stage-game"? getStageById(realm, stageId):type == "package-game"?getPackageStageById(realm, stageId):undefined
+  const partWords = stageData?.parts[partIndex]?.words
   const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
   const data = wordIndex !== undefined && wordIndex > -1  && partWords? partWords[wordIndex]:undefined
+
+
+  let stageNumber: number | undefined;
+  if (type === "stage-game" && stageData) {
+    const stageGameData = stageData as Stage;
+    stageNumber = stageGameData.stage_number_in_language;
+  } else if (type === "package-game" && stageData) {
+    const packageGameData = stageData as PackageStage;
+    stageNumber = packageGameData.stage_number_in_package;
+  }
   
   return (
     <View style={{ flex: 1 }}>
@@ -39,6 +51,7 @@ const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
         stageId={stageId}
         partIndex={partIndex}
         wordId={wordId}
+        stageNumber={stageNumber}
       >
         <SafeAreaView style={styles.container}>
           <WordDisplay />

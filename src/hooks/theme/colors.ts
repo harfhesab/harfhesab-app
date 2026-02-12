@@ -9,7 +9,10 @@ export const themes = {
       primary: {
         a1: '#40bf42',
         a2: '#24536b',
-        a3: '#fcb900'
+        a3: '#fcb900',
+        a4: '#008B02',
+        a5: '#ffeb3b',
+        a6: '#0693e3'
       },
       background:{
         a1:'#001c20',
@@ -96,6 +99,11 @@ export const colors = {
   },
   primary: {
     a1: '#40bf42',
+    a2: '#24536b',
+    a3: '#fcb900',
+    a4: '#008B02',
+    a5: '#ffeb3b',
+    a6: '#0693e3'
   },
   text: {
     a1: '#FFFFFF',

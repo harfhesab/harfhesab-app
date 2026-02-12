@@ -8,16 +8,17 @@ import { successfulCompletionOfSeasonSound, successfulCompletionOfStageSound } f
 import { store } from "../../../redux/store/Store";
 
 
-export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})=>{
+export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences, stageHint})=>{
     const state = store.getState()
     if(stageId.toString() === currentStageId.toString()){
         const next = getCurrentLanguageNextStageInformation(realm, language_ref)
         if(next.endAllStage == true){
             GameAlertHelper.showAlertGame({
                 title:`پایان مرحله ${stageNumber}`,
-                admiration: "درود بر شما!",
+                admiration: "احسنت، عالی بود!",
                 description: `جملات مرحله ${stageNumber} زبان ${state.stageGamePersist.stageGameLanguageName} با موفقیت ساخته شد.`,
                 completedSentences: sentences,
+                stageHint: stageHint,
                 buttons: [
                     {
                         text: 'ادامه',
@@ -36,7 +37,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     }
                 ],
                 options : {
-                    type: 'success',
+                    type: 'completed-stage',
                     cancelable: false,
                 },
             });
@@ -59,9 +60,10 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                 await dispatch(updateCurrentLanguageLastStageAndLastSeason(data))
                 GameAlertHelper.showAlertGame({
                     title:`پایان مرحله ${stageNumber}`,
-                    admiration: "درود بر شما!",
+                    admiration: "احسنت، عالی بود!",
                     description: `جملات مرحله ${stageNumber} زبان ${state.stageGamePersist.stageGameLanguageName} با موفقیت ساخته شد.`,
                     completedSentences: sentences,
+                    stageHint: stageHint,
                     buttons: [
                         {
                             text: 'ادامه',
@@ -89,7 +91,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                         }
                     ],
                     options : {
-                        type: 'success',
+                        type: 'completed-stage',
                         reward : coinsReward,
                         cancelable: false,
                     },
@@ -102,9 +104,10 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
     } else {
         GameAlertHelper.showAlertGame({
             title:`پایان مرحله ${stageNumber}`,
-            admiration: "درود بر شما!",
+            admiration: "احسنت، عالی بود!",
             description: `جملات مرحله ${stageNumber} زبان ${state.stageGamePersist.stageGameLanguageName} مجددا، با موفقیت ساخته شد.`,
             completedSentences: sentences,
+            stageHint: stageHint,
             buttons: [
                 {
                     text: 'ادامه',
@@ -122,7 +125,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                 }
             ],
             options : {
-                type: 'success',
+                type: 'completed-stage',
                 cancelable: false,
             },
         });
@@ -148,7 +151,7 @@ const endOfASeasonInStageGame = ({seasonNumber})=>{
             }
         ],
         options : {
-            type: 'unlocked',
+            type: 'completed-season',
             reward : state.constants.coins_reward_from_season_completed_stage_game,
             cancelable: false,
         },

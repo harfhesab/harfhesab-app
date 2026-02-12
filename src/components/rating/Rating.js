@@ -16,6 +16,7 @@ import Toast from '../custom-toast/Toast';
 import { DotIndicator } from 'react-native-indicators';
 import { showToast } from '../custom-toast/ToastRef';
 import { increaseNumberCoins, reduceNumberCoins } from '../../redux/slices/coinSlice';
+import { vibrate } from '../../utils/vibrationManager';
 
 const width = Dimensions.get('window').width;
 const Rating = ({
@@ -183,7 +184,14 @@ const Rating = ({
     const ratingBarRender = (i)=>{
         return(
           <View key={i} style={{flexDirection:'column', alignItems:'center'}}>
-            <TouchableOpacity onPress={()=>setScoreWithRating(i)} activeOpacity={0.3} style={{alignItems:'center', justifyContent:'center', width:45}}>
+            <TouchableOpacity 
+                onPress={()=>{
+                    vibrate()
+                    setScoreWithRating(i)
+                }}
+                activeOpacity={0.3}
+                style={{alignItems:'center', justifyContent:'center', width:45}}
+            >
                 {
                     (i <= defaultRating)?
                     <Icon name='star' type='AntDesign' style={{fontSize:45, color:colors.primary.a3}} />

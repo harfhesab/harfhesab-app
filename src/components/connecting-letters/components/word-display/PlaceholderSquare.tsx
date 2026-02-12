@@ -25,8 +25,8 @@ const PlaceholderSquare = ({ letter, isRevealed, size, mainWord, helped = false 
         return {
             backgroundColor1: mainWord ? `rgba(14, 169, 96, 0.2)` : `rgba(6, 147, 227, 0.2)`,
             backgroundColor2: mainWord ? `rgba(14, 169, 96, 0.8)` : `rgba(6, 147, 227, 0.8)`,
-            borderColor: mainWord ? colors.primary.a1 : "#0693e3",
-            borderWidth: mainWord ? 2.5 : 2,
+            borderColor: mainWord ? colors.primary.a1 : colors.primary.a6,
+            borderWidth: mainWord ? 2 : 1,
             gradientColors: mainWord ? ['#9900ef', '#662d86', '#3a194d'] : ['#FF8800', '#ff0f0f']
         }
     }, [mainWord, colors.primary.a1]);
@@ -54,6 +54,7 @@ const PlaceholderSquare = ({ letter, isRevealed, size, mainWord, helped = false 
                 {
                     width: size, 
                     height: size, 
+                    borderRadius: mainWord ? 7 : 3.5,
                     borderColor: themeStyles.borderColor, 
                     borderWidth: themeStyles.borderWidth,
                 }, 
@@ -64,7 +65,7 @@ const PlaceholderSquare = ({ letter, isRevealed, size, mainWord, helped = false 
             <TextGradientSvg
                 text={letter}
                 fontFamily={Font.bakh_extra_black}
-                fontSize={size/1.55}
+                fontSize={size/1.6}
                 colors={themeStyles.gradientColors}
                 shadowColor={"#FFFFFF90"}
                 shadowBlur={3}
@@ -84,7 +85,6 @@ const styles = StyleSheet.create({
     placeholderBase: {
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
     },
 });
 

@@ -4,7 +4,6 @@ import Svg, {
   LinearGradient,
   Stop,
   Text as SvgText,
-  TSpan,
   FeGaussianBlur,
   FeMerge,
   FeMergeNode,
@@ -75,6 +74,7 @@ const MultiLineTextGradientSvg: React.FC<MultiLineTextGradientSvgProps> = ({
 
   const textMaxWidth = width ? width - paddingHorizontal * 2 : undefined;
 
+  // محاسبه خطوط متن (Layout Calculation)
   if (lines === null || textHeight === null) {
     return (
       <Text
@@ -102,37 +102,55 @@ const MultiLineTextGradientSvg: React.FC<MultiLineTextGradientSvgProps> = ({
   const totalWidth = width || maxLineWidth + paddingHorizontal * 2;
   const totalHeight = (height || textHeight) + paddingVertical * 2;
   const baseX = rtl && !ltr ? totalWidth - paddingHorizontal : paddingHorizontal;
-  const baseY = (y || fontSize) + paddingVertical;
+  // شروع Y کمی تغییر کرد تا با SvgText تکی هماهنگ شود
+  const baseY = (y || fontSize) + paddingVertical; 
   const textAnchor = rtl && !ltr ? 'end' : 'start';
 
   const stopOffset = (i: number, arrLen: number) => (arrLen > 1 ? `${(i / (arrLen - 1)) * 100}%` : '100%');
 
-  const renderTextLayer = (offsetX: number = 0, offsetY: number = 0, fill: string, filterUrl?: string, svgKey?: string | number) => (
-    <SvgText
-      key={svgKey}
-      fill={fill}
-      fontSize={fontSize}
-      fontFamily={fontFamily}
-      textAnchor={textAnchor}
-      filter={filterUrl}
-    >
-      {lines.map((line, index) => (
-        <TSpan
-          key={index}
+  // تابع رندر کردن لایه‌های متن
+  const renderTextLayer = (offsetX: number = 0, offsetY: number = 0, fill: string, filterUrl?: string, svgKey?: string | number) => {
+    let currentY = baseY + offsetY;
+    
+    return lines.map((line, index) => {
+      // محاسبه موقعیت Y برای هر خط به صورت جداگانه
+      const lineY = currentY;
+      // افزایش ارتفاع برای خط بعدی (اگر از TSpan استفاده می‌کردیم dy این کار را می‌کرد، اینجا دستی انجام می‌دهیم)
+      if (index < lines.length - 1) {
+          currentY += line.height;
+      } else {
+        // برای خط اول یا حلقه‌های بعدی، باید لاجیک ریست شود اگر خارج از این اسکوپ استفاده شود.
+        // اما چون map هر بار اجرا می‌شود، مشکلی نیست. فقط باید دقت کرد خط اول y صحیح داشته باشد.
+        // لاجیک بهتر:
+      }
+      
+      // محاسبه دقیق ارتفاع تجمعی برای هر خط
+      const accumulatedHeight = lines.slice(0, index).reduce((sum, l) => sum + l.height, 0);
+      const positionY = baseY + offsetY + accumulatedHeight;
+
+      return (
+        <SvgText
+          key={`${svgKey}-${index}`}
+          fill={fill}
+          fontSize={fontSize}
+          fontFamily={fontFamily}
+          textAnchor={textAnchor}
+          filter={filterUrl}
           x={baseX + offsetX}
-          dy={index === 0 ? `${baseY + offsetY}px` : `${lines[index - 1].height}px`}
+          y={positionY}
         >
           {line.text}
-        </TSpan>
-      ))}
-    </SvgText>
-  );
+        </SvgText>
+      );
+    });
+  };
 
   return (
     <View style={{ width: totalWidth, height: totalHeight }}>
       <Svg height={totalHeight} width={totalWidth}>
         <Defs>
-          <LinearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+          {/* تغییر مهم: گرادینت از بالا به پایین (Vertical) */}
+          <LinearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
             {colors.map((color, index) => (
               <Stop
                 key={index}
@@ -164,15 +182,18 @@ const MultiLineTextGradientSvg: React.FC<MultiLineTextGradientSvgProps> = ({
           )}
         </Defs>
 
+        {/* لایه درخشش (Glow) */}
         {glowShadow && renderTextLayer(0, 0, glowColor, `url(#${glowFilterId})`, 'glow')}
 
+        {/* لایه حاشیه (Border/Stroke) */}
         {borderWidth > 0 &&
           [-1, 1, 0, 0, -1, 1, -1, 1].map((offset, index) => {
             const offsetX = index % 2 === 0 ? offset * borderWidth : 0;
             const offsetY = index % 2 !== 0 ? offset * borderWidth : 0;
-            return renderTextLayer(offsetX, offsetY, borderColor, undefined, index);
+            return renderTextLayer(offsetX, offsetY, borderColor, undefined, `border-${index}`);
           })}
 
+        {/* لایه اصلی متن با گرادینت */}
         {renderTextLayer(0, 0, `url(#${gradientId})`, dropShadow ? `url(#${dropFilterId})` : undefined, 'main')}
       </Svg>
     </View>

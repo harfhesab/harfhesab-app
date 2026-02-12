@@ -7,16 +7,17 @@ import { store } from "../../../redux/store/Store";
 import { getCurrentPackageNextStageInformation, makingStageContentReplayableInPackageGame, updateUserPackageGameProgress } from "../../../realm/repositories/user/user-package-game-progress.repository";
 
 
-export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences})=>{
+export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences, stageHint})=>{
     const state = store.getState()
     if(stageId.toString() === currentStageId.toString()){
         const next = getCurrentPackageNextStageInformation(realm, packageRef, userPackage)
         if(next.endAllStage == true){
             GameAlertHelper.showAlertGame({
                 title:`پایان مرحله ${stageNumber}`,
-                admiration: "درود بر شما!",
+                admiration: "احسنت، عالی بود!",
                 description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} با موفقیت ساخته شد.`,
                 completedSentences: sentences,
+                stageHint: stageHint,
                 buttons: [
                     {
                         text: 'ادامه',
@@ -35,7 +36,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                     }
                 ],
                 options : {
-                    type: 'success',
+                    type: 'completed-stage',
                     cancelable: false,
                 },
             });
@@ -57,9 +58,10 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                 const totalCoins = numberCoins + coinsReward
                 GameAlertHelper.showAlertGame({
                     title:`پایان مرحله ${stageNumber}`,
-                    admiration: "درود بر شما!",
+                    admiration: "احسنت، عالی بود!",
                     description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} با موفقیت ساخته شد.`,
                     completedSentences: sentences,
+                    stageHint: stageHint,
                     buttons: [
                         {
                             text: 'ادامه',
@@ -67,7 +69,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                                 goBack()
                                 if(next.endCurrentSeason == true){
                                     setTimeout(()=>{
-                                        endOfASeasonInStageGame({seasonNumber:last_season_number-1})
+                                        endOfASeasonInStageGame({seasonNumber:last_season_number-1, packageName})
                                     }, 500)
                                 }
                             },
@@ -87,7 +89,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                         }
                     ],
                     options : {
-                        type: 'success',
+                        type: 'completed-stage',
                         reward : coinsReward,
                         cancelable: false,
                     },
@@ -100,9 +102,10 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
     } else {
         GameAlertHelper.showAlertGame({
             title:`پایان مرحله ${stageNumber}`,
-            admiration: "درود بر شما!",
+            admiration: "احسنت، عالی بود!",
             description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} مجددا، با موفقیت ساخته شد.`,
             completedSentences: sentences,
+            stageHint: stageHint,
             buttons: [
                 {
                     text: 'ادامه',
@@ -120,7 +123,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                 }
             ],
             options : {
-                type: 'success',
+                type: 'completed-stage',
                 cancelable: false,
             },
         });
@@ -146,7 +149,7 @@ const endOfASeasonInStageGame = ({seasonNumber, packageName})=>{
             }
         ],
         options : {
-            type: 'unlocked',
+            type: 'completed-season',
             reward : state.constants.coins_reward_from_season_completed_package_game,
             cancelable: false,
         },

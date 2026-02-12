@@ -9,6 +9,7 @@ import coinReducer from "../slices/coinSlice";
 import subscriptionReducer from "../slices/subscriptionSlice";
 import constantsReducer from "../slices/constantsSlice";
 import packageGameDownloadReducer from "../slices/packageGameDownloadSlice";
+import hiddenWordReducer from "../slices/hiddenWordSlice";
 
 const appReducer = combineReducers({
   account: accountReducer,
@@ -19,6 +20,7 @@ const appReducer = combineReducers({
   stageGameDownload: stageGameDownloadReducer,
   packageGameDownload: packageGameDownloadReducer,
   coins: coinReducer,
+  hiddenWords: hiddenWordReducer,
   subscription: subscriptionReducer,
   constants: constantsReducer,
 });

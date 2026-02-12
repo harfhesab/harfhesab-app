@@ -74,7 +74,7 @@ interface ToastContentProps {
 
 const { width } = Dimensions.get("window");
 const FRAME_WIDTH = IS_TABLET_CONDITION ? 460 : width - 40;
-const FRAME_HEIGHT = FRAME_WIDTH * 0.35;
+const FRAME_HEIGHT = FRAME_WIDTH * 0.4;
 
 /**
  * این کامپوننت سنگین است و شامل تمام هوک‌های انیمیشن و ژست می‌باشد.

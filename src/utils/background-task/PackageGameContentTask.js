@@ -9,9 +9,10 @@ const options = {
         name: 'ic_launcher', // آیکون از mipmap/ic_launcher.png
         type: 'mipmap',
     },
-    parameters: {
-        delay: 60000,
-    },
+    color: '#40bf42',
+    // parameters: {
+    //     delay: 60000,
+    // },
 };
 
 const veryIntensiveTask1 = async (taskDataArguments) => {

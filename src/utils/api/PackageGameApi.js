@@ -22,6 +22,9 @@ import {
 } from "../../redux/slices/packageGameDownloadSlice";
 import { startSetPackageGameForUserAndGetIt } from "../background-task/PackageGameContentTask";
 import { store } from "../../redux/store/Store";
+import Globals from "../Globals";
+import { preloadImages } from "../ImagePreloader";
+const BASE_URL = Globals.uri;
 
 export const setPackageGameForUser = async({ dispatch, realm, packageId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color }) => {
     await axios({
@@ -228,7 +231,7 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, realm, disp
                 "version_created" : 0,
             }
         }
-    }).then((response)=>{
+    }).then(async(response)=>{
         const data = response.data?.data?.getNewVersionCreatedPackageGameContent;
         if (data) {
             const seasonList = data?.season ?? [];
@@ -242,6 +245,37 @@ const getNewVersionCreatedPackageGameContentForFirst = async ({page, realm, disp
                 const res = createManyPackageStages(realm, stageList);
                 if (!res) result = false;
             }
+            const seasonUrls = Array.from(
+                new Set(seasonList.flatMap((season) =>
+                        Array.isArray(season.media)
+                        ? season.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const stageUrls = Array.from(
+                new Set(stageList.flatMap((stage) =>
+                        Array.isArray(stage.media)
+                        ? stage.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const allUrls = Array.from(
+                new Set([ ...seasonUrls, ...stageUrls])
+            );
+            await preloadImages(allUrls, {
+                batchSize: 8,
+                delayBetweenBatches: 100,
+            });
             if (!result) {
                 dispatch(setGetError());
             } else {
@@ -413,7 +447,7 @@ const getNewVersionCreatedPackageGameContent = async ({ page, dispatch, realm, u
                 "version_created" : versionCreatedContent,
             }
         }
-    }).then((response)=>{
+    }).then(async(response)=>{
         const data = response.data?.data?.getNewVersionCreatedPackageGameContent;
         if (data) {
             const seasonList = data?.season ?? [];
@@ -427,6 +461,37 @@ const getNewVersionCreatedPackageGameContent = async ({ page, dispatch, realm, u
                 const res = createManyPackageStages(realm, stageList);
                 if (!res) result = false;
             }
+            const seasonUrls = Array.from(
+                new Set(seasonList.flatMap((season) =>
+                        Array.isArray(season.media)
+                        ? season.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const stageUrls = Array.from(
+                new Set(stageList.flatMap((stage) =>
+                        Array.isArray(stage.media)
+                        ? stage.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const allUrls = Array.from(
+                new Set([ ...seasonUrls, ...stageUrls])
+            );
+            await preloadImages(allUrls, {
+                batchSize: 8,
+                delayBetweenBatches: 100,
+            });
             if (!result) {
                 dispatch(setGetError());
             } else {
@@ -571,7 +636,7 @@ const getNewVersionUpdatedPackageGameContent = async ({ page, dispatch, realm, u
                 "version_updated" : versionUpdatedContent,
             }
         }
-    }).then((response)=>{
+    }).then(async(response)=>{
         const data = response.data?.data?.getNewVersionUpdatedPackageGameContent;
         if (data) {
             const seasonList = data?.season ?? [];
@@ -585,6 +650,37 @@ const getNewVersionUpdatedPackageGameContent = async ({ page, dispatch, realm, u
                 const res = updateManyPackageStages(realm, stageList);
                 if (!res) result = false;
             }
+            const seasonUrls = Array.from(
+                new Set(seasonList.flatMap((season) =>
+                        Array.isArray(season.media)
+                        ? season.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const stageUrls = Array.from(
+                new Set(stageList.flatMap((stage) =>
+                        Array.isArray(stage.media)
+                        ? stage.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const allUrls = Array.from(
+                new Set([ ...seasonUrls, ...stageUrls])
+            );
+            await preloadImages(allUrls, {
+                batchSize: 8,
+                delayBetweenBatches: 100,
+            });
             if (!result) {
                 dispatch(setGetError());
             } else {

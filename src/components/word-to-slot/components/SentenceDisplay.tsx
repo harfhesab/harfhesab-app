@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import React, { memo, useEffect, useState, useRef  } from 'react';
+import { View, StyleSheet, Text, ScrollView } from 'react-native';
 import { useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -14,6 +14,7 @@ const SentenceDisplay = () => {
     const colors = useAppTheme();
     const [check, setCheck] = useState(true);
     const [currentSentenceStatusColor, setCurrentSentenceStatusColor] = useState<string[]>(['#86442d', '#4d2719']);
+    const scrollRef = useRef<ScrollView | null>(null);
 
     const currentSentence = Object.keys(slots)
             .sort((a, b) => Number(a) - Number(b))
@@ -31,7 +32,7 @@ const SentenceDisplay = () => {
             const isCorrect = slotWords.every((word, index) => word === currentWords[index].word);
             
             if (isCorrect) {
-                setCurrentSentenceStatusColor(['#47cd8a', '#103220'])
+                setCurrentSentenceStatusColor([colors.primary.a1, '#236a24'])
                 typingSentenceSucccessSound()
                 setTimeout(()=>{
                     setCheck(false);
@@ -50,25 +51,40 @@ const SentenceDisplay = () => {
     return (
         <View style={styles.sentenceContainer}>
             <TopHeader/>
-            <View style={{width:"100%", alignItems:'center', flexDirection :'column', gap:10, justifyContent:'center', paddingHorizontal:15}}>
-                {
-                  completedSentences?.map((item, index)=>(
-                    <View key={index.toString()} style={{backgroundColor:"#9900ef90", paddingHorizontal:15, borderRadius:5, alignItems:'center', justifyContent:'center'}}>
-                        <MultiLineTextGradientSvg
-                            text={item}
-                            fontFamily={Font.iran_yekan_bold}
-                            fontSize={20}
-                            dropShadow={true}
-                            shadowColor={'#000000'}
-                            shadowBlur={10}
-                            glowBlur={50}
-                            glowColor={'#FFFFFF'}
-                            glowShadow={true}
-                            colors={['#47d994', '#40bf42']}
-                        />
-                    </View>
-                  ))
-                }
+            <View style={{ flex: 1, paddingVertical: 5 }}>
+              <ScrollView  
+                ref={scrollRef}
+                onContentSizeChange={() => {
+                  scrollRef.current?.scrollToEnd({ animated: true });
+                }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                >
+                <View style={{width:"100%", alignItems:'center', flexDirection :'column', gap:10, justifyContent:'center', paddingHorizontal:15}}>
+                    {
+                      completedSentences?.map((item, index)=>(
+                        <View key={index.toString()} style={{backgroundColor:`${colors.primary.a1}90`, paddingHorizontal:15, paddingVertical:1, borderRadius:10, alignItems:'center', justifyContent:'center'}}>
+                            <MultiLineTextGradientSvg
+                                text={item}
+                                fontFamily={Font.iran_yekan_bold}
+                                fontSize={18}
+                                dropShadow={true}
+                                shadowColor={'#000000'}
+                                shadowBlur={10}
+                                glowBlur={50}
+                                glowColor={'#FFFFFF'}
+                                glowShadow={true}
+                                colors={['#FFFFFF', '#fcb900']}
+                            />
+                        </View>
+                      ))
+                    }
+                </View>
+              </ScrollView>
             </View>
             <View style={{minHeight:30}}>
               {

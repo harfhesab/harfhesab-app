@@ -28,6 +28,10 @@ import {
 } from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { unknownWordCompletedInPackageGame } from '../functions/PackageGameFunctions';
 import { showToast } from '../../custom-toast/ToastRef';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from '../../../redux/store/RootReducer';
+import { AppDispatch } from '../../../redux/store/Store';
+import { findingOneNewHiddenWord } from '../../../redux/slices/hiddenWordSlice';
 
 interface Position { x: number; y: number; }
 interface Velocity { vx: number; vy: number; }
@@ -83,7 +87,10 @@ export const LettersProvider: React.FC<{
   stageId: string;
   partIndex: number;
   wordId: string;
-}> = ({ children, realm, data, type, stageId, partIndex, wordId }) => {
+  stageNumber: number | undefined;
+}> = ({ children, realm, data, type, stageId, partIndex, wordId, stageNumber }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { connectingLetterGuide } = useSelector((state: RootState) => state.setting);
   const [connectedLetters, setConnectedLetters] = useState<string[]>([]);
   const [submittedInfo, setSubmittedInfo] = useState<SubmittedInfo | null>(null);
   const [lettersHelpUsed, setLettersHelpUsed] = useState<number[]>(data.letters_help_used || [])
@@ -92,7 +99,6 @@ export const LettersProvider: React.FC<{
   const selectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // استفاده از آرایه برای دسترسی سریع در frameCallback
   const cardsRefArray = useRef<Card[]>([]);
   const cardsMapRef = useRef<Record<string, Card>>({}); 
 
@@ -138,6 +144,7 @@ export const LettersProvider: React.FC<{
       newHidden.add(word);
       return { ...prevState, hidden: newHidden };
     });
+    dispatch(findingOneNewHiddenWord())
     if(type == "stage-game"){
       saveNewHiddenWordsBuildedInStageGame( realm, stageId, partIndex, wordId, word );
     } else if(type == "package-game"){
@@ -426,6 +433,21 @@ export const LettersProvider: React.FC<{
       clearSelectionTimer();
     };
   }, [frameCallback, clearSelectionTimer]);
+
+  useEffect(() => {
+    checkShowGuide()
+  }, [])
+  const checkShowGuide = async()=>{
+    if(connectingLetterGuide == false && stageNumber && stageNumber < 4){
+      const { showConnectingLetterGuide } = await import('../../../utils/functions/Guide');
+      setTimeout(()=>{
+        const letters = data?.letters
+        const word = data?.word;
+        const additionalWords = data?.additional_words;
+        showConnectingLetterGuide({dispatch, letters, word, additionalWords})
+      }, 3000)
+    }
+  }
 
   return (
     <LettersContext.Provider

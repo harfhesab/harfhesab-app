@@ -5,7 +5,7 @@ import Font from "../../utils/Font";
 import { reduceNumberCoins } from "../../redux/slices/coinSlice";
 import { showToast } from "../custom-toast/ToastRef";
 
-function NumberCoinsHelp({ onPress = () => {}, numberCoinsHelp }) {
+function MeaningSentence({ onPress = () => {}, numberCoinsHelp }) {
     const dispatch = useDispatch();
     const { numberCoins } = useSelector((state) => state.coins);
 
@@ -17,7 +17,7 @@ function NumberCoinsHelp({ onPress = () => {}, numberCoinsHelp }) {
         } else {
             showToast({
                 title: "عدم موجودی سکه",
-                message: "موجودی سکهٔ شما برای دریافت راهنمایی کافی نیست!",
+                message: "موجودی سکهٔ شما برای دیدن معنی جمله کافی نیست!",
                 type: "error",
                 animationType: "slide",
                 position: "top",
@@ -26,14 +26,21 @@ function NumberCoinsHelp({ onPress = () => {}, numberCoinsHelp }) {
     };
 
     return (
-        <TouchableOpacity onPress={onClick} activeOpacity={0.7}>
-            <ImageBackground
-                    source={require("../../assets/image/button_6.png")}
-                    style={{ width: 83, height: 40, justifyContent: "center", alignItems: "center" }}
-                    imageStyle={{ resizeMode: "stretch" }}
-                    resizeMode="stretch"
-                >
-                    <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', height:"100%", width:"100%", overflow:'hidden', paddingBottom:2, paddingHorizontal:8}}>
+        <TouchableOpacity 
+              onPress={onClick}
+              activeOpacity={0.6}
+              style={{alignItems:'center', justifyContent:'center'}}
+            >
+              <ImageBackground
+                  source={require("../../assets/image/card_1.png")}
+                  style={{ width: 40, height: 52, justifyContent: "center", alignItems: "center" }}
+                  imageStyle={{ resizeMode: "stretch" }}
+                  resizeMode="stretch"
+              >
+                 <View style={{width:"100%", height:"100%", alignItems:"center", justifyContent:"center", gap:3}}>
+                    <Text style={{fontFamily:Font.medium, fontSize:11, color:"#FFF"}}>{"معنی"}</Text>
+                    {
+                        numberCoinsHelp > 0&&
                         <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
                             <Text style={{fontFamily:Font.bold, fontSize:11, color:"#FFFFFF"}}>{numberCoinsHelp}</Text>
                             <Image
@@ -41,11 +48,11 @@ function NumberCoinsHelp({ onPress = () => {}, numberCoinsHelp }) {
                                 source={require('../../assets/image/coin.png')}
                             />
                         </View>
-                        <Text style={{fontFamily:Font.medium, fontSize:11, color:"#FFFFFF"}}>{"راهنما"}</Text>
-                    </View>
-            </ImageBackground>
+                    }
+                 </View>
+              </ImageBackground>
         </TouchableOpacity>
     );
 }
 
-export default memo(NumberCoinsHelp);
+export default memo(MeaningSentence);

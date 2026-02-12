@@ -29,7 +29,7 @@ const COLORS = {
   SUCCESS: "#40bf42",
   ERROR: "#CC0000",
   DUPLICATE: "#0099CC",
-  GRADIENT_SUCCESS: ["#40bf42", "#018044"],
+  GRADIENT_SUCCESS: ['#40bf42', '#236a24'],
   GRADIENT_ERROR: ['#CC0000', '#ff4444'],
   GRADIENT_DUPLICATE: ['#0099CC', '#33b5e5'],
   GRADIENT_NORMAL: ['#86442d', '#4d2719'],
@@ -60,7 +60,7 @@ const WordDisplay = () => {
   const feedbackProgress = useSharedValue(FEEDBACK_STATE.NORMAL);
   const selectedCardsOpacity = useSharedValue(1);
   const [gradientColors, setGradientColors] = useState<string[]>(COLORS.GRADIENT_NORMAL);
-  const chunks = useMemo(() => chunkArray(data.additional_words, 5), [data.additional_words]);
+  const chunks = useMemo(() => chunkArray(data.additional_words, 6), [data.additional_words]);
 
   useEffect(() => {
     if (!submittedInfo) return;
@@ -69,38 +69,53 @@ const WordDisplay = () => {
     let state = FEEDBACK_STATE.ERROR;
     let isCorrect = false;
 
-    if (word === data.word) {
-      if(foundWords.main){
-        state = FEEDBACK_STATE.DUPLICATE
-        connectingLetterDuplicateSound()
-      } else {
-        handleMainWordFound()
-        state = FEEDBACK_STATE.SUCCESS
-        isCorrect = true;
-        connectingLetterSucccessSound()
-      }
-    } else if (data.additional_words.includes(word)) {
-      if(foundWords.additional.has(word)){
-        state = FEEDBACK_STATE.DUPLICATE
-        connectingLetterDuplicateSound()
-      } else {
-        handleNewAdditionalWordFound(word)
-        state = FEEDBACK_STATE.SUCCESS
-        isCorrect = true;
-        connectingLetterSucccessSound()
-      }
-    } else if (data.hidden_words.includes(word)) {
-      if(foundWords.hidden.has(word)){
-        state = FEEDBACK_STATE.DUPLICATE
-        connectingLetterDuplicateSound()
-      } else {
-        handleNewHiddenWordFound(word)
-        state = FEEDBACK_STATE.SUCCESS
-        isCorrect = true;
-        connectingLetterSucccessSound()
-      }
+    // ۱. تعیین نوع ورودی و خروجی تابع نرمال‌سازی
+    const normalize = (text: string | undefined): string => {
+        return text ? text.replace(/آ/g, "ا") : "";
+    };
+
+    // ۲. نرمال کردن ورودی کاربر
+    const normalizedInput: string = normalize(word);
+
+    // ۳. پیدا کردن کلمات مطابق در آرایه‌ها (تایپ این‌ها string | undefined خواهد بود)
+    const matchedAdditional = data.additional_words.find((w: string) => normalize(w) === normalizedInput);
+    const matchedHidden = data.hidden_words.find((w: string) => normalize(w) === normalizedInput);
+
+    // ۴. منطق شرطی
+    if (normalizedInput === normalize(data.word)) {
+        if (foundWords.main) {
+            state = FEEDBACK_STATE.DUPLICATE;
+            connectingLetterDuplicateSound();
+        } else {
+            handleMainWordFound();
+            state = FEEDBACK_STATE.SUCCESS;
+            isCorrect = true;
+            connectingLetterSucccessSound();
+        }
+    } else if (matchedAdditional !== undefined) {
+        // در اینجا TypeScript می‌داند matchedAdditional قطعا string است
+        if (foundWords.additional.has(word) || foundWords.additional.has(matchedAdditional)) {
+            state = FEEDBACK_STATE.DUPLICATE;
+            connectingLetterDuplicateSound();
+        } else {
+            handleNewAdditionalWordFound(matchedAdditional);
+            state = FEEDBACK_STATE.SUCCESS;
+            isCorrect = true;
+            connectingLetterSucccessSound();
+        }
+    } else if (matchedHidden !== undefined) {
+        // در اینجا TypeScript می‌داند matchedHidden قطعا string است
+        if (foundWords.hidden.has(word) || foundWords.hidden.has(matchedHidden)) {
+            state = FEEDBACK_STATE.DUPLICATE;
+            connectingLetterDuplicateSound();
+        } else {
+            handleNewHiddenWordFound(matchedHidden);
+            state = FEEDBACK_STATE.SUCCESS;
+            isCorrect = true;
+            connectingLetterSucccessSound();
+        }
     } else {
-      connectingLetterErrorSound()
+        connectingLetterErrorSound();
     }
 
     let newGradientColors = COLORS.GRADIENT_NORMAL;
@@ -189,10 +204,10 @@ const WordDisplay = () => {
                     key={index.toString()}
                     word={word}
                     isWordFound={foundWords.additional.has(word)}
-                    size={WORD_SQUARE_WIDTH - 20}
+                    size={WORD_SQUARE_WIDTH - 17}
                     mainWord={false}
                     // اینجا به جای کل آرایه فقط عدد مربوطه را پاس می‌دهیم که عالی است
-                    numberHelped={numberHelped[colIndex * 5 + index]}
+                    numberHelped={numberHelped[colIndex * 6 + index]}
                   />
                 ))}
               </View>
@@ -260,7 +275,7 @@ const styles = StyleSheet.create({
   columnContainer: {
     flexDirection: "column",
     alignItems: "center",
-    gap: 8,
+    gap: 5,
   },
   displayArea: {
     width: width,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import PlaceholderSquare from './PlaceholderSquare';
 
 
@@ -12,7 +12,7 @@ interface WordPlaceholderRowProps {
 }
 const WordPlaceholderRow = ({ word, isWordFound, size, mainWord, numberHelped = 0 }: WordPlaceholderRowProps) => {
     return (
-        <View style={styles.placeholderRow}>
+        <View style={{flexDirection: 'row-reverse', gap: mainWord?5:3 }}>
           {word.split('').map((char, index) => (
             <PlaceholderSquare
               key={`${word}-${index}`}
@@ -26,11 +26,5 @@ const WordPlaceholderRow = ({ word, isWordFound, size, mainWord, numberHelped = 
         </View>
     );
 };
-const styles = StyleSheet.create({
-    placeholderRow: {
-        flexDirection: 'row-reverse',
-        gap: 5,
-    },
-});
 
 export default React.memo(WordPlaceholderRow);

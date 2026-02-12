@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, StyleSheet} from 'react-native';
+import {Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { useLetters } from '../../context/LettersContext';
 import { View } from 'react-native';
 import NumberCoins from '../../../coin/NumberCoins';
@@ -10,6 +10,7 @@ import { RootState } from '../../../../redux/store/RootReducer';
 import Setting from '../../../icon/Setting';
 import Back from '../../../icon/Back';
 import { STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
+import HiddenWords from './HiddenWords';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
@@ -17,22 +18,26 @@ const TopHeader = () => {
   const { type, applyForHelp } = useLetters();
 
   return (
-    <View style={styles.header}>
-        <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-            <Setting/>
-            <View style={{direction:'rtl'}}>
-                <NumberCoins />
-            </View>
-        </View>
-        <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-        <NumberCoinsHelp
-            numberCoinsHelp={type == "stage-game"?coins_for_get_help_letter_connecting_stage_game:type == "package-game"&&coins_for_get_help_letter_connecting_package_game}
-            onPress={applyForHelp}
-        />
-        <Back/>
-        </View>
+    <View style={{width:width, marginTop:STATUS_BAR_HEIGHT}}>
+      <View style={styles.header}>
+          <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
+              <Setting/>
+              <View style={{direction:'rtl'}}>
+                  <NumberCoins />
+              </View>
+          </View>
+          <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
+          <NumberCoinsHelp
+              numberCoinsHelp={type == "stage-game"?coins_for_get_help_letter_connecting_stage_game:type == "package-game"&&coins_for_get_help_letter_connecting_package_game}
+              onPress={applyForHelp}
+          />
+          <Back/>
+          </View>
+      </View>
+      <View style={{alignItems:'center', justifyContent:'center', position:'absolute', bottom:-57, start:10}}>
+          <HiddenWords/>
+      </View>
     </View>
-    
   );
 };
 const styles = StyleSheet.create({
@@ -48,7 +53,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   header: {
-    marginTop:STATUS_BAR_HEIGHT,
     height:55,
     width:width,
     flexDirection:'row',

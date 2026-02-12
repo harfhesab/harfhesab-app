@@ -15,7 +15,7 @@ import {
     FONT_SIZE_SLOTTED,
 } from "../constants/constants";
 import { endOfAStageInStageGame } from '../functions/StageGameFunctions';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from '../../../redux/store/Store';
 import { useRealm } from '../../../realm';
 import { useObject } from '../../../realm';
@@ -26,6 +26,7 @@ import { PackageStage } from '../../../realm/schemas/package-game/PackageStageSc
 import { saveCompletedPartAndSentenceBuildedInPackageGame, saveWordHelpUsedInPackageGame } from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { endOfAStageInPackageGame } from '../functions/PackageGameFunctions';
 import { showToast } from '../../custom-toast/ToastRef';
+import { RootState } from '../../../redux/store/RootReducer';
 
 interface Position {
   x: number;
@@ -65,11 +66,13 @@ interface ContextProps {
   playingPartIndex: number;
   completedSentences: string[];
   numberOfCards: number;
+  existUnknownWord: boolean;
   numberParts: number;
   lockedPan: boolean;
   type: string;
   stageId: string;
   applyForHelp: () => void;
+  sentenceHint?: string | null;
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
@@ -97,6 +100,7 @@ export const DragDropProvider: React.FC<{
   packageName,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { wordToSlotGuide, unknownWordGuide } = useSelector((state: RootState) => state.setting);
   const realm = useRealm();
   const objectId = typeof stageId === 'string' ? new BSON.ObjectId(stageId) : stageId;
   const data = type == "stage-game" ? useObject<Stage>("Stage", objectId) : type == "package-game"? useObject<PackageStage>("PackageStage", objectId): undefined;
@@ -117,11 +121,11 @@ export const DragDropProvider: React.FC<{
   const [currentPartIndex, setCurrentPartIndex] = useState(Math.max(0, parts.findIndex(item => item.sentence_builded !== true)));
   const [playingPartIndex, setPlayingPartIndex] = useState(Math.max(0, parts.findIndex(item => item.sentence_builded !== true)))
   const [completedSentences, setCompletedSentences] = useState<string[]>(
-    () => parts.filter(p => p.sentence_builded).map(p => p.sentence)
+    () => parts.filter(p => p.sentence_builded).map(p => p?.sentence_display??p.sentence)
   );
   const [lockedPan, setLockedPan] = useState<boolean>(false)
   const numberParts = parts.length
-
+  const sentenceHint = parts[playingPartIndex]?.sentence_hint
 
   const currentWords = parts[playingPartIndex]?.words.map((w: any) => ({
     _id: w._id,
@@ -132,6 +136,9 @@ export const DragDropProvider: React.FC<{
   })) || [];
 
   const numberOfCards = currentWords.length;
+  const existUnknownWord = currentWords.some(
+    (w) => w.unknown_word === true && w.unknown_word_completed === false
+  );
 
   function applyForHelp() {
     for (let index = 0; index < currentWords.length; index++) {
@@ -164,13 +171,12 @@ export const DragDropProvider: React.FC<{
   }
 
   const completeCurrentPart = useCallback(() => {
-    let sentences:any
     if(playingPartIndex == currentPartIndex){
-      const currentSentence = parts[playingPartIndex].sentence;
+      const currentSentence = parts[playingPartIndex]?.sentence_display??parts[playingPartIndex].sentence;
       setCompletedSentences(prev => {
         if (!prev.includes(currentSentence)) {
-          sentences = [...prev, currentSentence]
-          return sentences;
+          const items = [...prev, currentSentence]
+          return items;
         }
         return prev;
       });
@@ -198,14 +204,19 @@ export const DragDropProvider: React.FC<{
         setLockedPan(false)
       }, 1000)
     } else {
+      const sentences = parts.map((part) => ({
+        sentence: part.sentence_display ?? part.sentence,
+        hint: part.sentence_hint,
+      }));
+      const stageHint = data?.stage_hint
       setTimeout(()=>{
         setSlots({})
         setLockedPan(false)
         if(type == "stage-game"){
           const language_ref = languageId
-          endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences})
+          endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences, stageHint})
         } else if(type == "package-game"){
-          endOfAStageInPackageGame({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences})
+          endOfAStageInPackageGame({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences, stageHint})
         }
       }, 1000)
     }
@@ -530,6 +541,24 @@ export const DragDropProvider: React.FC<{
     };
   }, [frameCallback]);
 
+  useEffect(() => {
+    checkShowGuide()
+  }, [])
+  const checkShowGuide = async()=>{
+    if(wordToSlotGuide == false && stageNumber == 1){
+      const { showWordToSlotGuide } = await import('../../../utils/functions/Guide');
+      setTimeout(()=>{
+        const sentence = parts[playingPartIndex]?.sentence_display??parts[playingPartIndex].sentence;
+        showWordToSlotGuide({dispatch, currentWords, sentence})
+      }, 3000)
+    } else if(unknownWordGuide == false && existUnknownWord == true && stageNumber !== undefined && stageNumber < 4){
+      const { showUnknownWordGuide } = await import('../../../utils/functions/Guide');
+      setTimeout(()=>{
+        showUnknownWordGuide({dispatch})
+      }, 3000)
+    }
+  }
+
   return (
     <DragDropContext.Provider
       value={{
@@ -548,11 +577,13 @@ export const DragDropProvider: React.FC<{
         playingPartIndex,
         completedSentences,
         numberOfCards,
+        existUnknownWord,
         numberParts,
         lockedPan,
         type,
         stageId,
-        applyForHelp
+        applyForHelp,
+        sentenceHint
       }}
     >
       {children}

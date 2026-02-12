@@ -19,6 +19,9 @@ import {
 import { createManyStages, updateManyStages, deleteManyStages } from "../../realm/repositories/stage-game/stage.repository";
 import { createManyStageSeasons, updateManyStageSeasons, deleteManyStageSeasons } from "../../realm/repositories/stage-game/stage-season.repository";
 import { createManyLanguages, updateManyLanguages, deleteManyLanguages } from "../../realm/repositories/general/language.repository";
+import { preloadImages } from "../ImagePreloader";
+import Globals from "../Globals";
+const BASE_URL = Globals.uri;
 
 export const checkStageGameContentVersion = async({ dispatch, realm, state, versionContent }) => {
     // InteractionManager.runAfterInteractions(() => {
@@ -272,7 +275,7 @@ const getNewVersionCreatedStageGameContent = async ({page, dispatch, realm, stat
                 "version_created" : versionCreatedContent,
             }
         }
-    }).then((response)=>{
+    }).then(async(response)=>{
         const data = response.data?.data?.getNewVersionCreatedStageGameContent;
         if (data) {
             const seasonList = data?.season ?? [];
@@ -291,6 +294,46 @@ const getNewVersionCreatedStageGameContent = async ({page, dispatch, realm, stat
                 const res = createManyLanguages(realm, languageList);
                 if (!res) result = false;
             }
+            const seasonUrls = Array.from(
+                new Set(seasonList.flatMap((season) =>
+                        Array.isArray(season.media)
+                        ? season.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const stageUrls = Array.from(
+                new Set(stageList.flatMap((stage) =>
+                        Array.isArray(stage.media)
+                        ? stage.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const languageUrls = Array.from(
+                new Set(
+                languageList
+                    .map((lang) =>
+                    lang?.icon_image ? `${BASE_URL}${lang.icon_image}` : null
+                    )
+                    .filter(Boolean)
+                )
+            );
+            const allUrls = Array.from(
+                new Set([ ...seasonUrls, ...stageUrls, ...languageUrls])
+            );
+            await preloadImages(allUrls, {
+                batchSize: 8,
+                delayBetweenBatches: 100,
+            });
             if (!result) {
                 dispatch(setGetError());
             } else {
@@ -429,7 +472,7 @@ const getNewVersionUpdatedStageGameContent = async ({page, dispatch, realm, stat
                 "version_updated" : versionUpdatedContent,
             }
         }
-    }).then((response)=>{
+    }).then(async(response)=>{
         const data = response.data?.data?.getNewVersionUpdatedStageGameContent;
         if (data) {
             const seasonList = data?.season ?? [];
@@ -448,6 +491,46 @@ const getNewVersionUpdatedStageGameContent = async ({page, dispatch, realm, stat
                 const res = updateManyLanguages(realm, languageList);
                 if (!res) result = false;
             }
+            const seasonUrls = Array.from(
+                new Set(seasonList.flatMap((season) =>
+                        Array.isArray(season.media)
+                        ? season.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const stageUrls = Array.from(
+                new Set(stageList.flatMap((stage) =>
+                        Array.isArray(stage.media)
+                        ? stage.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const languageUrls = Array.from(
+                new Set(
+                languageList
+                    .map((lang) =>
+                    lang?.icon_image ? `${BASE_URL}${lang.icon_image}` : null
+                    )
+                    .filter(Boolean)
+                )
+            );
+            const allUrls = Array.from(
+                new Set([ ...seasonUrls, ...stageUrls, ...languageUrls])
+            );
+            await preloadImages(allUrls, {
+                batchSize: 8,
+                delayBetweenBatches: 100,
+            });
             if (!result) {
                 dispatch(setGetError());
             } else {
@@ -674,7 +757,7 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
                 "version_created" : versionCreatedContent,
             }
         }
-    }).then((response)=>{
+    }).then(async(response)=>{
         const data = response.data?.data?.getNewVersionCreatedStageGameContent;
         if (data) {
             const seasonList = data?.season ?? [];
@@ -693,6 +776,46 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
                 const res = createManyLanguages(realm, languageList);
                 if (!res) result = false;
             }
+            const seasonUrls = Array.from(
+                new Set(seasonList.flatMap((season) =>
+                        Array.isArray(season.media)
+                        ? season.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const stageUrls = Array.from(
+                new Set(stageList.flatMap((stage) =>
+                        Array.isArray(stage.media)
+                        ? stage.media
+                            .map((m) =>
+                                m?.path ? `${BASE_URL}${m.path}` : null
+                            )
+                            .filter(Boolean)
+                        : []
+                    )
+                )
+            );
+            const languageUrls = Array.from(
+                new Set(
+                languageList
+                    .map((lang) =>
+                    lang?.icon_image ? `${BASE_URL}${lang.icon_image}` : null
+                    )
+                    .filter(Boolean)
+                )
+            );
+            const allUrls = Array.from(
+                new Set([ ...seasonUrls, ...stageUrls, ...languageUrls])
+            );
+            await preloadImages(allUrls, {
+                batchSize: 8,
+                delayBetweenBatches: 100,
+            });
             if (!result) {
                 dispatch(setGetError());
             } else {
