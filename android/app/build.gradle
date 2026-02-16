@@ -77,9 +77,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.project"
+    namespace "com.dokalam.app"
     defaultConfig {
-        applicationId "com.project"
+        applicationId "com.dokalam.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -105,11 +105,48 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+
+    // اضافه کردن سیستم تفکیک پکیج بازار و مایکت به دلیل تداخل فراخوانی کلاس IInAppBillingService در دو پیکیج
+    flavorDimensions "market"
+    productFlavors {
+        bazaar {
+            dimension "market"
+            // نام پکیج می‌تواند ثابت بماند یا تغییر کند (اختیاری)
+            // applicationIdSuffix ".bazaar" // اگر بخواهید دو نسخه همزمان نصب شوند
+            manifestPlaceholders = [
+                marketApplicationId: "com.farsitel.bazaar",
+                marketBindAddress  : "ir.cafebazaar.pardakht.InAppBillingService.BIND",
+                marketPermission   : "com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR"
+            ]
+        }
+        myket {
+            dimension "market"
+            manifestPlaceholders = [
+                marketApplicationId: "ir.mservices.market",
+                marketBindAddress  : "ir.mservices.market.InAppBillingService.BIND",
+                marketPermission   : "ir.mservices.market.permission.PAY_THROUGH_MARKET"
+            ]
+        }
+    }
+    
+    // برای حل تداخل کلاس‌ها در زمان بیلد، این بخش را هم حتماً داشته باشید:
+    packagingOptions {
+        pickFirst 'com/android/vending/billing/IInAppBillingService.class'
+        pickFirst 'com/android/vending/billing/IInAppBillingService$Stub.class'
+        pickFirst 'com/android/vending/billing/IInAppBillingService$Default.class'
+        pickFirst 'com/android/vending/billing/IInAppBillingService$Stub$Proxy.class'
+    }
 }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+
+    // فقط در نسخه بازار، پولکی لود شود
+    bazaarImplementation project(':react-native-poolakey')
+    // فقط در نسخه مایکت، کتابخانه مایکت لود شود
+    myketImplementation project(':iab-myket-reactnative')
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

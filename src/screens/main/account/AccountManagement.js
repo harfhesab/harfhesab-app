@@ -188,17 +188,25 @@ function AccountManagement(props){
             setLoading2(false)
             const data = response.data.data?.savingUserAccountInformationByUser
             if(data?.status == 200){
+                const btn = [
+                    {
+                        text: "متوجه شدم",
+                        onPress: () => {
+                            props.navigation.goBack()
+                        },
+                        type:'bold'
+                    },
+                ]
+                if(data?.reward !== true){
+                    btn.push({
+                        text: "تکمیل اطلاعات",
+                        onPress: () => {},
+                        type:'border'
+                    })
+                }
                 AlertHelper.showAlert({
                     body: data?.message??"اطلاعات حساب کاربری با موفقیت ذخیره شد.",
-                    buttons: [
-                        {
-                            text: "متوجه شدم",
-                            onPress: () => {
-                                props.navigation.goBack()
-                            },
-                            type:'bold'
-                        },
-                    ],
+                    buttons: btn,
                     options : {
                         type: 'success',
                         cancelable: true

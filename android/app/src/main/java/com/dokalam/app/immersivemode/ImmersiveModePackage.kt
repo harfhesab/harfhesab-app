@@ -1,4 +1,4 @@
-package com.project.immersivemode
+package com.dokalam.app.immersivemode
 
 import android.view.View
 import com.facebook.react.ReactPackage

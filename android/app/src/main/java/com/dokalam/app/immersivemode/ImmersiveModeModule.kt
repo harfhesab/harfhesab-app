@@ -1,4 +1,4 @@
-package com.project.immersivemode
+package com.dokalam.app.immersivemode
 
 import android.os.Build
 import android.view.View

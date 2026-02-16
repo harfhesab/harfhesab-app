@@ -1,4 +1,4 @@
-package com.project.navigationbar
+package com.dokalam.app.navigationbar
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

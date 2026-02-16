@@ -202,7 +202,7 @@ function Account(props){
                         </ImageBackground>
                         <View style={{flexDirection:'column', alignItems:'flex-end', gap:10}}>
                             <View style={{ flexDirection:'column', alignItems:'flex-end'}}>
-                                <Text style={{fontFamily:Font.black, fontSize:12, color:colors.text.a1}}>{name}</Text>
+                                <Text style={{fontFamily:Font.en_black, fontSize:14, color:colors.text.a1}}>{name}</Text>
                                 <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{loginType == "registered" ? phone : "کاربر میهمان"}</Text>
                             </View>
                             <TouchableOpacity 

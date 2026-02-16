@@ -18,6 +18,7 @@ import { hideSplash } from '../../redux/slices/mainSlice';
 import { createSubscriptionPlansList } from '../../realm/repositories/user/subscription-plan-repository';
 import AlertBottomDrawerHelper from '../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 import Icon from '../../utils/Icon';
+import { preloadImages } from '../../utils/ImagePreloader';
 
 const { width } = Dimensions.get("window");
 function Splash(props){
@@ -160,6 +161,7 @@ function Splash(props){
                     const variables = data.game_constants
                     dispatch(updateConstantsVersion(variables))
                 }
+                let preloadUrls = [];
                 if(data?.coin_plans?.length > 0){
                     const dataList = data.coin_plans
                     const newCoinPlans = createCoinPlansList(realm, dataList)
@@ -168,6 +170,8 @@ function Splash(props){
                         if(newCoinPlansVersion > 0){
                             dispatch(changeCoinPlansVersion({version:newCoinPlansVersion}))
                         }
+                        const coinUrls = dataList.map(plan => `${Globals.uri}${plan.icon_image}`).filter(url => typeof url === 'string' && url.length > 0);
+                        preloadUrls.push(...coinUrls);
                     }
                 }
                 if(data?.subscription_plans?.length > 0){
@@ -178,8 +182,14 @@ function Splash(props){
                         if(newSubscriptionPlansVersion > 0){
                             dispatch(changeSubscriptionPlansVersion({version:newSubscriptionPlansVersion}))
                         }
+                        const subscriptionUrls = dataList.map(plan => `${Globals.uri}${plan.icon_image}`).filter(url => typeof url === 'string' && url.length > 0);
+                        preloadUrls.push(...subscriptionUrls);
                     }
                 }
+                await preloadImages(preloadUrls, {
+                    batchSize: 8,
+                    delayBetweenBatches: 100,
+                });
                 if(data?.app_version_update_alert){
                     const force = data?.app_version_update_alert?.force_update
                     const link = data?.app_version_update_alert?.update_link

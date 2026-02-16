@@ -1,4 +1,4 @@
-package com.project.navigationbar
+package com.dokalam.app.navigationbar
 
 import android.graphics.Color
 import android.view.View

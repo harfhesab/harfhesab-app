@@ -19,6 +19,7 @@ import { createCoinPlansList } from '../../realm/repositories/user/coin-plan-rep
 import { createSubscriptionPlansList } from '../../realm/repositories/user/subscription-plan-repository';
 import { changeSubscriptionPlansVersion } from '../../redux/slices/subscriptionSlice';
 import { useRealm } from '../../realm';
+import { preloadImages } from '../../utils/ImagePreloader';
 
 const {width, height} = Dimensions.get('window');
 function SignIn(props){
@@ -164,14 +165,17 @@ function SignIn(props){
                     const variables = data.game_constants
                     dispatch(updateConstantsVersion(variables))
                 }
+                let preloadUrls = [];
                 if(data?.coin_plans?.length > 0){
-                    const dataList = data.coin_plans
+                    const dataList = data?.coin_plans || [];
                     const newCoinPlans = createCoinPlansList(realm, dataList)
                     if(newCoinPlans == true){
                         const newCoinPlansVersion = data?.coin_plans_new_version
                         if(newCoinPlansVersion > 0){
                             dispatch(changeCoinPlansVersion({version:newCoinPlansVersion}))
                         }
+                        const coinUrls = dataList.map(plan => `${Globals.uri}${plan.icon_image}`).filter(url => typeof url === 'string' && url.length > 0);
+                        preloadUrls.push(...coinUrls);
                     }
                 }
                 if(data?.subscription_plans?.length > 0){
@@ -182,8 +186,14 @@ function SignIn(props){
                         if(newSubscriptionPlansVersion > 0){
                             dispatch(changeSubscriptionPlansVersion({version:newSubscriptionPlansVersion}))
                         }
+                        const subscriptionUrls = dataList.map(plan => `${Globals.uri}${plan.icon_image}`).filter(url => typeof url === 'string' && url.length > 0);
+                        preloadUrls.push(...subscriptionUrls);
                     }
                 }
+                await preloadImages(preloadUrls, {
+                    batchSize: 8,
+                    delayBetweenBatches: 100,
+                });
                 const numberCoins = data?.user?.number_coins
                 if(typeof numberCoins === "number"){
                     dispatch(updateNumberCoins({number:numberCoins}))
