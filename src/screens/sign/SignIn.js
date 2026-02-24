@@ -20,6 +20,7 @@ import { createSubscriptionPlansList } from '../../realm/repositories/user/subsc
 import { changeSubscriptionPlansVersion } from '../../redux/slices/subscriptionSlice';
 import { useRealm } from '../../realm';
 import { preloadImages } from '../../utils/ImagePreloader';
+import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
 
 const {width, height} = Dimensions.get('window');
 function SignIn(props){
@@ -61,7 +62,7 @@ function SignIn(props){
                     $device_name : String,
                     $device_model : String,
                     $unique_id : String,
-                    $install_source : String,
+                    $target_store : String,
                     $build_type : String,
                     $coin_plans_version : Int,
                     $subscription_plans_version : Int,
@@ -77,7 +78,7 @@ function SignIn(props){
                         device_name : $device_name,
                         device_model : $device_model,
                         unique_id : $unique_id,
-                        install_source : $install_source,
+                        target_store : $target_store,
                         build_type : $build_type,
                         coin_plans_version : $coin_plans_version,
                         subscription_plans_version : $subscription_plans_version,
@@ -149,8 +150,8 @@ function SignIn(props){
                     "device_name" : device_name,
                     "device_model" : device_model,
                     "unique_id" : unique_id,
-                    "install_source" : Globals.install_source,
-                    "build_type" : Globals.build_type,
+                    "target_store" : TARGET_STORE,
+                    "build_type" : BUILD_TYPE,
                     "coin_plans_version" : coinPlansVersion,
                     "subscription_plans_version" : subscriptionPlansVersion,
                 }

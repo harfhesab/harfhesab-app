@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground, NativeModules} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground, NativeModules, Linking} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,16 @@ import { getAllCoinPlansList } from '../../../realm/repositories/user/coin-plan-
 import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import Globals from '../../../utils/Globals';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
+import { CAFE_BAZAAR_RSA_KEY, TARGET_STORE } from '../../../utils/constants/build-config';
+import FullScreenLoadingHelper from '../../../components/full-screen-loading/FullScreenLoadingHelper';
+import { showToast } from '../../../components/custom-toast/ToastRef';
+import axios from 'axios';
+
+const usePaymentHook = TARGET_STORE == "cafebazaar"?
+    require('@cafebazaar/react-native-poolakey').useBazaar
+    :TARGET_STORE == "myket"?
+    require('iab-myket-reactnative/src/index').useMyket
+    :null
 
 const { ImmersiveMode } = NativeModules;
 const numColumns = IS_TABLET_CONDITION ? 4 : 2
@@ -31,29 +41,112 @@ function CoinPlans(props){
     const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const data = getAllCoinPlansList(realm)
-    
+    const bazaar = TARGET_STORE == "cafebazaar"&&usePaymentHook(CAFE_BAZAAR_RSA_KEY);
+    const [orderId, setOrderId] = useState(null)
 
-    const clickItem = (item)=>{
-        if(Globals.install_source == "direct") {
-            directPaymentGateway()
-        } else if(Globals.install_source == "googleplay") {
-            directPaymentGateway()
-        } else if(Globals.install_source == "cafebazaar") {
-            cafebazaarPaymentGateway()
-        } else if(Globals.install_source == "myket") {
-            mayketPaymentGateway()
+
+
+    useEffect(()=>{
+        connectStore()
+        return () => {
+            disconnectStore()
+        };
+    },[])
+
+    const connectStore = ()=>{
+        if(TARGET_STORE == "cafebazaar"){
+            bazaar.connect()
+        }
+    }
+    const disconnectStore = ()=>{
+        if(TARGET_STORE == "cafebazaar"){
+            bazaar.disconnect()
         }
     }
     
-    const directPaymentGateway = ()=>{
 
+    const clickItem = async(item)=>{
+        FullScreenLoadingHelper.showLoading({
+            title:"در حال اتصال..."
+        })
+        let data = {
+            query : `
+                mutation userRequestsToPurchasePackOfCoins(
+                    $target_store : String!,
+                    $plan : ID!,
+                ){
+                    userRequestsToPurchasePackOfCoins(
+                        target_store : $target_store,
+                        plan : $plan,
+                    ) {
+                        _id,
+                        product_id,
+                        status,
+                        message,
+                        gateway,
+                        url
+                    }
+                }
+              `,
+            variables : {
+                "target_store" : TARGET_STORE,
+                "plan" : item._id
+            }
+        }
+        await axios({
+            url:'/',
+            method:'post',
+            data: data,
+        }).then(async(response)=>{
+            FullScreenLoadingHelper.hideLoading()
+            if(response?.data?.data?.userRequestsToPurchasePackOfCoins?.status == 200){
+                const data = response?.data?.data.userRequestsToPurchasePackOfCoins
+                setOrderId(data?._id)
+                const productId = data?.product_id
+                if(data.gateway == "cafebazaar_gateway"){
+                    cafebazaarPaymentGateway(productId)
+                } else if(data.gateway == "myket_gateway"){
+                    mayketPaymentGateway(productId)
+                } else if(data.gateway == "direct_gateway"){
+                    const gatewayUrl = data?.url
+                    directPaymentGateway(gatewayUrl)
+                }
+            } else {
+                showToast({
+                    title: "مشکلی پیش آمد",
+                    message: response?.data?.errors[0]?.data[0]?.message??"اتصال به درگاه پرداخت میسر نبود. دوباره تلاش کنید." ,
+                    type: "error",
+                    animationType: "slide",
+                    position: "top",
+                });
+            }
+        }).catch((error)=>{
+            FullScreenLoadingHelper.hideLoading()
+            showToast({
+                title: "مشکلی پیش آمد",
+                message: "اتصال به درگاه پرداخت میسر نبود. دوباره تلاش کنید." ,
+                type: "error",
+                animationType: "slide",
+                position: "top",
+            });
+        })
+    }
+    
+    const directPaymentGateway = (gatewayUrl)=>{
+        Linking.openURL(gatewayUrl)
     }
 
-    const cafebazaarPaymentGateway = ()=>{
-
+    const cafebazaarPaymentGateway = async(productId)=>{
+        console.log("0000000000")
+        const purchaseResult = await bazaar.purchaseProduct("dokalam-coin-test")
+        console.log("1111111111", purchaseResult)
+        if(purchaseResult && purchaseResult?.purchaseToken && purchaseResult?.purchaseState == 0){
+            const token = purchaseResult?.purchaseToken
+            await bazaar.consumePurchase(token)
+        }
     }
 
-    const mayketPaymentGateway = ()=>{
+    const mayketPaymentGateway = (productId)=>{
         
     }
 

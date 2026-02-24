@@ -19,6 +19,7 @@ import { createSubscriptionPlansList } from '../../realm/repositories/user/subsc
 import AlertBottomDrawerHelper from '../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 import Icon from '../../utils/Icon';
 import { preloadImages } from '../../utils/ImagePreloader';
+import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
 
 const { width } = Dimensions.get("window");
 function Splash(props){
@@ -55,7 +56,7 @@ function Splash(props){
                     $constants_version : Int,
                     $app_version : String,
                     $app_build_number : Int,
-                    $install_source : String,
+                    $target_store : String,
                     $build_type : String,
                     $coin_plans_version : Int,
                     $subscription_plans_version : Int,
@@ -67,7 +68,7 @@ function Splash(props){
                         constants_version : $constants_version,
                         app_version : $app_version,
                         app_build_number : $app_build_number,
-                        install_source : $install_source,
+                        target_store : $target_store,
                         build_type : $build_type,
                         coin_plans_version : $coin_plans_version,
                         subscription_plans_version : $subscription_plans_version,
@@ -140,8 +141,8 @@ function Splash(props){
                     "constants_version" : constants_version,
                     "app_version" : app_version,
                     "app_build_number" : Number(app_build_number),
-                    "install_source" : Globals.install_source,
-                    "build_type" : Globals.build_type,
+                    "target_store" : TARGET_STORE,
+                    "build_type" : BUILD_TYPE,
                     "coin_plans_version" : coinPlansVersion,
                     "subscription_plans_version" : subscriptionPlansVersion,
                     "number_coins" : numberCoins,

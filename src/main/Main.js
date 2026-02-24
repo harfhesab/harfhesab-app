@@ -19,6 +19,8 @@ import AlertBottomDrawerHelper from '../components/alert-bottom-drawer/AlertBott
 import Toast from '../components/custom-toast/Toast';
 import { toastRef } from '../components/custom-toast/ToastRef';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import FullScreenLoadingHelper from '../components/full-screen-loading/FullScreenLoadingHelper';
+import FullScreenLoading from '../components/full-screen-loading/FullScreenLoading';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.account);
@@ -47,6 +49,7 @@ const Main = (props) => {
         <Alert ref = {Ref => {AlertHelper.setRef(Ref)}}/>
         <GameAlert ref={ref => GameAlertHelper.setRef(ref)} />
         <AlertBottomDrawer ref = {Ref => {AlertBottomDrawerHelper.setRef(Ref)}}/>
+        <FullScreenLoading ref = {Ref => {FullScreenLoadingHelper.setRef(Ref)}}/>
     </SafeAreaProvider>
   );
 };

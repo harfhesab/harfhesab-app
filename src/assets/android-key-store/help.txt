@@ -1,10 +1,10 @@
-password    @$WordGameKey$@$2025
-Alias       word_game_key
-password    @$WordGameKey$@$2025
+password    DoKalam1234!@#$Game2026
+Alias       dokalam_key
+password    DoKalam1234!@#$Game2026
 validity    25
-            Word Game
-            Qaf
-            Qaf
+            Do Kalam
+            DoKalam
+            DoKalam
             Tehran
             Tehran
             IR

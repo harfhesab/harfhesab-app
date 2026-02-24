@@ -20,7 +20,6 @@ import {
     startOtpListener,
     useOtpVerify,
 } from 'react-native-otp-verify';
-import Globals from '../../../../utils/Globals';
 import { useSelector, useDispatch } from 'react-redux';
 import { convertGuestToRegistered, login, updateSyncUserPackage } from '../../../../redux/slices/accountSlice';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
@@ -33,6 +32,7 @@ import { updateCurrentLanguageLastStageAndLastSeason } from '../../../../redux/s
 import { deleteAllUserPackages } from '../../../../realm/repositories/user/user-package-game-progress.repository';
 import { showToast } from '../../../../components/custom-toast/ToastRef';
 import { updateNumberHiddenWords } from '../../../../redux/slices/hiddenWordSlice';
+import { BUILD_TYPE, TARGET_STORE } from '../../../../utils/constants/build-config';
   
   
 const {width, height} = Dimensions.get('window');
@@ -197,7 +197,7 @@ function VerifyLoginToAccount(props){
                         $device_name : String,
                         $device_model : String,
                         $unique_id : String,
-                        $install_source : String,
+                        $target_store : String,
                         $build_type : String,
                     ){
                         verifyUserLoginWithOTPAndMergeGuestAndRegistered(
@@ -215,7 +215,7 @@ function VerifyLoginToAccount(props){
                             device_name : $device_name,
                             device_model : $device_model,
                             unique_id : $unique_id,
-                            install_source : $install_source,
+                            target_store : $target_store,
                             build_type : $build_type,
                         ) {
                             status,
@@ -242,8 +242,8 @@ function VerifyLoginToAccount(props){
                         "device_name" : device_name,
                         "device_model" : device_model,
                         "unique_id" : unique_id,
-                        "install_source" : Globals.install_source,
-                        "build_type" : Globals.build_type
+                        "target_store" : TARGET_STORE,
+                        "build_type" : BUILD_TYPE
                     }
                 }
             }).then(async(response)=>{

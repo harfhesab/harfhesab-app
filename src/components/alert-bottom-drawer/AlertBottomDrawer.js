@@ -79,7 +79,7 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
             }}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
             deviceHeight={height}
-            statusBarTranslucent={true}
+            statusBarTranslucent={ImmersiveMode.isImmersiveModeActive()?true:false}
             coverScreen={true}
         >
             <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background, width:width}]}>

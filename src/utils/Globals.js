@@ -1,12 +1,10 @@
 // const url = "https://project.ir";
-const url = "http://192.168.43.207:4000";
+const url = "http://172.20.10.3:4000";
 export default {
     game_name: "بی زبون",
     baseURL: `${url}/graphql`,
     uri: url,
     android_package_name: 'com.pod.kiosk',
-    install_source: "cafebazaar", // 'direct', 'googleplay', 'cafebazaar', 'myket', 'appstore', 'sibirani', 'sibapp', 'anardoni'
-    build_type: "apk",
     data: {
       configs: {
         translate: 'fa',

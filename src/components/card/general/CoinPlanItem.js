@@ -40,7 +40,7 @@ function CoinPlanItem({_id, click, productId, title, badge, image, numberCoin, p
                             />
                         </View>
                         <View>
-                            <Text numberOfLines={2} style={{fontFamily:Font.bold, color:colors.primary.a3, fontSize:14, textAlign:"center"}}>{`${priceDigitSeperator(numberCoin)} سکه`}</Text>
+                            <Text numberOfLines={2} style={{fontFamily:Font.bold, color:colors.primary.a3, fontSize:16, textAlign:"center"}}>{`${priceDigitSeperator(numberCoin)} سکه`}</Text>
                             <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:8, textAlign:"center", marginBottom:10}}>{`( ${title} )`}</Text>
                             <ButtonImgSrc
                                 onPress={click}
