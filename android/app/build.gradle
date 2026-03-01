@@ -125,7 +125,7 @@ android {
             manifestPlaceholders = [
                 marketApplicationId: "ir.mservices.market",
                 marketBindAddress  : "ir.mservices.market.InAppBillingService.BIND",
-                marketPermission   : "ir.mservices.market.permission.PAY_THROUGH_MARKET"
+                marketPermission   : "ir.mservices.market.BILLING"
             ]
         }
     }

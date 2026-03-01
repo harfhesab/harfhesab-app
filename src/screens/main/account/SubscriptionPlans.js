@@ -27,7 +27,6 @@ function SubscriptionPlans(props){
     const realm = useRealm();
     const isFocused = useIsFocused();
     const colors = useAppTheme()
-    const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const data = getAllSubscriptionPlansList(realm)
 

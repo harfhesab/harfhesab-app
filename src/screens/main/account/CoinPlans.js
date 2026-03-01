@@ -2,7 +2,7 @@ import React, {useMemo, useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground, NativeModules, Linking} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AlertHelper from '../../../components/alert/AlertHelper';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
@@ -20,10 +20,11 @@ import { getAllCoinPlansList } from '../../../realm/repositories/user/coin-plan-
 import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import Globals from '../../../utils/Globals';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
-import { CAFE_BAZAAR_RSA_KEY, TARGET_STORE } from '../../../utils/constants/build-config';
+import { CAFE_BAZAAR_RSA_KEY, MYKET_RSA_KEY, TARGET_STORE } from '../../../utils/constants/build-config';
 import FullScreenLoadingHelper from '../../../components/full-screen-loading/FullScreenLoadingHelper';
 import { showToast } from '../../../components/custom-toast/ToastRef';
 import axios from 'axios';
+import { increaseNumberCoins } from '../../../redux/slices/coinSlice';
 
 const usePaymentHook = TARGET_STORE == "cafebazaar"?
     require('@cafebazaar/react-native-poolakey').useBazaar
@@ -38,11 +39,10 @@ function CoinPlans(props){
     const realm = useRealm();
     const isFocused = useIsFocused();
     const colors = useAppTheme()
-    const state = useSelector((state) => state.stageGameDownload);
     const dispatch = useDispatch();
     const data = getAllCoinPlansList(realm)
     const bazaar = TARGET_STORE == "cafebazaar"&&usePaymentHook(CAFE_BAZAAR_RSA_KEY);
-    const [orderId, setOrderId] = useState(null)
+    const myket = TARGET_STORE == "myket"&&usePaymentHook(MYKET_RSA_KEY)
 
 
 
@@ -56,11 +56,15 @@ function CoinPlans(props){
     const connectStore = ()=>{
         if(TARGET_STORE == "cafebazaar"){
             bazaar.connect()
+        } else if(TARGET_STORE == "myket"){
+            myket.connect()
         }
     }
     const disconnectStore = ()=>{
         if(TARGET_STORE == "cafebazaar"){
             bazaar.disconnect()
+        } else if(TARGET_STORE == "myket"){
+            myket.disconnect()
         }
     }
     
@@ -101,12 +105,12 @@ function CoinPlans(props){
             FullScreenLoadingHelper.hideLoading()
             if(response?.data?.data?.userRequestsToPurchasePackOfCoins?.status == 200){
                 const data = response?.data?.data.userRequestsToPurchasePackOfCoins
-                setOrderId(data?._id)
                 const productId = data?.product_id
+                const orderId = data?._id
                 if(data.gateway == "cafebazaar_gateway"){
-                    cafebazaarPaymentGateway(productId)
+                    cafebazaarPaymentGateway({productId, orderId})
                 } else if(data.gateway == "myket_gateway"){
-                    mayketPaymentGateway(productId)
+                    myketPaymentGateway({productId, orderId})
                 } else if(data.gateway == "direct_gateway"){
                     const gatewayUrl = data?.url
                     directPaymentGateway(gatewayUrl)
@@ -131,23 +135,142 @@ function CoinPlans(props){
             });
         })
     }
+
+    const purchaseCoinApplyCredit = async({gateway, purchaseToken, orderId, orderIdWrong, purchaseResult})=>{
+        FullScreenLoadingHelper.showLoading({
+            title:"افزایش سکه..."
+        })
+        let data = {
+            query : `
+                mutation purchasePackOfCoinUpdateStatusAndApplyCredit(
+                    $gateway : String!,
+                    $order_id : ID!,
+                    $order_id_wrong : ID,
+                    $purchase_token : String!,
+                ){
+                    purchasePackOfCoinUpdateStatusAndApplyCredit(
+                        gateway : $gateway,
+                        order_id : $order_id,
+                        order_id_wrong : $order_id_wrong,
+                        purchase_token : $purchase_token,
+                    ) {
+                        status,
+                        message,
+                        gateway,
+                        number
+                    }
+                }
+              `,
+            variables : {
+                "gateway" : gateway,
+                "order_id" : orderId,
+                "order_id_wrong" : orderIdWrong,
+                "purchase_token" : purchaseToken
+            }
+        }
+        await axios({
+            url:'/',
+            method:'post',
+            data: data,
+        }).then(async(response)=>{
+            FullScreenLoadingHelper.hideLoading()
+            if(response?.data?.data?.purchasePackOfCoinUpdateStatusAndApplyCredit?.status == 200){
+                const data = response?.data?.data?.purchasePackOfCoinUpdateStatusAndApplyCredit
+                const gateway = data?.gateway
+                const numberCoin = data?.number
+                if(data.gateway == "cafebazaar_gateway"){
+                    cafebazaarConsumePurchaseAndAndApplyCredit({purchaseToken, numberCoin})
+                } else if(data.gateway == "myket_gateway"){
+                    myketConsumePurchaseAndAndApplyCredit({purchaseResult, numberCoin})
+                }
+            } else {
+                showToast({
+                    title: "مشکلی پیش آمد",
+                    message: response?.data?.errors[0]?.data[0]?.message??"مشکلی پیش آمد. دوباره تلاش کنید.",
+                    type: "error",
+                    animationType: "slide",
+                    position: "top",
+                });
+            }
+        }).catch((error)=>{
+            FullScreenLoadingHelper.hideLoading()
+            showToast({
+                title: "مشکلی پیش آمد",
+                message: "مشکلی پیش آمد. دوباره تلاش کنید.",
+                type: "error",
+                animationType: "slide",
+                position: "top",
+            });
+        })
+    }
     
     const directPaymentGateway = (gatewayUrl)=>{
         Linking.openURL(gatewayUrl)
     }
 
-    const cafebazaarPaymentGateway = async(productId)=>{
-        console.log("0000000000")
-        const purchaseResult = await bazaar.purchaseProduct("dokalam-coin-test")
-        console.log("1111111111", purchaseResult)
-        if(purchaseResult && purchaseResult?.purchaseToken && purchaseResult?.purchaseState == 0){
-            const token = purchaseResult?.purchaseToken
-            await bazaar.consumePurchase(token)
+    const cafebazaarPaymentGateway = async({productId, orderId})=>{
+        const purchaseResult = await bazaar.purchaseProduct(productId, orderId)
+        const developerPayload = purchaseResult?.developerPayload
+        if(purchaseResult && purchaseResult?.purchaseToken && purchaseResult?.purchaseState == 0 && developerPayload == orderId){
+            const purchaseToken = purchaseResult?.purchaseToken
+            const gateway = "cafebazaar_gateway"
+            purchaseCoinApplyCredit({gateway, purchaseToken, orderId})
+        } else {
+            const purchaseToken = purchaseResult?.purchaseToken
+            const gateway = "cafebazaar_gateway"
+            purchaseCoinApplyCredit({gateway, purchaseToken, orderId: developerPayload, orderIdWrong:orderId})
+        }
+    }
+    const cafebazaarConsumePurchaseAndAndApplyCredit = async({purchaseToken, numberCoin})=>{
+        try {
+            await bazaar.consumePurchase(purchaseToken)
+            dispatch(increaseNumberCoins({number: numberCoin}))
+            showToast({
+                title: "خرید سکه با موفقیت انجام شد",
+                message: `تعداد ${numberCoin} سکه با موفقیت به حساب کاربری شما افزوده شد.`,
+                type: "success",
+                animationType: "slide",
+                position: "top",
+                duration: 7000
+            });
+            return true;
+        } catch (error) {
+            return false;
         }
     }
 
-    const mayketPaymentGateway = (productId)=>{
-        
+    const myketPaymentGateway = async({productId, orderId})=>{
+        const purchaseResult = await myket.purchaseProduct(productId, orderId)
+        const developerPayload = purchaseResult?.developerPayload
+        if(purchaseResult && purchaseResult?.token && purchaseResult?.purchaseState == 0 && developerPayload == orderId){
+            const purchaseToken = purchaseResult?.token
+            const gateway = "myket_gateway"
+            purchaseCoinApplyCredit({gateway, purchaseToken, orderId, purchaseResult})
+        } else {
+            const purchaseToken = purchaseResult?.token
+            const gateway = "myket_gateway"
+            purchaseCoinApplyCredit({gateway, purchaseToken, orderId: developerPayload, orderIdWrong:orderId, purchaseResult})
+        }
+    }
+
+    const myketConsumePurchaseAndAndApplyCredit = async({purchaseResult, numberCoin})=>{
+        try {
+            const consume = await myket.consumePurchase(purchaseResult)
+            if(consume?.purchaseState == 0){
+                dispatch(increaseNumberCoins({number: numberCoin}))
+                showToast({
+                    title: "خرید سکه با موفقیت انجام شد",
+                    message: `تعداد ${numberCoin} سکه با موفقیت به حساب کاربری شما افزوده شد.`,
+                    type: "success",
+                    animationType: "slide",
+                    position: "top",
+                    duration: 7000
+                });
+                return true;
+            }
+        } catch (error) {
+            return false;
+        }
     }
 
     const renderItem = ({item, index})=>{
