@@ -58,7 +58,6 @@ function ViewAllPackageRating(props) {
             }
         }).then(async(response)=>{
             const riciveData = response.data.data?.paginatePackageGameRating;
-            console.log("1111111111111111", riciveData)
             if(riciveData.hasNextPage == true){
                 setLoading(false)
                 setData(riciveData.list)
@@ -221,9 +220,7 @@ function ViewAllPackageRating(props) {
     return (
         <View style={[styles.container, {backgroundColor:colors.background.a1}]}> 
             <GeneralHeader
-                paddingHorizontal={10}
                 back={true}
-                height={60}
                 title={props.route.params?.title}
                 coin={true}
             />

@@ -106,7 +106,7 @@ function Account(props){
         ]
         const msg = [
             {
-                text:"آیا از حسابتان خارج میشوید؟",
+                text:"آیا از حسابتان خارج می‌شوید؟",
                 style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.primary.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
             },
             {
@@ -155,7 +155,6 @@ function Account(props){
                 }
             }
         }).then(async(response)=>{
-            console.log(response)
             const data = response.data.data?.logOutFromUserAccount
             if(data?.status == 200){
                 AlertBottomDrawerHelper.hideAlert()
@@ -243,9 +242,8 @@ function Account(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                paddingHorizontal={10}
-                height={60}
                 coin={true}
+                subscription={true}
             />
             <View style={{flex:1, alignItems:'center'}}>
                 

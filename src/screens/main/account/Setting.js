@@ -19,8 +19,6 @@ function Setting(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a2, paddingTop:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
             <GeneralHeader
-                paddingHorizontal={10}
-                height={60}
                 coin={true}
                 back={true}
                 title={"تنظیمات"}

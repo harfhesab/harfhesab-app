@@ -339,7 +339,7 @@ const Rating = ({
     return (
         <View>
             <View style={[styles.container, {borderColor:colors.border.a2, backgroundColor:colors.background.a2}]}>
-                <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:11, textAlign:'justify', lineHeight:20}}>{"با توجه به اینکه شما سابق این بستهٔ بازی را دریافت کرده‌اید میتوانید نظر و بازخوردتان را نسبت به آن در قالب یک نظر و امتیاز ثبت کنید."}</Text>
+                <Text style={{color:colors.text.a6, fontFamily:Font.medium, fontSize:11, textAlign:'justify', lineHeight:20}}>{"با توجه به اینکه شما سابق این بستهٔ بازی را دریافت کرده‌اید می‌توانید نظر و بازخوردتان را نسبت به آن در قالب یک نظر و امتیاز ثبت کنید."}</Text>
                 {
                     ((edit !== true || (edit == true && comment?.length == 0)) && ratingReward > 0)&&
                     <View style={{width:"100%", alignItems:'flex-start'}}>

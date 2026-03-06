@@ -6,18 +6,24 @@ import { goBack } from "../../main/navigationService";
 import useAppTheme from "../../hooks/theme/useAppTheme";
 import NumberCoins from "../coin/NumberCoins";
 import Back from "../icon/Back";
+import SubscriptionInfoBtn from "../buttons/SubscriptionInfoBtn";
+import SubscriptionBtn from "../buttons/SubscriptionBtn";
+import MyPackageBtn from "../buttons/MyPackageBtn";
 
 const {width} = Dimensions.get('window');
 const colors = useAppTheme();
 function GeneralHeader({
-    height=65,
+    height=60,
     hideShadow,
     Image,
-    paddingHorizontal = 10,
+    paddingHorizontal = 12,
     RightComponent,
     LeftComponent,
     back,
+    myPackage,
     coin,
+    subscriptionInfo,
+    subscription,
     title,
     titleFontFamily,
     titleFontSize,
@@ -48,6 +54,10 @@ function GeneralHeader({
                     <Back/>
                 }
                 {
+                    myPackage&&
+                    <MyPackageBtn/>
+                }
+                {
                     Image&&
                     <Image/>
                 }
@@ -65,7 +75,7 @@ function GeneralHeader({
             </View>
             
             {/* این کانتینر برای بخش چپ است */}
-            <View style={{height:"100%", flexDirection:'row', alignItems:'center'}}>
+            <View style={{height:"100%", flexDirection:'row', alignItems:'center', gap:10}}>
                 {
                     LeftComponent&&
                     <LeftComponent/>
@@ -73,6 +83,14 @@ function GeneralHeader({
                 {
                     coin&&
                     <NumberCoins />
+                }
+                {
+                    subscriptionInfo&&
+                    <SubscriptionInfoBtn />
+                }
+                {
+                    subscription&&
+                    <SubscriptionBtn />
                 }
             </View>
         </View>

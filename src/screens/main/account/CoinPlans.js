@@ -306,9 +306,7 @@ function CoinPlans(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a2, paddingTop:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
             <GeneralHeader
-                paddingHorizontal={10}
                 back={true}
-                height={60}
                 coin={true}
             />
             <View style={[styles.container, {backgroundColor:colors.background.a1}]}>

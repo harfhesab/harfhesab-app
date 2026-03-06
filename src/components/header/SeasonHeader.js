@@ -8,7 +8,7 @@ import Back from "../icon/Back";
 import Setting from "../icon/Setting";
 
 const {width} = Dimensions.get('window');
-function SeasonHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true}){
+function SeasonHeader({height=65, paddingHorizontal=12, back=true, coin=true, title, setting=true}){
     const colors = useAppTheme();
     return(
         <View style={{height:height, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>

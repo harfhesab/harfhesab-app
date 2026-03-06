@@ -15,7 +15,7 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
     const colors = useAppTheme();
     const accessTypeText = 
     accessType == "free"?"دسترسی رایگان":
-    accessType == "subscription"?"دسترسی با اشتراک":
+    accessType == "subscription"?"دسترسی با اشتراک امکان پذیر است":
     (accessType == "coin-payment" && price && price > 0)?`${price} سکه برای فعال سازی پرداخت شده است`:
     (accessType == "coin-payment" && (!price || price == 0))?`سکه برای فعال سازی پرداخت شده است`:null
 
@@ -25,61 +25,63 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
             <TouchableOpacity onPress={click} activeOpacity={0.9}>
                 <ImageBackground
                     source={require("../../../assets/image/thick_rectangle_card.png")}
-                    style={{ width: width - 50, height: 160, paddingBottom:2}}
+                    style={{ width: width - 50, height: 190, paddingBottom:2, justifyContent:'space-between'}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                    <View style={{width:"100%", height:110, flexDirection:'row', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:10, paddingVertical:10}}>
-                        <View style={{width:85, height:85, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderRadius:15}}>
-                            {
-                                image?
-                                <ImageComponent
-                                    uri={image}
-                                    width={85}
-                                    height={85}
-                                    resizeMode="cover"
-                                    borderRadius={15}
-                                />
-                                :
-                                <Icon name={'camera-off'} type={'Feather'} style={{fontSize:40, color:colors.text.a5}}/>
-                            }
-                        </View>
-                        <View style={{flexDirection:'column', alignItems:'flex-start', height:'100%', justifyContent:'space-between'}}>
-                            <View>
-                                <Text numberOfLines={1} style={{fontFamily:Font.bold, color:colors.text.a1, fontSize:14}}>{title}</Text>
-                                <Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:10}}>{`${numberSeason} فصل  -  ${numberStage} مرحله`}</Text>
-                                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:5}}>
-                                    {
-                                        accessType == "subscription"?
-                                        <LocalImageComponent
-                                            path={require('../../../assets/image/diamond.png')}
-                                            width={10}
-                                            height={10}
-                                            resizeMode={'cover'}
-                                            blank_background={true}
-                                        />
-                                        :accessType == "coin-payment"?
-                                        <LocalImageComponent
-                                            path={require('../../../assets/image/coin.png')}
-                                            width={10}
-                                            height={10}
-                                            resizeMode={'cover'}
-                                            blank_background={true}
-                                        />
-                                        :<Icon name={"cruelty-free"} type={"MaterialIcons"} style={{fontSize:10, color:colors.primary.a1}}/>
-                                    }
-                                    {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a4, fontSize:8}}>{accessTypeText}</Text>}
-                                </View>
+                    <View>
+                        <View style={{width:"100%", flexDirection:'row', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:10, paddingVertical:10}}>
+                            <View style={{width:95, height:95, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderRadius:15, borderWidth:2, borderColor:colors.primary.a3}}>
+                                {
+                                    image?
+                                    <ImageComponent
+                                        uri={image}
+                                        width={91}
+                                        height={91}
+                                        resizeMode="cover"
+                                        borderRadius={13}
+                                    />
+                                    :
+                                    <Icon name={'camera-off'} type={'Feather'} style={{fontSize:40, color:colors.text.a5}}/>
+                                }
                             </View>
-                            <WoodProgressBar
-                                    progressWidth={IS_TABLET_CONDITION?200:width-160}
-                                    progress={progress}
-                                    maxValue={numberStage}
-                                    showValue={true}
+                            <View style={{flexDirection:'column', alignItems:'flex-start', height:'100%', justifyContent:'space-between', height:95}}>
+                                <View>
+                                    <Text numberOfLines={2} style={{fontFamily:Font.black, color:colors.primary.a3, fontSize:16, maxWidth:width-170}}>{title}</Text>
+                                    <Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:11}}>{`${numberSeason} فصل  -  ${numberStage} مرحله`}</Text>
+                                </View>
+                                <WoodProgressBar
+                                        progressWidth={IS_TABLET_CONDITION?190:width-170}
+                                        progress={progress}
+                                        maxValue={numberStage}
+                                        showValue={true}
+                                    />
+                            </View>
+                        </View>
+                        <View style={{width:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:5, paddingHorizontal:10}}>
+                            {
+                                accessType == "subscription"?
+                                <LocalImageComponent
+                                    path={require('../../../assets/image/diamond.png')}
+                                    width={14}
+                                    height={14}
+                                    resizeMode={'cover'}
+                                    blank_background={true}
                                 />
+                                :accessType == "coin-payment"?
+                                <LocalImageComponent
+                                    path={require('../../../assets/image/coin.png')}
+                                    width={14}
+                                    height={14}
+                                    resizeMode={'cover'}
+                                    blank_background={true}
+                                />
+                                :<Icon name={"cruelty-free"} type={"MaterialIcons"} style={{fontSize:14, color:colors.primary.a1}}/>
+                            }
+                            {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a4, fontSize:11}}>{accessTypeText}</Text>}
                         </View>
                     </View>
-                    <View style={{width:"100%", alignItems:'flex-end', bottom:-8, paddingEnd:20}}>
+                    <View style={{width:"100%", alignItems:'flex-end', paddingEnd:20, bottom:-15}}>
                         <TouchableOpacity onPress={click} activeOpacity={0.8} style={{}}>
                             <ImageBackground
                                 source={require("../../../assets/image/wood_blue_button.png")}
@@ -87,7 +89,7 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:14, color:"#fcb900"}}>{contentCompleted==true?'بازی':'بارگیری محتوا'}</Text>
+                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:14, color:"#fcb900"}}>{contentCompleted==true?'شروع بازی':'بارگیری محتوا'}</Text>
                             </ImageBackground>
                         </TouchableOpacity>
                     </View>

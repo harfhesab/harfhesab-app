@@ -169,10 +169,9 @@ function UserPackagesList(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                paddingHorizontal={10}
                 back={true}
-                height={60}
                 coin={true}
+                subscription={true}
             />
                 <View style={styles.container}>
                     <ImageBackground

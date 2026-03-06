@@ -218,7 +218,6 @@ function SignIn(props){
                 });
             }
         }).catch((error)=>{
-                console.log(error)
             setLoading(false)
             showToast({
                 title: "خطا در ورود",

@@ -169,7 +169,7 @@ function StageGameUpdateScreen(props){
                                 <Icon name={"tooltip-check"} type={"MaterialCommunityIcons"} style={{fontSize:70, color:colors.primary.a1}}/>
                                 <BannerText
                                     text1={"بروزرسانی با موفقیت انجام شد!"}
-                                    text2={`بروز رسانی محتوای بازی مرحله‌ای با موفقیت بارگیری و ذخیره شد.\nشما میتوانید بازی مرحله‌ای را حتی بدون اتصال به شبکه اینترنت نیز بازی کنید.`}
+                                    text2={`بروز رسانی محتوای بازی مرحله‌ای با موفقیت بارگیری و ذخیره شد.\nشما می‌توانید بازی مرحله‌ای را حتی بدون اتصال به شبکه اینترنت نیز بازی کنید.`}
                                     textAlignText2={'justify'}
                                     alignItemsText2={'flex-start'}
                                     width={width-60}

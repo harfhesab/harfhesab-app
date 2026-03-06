@@ -106,6 +106,7 @@ function PackageInformation(props){
                                 language_info{name},
                                 icon_image,
                                 banner_image,
+                                content_status,
                                 free,
                                 free_with_subscription,
                                 price,
@@ -413,7 +414,7 @@ function PackageInformation(props){
                 {
                     _id: "2",
                     text1: `پرداخت ${packagePrice} سکه`,
-                    text2: `با یکبار پرداخت سکه، به شکل دائمی به بستهٔ بازی دسترسی خواهید داشت`,
+                    text2: `با یکبار پرداخت سکه، به صورت دائمی به بستهٔ بازی دسترسی خواهید داشت`,
                     image: require('../../../assets/image/coin.png'),
                     localImage: true,
                     height:gridSize + 80,
@@ -657,9 +658,10 @@ function PackageInformation(props){
         <SafeAreaView style={{flex:1}}>
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                height={60}
                 coin={true}
+                myPackage={true}
                 back={true}
+                subscription={true}
             />
             <View style={styles.container}>
                 {
@@ -763,6 +765,9 @@ function PackageInformation(props){
                                     onComplete={()=>{}}
                                 />
                             }
+                        </View>
+                        <View style={{backgroundColor:`${colors.primary.a6}20`, width:width-30, alignSelf:'center', paddingHorizontal:10, paddingVertical:3, borderRadius:5}}>
+                            <Text style={{fontFamily:Font.medium, color:colors.text.a6, fontSize:12, lineHeight:30}}>{`وضعیت محتوا : `}<Text style={{color:colors.primary.a6}}>{data?.package?.content_status}</Text></Text>
                         </View>
                         {
                             data?.package.description?.length>0&&

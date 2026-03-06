@@ -236,9 +236,9 @@ function PackageGame(props){
     return(
          <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                title={"بسته‌های بازی"}
-                height={60}
+                myPackage={true}
                 coin={true}
+                subscription={true}
             />
             <View style={styles.container}>
                 <FlatList

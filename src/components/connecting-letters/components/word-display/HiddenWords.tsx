@@ -178,7 +178,7 @@ const HiddenWords = () => {
                                     <Text style={{ fontFamily: Font.black, fontSize: 18, color: colors.primary.a2 }}>{"کلمات پنهان جدید:"}</Text>
                                     <Text style={{ fontFamily: Font.black, fontSize: 22, color: colors.primary.a4 }}>{priceDigitSeperator(newHiddenWords)}</Text>
                                 </View>
-                                <Text style={{ fontFamily: Font.medium, color: "#444444", fontSize: 9, textAlign: 'justify' }}>{"تعداد کلمات پنهانی که اخیرا ایجاد کرده‌اید و میتوانید آن‌ها را تبدیل به سکه کنید."}</Text>
+                                <Text style={{ fontFamily: Font.medium, color: "#444444", fontSize: 9, textAlign: 'justify' }}>{"تعداد کلمات پنهانی که اخیرا ایجاد کرده‌اید و می‌توانید آن‌ها را تبدیل به سکه کنید."}</Text>
                             </View>
                             <View style={{ width: "100%", alignItems: 'center', gap: 10 }}>
                                 <WoodProgressBar

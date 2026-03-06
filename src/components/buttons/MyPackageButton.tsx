@@ -1,19 +1,12 @@
 import React, {useEffect, memo} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
 import Font from '../../utils/Font';
-import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
 import useAppTheme from '../../hooks/theme/useAppTheme';
-import LinearGradient from 'react-native-linear-gradient';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withSequence,
-  withTiming,
-  withRepeat,
-  cancelAnimation,
-  useAnimatedProps,
-  Easing,
 } from "react-native-reanimated";
 
 const wait = (ms: number): Promise<void> =>

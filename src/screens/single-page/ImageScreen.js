@@ -43,9 +43,7 @@ function ImageScreen(props){
         </View>
         <View style={{width:width, position:'absolute', top:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
             <GeneralHeader
-                paddingHorizontal={10}
                 back={true}
-                height={60}
                 coin={true}
                 backgroundColor='transparent'
                 hideShadow={true}

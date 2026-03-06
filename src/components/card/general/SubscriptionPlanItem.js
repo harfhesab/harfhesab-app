@@ -16,12 +16,10 @@ const size = IS_TABLET_CONDITION?(width-105)/4:(width-75)/2
 function reverseString(str) {
   return str.split("").reverse().join("");
 }
-function SubscriptionPlanItem({_id, productId, title, badge, image, duration, price, active}){
+function SubscriptionPlanItem({_id, click, productId, title, badge, image, duration, price, active}){
     const colors = useAppTheme();
 
-    const click = ()=>{
-        navigate("PackageInformation", {_id})
-    }
+
     return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
             <TouchableOpacity activeOpacity={0.95} onPress={click}>

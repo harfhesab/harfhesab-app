@@ -27,8 +27,6 @@ function FreeCoin(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                paddingHorizontal={10}
-                height={60}
                 coin={true}
                 back={true}
                 title={"دریافت سکه رایگان"}

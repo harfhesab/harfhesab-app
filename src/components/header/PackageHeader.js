@@ -13,7 +13,7 @@ import { navigate } from "../../main/navigationService";
 
 const {width} = Dimensions.get('screen');
 const { ImmersiveMode } = NativeModules;
-function PackageHeader({height=65, paddingHorizontal=10, back=true, coin=true, title, setting=true, packageIcon, packageId}){
+function PackageHeader({height=65, paddingHorizontal=12, back=true, coin=true, title, setting=true, packageIcon, packageId}){
     const colors = useAppTheme();
     const packageInfoClick = ()=>{
         ImmersiveMode.exitImmersiveMode()

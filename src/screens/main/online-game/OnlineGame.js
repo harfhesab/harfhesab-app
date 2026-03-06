@@ -51,7 +51,6 @@ function OnlineGame(props){
                 }
             }
         }).then(async(response)=>{
-            console.log(response.data)
             const dataReceived = response.data.data?.getAllOnlineGame
             setData(dataReceived || [])
             if(dataReceived.length == 0){
@@ -92,8 +91,8 @@ function OnlineGame(props){
          <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 title={"بازی‌های آنلاین"}
-                height={60}
                 coin={true}
+                subscription={true}
             />
             <View style={styles.container}>
                 <FlatList

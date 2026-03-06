@@ -20,6 +20,7 @@ import AlertBottomDrawerHelper from '../../components/alert-bottom-drawer/AlertB
 import Icon from '../../utils/Icon';
 import { preloadImages } from '../../utils/ImagePreloader';
 import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
+import { Text } from 'react-native-gesture-handler';
 
 const { width } = Dimensions.get("window");
 function Splash(props){
@@ -153,11 +154,9 @@ function Splash(props){
         }).then(async(response)=>{
             const data = response?.data?.data?.necessaryCheckAtStartGameApplication
             if(data?.status == 200) {
-                if(data?.user_subscription_status){
-                    const activeSubscription = data.user_subscription_status?.active_subscription;
-                    const subscriptionExpiration = data.user_subscription_status?.subscription_expiration;
-                    dispatch(updateSubscriptionStatus({activeSubscription, subscriptionExpiration}))
-                }
+                const activeSubscription = data?.user_subscription_status?.active_subscription??false;
+                const subscriptionExpiration = data?.user_subscription_status?.subscription_expiration??null;
+                dispatch(updateSubscriptionStatus({activeSubscription, subscriptionExpiration}))
                 if(data?.game_constants){
                     const variables = data.game_constants
                     dispatch(updateConstantsVersion(variables))
@@ -259,13 +258,16 @@ function Splash(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1, alignItems:'center', justifyContent:'space-between'}}>
             <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                <LocalImageComponent
-                    path={require('../../assets/image/icon.png')}
-                    width={100}
-                    height={100}
-                    resizeMode={'cover'}
-                    blank_background={true}
-                />
+                <View style={{width:"100%", alignItems:'center', gap:20}}>
+                    <LocalImageComponent
+                        path={require('../../assets/image/icon.png')}
+                        width={100}
+                        height={100}
+                        resizeMode={'cover'}
+                        blank_background={true}
+                    />
+                    <Text style={{fontFamily:Font.black, fontSize:22, color:colors.text.a1}}>{Globals.game_name_en}</Text>
+                </View>
             </View>
             <View style={{paddingBottom:50}}>
                 <LoadingBar 
