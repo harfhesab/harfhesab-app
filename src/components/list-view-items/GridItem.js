@@ -55,9 +55,9 @@ function GridItem({
     };
 
     return (
-        <View style={{width, height}}>
+        <View style={{width, height, borderRadius:15, overflow:'hidden'}}>
             <TouchableNativeFeedback onPress={onClick} style={{width, height}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{alignItems:'center', justifyContent:'flex-start', paddingVertical:10, width:"100%", height:"100%", gap:10, borderColor:select?colors.primary.a1:colors.border.a1, borderWidth:select?1.5:0.5, borderRadius:10, backgroundColor:select?`${colors.primary.a1}15`:"transparent"}}>
+                <View style={{alignItems:'center', justifyContent:'flex-start', paddingVertical:10, width:"100%", height:"100%", gap:10, borderColor:select?colors.primary.a1:colors.border.a1, borderWidth:select?1.5:0.5, borderRadius:15, backgroundColor:select?`${colors.primary.a1}15`:"transparent"}}>
                     {
                         localImage == true?
                         <LocalImageComponent

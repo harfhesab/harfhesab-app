@@ -38,9 +38,8 @@ function PackageGameSeasonFirstCard({
 }) {
   const colors = useAppTheme();
 
-  const onClick = async () => {
-    
-  };
+  const titleLength = title.length
+  const titleTextSize = titleLength < 10?22:titleLength<12?20:titleLength<14?18:14
 
   return (
     <View style={{height:PACKAGE_GAME_SEASON_CARD_HEIGHT, alignItems:'center', justifyContent:'flex-start'}}>
@@ -75,8 +74,8 @@ function PackageGameSeasonFirstCard({
         <SimpleBorderText
             text={title}
             width={PACKAGE_GAME_CARD_WIDTH * 0.6 - 30}
-            height={18*1.6}
-            fontSize={18}
+            height={titleTextSize*1.6}
+            fontSize={titleTextSize}
             borderWidth={1.5}
             textColor={"#4d2719"}
             borderColor={"#e5c0b3"}

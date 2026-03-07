@@ -39,7 +39,7 @@ function useUserPackage() {
         });
     }, [allUserPackage, allPackage, isFocused]);
 
-    return data;
+    return data.sort((a, b) => b.content_completed - a.content_completed).sort((a, b) => b.createdAt - a.createdAt);
 }
 
 function UserPackagesList(props){
@@ -47,6 +47,7 @@ function UserPackagesList(props){
     const colors = useAppTheme()
     const state = useSelector((state) => state.stageGameDownload);
     const {syncUserPackage} = useSelector((state) => state.account);
+    const { subscriptionExpiration, activeSubscription} = useSelector((state) => state.subscription);
     const dispatch = useDispatch();
     const realm = useRealm();
     const [loading, setLoading] = useState(true)
@@ -132,6 +133,7 @@ function UserPackagesList(props){
         return(
             <UserPackageItem
                 _id={item._id}
+                activeSubscription={(activeSubscription == true && subscriptionExpiration)?true:false}
                 packageId={item.packag._id}
                 accessType={item.access_type}
                 title={item?.packag?.title}
@@ -140,13 +142,6 @@ function UserPackagesList(props){
                 numberStage={item?.packag?.number_stage}
                 numberSeason={item?.packag?.number_season}
                 progress={item?.last_stage_number?item.last_stage_number-1:0}
-                click={()=>{
-                    if(item?.content_completed == true){
-                        props.navigation.navigate("StartPackageGame", {_id:item._id.toHexString(), packageId:item.packag._id.toHexString()})
-                    } else {
-                        props.navigation.navigate("PackageInformation", {_id:item.packag._id.toHexString()})
-                    }
-                }}
                 contentCompleted={item?.content_completed??false}
             />
         )

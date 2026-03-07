@@ -9,9 +9,11 @@ import ImageComponent from '../../image-components/ImageComponent';
 import LocalImageComponent from '../../image-components/LocalImageComponent';
 import WoodProgressBar from '../../WoodProgressBar';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { navigate } from '../../../main/navigationService';
+import AlertBottomDrawerHelper from '../../alert-bottom-drawer/AlertBottomDrawerHelper';
 
 const width = Dimensions.get('window').width
-function UserPackageItem({_id, packageId, title, image, accessType, price, numberStage, numberSeason, click, progress, contentCompleted}){
+function UserPackageItem({_id, activeSubscription, packageId, title, image, accessType, price, numberStage, numberSeason, progress, contentCompleted}){
     const colors = useAppTheme();
     const accessTypeText = 
     accessType == "free"?"دسترسی رایگان":
@@ -19,10 +21,73 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
     (accessType == "coin-payment" && price && price > 0)?`${price} سکه برای فعال سازی پرداخت شده است`:
     (accessType == "coin-payment" && (!price || price == 0))?`سکه برای فعال سازی پرداخت شده است`:null
 
-    
+    const startGame = ()=>{
+        if(contentCompleted == true){
+            if(accessType == "subscription" && activeSubscription == false){
+                const btn = [
+                    {
+                        onPress : ()=>{
+                            navigate("SubscriptionPlans")
+                        },
+                        text: "تهیهٔ اشتراک",
+                        loading: false,
+                        type: "bold",
+                    },
+                    {
+                        onPress : ()=>{
+                            navigate("PackageInformation", {_id:packageId.toHexString()})
+                        },
+                        text: "پرداخت سکه",
+                        loading: false,
+                        type: "border",
+                    },
+                ]
+                const msg = [
+                    {
+                        text:"اشتراک فعال ندارید",
+                        style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.primary.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                    },
+                    {
+                        text:"با توجه به اینکه این بستهٔ بازی را از طریق اشتراک دریافت کرده‌اید، اکنون برای دسترسی رایگان به بستهٔ بازی، باید اشتراک فعال بازی را داشته باشید.",
+                        style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:27},
+                    },
+                    {
+                        text:"میتوانید با پرداخت سکه، برای همیشه  بستهٔ بازی را فعال کرده و بدون اشتراک به بازی دسترسی داشته باشید.",
+                        style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:27},
+                    },
+                ]
+                AlertBottomDrawerHelper.showAlert({
+                    title:"مدیریت اشتراک",
+                    message: msg,
+                    buttons:btn,
+                    options:{
+                        cancelable: true,
+                        icon:{
+                            Icon:()=>(
+                                <LocalImageComponent
+                                    path={require("../../../assets/image/diamond.png")}
+                                    width={100}
+                                    height={100}
+                                    resizeMode={'stretch'}
+                                    blank_background={true}
+                                />
+                            )
+                        }
+                    }
+                })
+            } else {
+                navigate("StartPackageGame", {_id:_id.toHexString(), packageId:packageId.toHexString()})
+            }
+        } else {
+            navigate("PackageInformation", {_id:packageId.toHexString()})
+        }
+    }
+    const packageInfo = ()=>{
+        navigate("PackageInformation", {_id:packageId.toHexString()})
+    }
     return (
         <View style={{alignItems:'center', justifyContent:'center'}}>
-            <TouchableOpacity onPress={click} activeOpacity={0.9}>
+            <TouchableOpacity onPress={packageInfo} activeOpacity={0.9}>
                 <ImageBackground
                     source={require("../../../assets/image/thick_rectangle_card.png")}
                     style={{ width: width - 50, height: 190, paddingBottom:2, justifyContent:'space-between'}}
@@ -82,7 +147,7 @@ function UserPackageItem({_id, packageId, title, image, accessType, price, numbe
                         </View>
                     </View>
                     <View style={{width:"100%", alignItems:'flex-end', paddingEnd:20, bottom:-15}}>
-                        <TouchableOpacity onPress={click} activeOpacity={0.8} style={{}}>
+                        <TouchableOpacity onPress={startGame} activeOpacity={0.8} style={{}}>
                             <ImageBackground
                                 source={require("../../../assets/image/wood_blue_button.png")}
                                 style={{ width: IS_TABLET_CONDITION?180:140, height: IS_TABLET_CONDITION?70:54, alignItems:'center', justifyContent:'center', paddingBottom:5}}
