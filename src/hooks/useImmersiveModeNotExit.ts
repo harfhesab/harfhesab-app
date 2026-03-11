@@ -4,7 +4,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 const { ImmersiveMode } = NativeModules;
 
-export function useImmersiveMode() {
+export function useImmersiveModeNotExit() {
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -12,10 +12,4 @@ export function useImmersiveMode() {
       ImmersiveMode.enterImmersiveMode();
     }
   }, [isFocused]);
-
-  useEffect(() => {
-    return () => {
-      ImmersiveMode.exitImmersiveMode();
-    };
-  }, []);
 }

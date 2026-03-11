@@ -81,7 +81,7 @@ function StageNumberCurrently({
                             text={`${text}`}
                             fontFamily={Font.bakh_extra_bold}
                             fontSize={fontSize}
-                            colors={["#dce775", "#fcb900"]}
+                            colors={["#dce775", colors.primary.a3]}
                             shadowColor={"#00000090"}
                             shadowBlur={5}
                             dropShadow={true}

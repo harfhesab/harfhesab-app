@@ -39,7 +39,7 @@ function useUserPackage() {
         });
     }, [allUserPackage, allPackage, isFocused]);
 
-    return data.sort((a, b) => b.content_completed - a.content_completed).sort((a, b) => b.createdAt - a.createdAt);
+    return data.sort((a, b) => b.createdAt - a.createdAt).sort((a, b) => b.content_completed - a.content_completed);
 }
 
 function UserPackagesList(props){
@@ -95,6 +95,7 @@ function UserPackagesList(props){
                             last_season_number,
                             last_stage,
                             last_stage_number,
+                            ended_game,
                             version_created,
                             version_updated,
                             version_deleted,
@@ -105,6 +106,8 @@ function UserPackagesList(props){
                                 language_ref,
                                 icon_image,
                                 banner_image,
+                                completion_status,
+                                completion_status_title,
                                 free,
                                 free_with_subscription,
                                 price,
@@ -141,8 +144,9 @@ function UserPackagesList(props){
                 price={item?.packag?.price}
                 numberStage={item?.packag?.number_stage}
                 numberSeason={item?.packag?.number_season}
-                progress={item?.last_stage_number?item.last_stage_number-1:0}
+                progress={(item?.ended_game && item?.packag?.number_stage == item?.last_stage_number)?item?.packag?.number_stage:item?.last_stage_number?item.last_stage_number-1:0}
                 contentCompleted={item?.content_completed??false}
+                endedGame={(item?.ended_game && item?.packag?.number_stage == item?.last_stage_number)?true:false}
             />
         )
     }
@@ -179,7 +183,7 @@ function UserPackagesList(props){
                             <FlatList
                                 showsVerticalScrollIndicator={false}
                                 keyExtractor={keyExtractor}
-                                contentContainerStyle={{alignItems:'center', paddingTop:30, paddingBottom:50, gap:30}}
+                                contentContainerStyle={{alignItems:'center', paddingTop:30, paddingBottom:50, gap:50}}
                                 renderItem={memoizedValue}
                                 ListEmptyComponent={ListEmptyComponent}
                                 data={data}

@@ -13,7 +13,7 @@ import { navigate } from '../../../main/navigationService';
 import AlertBottomDrawerHelper from '../../alert-bottom-drawer/AlertBottomDrawerHelper';
 
 const width = Dimensions.get('window').width
-function UserPackageItem({_id, activeSubscription, packageId, title, image, accessType, price, numberStage, numberSeason, progress, contentCompleted}){
+function UserPackageItem({_id, activeSubscription, packageId, title, image, accessType, price, numberStage, numberSeason, progress, contentCompleted, endedGame}){
     const colors = useAppTheme();
     const accessTypeText = 
     accessType == "free"?"دسترسی رایگان":
@@ -143,18 +143,31 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                                 />
                                 :<Icon name={"cruelty-free"} type={"MaterialIcons"} style={{fontSize:14, color:colors.primary.a1}}/>
                             }
-                            {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a4, fontSize:11}}>{accessTypeText}</Text>}
+                            {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:10}}>{accessTypeText}</Text>}
                         </View>
                     </View>
-                    <View style={{width:"100%", alignItems:'flex-end', paddingEnd:20, bottom:-15}}>
-                        <TouchableOpacity onPress={startGame} activeOpacity={0.8} style={{}}>
+                    <View style={{width:"100%", flexDirection:'row', alignItems:'flex-end', justifyContent:endedGame == true?'space-between':'flex-end', paddingHorizontal:10}}>
+                        {
+                            endedGame == true&&
+                            <View style={{alignItems:'center', bottom:8}}>
+                                <LocalImageComponent
+                                    path={require('../../../assets/image/cup.png')}
+                                    width={40}
+                                    height={40}
+                                    resizeMode={'cover'}
+                                    blank_background={true}
+                                />
+                                <Text style={{ color: "#86442d", fontFamily: Font.iran_yekan_black_fa, fontSize:9, position:'absolute', top:2 }}>{"پایان"}</Text>
+                            </View>
+                        }
+                        <TouchableOpacity onPress={startGame} activeOpacity={0.8} style={{ bottom:-15}}>
                             <ImageBackground
                                 source={require("../../../assets/image/wood_blue_button.png")}
                                 style={{ width: IS_TABLET_CONDITION?180:140, height: IS_TABLET_CONDITION?70:54, alignItems:'center', justifyContent:'center', paddingBottom:5}}
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:14, color:"#fcb900"}}>{contentCompleted==true?'شروع بازی':'بارگیری محتوا'}</Text>
+                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:14, color:colors.primary.a3}}>{contentCompleted==true?'شروع بازی':'بارگیری محتوا'}</Text>
                             </ImageBackground>
                         </TouchableOpacity>
                     </View>

@@ -74,7 +74,7 @@ export const showWordToSlotGuide = async({dispatch, currentWords, sentence})=>{
                             {
                                 currentWords.map((_, index)=>(
                                     <View key={index.toString()} style={{width:39, height:30, borderColor:colors.primary.a1, backgroundColor:`${colors.primary.a1}30`, borderWidth:2, borderRadius:7, alignItems:'center', justifyContent:'center'}}>
-                                        <Text style={{fontFamily:Font.black, fontSize:14, color:"#FFFFFF50"}}>{index+1}</Text>
+                                        <Text style={{fontFamily:Font.black, fontSize:12, color:"#FFFFFF50"}}>{index+1}</Text>
                                     </View>
                                 ))
                             }

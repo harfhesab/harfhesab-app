@@ -261,15 +261,19 @@ function Splash(props){
                 <View style={{width:"100%", alignItems:'center', gap:20}}>
                     <LocalImageComponent
                         path={require('../../assets/image/icon.png')}
-                        width={100}
-                        height={100}
+                        width={120}
+                        height={120}
                         resizeMode={'cover'}
                         blank_background={true}
+                        borderRadius={20}
                     />
-                    <Text style={{fontFamily:Font.black, fontSize:22, color:colors.text.a1}}>{Globals.game_name_en}</Text>
                 </View>
             </View>
-            <View style={{paddingBottom:50}}>
+            <View style={{width:"100%", alignItems:'center', gap:20, paddingBottom:50}}>
+                <View style={{width:"100%", alignItems:'center'}}>
+                    <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1}}>{`${Globals.game_name_en}  |  ${Globals.game_name_fa}`}</Text>
+                    <Text style={{fontFamily:Font.en_medium, fontSize:12, color:colors.text.a1}}>{DeviceInfo.getVersion()}</Text>
+                </View>
                 <LoadingBar 
                     barColor={colors.primary.a1}
                     width={width-40}

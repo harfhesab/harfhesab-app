@@ -22,16 +22,17 @@ const GameAlert = React.forwardRef((props, ref) => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(false)
-    const [type, setType] = useState("")
+    const [type, setType] = useState("") // "completed-word" | "completed-stage" | "completed-package"
     const [buttons, setButtons] = useState(null)
     const [title, setTitle] = useState(null)
     const [admiration, setAdmiration] = useState(null)
     const [description, setDescription] = useState(null)
+    const [moreDescription, setMoreDescription] = useState(null)
     const [completedSentences, setCompletedSentences] = useState(null)
     const [stageHint, setStageHint] = useState(null)
     const [reward, setReward] = useState(null)
     const contentWidth = IS_TABLET_CONDITION ? 460 : width * 0.95;
-    const contentHeight = type == "completed-stage" ? height * 0.7 : height * 0.6
+    const contentHeight = (type == "completed-stage" || type == "completed-package")? height * 0.75 : height * 0.65
 
 
 
@@ -41,6 +42,7 @@ const GameAlert = React.forwardRef((props, ref) => {
             { dialog?.title && setTitle(dialog?.title) }
             { dialog?.admiration && setAdmiration(dialog?.admiration) }
             { dialog?.description && setDescription(dialog?.description) }
+            { dialog?.moreDescription && setMoreDescription(dialog?.moreDescription) }
             { dialog?.completedSentences && setCompletedSentences(dialog?.completedSentences) }
             { dialog?.stageHint && setStageHint(dialog?.stageHint) }
             { dialog?.options?.cancelable && setCancelable(dialog?.options?.cancelable) }
@@ -61,6 +63,7 @@ const GameAlert = React.forwardRef((props, ref) => {
             setTitle(null)
             setAdmiration(null)
             setDescription(null)
+            setMoreDescription(null)
             setCompletedSentences(null)
             setReward(null)
         }, 400)
@@ -98,10 +101,10 @@ const GameAlert = React.forwardRef((props, ref) => {
                 >
                     <View style={{ width: contentWidth, height: contentHeight, borderRadius: 15, alignItems: "center", justifyContent: 'space-between' }}>
                         <View style={{ width: contentWidth, alignItems: 'center' }}>
-                            <View style={{ padding: type === 'completed-season' ? 40 : 0 }}>
+                            <View style={{ padding: (type === 'completed-season') ? 40 : 0 }}>
                                 <LottieView
                                     style={{ width: contentWidth, height: type === 'completed-season' ? height * 0.15 : height * 0.25 }}
-                                    source={(type === 'completed-word' || type === 'completed-stage') ?
+                                    source={(type === 'completed-word' || type === 'completed-stage' || type === 'completed-package') ?
                                         require('../../assets/lottie/successful.json')
                                         : type === 'completed-season' &&
                                         require('../../assets/lottie/unlocked.json')
@@ -121,40 +124,41 @@ const GameAlert = React.forwardRef((props, ref) => {
                                 </View>
                             }
                         </View>
-                        <View style={{ maxHeight: type == "completed-stage" ? height * 0.25 : height * 0.15, minHeight: height * 0.14, justifyContent: 'center', alignItems: 'center', width: contentWidth * 0.8, borderWidth: 1.5, borderColor: "#ae480095", borderRadius: 10, borderStyle: 'dashed', backgroundColor: "#ae480020" }}>
+                        <View style={{ maxHeight: (type == "completed-stage" || type == "completed-package" )? height * 0.28 : height * 0.18, minHeight: height * 0.14, justifyContent: 'center', alignItems: 'center', width: contentWidth * 0.8, borderWidth: 1.5, borderColor: "#ae480095", borderRadius: 5, borderStyle: 'dotted', backgroundColor: "#ae480020" }}>
                             <ScrollView
                                 style={{ flexGrow: 0 }}
-                                showsVerticalScrollIndicator={false}
-                                contentContainerStyle={{ width: "100%", alignItems: 'center', paddingVertical: 5 }}
+                                showsVerticalScrollIndicator={true}
+                                contentContainerStyle={{ width: "100%", alignItems: 'center', paddingVertical: 5, paddingHorizontal:10 }}
                             >
-                                {admiration?.length > 0 && <Text style={{ fontFamily: Font.black, fontSize: 18, color: "#333", textAlign: 'center' }}>{admiration}</Text>}
-                                {description?.length > 0 && <Text style={{ fontFamily: Font.medium, fontSize: 12, color: "#555", textAlign: 'center', marginTop: 5 }}>{description}</Text>}
+                                {admiration?.length > 0 && <Text style={{ fontFamily: Font.black, fontSize: 18, color: "#111111", textAlign: 'center' }}>{admiration}</Text>}
+                                {description?.length > 0 && <Text style={{ fontFamily: Font.medium, fontSize: 15, color: "#222222", textAlign: 'justify', marginTop: 5, lineHeight:27 }}>{description}</Text>}
+                                {moreDescription?.length > 0 && <Text style={{ fontFamily: Font.medium, fontSize: 10, color: "#666666", textAlign: 'justify', marginTop: 15, lineHeight:18 }}>{moreDescription}</Text>}
                                 {
                                     completedSentences?.length > 0 &&
-                                    <View style={{ width: "100%", alignItems: 'center', gap: 10, paddingBottom: 20, paddingTop: 10, paddingHorizontal: 5 }}>
+                                    <View style={{ width: "100%", alignItems: 'center', gap: 10, paddingBottom: 20, paddingTop: 10 }}>
                                         <Border
                                             color={"#ae480055"}
-                                            height={2}
-                                            width={contentWidth * 0.8 - 20}
+                                            height={1}
+                                            width={contentWidth * 0.8 - 30}
                                             top={15}
                                             bottom={5}
                                         />
                                         {
                                             completedSentences.map((item, index) => (
-                                                <View key={index.toString()} style={{ width: "100%", alignItems: "center" }}>
+                                                <View key={index.toString()} style={{ width: "100%", alignItems:'center' }}>
                                                     <Text style={{ fontFamily: Font.medium, fontSize: 15, color: "#333333", textAlign: 'center' }}>{item?.sentence}</Text>
                                                     {
                                                         item?.hint &&
-                                                        <Text style={{ fontFamily: Font.medium, fontSize: 10, color: "#666666", textAlign: 'center' }}>{item?.hint}</Text>
+                                                        <Text style={{ fontFamily: Font.medium, fontSize: 12, color: "#444444", textAlign: 'center' }}>{item?.hint}</Text>
                                                     }
                                                 </View>
                                             ))
                                         }
                                         {
                                             stageHint?.length > 0 &&
-                                            <View style={{ width: "100%", alignItems: 'flex-start', paddingHorizontal: 5 }}>
-                                                <Text style={{ fontFamily: Font.medium, fontSize: 14, color: "#0099CC", textAlign: 'justify', marginTop: 20, lineHeight: 22 }}>{"اشاره‌ای به مرحله"}</Text>
-                                                <Text style={{ fontFamily: Font.medium, fontSize: 14, color: "#333", textAlign: 'justify', lineHeight: 22 }}>{stageHint}</Text>
+                                            <View style={{ width: "100%", alignItems: 'flex-start' }}>
+                                                <Text style={{ fontFamily: Font.medium, fontSize: 14, color: "#0099CC", textAlign: 'justify', marginTop: 20, lineHeight: 27 }}>{"توضیحات مرحله *"}</Text>
+                                                <Text style={{ fontFamily: Font.medium, fontSize: 14, color: "#333", textAlign: 'justify', lineHeight: 25 }}>{stageHint}</Text>
                                             </View>
                                         }
                                     </View>
@@ -210,7 +214,7 @@ const GameAlert = React.forwardRef((props, ref) => {
                         }
                     </View>
                 </ImageBackground>
-                <View style={{ alignSelf: 'center', position: 'absolute', top: -40 }}>
+                <View style={{ alignSelf: 'center', position: 'absolute', top: -30 }}>
                     <ImageBackground
                         source={require("../../assets/image/header_title_frame.png")}
                         style={{ width: contentWidth - 20, height: 70, alignItems: 'center', justifyContent: 'center', paddingBottom: 10 }}

@@ -148,7 +148,7 @@ function VerifyWithOTP(props){
         })
     }
     const verifyUserLoginWithOTP = async (text)=>{
-        const otp = text??value
+        const otp = text?.length>1?text:value
         if(newOtp == true) {
             showToast({
                 title:"خطای کد تایید",
@@ -365,7 +365,7 @@ function VerifyWithOTP(props){
                     showToast({
                         title:"خطا در ورود",
                         message: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
-                        type: "success",
+                        type: "error",
                         animationType: "slide",
                         position: "top",
                     });
@@ -375,7 +375,7 @@ function VerifyWithOTP(props){
                 showToast({
                     title:"خطا در ورود",
                     message: 'مشکلی پیش آمد دوباره تلاش کنید.',
-                    type: "success",
+                    type: "error",
                     animationType: "slide",
                     position: "top",
                 });

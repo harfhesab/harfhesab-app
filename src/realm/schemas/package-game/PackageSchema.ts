@@ -11,6 +11,8 @@ export class Package extends Realm.Object<Package> {
   icon_image?: string;
   banner_image?: string;
   music?: Media;
+  completion_status?: string;
+  completion_status_title?: string;
   free!: boolean;
   free_with_subscription!: boolean;
   price!: number;
@@ -35,6 +37,8 @@ export class Package extends Realm.Object<Package> {
       icon_image: "string?",
       banner_image: "string?",
       music: "Media?",
+      completion_status: "string?",
+      completion_status_title: "string?",
       free: { type: "bool", default: false },
       free_with_subscription: { type: "bool", default: true },
       price: { type: "double", default: 0 },

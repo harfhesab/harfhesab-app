@@ -66,6 +66,7 @@ export const themes = {
       },
       alert: {
         a1: '#ff4444',
+        a2: '#ff0000',
       },
       shadow: {
         a1: '#00000095',
@@ -112,6 +113,10 @@ export const colors = {
     a4: '#cccccc',
     a5: '#BDBDBD',
     a6: '#95a2a4'
+  },
+  alert: {
+    a1: '#ff4444',
+    a2: '#ff0000',
   },
 }
 

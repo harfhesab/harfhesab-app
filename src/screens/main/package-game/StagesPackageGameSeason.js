@@ -19,6 +19,7 @@ import SeasonMediaSwiper from '../../../components/swiper/SeasonMediaSwiper';
 import { getPackageSeasonById } from '../../../realm/repositories/package-game/package-season.repository';
 import { getPackageStagesBySeasonId } from '../../../realm/repositories/package-game/package-stage.repository';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
+import { useImmersiveModeNotExit } from '../../../hooks/useImmersiveModeNotExit';
 
 const {width, height} = Dimensions.get("screen");
 
@@ -34,6 +35,7 @@ function useUserPackageGameData({ userPackageId }) {
   return { userPackage };
 }
 function StagesPackageGameSeason(props){
+    useImmersiveModeNotExit()
     const colors = useAppTheme()
     const realm = useRealm();
     const [getError, setGetError] = useState(false)
@@ -42,6 +44,7 @@ function StagesPackageGameSeason(props){
     const [data, setData] = useState([])
     const seasonName = props?.route?.params?.seasonName
     const userPackageId = props?.route?.params?.userPackageId
+    const packageIcon = props?.route?.params?.packageIcon
     const { userPackage} = useUserPackageGameData({userPackageId})
     const lastStage = userPackage?.last_stage;
     const lastStageNumber = userPackage?.last_stage_number??1;
@@ -92,7 +95,7 @@ function StagesPackageGameSeason(props){
 
     const renderItem = ({item})=>(
         <StageNumber
-            currently={item._id.toHexString() == lastStage?true:(item.stage_number_in_package == 1 && lastStageNumber == 1)?true:false}
+            currently={userPackage?.ended_game?false:item._id.toHexString() == lastStage?true:(item.stage_number_in_package == 1 && lastStageNumber == 1)?true:false}
             lock={item.stage_number_in_package > lastStageNumber?true:false}
             number={item.stage_number_in_package}
             onPress={()=>{
@@ -121,7 +124,10 @@ function StagesPackageGameSeason(props){
                 resizeMode="cover"
             >
                 <View style={{flex:1, paddingTop:STATUS_BAR_HEIGHT}}>
-                        <SeasonHeader/>
+                        <SeasonHeader
+                            packageIcon={packageIcon}
+                            packageId={userPackage.package_ref.toHexString()}
+                        />
                         <View style={styles.container}>
                             <SeasonMediaSwiper
                                 items={info?.media}

@@ -147,7 +147,7 @@ function VerifyLoginToAccount(props){
         })
     }
     const verifyUserLoginWithOTP = async (text)=>{
-        const otp = text??value
+        const otp = text?.length>1?text:value
         if(newOtp == true) {
             showToast({
                 title: "خطای کد تایید",

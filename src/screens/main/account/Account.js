@@ -76,10 +76,10 @@ function Account(props){
         },
         {
             title: "خروج از حساب کاربری",
-            title_color: colors.primary.a1,
+            title_color: colors.alert.a2,
             icon_name: "sign-out-alt",
             icon_type: "FontAwesome5",
-            icon_color: colors.primary.a1,
+            icon_color: colors.alert.a2,
             arrow: false,
             onPress:()=>{logoutAlert()},
             is_visible:loginType == "registered"?true:false
@@ -107,15 +107,15 @@ function Account(props){
         const msg = [
             {
                 text:"آیا از حسابتان خارج می‌شوید؟",
-                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.primary.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
+                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
                 text:"توجه کنید برای ذخیره‌ی آخرین اطلاعات بازی روی حساب کاربری، از اتصال دستگاه خود به اینترنت مطمعن شوید تا همه‌ی اطلاعات، روی حسابتان ذخیره شود.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:10, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:22},
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
             {
                 text:"لازم به ذکر است، اگر در آخرین مرحله از بازی‌ها، چه در بازی مرحله‌ای و چه در بسته‌های بازی، چنانچه دستگاهتان به اینترنت دسترسی نداشته است، ممکن است ذخیره‌ی روند پیشرفت بازی هایتان به درستی انجام نشده باشد.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:10, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:22},
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             }
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -126,7 +126,7 @@ function Account(props){
                 cancelable: true,
                 icon:{
                     Icon:()=>(
-                        <Icon name={"sign-out-alt"} type={"FontAwesome5"} style={{fontSize:50, color:colors.text.a5}}/>
+                        <Icon name={"sign-out-alt"} type={"FontAwesome5"} style={{fontSize:75, color:colors.alert.a1}}/>
                     )
                 }
             }

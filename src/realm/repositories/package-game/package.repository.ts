@@ -59,6 +59,8 @@ export const updatePreviousPackage = (
           language_ref: languageId,
           icon_image: data.icon_image ?? exists?.icon_image,
           banner_image: data.banner_image ?? exists?.banner_image,
+          completion_status: data.completion_status ?? exists?.completion_status,
+          completion_status_title: data.completion_status_title ?? exists?.completion_status_title,
           music: data.music ?? null,
           number_stage: data.number_stage ?? exists?.number_stage,
           number_season: data.number_season ?? exists?.number_season,

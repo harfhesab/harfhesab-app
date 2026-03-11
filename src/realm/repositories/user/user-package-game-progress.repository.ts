@@ -180,7 +180,9 @@ export const getCurrentPackageNextStageInformation = (
                         nextSeason : next?.season.toString(),
                         nextSeasonNumber : currentSeasonNumber??1,
                         endCurrentSeason : false,
-                        endAllStage : false
+                        endAllStage : false,
+                        endPackageAllStage : false,
+                        previusEnded : false,
                     }
                 } else {
                     return {
@@ -189,17 +191,26 @@ export const getCurrentPackageNextStageInformation = (
                         nextSeason : next.season.toString(),
                         nextSeasonNumber : currentSeasonNumber ? currentSeasonNumber + 1 : 2,
                         endCurrentSeason : true,
-                        endAllStage : false
+                        endAllStage : false,
+                        endPackageAllStage : false,
+                        previusEnded : false,
                     }
                 }
             } else {
+                const currentPackage = realm.objectForPrimaryKey<Package>("Package", packageId) || null;
+                const completionStatus = currentPackage?.completion_status;
+                const completion = (completionStatus == "complete" || completionStatus == "finalized")?true:false
+                const packageNumberStage = currentPackage?.number_stage;
+                const previusEnded = current?.ended_game;
                 return {
                     nextStage : null,
                     nextStageNumber : null,
                     nextSeason : null,
                     nextSeasonNumber : null,
                     endCurrentSeason : false,
-                    endAllStage : true
+                    endAllStage : true,
+                    endPackageAllStage : (completion == true && packageNumberStage == currentStageNumber)?true:false,
+                    previusEnded: previusEnded?true:false
                 }
             }
         } else {
@@ -232,6 +243,33 @@ export const updateUserPackageGameProgress = (
                     existingProgress.last_stage = lastStageId;
                     existingProgress.last_stage_number = last_stage_number;
                     existingProgress.updatedAt = new Date();
+                } else {
+                    return false;
+                }
+            }
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+export const endedUserPackageGameProgress = (
+    realm: Realm,
+    packageRef: BSON.ObjectId | string,
+    userPackage: BSON.ObjectId | string,
+    stageNumber: number
+): boolean => {
+    try {
+        // Convert inputs to ObjectId if they are strings
+        const packageId = typeof packageRef === 'string' ? new BSON.ObjectId(packageRef) : packageRef;
+        const userPackageId = typeof userPackage === 'string' ? new BSON.ObjectId(userPackage) : userPackage;
+        const existPackage = realm.objectForPrimaryKey<Package>("Package", packageId);
+        const existingProgress = realm.objectForPrimaryKey<UserPackage>("UserPackage", userPackageId);
+
+        realm.write(() => {
+            if (existingProgress) {
+                if (stageNumber == existPackage?.number_stage) {
+                    existingProgress.ended_game = new Date();
                 } else {
                     return false;
                 }
@@ -426,6 +464,7 @@ type DataItem = {
   last_season_number?: number;
   last_stage?: BSON.ObjectId;
   last_stage_number?: number;
+  ended_game?: Date;
   version_created?: number;
   version_updated?: number;
   version_deleted?: number;
@@ -439,6 +478,8 @@ type DataItem = {
     language_ref?: BSON.ObjectId;
     icon_image?: string;
     banner_image?: string;
+    completion_status?: string;
+    completion_status_title?: string;
     music?: any;
     free: boolean;
     free_with_subscription: boolean;
@@ -472,6 +513,8 @@ export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
                 language_ref: languageRefId ?? null,
                 icon_image: pkgInfo.icon_image ?? null,
                 banner_image: pkgInfo.banner_image ?? null,
+                completion_status: pkgInfo.completion_status ?? null,
+                completion_status_title: pkgInfo.completion_status_title ?? null,
                 music: pkgInfo.music ?? null,
                 free: pkgInfo.free ?? false,
                 free_with_subscription: pkgInfo.free_with_subscription ?? true,
@@ -500,6 +543,7 @@ export const creatingMultiplePackageAndUsePackageDocumentsInSameTime = (
                 last_season_number: item.last_season_number ?? null,
                 last_stage: lastStageId ?? null,
                 last_stage_number: item.last_stage_number ?? null,
+                ended_game: item.ended_game ?? null,
                 version_created: item.version_created ?? null,
                 version_updated: item.version_updated ?? null,
                 version_deleted: item.version_deleted ?? null,

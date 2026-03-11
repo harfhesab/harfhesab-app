@@ -6,9 +6,10 @@ import useAppTheme from "../../hooks/theme/useAppTheme";
 import NumberCoins from "../coin/NumberCoins";
 import Back from "../icon/Back";
 import Setting from "../icon/Setting";
+import PackageInfoBtn from "../buttons/PackageInfoBtn";
 
 const {width} = Dimensions.get('window');
-function SeasonHeader({height=65, paddingHorizontal=12, back=true, coin=true, title, setting=true}){
+function SeasonHeader({height=65, paddingHorizontal=12, back=true, coin=true, title, setting=true, packageId, packageIcon}){
     const colors = useAppTheme();
     return(
         <View style={{height:height, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
@@ -17,6 +18,13 @@ function SeasonHeader({height=65, paddingHorizontal=12, back=true, coin=true, ti
                     back&&
                     <Back/>
                     
+                }
+                {
+                    (packageIcon && packageId)&&
+                    <PackageInfoBtn
+                        packageId={packageId}
+                        packageIcon={packageIcon}
+                    />
                 }
                 {
                     title&&

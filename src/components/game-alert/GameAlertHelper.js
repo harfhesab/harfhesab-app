@@ -4,9 +4,9 @@ function setRef(ref){
     _ref = ref
 }
 
-function showAlertGame(title, admiration, description, completedSentences, stageHint, buttons, options){
+function showAlertGame(title, admiration, description, moreDescription, completedSentences, stageHint, buttons, options){
     if(_ref){
-        _ref.open(title, admiration, description, completedSentences, stageHint, buttons, options)
+        _ref.open(title, admiration, description, moreDescription, completedSentences, stageHint, buttons, options)
     }
 }
 

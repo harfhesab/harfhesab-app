@@ -33,7 +33,7 @@ function SimpleItem({
                 resizeMode="stretch"
             >
                 <View style={{ height:70, width:"100%", flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingHorizontal:10}}>
-                    <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                    <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
                         <ImageBackground
                             source={require("../../assets/image/circle_button.png")}
                             style={{ width:50, height: 50, alignItems:'center', justifyContent:'center', paddingBottom:3}}
@@ -55,7 +55,7 @@ function SimpleItem({
                                 />
                             }
                         </ImageBackground>
-                        <Text style={{fontSize:16, color:title_color, fontFamily:Font.black}}>{title}</Text>
+                        <Text style={{fontSize:16, color:title_color, fontFamily:Font.bold}}>{title}</Text>
                     </View>
                     <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
                         {

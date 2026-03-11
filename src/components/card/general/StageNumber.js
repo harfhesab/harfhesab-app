@@ -40,7 +40,7 @@ function StageNumber({
   };
 
   const textLength = number.toString().length
-  const fontSizeScale = textLength == 1?1.5:textLength == 2?1.8:textLength == 3?2.2:2.6
+  const fontSizeScale = textLength == 1?1.5:textLength == 2?1.9:textLength == 3?2.3:2.7
   const fontSize = STAGE_CARD_SIZE/fontSizeScale
   const iconSize = STAGE_CARD_SIZE/2.2
 
@@ -53,7 +53,7 @@ function StageNumber({
         resizeMode="stretch"
     >
       <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
-          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:iconSize, color:"#fcb900", textShadowColor: "#00000060", textShadowOffset: { width:0.5, height:0.5 }, textShadowRadius: 5}}/>
+          <Icon name={"locked"} type={"Fontisto"} style={{fontSize:iconSize, color:colors.primary.a3, textShadowColor: "#00000060", textShadowOffset: { width:0.5, height:0.5 }, textShadowRadius: 5}}/>
       </View>
     </ImageBackground>
     :currently == true?
@@ -77,7 +77,7 @@ function StageNumber({
                   text={`${number}`}
                   fontFamily={Font.bakh_extra_bold}
                   fontSize={fontSize}
-                  colors={["#dce775", "#fcb900"]}
+                  colors={["#dce775", colors.primary.a3]}
                   shadowColor={"#00000090"}
                   shadowBlur={5}
                   dropShadow={true}

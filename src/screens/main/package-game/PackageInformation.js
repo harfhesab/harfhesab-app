@@ -27,6 +27,7 @@ import { showToast } from '../../../components/custom-toast/ToastRef';
 import CommentRating from '../../../components/rating/CommentRating';
 import Border from '../../../components/Border';
 import LoadingBar from '../../../components/screen-loading/LoadingBar';
+import SeasonsBannerSwiper from '../../../components/swiper/SeasonsBannerSwiper';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -106,7 +107,8 @@ function PackageInformation(props){
                                 language_info{name},
                                 icon_image,
                                 banner_image,
-                                content_status,
+                                completion_status,
+                                completion_status_title,
                                 free,
                                 free_with_subscription,
                                 price,
@@ -139,7 +141,7 @@ function PackageInformation(props){
                                     comment,
                                 },
                                 rating_reward,
-                                seasons{title, first_media{path}},
+                                seasons{title, first_media{path}, number_stage},
                             },
                             user_package_status{
                                 status,
@@ -152,6 +154,7 @@ function PackageInformation(props){
                                 last_season_number,
                                 last_stage,
                                 last_stage_number,
+                                ended_game,
                             }
                         }
                     }
@@ -545,30 +548,33 @@ function PackageInformation(props){
             const color = colors.primary.a1
             const status = data?.user_package_status.status
             const selectedAccessType = accessType
+            const packageData = data.package
             const packageInfo = {
-                _id : data.package._id,
-                title : data.package.title,
-                description : data.package.description,
-                subject : data.package.subject,
-                badge : data.package.badge,
-                language_ref : data.package.language_ref,
-                icon_image : data.package.icon_image,
-                banner_image : data.package.banner_image,
-                free : data.package.free,
-                free_with_subscription : data.package.free_with_subscription,
-                price : data.package.price,
-                testable : data.package.testable,
-                number_stage : data.package.number_stage,
-                number_season : data.package.number_season,
+                _id : packageData?._id,
+                title : packageData?.title,
+                description : packageData?.description,
+                subject : packageData?.subject,
+                badge : packageData?.badge,
+                language_ref : packageData?.language_ref,
+                icon_image : packageData?.icon_image,
+                banner_image : packageData?.banner_image,
+                completion_status : packageData?.completion_status,
+                completion_status_title : packageData?.completion_status_title,
+                free : packageData?.free,
+                free_with_subscription : packageData?.free_with_subscription,
+                price : packageData?.price,
+                testable : packageData?.testable,
+                number_stage : packageData?.number_stage,
+                number_season : packageData?.number_season,
             }
             const userPackageInfo = {
                 package_ref : packageParamId,
                 access_type : selectedAccessType,
                 number_coin_paid : numberCoinPaid,
                 activation_date : new Date(),
-                version_created : data.package.version_created,
-                version_updated : data.package.version_updated,
-                version_deleted : data.package.version_deleted,
+                version_created : packageData?.version_created,
+                version_updated : packageData?.version_updated,
+                version_deleted : packageData?.version_deleted,
             }
             dispatch(startProgressLoading({packageId:packageParamId, contentSyncState:"initial-sync"}))
             await startSetPackageGameForUserAndGetIt({ dispatch, realm, packageId:packageParamId, packageInfo, numberCoins, userPackageInfo, status, selectedAccessType, color });
@@ -576,21 +582,24 @@ function PackageInformation(props){
     }
     const recreateAndDownloadContent = async(accessType, numberCoinPaid, activationDate)=>{
         const color = colors.primary.a1
+        const packageData = data.package
         const packageInfo = {
-            _id : data.package._id,
-            title : data.package.title,
-            description : data.package.description,
-            subject : data.package.subject,
-            badge : data.package.badge,
-            language_ref : data.package.language_ref,
-            icon_image : data.package.icon_image,
-            banner_image : data.package.banner_image,
-            free : data.package.free,
-            free_with_subscription : data.package.free_with_subscription,
-            price : data.package.price,
-            testable : data.package.testable,
-            number_stage : data.package.number_stage,
-            number_season : data.package.number_season,
+            _id : packageData?._id,
+            title : packageData?.title,
+            description : packageData?.description,
+            subject : packageData?.subject,
+            badge : packageData?.badge,
+            language_ref : packageData?.language_ref,
+            icon_image : packageData?.icon_image,
+            banner_image : packageData?.banner_image,
+            completion_status : packageData?.completion_status,
+            completion_status_title : packageData?.completion_status_title,
+            free : packageData?.free,
+            free_with_subscription : packageData?.free_with_subscription,
+            price : packageData?.price,
+            testable : packageData?.testable,
+            number_stage : packageData?.number_stage,
+            number_season : packageData?.number_season,
         }
         const userPackageInfo = {
             _id : data?.user_package_status?.user_package_id,
@@ -598,13 +607,14 @@ function PackageInformation(props){
             access_type : accessType,
             number_coin_paid : numberCoinPaid,
             activation_date : activationDate,
-            version_created : data.package.version_created,
-            version_updated : data.package.version_updated,
-            version_deleted : data.package.version_deleted,
+            version_created : packageData?.version_created,
+            version_updated : packageData?.version_updated,
+            version_deleted : packageData?.version_deleted,
             last_season : data?.user_package_status?.last_season,
             last_season_number : data?.user_package_status?.last_season_number,
             last_stage : data?.user_package_status?.last_stage,
             last_stage_number : data?.user_package_status?.last_stage_number,
+            ended_game : data?.user_package_status?.ended_game,
         }
         dispatch(startProgressLoading({packageId:packageParamId, contentSyncState:"initial-sync"}))
         await recreateAndDownloadContentUserPackage({ dispatch, realm, packageId:packageParamId, packageInfo, userPackageInfo, color })
@@ -624,20 +634,23 @@ function PackageInformation(props){
         if(localData?.user_package){
             dispatch(startProgressLoading({packageId:packageParamId, contentSyncState:"delta-sync"}))
             const color = colors.primary.a1
+            const packageData = data.package
             const packageInfo = {
-                title : data.package.title,
-                description : data.package.description,
-                subject : data.package.subject,
-                badge : data.package.badge,
-                language_ref : data.package.language_ref,
-                icon_image : data.package.icon_image,
-                banner_image : data.package.banner_image,
-                free : data.package.free,
-                free_with_subscription : data.package.free_with_subscription,
-                price : data.package.price,
-                testable : data.package.testable,
-                number_stage : data.package.number_stage,
-                number_season : data.package.number_season,
+                title : packageData?.title,
+                description : packageData?.description,
+                subject : packageData?.subject,
+                badge : packageData?.badge,
+                language_ref : packageData?.language_ref,
+                icon_image : packageData?.icon_image,
+                banner_image : packageData?.banner_image,
+                completion_status : packageData?.completion_status,
+                completion_status_title : packageData?.completion_status_title,
+                free : packageData?.free,
+                free_with_subscription : packageData?.free_with_subscription,
+                price : packageData?.price,
+                testable : packageData?.testable,
+                number_stage : packageData?.number_stage,
+                number_season : packageData?.number_season,
             }
             const userPackageInfo = {
                 packageId : packageParamId,
@@ -766,14 +779,25 @@ function PackageInformation(props){
                                 />
                             }
                         </View>
-                        <View style={{backgroundColor:`${colors.primary.a6}20`, width:width-30, alignSelf:'center', paddingHorizontal:10, paddingVertical:3, borderRadius:5}}>
-                            <Text style={{fontFamily:Font.medium, color:colors.text.a6, fontSize:12, lineHeight:30}}>{`وضعیت محتوا : `}<Text style={{color:colors.primary.a6}}>{data?.package?.content_status}</Text></Text>
+                        {
+                            data?.package?.seasons?.length > 0&&
+                            <View style={{width:width, marginTop:10}}>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:16, marginHorizontal:15}}>{"فصل‌های بستهٔ بازی"}</Text>
+                                <View style={{width:width, alignItems:'center'}}>
+                                    <SeasonsBannerSwiper
+                                        items={data?.package?.seasons}
+                                    />
+                                </View>
+                            </View>
+                        }
+                        <View style={{backgroundColor:`${colors.primary.a6}15`, width:width-30, alignSelf:'center', paddingHorizontal:10, paddingVertical:5, borderRadius:5, marginTop:20}}>
+                            <Text style={{fontFamily:Font.medium, color:colors.text.a6, fontSize:12, lineHeight:30}}>{`وضعیت محتوا : `}<Text style={{color:colors.primary.a6}}>{data?.package?.completion_status_title}</Text></Text>
                         </View>
                         {
                             data?.package.description?.length>0&&
                             <View style={{width:width, paddingHorizontal:15, marginTop:20}}>
                                 <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:16, lineHeight:30}}>{"دربارهٔ بستهٔ بازی"}</Text>
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:14, textAlign:'justify', lineHeight:26}}>{data?.package.description}</Text>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a4, fontSize:14, textAlign:'justify', lineHeight:27}}>{data?.package.description}</Text>
                             </View>
                         }
                         <View style={{width:width, paddingTop:30}}>
@@ -857,28 +881,6 @@ function PackageInformation(props){
                                 }
                             </View>
                         </View>
-                        {
-                            data?.package?.seasons?.length > 0&&
-                            <View style={{width:width, marginTop:30, paddingHorizontal:15}}>
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:16, lineHeight:50}}>{"فصل‌های بستهٔ بازی"}</Text>
-                                <View style={{width:width, flexDirection:'row', flexWrap:'wrap', rowGap:30, columnGap:15, justifyContent:'flex-start'}}>
-                                    {
-                                        data?.package?.seasons.map((item, index)=>(
-                                            <View key={index.toString()}>
-                                                <ImageComponent
-                                                    uri={item?.first_media?.path}
-                                                    width={SEASON_ITEM_WIDTH}
-                                                    height={SEASON_ITEM_WIDTH * 0.6}
-                                                    resizeMode="cover"
-                                                    borderRadius={10}
-                                                />
-                                                <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a3, lineHeight:20}}>{item.title}</Text>
-                                            </View>
-                                        ))
-                                    }
-                                </View>
-                            </View>
-                        }
                     </ScrollView>
                 }
             </View>

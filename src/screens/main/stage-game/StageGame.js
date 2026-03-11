@@ -192,7 +192,7 @@ function StageGame(props){
                         resizeMode="stretch"
                     >
                         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", height: "100%", paddingStart:9, paddingBottom:2}}>
-                            <Icon name={'layers'} type={'Ionicons'} style={{fontSize:20, color:"#fcb900"}}/>
+                            <Icon name={'layers'} type={'Ionicons'} style={{fontSize:20, color:colors.primary.a3}}/>
                             <View style={{width:85, alignItems:'center'}}>
                                 <Text style={{fontFamily:Font.bold, color:colors.text.a2, fontSize:12}}>{`${stageGameLanguageName}`}</Text>
                             </View>

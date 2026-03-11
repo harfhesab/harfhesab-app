@@ -10,6 +10,7 @@ export class UserPackage extends Realm.Object<UserPackage> {
   last_season_number?: number;
   last_stage?: BSON.ObjectId;
   last_stage_number?: number;
+  ended_game?: Date;
   version_created?: number;
   version_updated?: number;
   version_deleted?: number;
@@ -30,6 +31,7 @@ export class UserPackage extends Realm.Object<UserPackage> {
       last_season_number: "int?",
       last_stage: "objectId?",
       last_stage_number: "int?",
+      ended_game: "date?",
       version_created: "int?",
       version_updated: "int?",
       version_deleted: "int?",

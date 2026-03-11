@@ -13,6 +13,8 @@ export interface IPackage {
   icon_image?: string;
   banner_image?: string;
   music?: IMedia;
+  completion_status?: string;
+  completion_status_title?: string;
   free: boolean;
   free_with_subscription: boolean;
   price: number;

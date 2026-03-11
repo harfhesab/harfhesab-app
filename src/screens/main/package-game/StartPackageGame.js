@@ -106,7 +106,7 @@ function StartPackageGame(props){
     const renderItem = ({item, index})=>{
         return(
             <PackageGameSeasonCard
-                ended={item.season_number < lastSeasonNumber?true:false}
+                ended={(userPackage?.ended_game && lastStageNumber == packageInfo?.number_stage)?true:item.season_number < lastSeasonNumber?true:false}
                 lock={(item.season_number > lastSeasonNumber && item.season_number > 1)?true:false}
                 progress={(item.season_number == lastSeasonNumber && lastStageNumber > 0)?lastStageNumber - item.stage_number_from:null }
                 currentScroll={activeIndexes.includes(index)}
@@ -124,7 +124,8 @@ function StartPackageGame(props){
                         season:item._id.toString(),
                         userPackageId:_id,
                         seasonName:item.title.toString(),
-                        packageName:packageInfo?.title.toString()
+                        packageName:packageInfo?.title.toString(),
+                        packageIcon:packageInfo?.icon_image
                     })
                 }}
                 packageName={packageInfo?.title}
@@ -153,7 +154,7 @@ function StartPackageGame(props){
                 image={packageInfo?.banner_image}
                 numberStage={packageInfo?.number_stage}
                 numberSeason={packageInfo?.number_season}
-                progress={lastStageNumber?lastStageNumber-1:0}
+                progress={(userPackage?.ended_game && lastStageNumber == packageInfo?.number_stage)?packageInfo?.number_stage:lastStageNumber?lastStageNumber-1:0}
                 startPackage={()=>{
                     const targetIndex = Math.max(0, lastSeasonNumber-1);
                     if (targetIndex < seasons.length) {

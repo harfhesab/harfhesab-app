@@ -88,7 +88,7 @@ function PackageGameSeasonFirstCard({
             imageStyle={{ resizeMode: "stretch" }}
             resizeMode="stretch"
         >
-        <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:25, color:"#fcb900"}}>{'شروع'}</Text>
+        <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:25, color:colors.primary.a3}}>{'شروع'}</Text>
         </ImageBackground>
       </TouchableOpacity>
     </View>

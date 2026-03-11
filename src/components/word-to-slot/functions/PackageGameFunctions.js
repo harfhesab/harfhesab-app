@@ -1,10 +1,19 @@
 import axios from "axios";
-import { InteractionManager } from 'react-native';
-import { goBack } from "../../../main/navigationService";
+import { Dimensions, InteractionManager, NativeModules, StatusBar, View } from 'react-native';
+import { goBack, navigate } from "../../../main/navigationService";
 import GameAlertHelper from "../../game-alert/GameAlertHelper";
 import { successfulCompletionOfSeasonSound, successfulCompletionOfStageSound } from "../../../utils/sound/SoundFunctions";
 import { store } from "../../../redux/store/Store";
-import { getCurrentPackageNextStageInformation, makingStageContentReplayableInPackageGame, updateUserPackageGameProgress } from "../../../realm/repositories/user/user-package-game-progress.repository";
+import {
+    endedUserPackageGameProgress,
+    getCurrentPackageNextStageInformation,
+    makingStageContentReplayableInPackageGame,
+    updateUserPackageGameProgress
+} from "../../../realm/repositories/user/user-package-game-progress.repository";
+import AlertBottomDrawerHelper from "../../alert-bottom-drawer/AlertBottomDrawerHelper";
+import LocalImageComponent from "../../image-components/LocalImageComponent";
+import Font from "../../../utils/Font";
+import { colors } from "../../../hooks/theme/colors";
 
 
 export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences, stageHint})=>{
@@ -12,34 +21,99 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
     if(stageId.toString() === currentStageId.toString()){
         const next = getCurrentPackageNextStageInformation(realm, packageRef, userPackage)
         if(next.endAllStage == true){
-            GameAlertHelper.showAlertGame({
-                title:`پایان مرحله ${stageNumber}`,
-                admiration: "احسنت، عالی بود!",
-                description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} با موفقیت ساخته شد.`,
-                completedSentences: sentences,
-                stageHint: stageHint,
-                buttons: [
-                    {
-                        text: 'ادامه',
-                        onPress: () => {
-                            goBack()
-                            goBack()
+            if(next?.endPackageAllStage == true && next?.previusEnded == false){
+                const updateProgress = await endedUserPackageGameProgress(realm, packageRef, userPackage, stageNumber)
+                if(updateProgress == true){
+                    const numberCoins = state.coins.numberCoins;
+                    const coinsRewardStage = state.constants.coins_reward_from_stage_completed_package_game
+                    const coinsRewardSeason = state.constants.coins_reward_from_season_completed_package_game
+                    const coinsRewardPackage = coinsRewardSeason*2
+                    const totalCoins = numberCoins + coinsRewardStage + coinsRewardPackage
+                    GameAlertHelper.showAlertGame({
+                        title:`پایان مرحله ${stageNumber}`,
+                        admiration: "احسنت، عالی بود!",
+                        description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} با موفقیت ساخته شد.`,
+                        completedSentences: sentences,
+                        stageHint: stageHint,
+                        buttons: [
+                            {
+                                text: 'ادامه',
+                                onPress: () => {
+                                    goBack()
+                                    goBack()
+                                    setTimeout(()=>{
+                                        endedUserPackageGameAlert(packageName, packageRef, coinsRewardPackage)
+                                    }, 800)
+                                },
+                                type:'bold'
+                            },
+                        ],
+                        options : {
+                            type: 'completed-stage',
+                            reward : coinsRewardStage,
+                            cancelable: false,
                         },
-                        type:'bold'
+                    });
+                    setTimeout(()=>{
+                        endedUserPackageGameProgressInServer(userPackage, totalCoins)
+                    }, 1000)
+                }
+            } else if(next?.endPackageAllStage == true && next?.previusEnded == true) {
+                GameAlertHelper.showAlertGame({
+                    title:`پایان مرحله ${stageNumber}`,
+                    admiration: "احسنت، عالی بود!",
+                    description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} مجددا، با موفقیت ساخته شد.`,
+                    completedSentences: sentences,
+                    stageHint: stageHint,
+                    buttons: [
+                        {
+                            text: 'ادامه',
+                            onPress: () => {
+                                goBack()
+                                goBack()
+                            },
+                            type:'bold'
+                        },
+                        {
+                            onPress: () => {
+                                goBack()
+                                goBack()
+                            },
+                            type:'ads',
+                            reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
+                        }
+                    ],
+                    options : {
+                        type: 'completed-stage',
+                        cancelable: false,
                     },
-                    {
-                        onPress: () => {
-                            goBack()
+                });
+            } else {
+                GameAlertHelper.showAlertGame({
+                    title:`پایان مرحله ${stageNumber}`,
+                    admiration: "احسنت، عالی بود!",
+                    description: `جملات مرحله ${stageNumber} بستهٔ ${packageName} با موفقیت ساخته شد.`,
+                    completedSentences: sentences,
+                    stageHint: stageHint,
+                    buttons: [
+                        {
+                            text: 'ادامه',
+                            onPress: () => {
+                                goBack()
+                                goBack()
+                                setTimeout(()=>{
+                                    endAllStageAlert({stageNumber, packageName, packageRef})
+                                }, 800)
+                            },
+                            type:'bold'
                         },
-                        type:'ads',
-                        reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
-                    }
-                ],
-                options : {
-                    type: 'completed-stage',
-                    cancelable: false,
-                },
-            });
+                    ],
+                    options : {
+                        type: 'completed-stage',
+                        cancelable: false,
+                    },
+                });
+            }
         } else {
             const last_season = next?.nextSeason;
             const last_season_number = next?.nextSeasonNumber;
@@ -200,3 +274,117 @@ const updateUserPackageGameProgressInServer = (data, userPackage, totalCoins)=>{
         run()
     })
 }
+const endedUserPackageGameProgressInServer = (userPackage, totalCoins)=>{
+    InteractionManager.runAfterInteractions(()=>{
+        const run = async ()=>{
+            await axios({
+                url:'/',
+                method:'post',
+                data: {
+                    query : `
+                    mutation endedUserPackageGameProgress(
+                        $number_coin : Int,
+                        $user_package : ID!,
+                    ){
+                        endedUserPackageGameProgress(
+                            number_coin : $number_coin,
+                            user_package : $user_package,
+                        ) {
+                            status,
+                        }
+                    }
+                    `,
+                    variables : {
+                        "number_coin" : totalCoins,
+                        "user_package" : userPackage,
+                    }
+                }
+            })
+        }
+        run()
+    })
+}
+const endAllStageAlert = ({stageNumber, packageName, packageRef})=>{
+    const {width} = Dimensions.get("window")
+    const { ImmersiveMode } = NativeModules;
+    const btn = [
+        {
+            onPress : ()=>{
+                ImmersiveMode.exitImmersiveMode()
+                navigate("PackageInformation", {_id:packageRef});
+            },
+            text: "بروزرسانی محتوا",
+            loading: false,
+            type: "bold",
+        },
+        {
+            onPress : ()=>{},
+            text: "متوجه شدم",
+            loading: false,
+            type: "border",
+        },
+    ]
+    const msg = [
+        {
+            text:"مرحلهٔ بعدی یافت نشد!",
+            style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+        },
+        {
+            text:`مراحل جدید بستهٔ "${packageName}" یافت نشد. از صفحهٔ مربوط به بستهٔ بازی، بررسی کنید که در صورت وجود بروزرسانی، محتوای جدید بستهٔ بازی را دریافت کنید.`,
+            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+        {
+            text:`توجه کنید، بعد از دریافت محتوای جدید، دوباره مرحله ${stageNumber} را بازی کنید تا مرحله ${stageNumber + 1} باز شود.`,
+            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+    ]
+    AlertBottomDrawerHelper.showAlert({
+        title:`بروزرسانی بستهٔ بازی "${packageName}"`,
+        message: msg,
+        buttons:btn,
+        options:{
+            cancelable: true,
+            icon:{
+                Icon:()=>(
+                    <View style={{width:width, alignItems:'center'}}>
+                        <LocalImageComponent
+                            path={require('../../../assets/image/download.png')}
+                            width={40}
+                            height={40}
+                            resizeMode={'stretch'}
+                            blank_background={true}
+                        />
+                    </View>
+                )
+            }
+        }
+    })
+}
+const endedUserPackageGameAlert = (packageName, packageRef, coinsRewardPackage)=>{
+    const { ImmersiveMode } = NativeModules;
+    GameAlertHelper.showAlertGame({
+        title:`پایان بستهٔ بازی`,
+        admiration: "تبریک!",
+        description: `تمام مراحل بستهٔ ${packageName} با موفقیت به اتمام رسید.`,
+        moreDescription: `بازخوردتان را نسبت به محتوای این بستهٔ بازی، با دادن یک نظر و امتیاز به اشتراک بگذارید.`,
+        buttons: [
+            {
+                text: 'ثبت نظر و امتیاز',
+                onPress: () => {
+                    ImmersiveMode.exitImmersiveMode()
+                    navigate("PackageInformation", {_id:packageRef});
+                },
+                type:'bold'
+            },
+        ],
+        options : {
+            type: 'completed-package',
+            reward : coinsRewardPackage,
+            cancelable: true,
+        },
+    });
+    setTimeout(()=>{
+        successfulCompletionOfSeasonSound()
+    }, 1000)
+}
+

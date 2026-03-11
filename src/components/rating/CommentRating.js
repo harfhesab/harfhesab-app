@@ -213,7 +213,7 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginStart:15}}>
                     <Icon name={'person'} type={'Ionicons'} style={{color:colors.text.a6, fontSize:40}}/>
                     <View style={{flexDirection:'column', alignItems:'flex-start', marginStart:5}}>
-                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a5}}>{name?name:'کاربر بی‌زبون'}</Text>
+                        <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a5, lineHeight:25}}>{name?name:`کاربر دوکلام`}</Text>
                         <GradeNumber
                             size={12}
                             grade={grade}
@@ -230,7 +230,7 @@ function CommentRating({_id, name, grade, date, comment, likeNumbers, disLikeNum
                 </View>
             </View>
             <View style={{marginVertical:15, paddingHorizontal:15}}>
-                <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a5}}>{comment}</Text>
+                <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a5, lineHeight:23}}>{comment}</Text>
             </View>
             <View style={{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'flex-start', paddingHorizontal:15, gap:30}}>
                 <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
