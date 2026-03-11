@@ -33,6 +33,7 @@ import { deleteAllUserPackages } from '../../../../realm/repositories/user/user-
 import { showToast } from '../../../../components/custom-toast/ToastRef';
 import { updateNumberHiddenWords } from '../../../../redux/slices/hiddenWordSlice';
 import { BUILD_TYPE, TARGET_STORE } from '../../../../utils/constants/build-config';
+import { seenAllGuide } from '../../../../redux/slices/settingSlice';
   
   
 const {width, height} = Dimensions.get('window');
@@ -277,6 +278,13 @@ function VerifyLoginToAccount(props){
                                 lastSeasonNumber: currentProgressItem?.last_season_number  
                             }
                             await dispatch(updateCurrentLanguageLastStageAndLastSeason(currentProgressData))
+                        }
+                        for (let index = 0; index < progressData.length; index++) {
+                            const element = progressData[index];
+                            if(element?.last_stage_number > 3){
+                                dispatch(seenAllGuide())
+                                break
+                            }
                         }
                     }
                     dispatch(convertGuestToRegistered({ phone, name}))

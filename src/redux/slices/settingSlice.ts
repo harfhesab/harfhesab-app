@@ -7,7 +7,6 @@ interface UiState {
   vibration: boolean;
   // ====================================================================
   // ====================================================================
-  firstGuide: boolean;
   wordToSlotGuide: boolean;
   unknownWordGuide: boolean;
   connectingLetterGuide: boolean;
@@ -20,7 +19,6 @@ const initialState: UiState = {
   vibration: true,
   // =====================================================================
   // =====================================================================
-  firstGuide: false,
   wordToSlotGuide: false,
   unknownWordGuide: false,
   connectingLetterGuide: false
@@ -56,11 +54,6 @@ const settingSlice = createSlice({
     },
     // =====================================================================
     // =====================================================================
-    seenFirstGuide(
-      state,
-    ) {
-      state.firstGuide = true;
-    },
     seenWordToSlotGuide(
       state,
     ) {
@@ -69,17 +62,19 @@ const settingSlice = createSlice({
     seenUnknownWordGuide(
       state,
     ) {
+      state.wordToSlotGuide = true;
       state.unknownWordGuide = true;
     },
     seenConnectingLetterGuide(
       state,
     ) {
+      state.wordToSlotGuide = true;
+      state.unknownWordGuide = true;
       state.connectingLetterGuide = true;
     },
     seenAllGuide(
       state,
     ) {
-      state.firstGuide = true;
       state.wordToSlotGuide = true;
       state.unknownWordGuide = true;
       state.connectingLetterGuide = true;

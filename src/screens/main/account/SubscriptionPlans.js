@@ -39,6 +39,7 @@ const numColumns = IS_TABLET_CONDITION ? 4 : 2
 function SubscriptionPlans(props){
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const { subscriptionExpiration, activeSubscription} = useSelector((state) => state.subscription);
+    const { loginType } = useSelector((state) => state.account);
     const realm = useRealm();
     const isFocused = useIsFocused();
     const colors = useAppTheme()
@@ -73,70 +74,81 @@ function SubscriptionPlans(props){
     
 
     const clickItem = async(item)=>{
-        FullScreenLoadingHelper.showLoading({
-            title:"در حال اتصال..."
-        })
-        let data = {
-            query : `
-                mutation userRequestsToPurchaseSubscription(
-                    $target_store : String!,
-                    $plan : ID!,
-                ){
-                    userRequestsToPurchaseSubscription(
-                        target_store : $target_store,
-                        plan : $plan,
-                    ) {
-                        _id,
-                        product_id,
-                        status,
-                        message,
-                        gateway,
-                        url
+        if(loginType == "registered") {
+            FullScreenLoadingHelper.showLoading({
+                title:"در حال اتصال..."
+            })
+            let data = {
+                query : `
+                    mutation userRequestsToPurchaseSubscription(
+                        $target_store : String!,
+                        $plan : ID!,
+                    ){
+                        userRequestsToPurchaseSubscription(
+                            target_store : $target_store,
+                            plan : $plan,
+                        ) {
+                            _id,
+                            product_id,
+                            status,
+                            message,
+                            gateway,
+                            url
+                        }
                     }
+                `,
+                variables : {
+                    "target_store" : TARGET_STORE,
+                    "plan" : item._id
                 }
-              `,
-            variables : {
-                "target_store" : TARGET_STORE,
-                "plan" : item._id
             }
-        }
-        await axios({
-            url:'/',
-            method:'post',
-            data: data,
-        }).then(async(response)=>{
-            FullScreenLoadingHelper.hideLoading()
-            if(response?.data?.data?.userRequestsToPurchaseSubscription?.status == 200){
-                const data = response?.data?.data.userRequestsToPurchaseSubscription
-                const productId = data?.product_id
-                const orderId = data?._id
-                if(data.gateway == "cafebazaar_gateway"){
-                    cafebazaarPaymentGateway({productId, orderId})
-                } else if(data.gateway == "myket_gateway"){
-                    myketPaymentGateway({productId, orderId})
-                } else if(data.gateway == "direct_gateway"){
-                    const gatewayUrl = data?.url
-                    directPaymentGateway(gatewayUrl)
+            await axios({
+                url:'/',
+                method:'post',
+                data: data,
+            }).then(async(response)=>{
+                FullScreenLoadingHelper.hideLoading()
+                if(response?.data?.data?.userRequestsToPurchaseSubscription?.status == 200){
+                    const data = response?.data?.data.userRequestsToPurchaseSubscription
+                    const productId = data?.product_id
+                    const orderId = data?._id
+                    if(data.gateway == "cafebazaar_gateway"){
+                        cafebazaarPaymentGateway({productId, orderId})
+                    } else if(data.gateway == "myket_gateway"){
+                        myketPaymentGateway({productId, orderId})
+                    } else if(data.gateway == "direct_gateway"){
+                        const gatewayUrl = data?.url
+                        directPaymentGateway(gatewayUrl)
+                    }
+                } else {
+                    showToast({
+                        title: "مشکلی پیش آمد",
+                        message: response?.data?.errors[0]?.data[0]?.message??"اتصال به درگاه پرداخت میسر نبود. دوباره تلاش کنید." ,
+                        type: "error",
+                        animationType: "slide",
+                        position: "top",
+                    });
                 }
-            } else {
+            }).catch((error)=>{
+                FullScreenLoadingHelper.hideLoading()
                 showToast({
                     title: "مشکلی پیش آمد",
-                    message: response?.data?.errors[0]?.data[0]?.message??"اتصال به درگاه پرداخت میسر نبود. دوباره تلاش کنید." ,
+                    message: "اتصال به درگاه پرداخت میسر نبود. دوباره تلاش کنید." ,
                     type: "error",
                     animationType: "slide",
                     position: "top",
                 });
-            }
-        }).catch((error)=>{
-            FullScreenLoadingHelper.hideLoading()
+            })
+        } else {
             showToast({
-                title: "مشکلی پیش آمد",
-                message: "اتصال به درگاه پرداخت میسر نبود. دوباره تلاش کنید." ,
-                type: "error",
-                animationType: "slide",
-                position: "top",
+                title:"ورود به حساب کاربری",
+                message: "برای خرید اشتراک ابتدا وارد حساب کاربری خود شوید.",
+                type: 'info',
+                animationType: 'slide',
+                position: 'top'
             });
-        })
+            props.navigation.navigate('LoginToAccount')
+        }
     }
 
     const purchaseSubscriptionApplyCredit = async({gateway, purchaseToken, orderId, orderIdWrong, purchaseResult})=>{

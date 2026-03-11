@@ -34,6 +34,7 @@ import { showToast } from '../../components/custom-toast/ToastRef';
 import { updateNumberHiddenWords } from '../../redux/slices/hiddenWordSlice';
 import { preloadImages } from '../../utils/ImagePreloader';
 import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
+import { seenAllGuide } from '../../redux/slices/settingSlice';
   
   
 const {width, height} = Dimensions.get('window');
@@ -351,6 +352,13 @@ function VerifyWithOTP(props){
                     const progressData = data?.user_stage_game_progress?.stage_game
                     if(progressData?.length > 0){
                         updateUserStageGameProgressInLogin(realm, progressData)
+                        for (let index = 0; index < progressData.length; index++) {
+                            const element = progressData[index];
+                            if(element?.last_stage_number > 3){
+                                dispatch(seenAllGuide())
+                                break
+                            }
+                        }
                     }
                     dispatch(login({token, phone, name}))
                     axios.defaults.headers.post['token'] = token;

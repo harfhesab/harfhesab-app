@@ -127,7 +127,7 @@ const Rating = ({
                 animationType: 'slide',
                 position: 'top'
             });
-            navigate('Login')
+            navigate('LoginToAccount')
         }
     }
     const setRating = ()=>{
@@ -153,6 +153,7 @@ const Rating = ({
         } else {
             if (localToastRef.current) {
                 localToastRef.current.show({
+                    title:"ورود به حساب کاربری",
                     message: "برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید.",
                     type: 'info',
                     animationType: 'slide', // تست حالت فید
@@ -172,6 +173,7 @@ const Rating = ({
         } else {
             if (localToastRef.current) {
                 localToastRef.current.show({
+                    title:"ورود به حساب کاربری",
                     message: "برای ثبت نظر و امتیاز  وارد حساب کاربری خود شوید.",
                     type: 'info',
                     animationType: 'slide', // تست حالت فید
