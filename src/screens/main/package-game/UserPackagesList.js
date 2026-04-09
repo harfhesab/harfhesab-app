@@ -179,7 +179,7 @@ function UserPackagesList(props){
                         imageStyle={{ resizeMode: "stretch" }}
                         resizeMode="stretch"
                     >
-                        <View style={{width:"100%", height:"100%", borderRadius:69, overflow:'hidden'}}>
+                        <View style={{width:"100%", height:"100%", borderBottomLeftRadius:"16%", borderBottomRightRadius:"16%", borderTopLeftRadius:"15%", borderTopRightRadius:"15%", overflow:'hidden'}}>
                             <FlatList
                                 showsVerticalScrollIndicator={false}
                                 keyExtractor={keyExtractor}

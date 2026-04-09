@@ -9,6 +9,7 @@ import Back from "../icon/Back";
 import SubscriptionInfoBtn from "../buttons/SubscriptionInfoBtn";
 import SubscriptionBtn from "../buttons/SubscriptionBtn";
 import MyPackageBtn from "../buttons/MyPackageBtn";
+import NotificationBtn from "../buttons/NotificationBtn";
 
 const {width} = Dimensions.get('window');
 const colors = useAppTheme();
@@ -20,6 +21,7 @@ function GeneralHeader({
     RightComponent,
     LeftComponent,
     back,
+    notification,
     myPackage,
     coin,
     subscriptionInfo,
@@ -52,6 +54,10 @@ function GeneralHeader({
                     <RightComponent/>
                     :back&&
                     <Back/>
+                }
+                {
+                    notification&&
+                    <NotificationBtn/>
                 }
                 {
                     myPackage&&

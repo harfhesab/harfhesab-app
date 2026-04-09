@@ -21,6 +21,9 @@ import Icon from '../../utils/Icon';
 import { preloadImages } from '../../utils/ImagePreloader';
 import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
 import { Text } from 'react-native-gesture-handler';
+import { persistor, store } from '../../redux/store/Store';
+import { showToast } from '../../components/custom-toast/ToastRef';
+import { changeNewNotifications } from '../../redux/slices/accountSlice';
 
 const { width } = Dimensions.get("window");
 function Splash(props){
@@ -134,7 +137,8 @@ function Splash(props){
                             update_link,
                             last_version,
                             update_message
-                        }
+                        },
+                        new_notifications
                     }
                 }
                 `,
@@ -153,7 +157,22 @@ function Splash(props){
             }
         }).then(async(response)=>{
             const data = response?.data?.data?.necessaryCheckAtStartGameApplication
-            if(data?.status == 200) {
+            if(data?.status == 213){
+                if(data?.app_version_update_alert){
+                    const force = data?.app_version_update_alert?.force_update
+                    const link = data?.app_version_update_alert?.update_link
+                    const version = data?.app_version_update_alert?.last_version
+                    const message = data?.app_version_update_alert?.update_message
+                    const logOut = true
+                    showUpdateAlert({force, link, version, message, logOut})
+                } else {
+                    logOutFromAccount()
+                }
+            } else if(data?.status == 200) {
+                if(data?.new_notifications > 0 || data?.new_notifications == 0){
+                    const newNotifications = data?.new_notifications;
+                    dispatch(changeNewNotifications({number:newNotifications}))
+                }
                 const activeSubscription = data?.user_subscription_status?.active_subscription??false;
                 const subscriptionExpiration = data?.user_subscription_status?.subscription_expiration??null;
                 dispatch(updateSubscriptionStatus({activeSubscription, subscriptionExpiration}))
@@ -195,7 +214,8 @@ function Splash(props){
                     const link = data?.app_version_update_alert?.update_link
                     const version = data?.app_version_update_alert?.last_version
                     const message = data?.app_version_update_alert?.update_message
-                    showUpdateAlert({force, link, version, message})
+                    const logOut = false
+                    showUpdateAlert({force, link, version, message, logOut})
                 } else {
                     setAppIsReady(true)
                 }
@@ -206,8 +226,27 @@ function Splash(props){
             setAppIsReady(true)
         })
     }
+    const logOutFromAccount = async()=>{
+        realm.write(() => {
+            realm.deleteAll();
+        });
+        await resetReduxStore()
+    }
+    const resetReduxStore = async () => {
+        await persistor.purge();
+        store.dispatch({ type: "RESET_APP" });
+        hideSplashAndStartApp()
+        showToast({
+            title: "خطا در اعتبار سنجی",
+            message: "مشکلی در اعتبار سنجی پیش آمد. برای ادامهٔ بازی مجدد وارد حساب کاربری خود شوید.",
+            type: "error",
+            animationType: "slide",
+            position: "top",
+            duration:7000
+        });
+    };
 
-    const showUpdateAlert = ({force, link, version, message})=>{
+    const showUpdateAlert = ({force, link, version, message, logOut})=>{
         const btn = [
             {
                 onPress : ()=>{
@@ -222,7 +261,11 @@ function Splash(props){
         if(!force){
             btn.push({
                 onPress : ()=>{
-                    setAppIsReady(true)
+                    if(logOut == true){
+                        logOutFromAccount()
+                    } else {
+                        setAppIsReady(true)
+                    }
                 },
                 text: "بعدا یاد آوری کن",
                 loading: false,

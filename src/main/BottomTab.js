@@ -10,10 +10,12 @@ import Account from '../screens/main/account/Account';
 import OnlineGame from '../screens/main/online-game/OnlineGame';
 import FastImage from '@d11/react-native-fast-image';
 import useAppTheme from '../hooks/theme/useAppTheme';
+import { useSelector } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 const BottomTab = (props) => {
   const colors = useAppTheme()
+  const { newNotifications } = useSelector((state) => state.account);
   
   return (
     <Tab.Navigator
@@ -83,7 +85,16 @@ const BottomTab = (props) => {
               <Text style={[styles.lable, {color:color}]}>{"حساب کاربری"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
-              <Icon name={focused?'person':'person-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>
+              <View>
+                <Icon name={focused?'person':'person-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>
+                {
+                  (newNotifications && newNotifications > 0)?
+                  <View style={{backgroundColor:colors.alert.a2, paddingHorizontal:6, borderRadius:20, position:'absolute', top:-3, end:-6}}>
+                      <Text style={{fontSize:10, color:"#FFF", fontFamily:Font.black}}>{newNotifications}</Text>
+                  </View>
+                  :null
+                }
+              </View>
             )
           }}
         />

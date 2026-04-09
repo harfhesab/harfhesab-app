@@ -22,6 +22,8 @@ import Setting from '../screens/main/account/Setting';
 import FreeCoin from '../screens/main/account/FreeCoin';
 import ImageScreen from '../screens/single-page/ImageScreen';
 import ViewAllPackageRating from '../screens/main/package-game/ViewAllPackageRating';
+import Notification from '../screens/main/account/Notification';
+import MessageInApp from '../screens/main/account/MessageInApp';
 
 
 const Stack = createNativeStackNavigator();
@@ -67,6 +69,8 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"FreeCoin"} component={FreeCoin} />
       <Stack.Screen name={"ImageScreen"} component={ImageScreen} />
       <Stack.Screen name={"ViewAllPackageRating"} component={ViewAllPackageRating} />
+      <Stack.Screen name={"Notification"} component={Notification} />
+      <Stack.Screen name={"MessageInApp"} component={MessageInApp} />
     </Stack.Navigator>
   )
 }

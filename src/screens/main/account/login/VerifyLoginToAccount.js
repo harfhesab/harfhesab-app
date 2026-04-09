@@ -21,7 +21,7 @@ import {
     useOtpVerify,
 } from 'react-native-otp-verify';
 import { useSelector, useDispatch } from 'react-redux';
-import { convertGuestToRegistered, login, updateSyncUserPackage } from '../../../../redux/slices/accountSlice';
+import { convertGuestToRegistered, updateSyncUserPackage } from '../../../../redux/slices/accountSlice';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import { updateNumberCoins } from '../../../../redux/slices/coinSlice';
 import { useRealm } from '../../../../realm';
@@ -222,7 +222,7 @@ function VerifyLoginToAccount(props){
                             status,
                             message,
                             token,
-                            user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration},
+                            user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration, new_notifications},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                             command_to_remove_user_packages_in_client
                         }
@@ -252,6 +252,7 @@ function VerifyLoginToAccount(props){
                 const data = response?.data?.data?.verifyUserLoginWithOTPAndMergeGuestAndRegistered
                 if(data?.status == 200) {
                     const name = data?.user?.name ?? null
+                    const newNotifications = data?.user?.new_notifications ?? null
                     const numberCoins = data?.user?.number_coins
                     const activeSubscription = data?.user?.active_subscription;
                     if(activeSubscription == true){
@@ -287,7 +288,7 @@ function VerifyLoginToAccount(props){
                             }
                         }
                     }
-                    dispatch(convertGuestToRegistered({ phone, name}))
+                    dispatch(convertGuestToRegistered({ phone, name, newNotifications}))
                     showToast({
                         title: "ورود به حساب",
                         message: "ورود به حساب کاربری با موفقیت انجام شد.",

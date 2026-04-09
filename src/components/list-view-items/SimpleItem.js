@@ -10,16 +10,16 @@ function SimpleItem({
     click,
     arrow,
     value,
-    valueColor="#ffc107",
+    valueColor="#fcb900",
     title,
-    title_color="#ffc107",
+    title_color="#fcb900",
     icon_name,
     icon_type,
     image_icon,
     image_width=25,
     image_height=25,
     icon_size=25,
-    icon_color="#ffc107",
+    icon_color="#fcb900",
     disabled = false,
     ValueComponent
 }){
@@ -55,12 +55,14 @@ function SimpleItem({
                                 />
                             }
                         </ImageBackground>
-                        <Text style={{fontSize:16, color:title_color, fontFamily:Font.bold}}>{title}</Text>
+                        <Text style={{fontSize:14, color:title_color, fontFamily:Font.bold}}>{title}</Text>
                     </View>
-                    <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                    <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
                         {
                             value&&
-                            <Text style={{fontSize:14, color:valueColor, fontFamily:Font.medium}}>{value}</Text>
+                            <View style={{backgroundColor:colors.alert.a2, paddingHorizontal:7.5, borderRadius:20}}>
+                                <Text style={{fontSize:12, color:"#FFF", fontFamily:Font.black}}>{value}</Text>
+                            </View>
                         }
                         {
                             ValueComponent&&

@@ -1,5 +1,5 @@
 // const url = "https://project.ir";
-const url = "http://172.20.10.3:4000";
+const url = "http://192.168.43.207:4000";
 export default {
     game_name_fa: "دوکلام",
     game_name_en: "DoKalam",

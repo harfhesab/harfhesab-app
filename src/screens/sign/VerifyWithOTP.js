@@ -223,7 +223,7 @@ function VerifyWithOTP(props){
                             status,
                             message,
                             token,
-                            user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration},
+                            user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration, new_notifications},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                             game_constants{
                                 constants_version,
@@ -302,6 +302,7 @@ function VerifyWithOTP(props){
                 if(data?.status == 200) {
                     const token = data?.token
                     const name = data?.user?.name ?? null
+                    const newNotifications = data?.user?.new_notifications ?? null
                     const activeSubscription = data?.user?.active_subscription;
                     if(activeSubscription == true){
                         const subscriptionExpiration = data?.user?.subscription_expiration;
@@ -360,7 +361,7 @@ function VerifyWithOTP(props){
                             }
                         }
                     }
-                    dispatch(login({token, phone, name}))
+                    dispatch(login({token, phone, name, newNotifications}))
                     axios.defaults.headers.post['token'] = token;
                     showToast({
                         title:"ورود به حساب",

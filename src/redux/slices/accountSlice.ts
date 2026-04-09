@@ -7,6 +7,7 @@ interface AccountState {
   phone: string | null;
   name: string | null;
   syncUserPackage: string | null;
+  newNotifications : number | null;
 }
 
 const initialState: AccountState = {
@@ -16,6 +17,7 @@ const initialState: AccountState = {
   phone: null,
   name: null,
   syncUserPackage: null,
+  newNotifications: 0,
 };
 
 const accountSlice = createSlice({
@@ -33,12 +35,13 @@ const accountSlice = createSlice({
     },
     login(
       state,
-      action: PayloadAction<{ token: string, phone: string, name: string | null; }>
+      action: PayloadAction<{ token: string, phone: string, name: string | null; newNotifications: number | null}>
     ) {
       state.isLoggedIn = true;
       state.token = action.payload.token;
       state.phone = action.payload.phone;
       state.name = action.payload.name;
+      state.newNotifications = action.payload.newNotifications;
       state.loginType = "registered";
     },
     logout(state) {
@@ -48,10 +51,11 @@ const accountSlice = createSlice({
       state.name = null;
       state.loginType = null;
       state.syncUserPackage = null;
+      state.newNotifications = 0;
     },
     convertGuestToRegistered(
       state,
-      action: PayloadAction<{ phone: string; name: string | null }>
+      action: PayloadAction<{ phone: string; name: string | null; newNotifications: number | null }>
     ) {
       state.isLoggedIn = true;
       state.phone = action.payload.phone;
@@ -59,6 +63,7 @@ const accountSlice = createSlice({
         state.name = action.payload.name;
       }
       state.loginType = "registered";
+      state.newNotifications = action.payload.newNotifications;
     },
     updateSyncUserPackage(
       state,
@@ -72,9 +77,15 @@ const accountSlice = createSlice({
     ) {
       state.name = action.payload.name;
     },
+    changeNewNotifications(
+      state,
+      action: PayloadAction<{ number: number | null }>
+    ) {
+      state.newNotifications = action.payload.number;
+    },
   },
 });
 
-export const { login, logout, loginAsGuest, convertGuestToRegistered, updateSyncUserPackage, changeName } = accountSlice.actions;
+export const { login, logout, loginAsGuest, convertGuestToRegistered, updateSyncUserPackage, changeName, changeNewNotifications } = accountSlice.actions;
 
 export default accountSlice.reducer;

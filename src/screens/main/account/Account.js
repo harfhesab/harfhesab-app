@@ -17,12 +17,14 @@ import { useRealm } from '../../../realm';
 import { persistor, store } from '../../../redux/store/Store';
 import axios from 'axios';
 import { showToast } from '../../../components/custom-toast/ToastRef';
+import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
 
 const {width, height} = Dimensions.get("window")
 function Account(props){
     const colors = useAppTheme()
     const realm = useRealm();
-    const { loginType, name, phone } = useSelector((state) => state.account);
+    const { loginType, name, phone, newNotifications } = useSelector((state) => state.account);
+    const { activeSubscription } = useSelector((state) => state.subscription);
     const { numberCoins } = useSelector((state) => state.coins);
 
     const AccountOptions = [
@@ -66,6 +68,25 @@ function Account(props){
             arrow: true,
             onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")},
             is_visible:true
+        },
+        {
+            title: "اعلانات",
+            icon_name: "bell",
+            icon_type: "MaterialCommunityIcons",
+            icon_size: 30,
+            arrow: true,
+            onPress:()=>{props.navigation.navigate("Notification")},
+            is_visible:true,
+            value:(newNotifications && newNotifications > 0)?newNotifications:null
+        },
+        {
+            title: "پیام‌ها",
+            icon_name: "mail",
+            icon_type: "MaterialCommunityIcons",
+            icon_size: 30,
+            arrow: true,
+            onPress:()=>{props.navigation.navigate("MessageInApp")},
+            is_visible:true,
         },
         {
             title: "تنظیمات",
@@ -201,7 +222,19 @@ function Account(props){
                         </ImageBackground>
                         <View style={{flexDirection:'column', alignItems:'flex-end', gap:10}}>
                             <View style={{ flexDirection:'column', alignItems:'flex-end'}}>
-                                <Text style={{fontFamily:Font.en_black, fontSize:14, color:colors.text.a1}}>{name}</Text>
+                                <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
+                                    {
+                                        activeSubscription == true&&
+                                        <LocalImageComponent
+                                            path={require('../../../assets/image/diamond.png')}
+                                            width={15}
+                                            height={15}
+                                            resizeMode="stretch"
+                                            blank_background
+                                        />
+                                    }
+                                    <Text style={{fontFamily:Font.en_black, fontSize:15, color:colors.text.a1}}>{name}</Text>
+                                </View>
                                 <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{loginType == "registered" ? phone : "کاربر میهمان"}</Text>
                             </View>
                             <TouchableOpacity 
@@ -242,6 +275,7 @@ function Account(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
+                notification={true}
                 coin={true}
                 subscription={true}
             />
@@ -275,6 +309,7 @@ function Account(props){
                                             image_width={item?.image_width}
                                             image_height={item?.image_height}
                                             icon_color={item?.icon_color}
+                                            value={item?.value??null}
                                         />
                                     </View>
                                 ))

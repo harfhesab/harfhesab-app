@@ -3,9 +3,31 @@ import { View, Text, TouchableNativeFeedback } from 'react-native';
 import Font from '../../utils/Font';
 import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import Icon from '../../utils/Icon';
 
 const colors = useAppTheme();
 
+interface Props {
+    loading?: boolean;
+    loadingType?: string;
+    onPress?: any;
+    borderRadius?: number;
+    borderWidth?: any;
+    borderColor?: string;
+    width?: number;
+    height?: number;
+    text?: string;
+    text2?: string;
+    iconName?: string;
+    iconType?: string;
+    iconSize?: number;
+    textSize?: number;
+    fontFamily?: string;
+    justifyContent?: "center" | "flex-end" | "flex-start" | "space-around" | "space-between" | "space-evenly";
+    flexDirection?: "row" | "row-reverse";
+    textColor?: string;
+    CustomContent?: any;
+}
 function ButtonBorder({
     loading,
     loadingType,
@@ -24,10 +46,9 @@ function ButtonBorder({
     fontFamily = Font.medium,
     justifyContent = 'center',
     flexDirection = "row",
-    activeOpacity = 0.8,
     textColor = colors.primary.a1,
     CustomContent
-}) {
+}:Props) {
 
     const renderLoading = () => (
         <View style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
