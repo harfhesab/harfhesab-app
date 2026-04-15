@@ -8,12 +8,12 @@ import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import { MaterialIndicator} from 'react-native-indicators';
 import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
-import BannerText from '../../../components/BannerText';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
 import { setDataCheck, setStatus } from '../../../redux/slices/stageGameDownloadSlice';
 import { useRealm } from '../../../realm';
 import { startUpdateStageGameContentTask } from '../../../utils/background-task/StageGameContentTask';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
+import LoadingBar from '../../../components/screen-loading/LoadingBar';
 
 const {width, height} = Dimensions.get("window")
 function StageGameUpdateScreen(props){
@@ -25,12 +25,7 @@ function StageGameUpdateScreen(props){
     const { versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.stageGamePersist);
     const [firstCheckLoading, setFirstCheckLoading] = useState(true)
     const [firstCheckGetError, setFirstCheckGetError] = useState(false)
-    const updateMessage = status == "up-to-date"?
-    "محتوای جدیدی برای بروزرسانی بازی مرحله‌ای یافت نشد."
-    :status == "need-update"?
-    `محتوای جدیدی برای بروزرسانی بازی مرحله‌ای یافت شد. توجه کنید بروزرسانی محتوا ممکن است لحظاتی طول بکشد.`
-    :status == "force-update"&&
-    `محتوای جدیدی برای بروزرسانی بازی مرحله‌ای یافت شد. توجه کنید بروزرسانی محتوا ممکن است لحظاتی طول بکشد.\nدریافت این بروزرسانی اجباری است.`
+    const title = (status == "need-update" || status == "force-update")?"محتوای جدیدی برای دریافت موجود است!":"محتوای بازی به آخرین نسخه بروز است!"
 
     useEffect(() => {
         if(isDownloading == false && status !== "need-update" || status !== "force-update"){
@@ -96,9 +91,13 @@ function StageGameUpdateScreen(props){
         firstCheck()
     }
     const downloadUpdates = async()=>{
-        const color = colors.primary.a1
-        const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
-        await startUpdateStageGameContentTask({ dispatch, realm, state, versionContent, color });
+        if(status == "need-update" || status == "force-update"){
+            const color = colors.primary.a1
+            const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
+            await startUpdateStageGameContentTask({ dispatch, realm, state, versionContent, color });
+        } else {
+            props.navigation.navigate("BottomTab")
+        }
     }
     
     return(
@@ -119,68 +118,45 @@ function StageGameUpdateScreen(props){
                     tryAgain={tryAgainFirstCheck}
                 />
                 :
-                <View style={{flex:1}}>
-                    {
-                        status == "up-to-date"?
-                        <View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center', gap:50}}>
-                            <Icon name={"tooltip-check"} type={"MaterialCommunityIcons"} style={{fontSize:150, color:colors.primary.a1}}/>
-                            <BannerText
-                                text1={"بروزرسانی جدیدی یافت نشد!"}
-                                text2={updateMessage}
-                                width={width-60}
-                                height={180}
-                                iconName={"sticker-check"}
-                                iconType={"MaterialCommunityIcons"}
-                                iconRepeat={true}
+                <View style={{flex:1, flexDirection:'column', justifyContent:'space-between'}}>
+                    <View style={{flex:1, paddingHorizontal:15}}>
+                        <View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center', gap:10}}>
+                            <Text style={{fontFamily:Font.bold, color:(status == "need-update" || status == "force-update")?colors.alert.a1:colors.primary.a6, fontSize:16, lineHeight:32, textAlign:'center'}}>{title}</Text>
+                            {
+                                status == "force-update"&&
+                                <Text style={{fontFamily:Font.medium, color:colors.border.a1, fontSize:12, textAlign:'center', marginTop:30}}>{"دریافت این بروزرسانی اجباری است."}</Text>
+                            }
+                            {
+                                (status == "need-update" || status == "force-update")&&
+                                <Text style={{fontFamily:Font.medium, color:colors.border.a1, fontSize:12, textAlign:'center', width:280, lineHeight:20}}>{"توجه کنید ممکن است دریافت اطلاعات، لحظاتی طول بکشد. لطفا هنگام دریافت اطلاعات در همین صفحه بمانید."}</Text>
+                            }
+                        </View>
+                    </View>
+                    <View style={{height:120, flexDirection:'column', justifyContent:isDownloading?'space-between':'flex-end', alignItems:'center'}}>
+                        {
+                            (isDownloading == true)&&
+                            <LoadingBar 
+                                barColor={colors.primary.a1}
+                                width={width-40}
+                                height={10}
+                                barWidthStart={0.25}
+                                barWidthEnd={0.85}
+                                isComplete={false}
+                                onComplete={()=>{}}
+                            />
+                        }
+                        <View style={{width:width, alignItems:'center', paddingVertical:15, backgroundColor:colors.background.a2, borderTopColor:colors.border.a1, borderTopWidth:0.3}}>
+                            <ButtonGradient
+                                height={60}
+                                width={width - 30}
+                                text={isDownloading == true?"در حال بارگیری":(status == "force-update" || status == "need-update")?"دریافت محتوا":"شروع بازی"}
+                                onPress={downloadUpdates}
+                                loading={isDownloading}
+                                textSize={18}
+                                borderRadius={10}
                             />
                         </View>
-                        :
-                        (status == "need-update" || status == "force-update")?
-                        (<View style={{flex:1, alignItems:'center', justifyContent:'space-between', paddingTop:20, paddingBottom:100}}>
-                            <View style={{width:'100%', alignItems:'center', gap:20}}>
-                                <Icon name={"tooltip-plus"} type={"MaterialCommunityIcons"} style={{fontSize:70, color:colors.primary.a1}}/>
-                                <BannerText
-                                    text1={"بروزرسانی جدیدی یافت شد!"}
-                                    text2={updateMessage}
-                                    textAlignText2={'justify'}
-                                    alignItemsText2={'flex-start'}
-                                    width={width-60}
-                                    height={230}
-                                    iconName={"sticker-alert"}
-                                    iconType={"MaterialCommunityIcons"}
-                                    iconRepeat={true}
-                                />
-                            </View>
-                            <View>
-                                <ButtonGradient
-                                    height={65}
-                                    width={width - 60}
-                                    text={getError == true?"تلاش مجدد برای دریافت بروزرسانی":"دریافت بروزرسانی"}
-                                    onPress={downloadUpdates}
-                                    loading={isDownloading}
-                                    textSize={getError == true?12:18}
-                                    borderRadius={10}
-                                />
-                            </View>
-                        </View>)
-                        :(status == "" && downloadFinished == true)&&
-                        (<View style={{flex:1, alignItems:'center', justifyContent:'space-between', paddingTop:20, paddingBottom:100}}>
-                            <View style={{width:'100%', alignItems:'center', gap:20}}>
-                                <Icon name={"tooltip-check"} type={"MaterialCommunityIcons"} style={{fontSize:70, color:colors.primary.a1}}/>
-                                <BannerText
-                                    text1={"بروزرسانی با موفقیت انجام شد!"}
-                                    text2={`بروز رسانی محتوای بازی مرحله‌ای با موفقیت بارگیری و ذخیره شد.\nشما می‌توانید بازی مرحله‌ای را حتی بدون اتصال به شبکه اینترنت نیز بازی کنید.`}
-                                    textAlignText2={'justify'}
-                                    alignItemsText2={'flex-start'}
-                                    width={width-60}
-                                    height={230}
-                                    iconName={"sticker-check"}
-                                    iconType={"MaterialCommunityIcons"}
-                                    iconRepeat={true}
-                                />
-                            </View>
-                        </View>)
-                    }
+                    </View>
                 </View>
             }
         </View>

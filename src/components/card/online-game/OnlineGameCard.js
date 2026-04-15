@@ -8,37 +8,52 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import ImageComponent from '../../image-components/ImageComponent';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { navigate } from '../../../main/navigationService';
+import { showToast } from '../../custom-toast/ToastRef';
 
 const width = Dimensions.get('window').width
-const itemWidth = IS_TABLET_CONDITION?(width - 60)/3:(width - 45)/2
-function OnlineGameCard({_id, title, image}){
+const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
+function OnlineGameCard({_id, title, image, badge, active}){
     const colors = useAppTheme();
 
     const click = ()=>{
-        
+        if(active == true){
+
+        } else {
+            showToast({
+                title: `سرویس غیر فعال`,
+                message: "در حال حاضر این بازی آنلاین غیر فعال است.",
+                type: "info",
+                animationType: "slide",
+                position: "top",
+                duration: 6000
+            });
+        }
     }
     return (
-        <View style={{alignItems:'center', justifyContent:'center'}}>
+        <View style={{alignItems:'center', justifyContent:'center', borderRadius:10, overflow:'hidden'}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{flexDirection:'column', gap:10, alignItems:'center', justifyContent:'flex-start'}}>
-                    <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center'}}>
+                <View style={{flexDirection:'column', gap:10, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:10}}>
+                    <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', borderWidth:1.5, borderColor:colors.primary.a3, borderRadius:itemWidth*0.185, backgroundColor:colors.primary.a2}}>
                         {
                             image?
                             <ImageComponent
                                 uri={image}
-                                width={itemWidth}
-                                height={itemWidth}
+                                width={itemWidth-3}
+                                height={itemWidth-3}
                                 resizeMode="cover"
-                                borderRadius={15}
                                 blank_background={true}
                             />
                             :
                             <Icon name={'camera-off'} type={'Feather'} style={{fontSize:itemWidth*0.45, color:colors.text.a5}}/>
                         }
                     </View>
-                    <View>
-                        <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:15, textAlign:"center", width:itemWidth, lineHeight:21}}>{title}</Text>
-                    </View>
+                    {
+                        (badge && badge?.length > 0)&&
+                        <View style={{position:'absolute', start:5, backgroundColor:active==true?colors.primary.a4:colors.primary.a6, borderRadius:20, paddingHorizontal:10, paddingVertical:2, alignItems:'center', justifyContent:'center'}}>
+                            <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:10, textAlign:"center"}}>{badge}</Text>
+                        </View>
+                    }
+                    <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:14, textAlign:"center", width:itemWidth, lineHeight:21}}>{title}</Text>
                 </View>
             </TouchableNativeFeedback>
         </View>

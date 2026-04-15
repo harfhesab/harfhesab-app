@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, Text} from 'react-native';
+import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, Text, Linking} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
@@ -7,6 +7,7 @@ import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
 import SimpleItem from '../../../components/list-view-items/SimpleItem';
 import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
+import Globals from '../../../utils/Globals';
 
 function FreeCoin(props){
     const dispatch = useDispatch();
@@ -55,8 +56,7 @@ function FreeCoin(props){
                                 icon_name={"person"}
                                 icon_type={"Ionicons"}
                                 icon_size={25}
-                                click={()=>{}}
-                                ValueComponent={coinComponent}
+                                click={()=>{props.navigation.navigate("AccountManagement")}}
                                 ValueComponent={()=>coinComponent(free_coin_completed_account_info)}
                             />
                             <SimpleItem
@@ -74,7 +74,7 @@ function FreeCoin(props){
                                 icon_name={"instagram"}
                                 icon_type={"Entypo"}
                                 icon_size={25}
-                                click={()=>{}}
+                                click={()=>{Linking.openURL(Globals.instagram_page_url)}}
                                 ValueComponent={()=>coinComponent(free_coin_follow_instagram)}
                             />
                             <SimpleItem

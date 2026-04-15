@@ -13,7 +13,8 @@ export const themes = {
         a4: '#008B02',
         a5: '#ffeb3b',
         a6: '#0693e3',
-        a7: '#5c2b02'
+        a7: '#5c2b02',
+        a8: '#960000',
       },
       background:{
         a1:'#001c20',
@@ -72,6 +73,7 @@ export const themes = {
       shadow: {
         a1: '#00000095',
         a2: '#000000',
+        a3: '#24536b90',
       },
       alert_component: {
         background: '#00252a',

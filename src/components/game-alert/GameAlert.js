@@ -115,41 +115,38 @@ const GameAlert = React.forwardRef((props, ref) => {
                             </View>
                             {
                                 reward &&
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: "#ae480060", borderRadius: 5, paddingHorizontal: 20, paddingVertical: 2, position: 'absolute', bottom: 0 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: `${colors.primary.a8}40`, borderRadius: 20, paddingHorizontal: 30, paddingVertical: 2, position: 'absolute', bottom: 0 }}>
                                     <Image
                                         style={{ width: 20, height: 20 }}
                                         source={require('../../assets/image/coin.png')}
                                     />
-                                    <Text style={{ fontSize: 20, fontFamily: Font.iran_yekan_black_fa, color: colors.text.a1 }}>{`${reward}+`}</Text>
+                                    <Text style={{ fontSize: 20, fontFamily: Font.bakh_black, color: colors.primary.a8 }}>{`${reward}+`}</Text>
                                 </View>
                             }
                         </View>
-                        <View style={{ maxHeight: (type == "completed-stage" || type == "completed-package" )? height * 0.28 : height * 0.18, minHeight: height * 0.14, justifyContent: 'center', alignItems: 'center', width: contentWidth * 0.8, borderWidth: 1.5, borderColor: "#ae480095", borderRadius: 5, borderStyle: 'dotted', backgroundColor: "#ae480020" }}>
+                        <View style={{ maxHeight: (type == "completed-stage" || type == "completed-package" )? height * 0.28 : height * 0.18, minHeight: height * 0.18, justifyContent: 'center', alignItems: 'center', width: contentWidth * 0.8, backgroundColor: `${colors.primary.a7}40`, borderRadius:15, overflow:'hidden' }}>
                             <ScrollView
                                 style={{ flexGrow: 0 }}
                                 showsVerticalScrollIndicator={true}
-                                contentContainerStyle={{ width: "100%", alignItems: 'center', paddingVertical: 5, paddingHorizontal:10 }}
+                                contentContainerStyle={{ width: contentWidth * 0.8, alignItems: 'center', paddingVertical: 10, paddingHorizontal:5 }}
                             >
-                                {admiration?.length > 0 && <Text style={{ fontFamily: Font.black, fontSize: 18, color: "#111111", textAlign: 'center' }}>{admiration}</Text>}
-                                {description?.length > 0 && <Text style={{ fontFamily: Font.medium, fontSize: 15, color: "#222222", textAlign: 'justify', marginTop: 5, lineHeight:27 }}>{description}</Text>}
-                                {moreDescription?.length > 0 && <Text style={{ fontFamily: Font.medium, fontSize: 10, color: "#666666", textAlign: 'justify', marginTop: 15, lineHeight:18 }}>{moreDescription}</Text>}
+                                {admiration?.length > 0 && 
+                                    <View style={{alignSelf:'center', backgroundColor:"#FFFFFF50", paddingHorizontal:20, paddingVertical:5, borderRadius:20, marginBottom:20, alignItems:'center', justifyContent:'center'}}>
+                                        <Text style={{ fontFamily: Font.bakh_extra_bold, fontSize: 18, color: colors.primary.a8, textAlign: 'center' }}>{admiration}</Text>
+                                    </View>
+                                }
+                                {description?.length > 0 && <Text style={{ fontFamily: Font.bakh_bold, fontSize: 15, color: colors.primary.a7, textAlign: 'justify', marginTop: 5, lineHeight:27 }}>{description}</Text>}
+                                {moreDescription?.length > 0 && <Text style={{ fontFamily: Font.bakh_semi_bold, fontSize: 10, color: colors.primary.a7, textAlign: 'justify', marginTop: 15, lineHeight:18 }}>{moreDescription}</Text>}
                                 {
                                     completedSentences?.length > 0 &&
-                                    <View style={{ width: "100%", alignItems: 'center', gap: 10, paddingBottom: 20, paddingTop: 10 }}>
-                                        <Border
-                                            color={"#ae480055"}
-                                            height={1}
-                                            width={contentWidth * 0.8 - 30}
-                                            top={15}
-                                            bottom={5}
-                                        />
+                                    <View style={{ width: "100%", gap: 10, paddingBottom: 20, paddingTop: 10 }}>
                                         {
                                             completedSentences.map((item, index) => (
-                                                <View key={index.toString()} style={{ width: "100%", alignItems:'center' }}>
-                                                    <Text style={{ fontFamily: Font.medium, fontSize: 15, color: "#333333", textAlign: 'center' }}>{item?.sentence}</Text>
+                                                <View key={index.toString()} style={{ width: "100%", paddingTop:15 }}>
+                                                    <Text style={{ fontFamily: Font.bakh_bold, fontSize: 15, color:colors.primary.a2 }}><Text style={{color:colors.primary.a8, fontFamily:Font.bakh_extra_bold, fontSize:18}}>{`${index + 1}_ `}</Text>{item?.sentence}</Text>
                                                     {
                                                         item?.hint &&
-                                                        <Text style={{ fontFamily: Font.medium, fontSize: 12, color: "#444444", textAlign: 'center' }}>{item?.hint}</Text>
+                                                        <Text style={{ fontFamily: Font.bakh_semi_bold, fontSize: 12, color: colors.primary.a7 }}><Text style={{color:`${colors.primary.a7}60`}}>{"معنی : "}</Text>{item?.hint}</Text>
                                                     }
                                                 </View>
                                             ))
@@ -157,8 +154,7 @@ const GameAlert = React.forwardRef((props, ref) => {
                                         {
                                             stageHint?.length > 0 &&
                                             <View style={{ width: "100%", alignItems: 'flex-start' }}>
-                                                <Text style={{ fontFamily: Font.medium, fontSize: 14, color: "#0099CC", textAlign: 'justify', marginTop: 20, lineHeight: 27 }}>{"توضیحات مرحله *"}</Text>
-                                                <Text style={{ fontFamily: Font.medium, fontSize: 14, color: "#333", textAlign: 'justify', lineHeight: 25 }}>{stageHint}</Text>
+                                                <Text style={{ fontFamily: Font.bakh_bold, fontSize: 14, color: colors.primary.a7, lineHeight:26, marginTop:15}}><Text style={{color:`${colors.primary.a7}60`}}>{"توضیحات : "}</Text>{stageHint}</Text>
                                             </View>
                                         }
                                     </View>

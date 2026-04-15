@@ -1,6 +1,6 @@
 import axios from "axios";
-import { InteractionManager } from 'react-native';
-import { navigate } from "../../main/navigationService";
+import { Dimensions, InteractionManager, View } from 'react-native';
+import { goBack, navigate } from "../../main/navigationService";
 import AlertHelper from "../../components/alert/AlertHelper";
 import { changeVersionContent, changeStageGameForceUpdate } from "../../redux/slices/stageGamePersistSlice";
 import { 
@@ -21,6 +21,10 @@ import { createManyStageSeasons, updateManyStageSeasons, deleteManyStageSeasons 
 import { createManyLanguages, updateManyLanguages, deleteManyLanguages } from "../../realm/repositories/general/language.repository";
 import { preloadImages } from "../ImagePreloader";
 import Globals from "../Globals";
+import AlertBottomDrawerHelper from "../../components/alert-bottom-drawer/AlertBottomDrawerHelper";
+import LocalImageComponent from "../../components/image-components/LocalImageComponent";
+import { colors } from "../../hooks/theme/colors";
+import Font from "../Font";
 const BASE_URL = Globals.uri;
 
 export const checkStageGameContentVersion = async({ dispatch, realm, state, versionContent }) => {
@@ -69,51 +73,10 @@ export const checkStageGameContentVersion = async({ dispatch, realm, state, vers
                         dispatch(setStatus({status: "force-update"}))
                         const forceUpdate = true
                         dispatch(changeStageGameForceUpdate({forceUpdate}))
-                        AlertHelper.showAlert({
-                            body: "یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
-                            buttons: [
-                                {
-                                    text: 'دریافت بروزرسانی',
-                                    onPress: () => {
-                                        navigate("StageGameUpdateScreen")
-                                    },
-                                    type:'bold'
-                                },
-                            ],
-                            options : {
-                                type: 'warning',
-                                cancelable: false,
-                                bodyAlign:'flex-start',
-                                textAlign:'flex-start'
-                            },
-                        });
+                        forceUpdateAlert()
                     } else if(data?.version_created > versionCreatedContent || data?.version_updated > versionUpdatedContent || data?.version_deleted > versionDeletedContent){
                         dispatch(setStatus({status: "need-update"}))
-                        AlertHelper.showAlert({
-                            body: "یک بروزرسانی برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
-                            buttons: [
-                                {
-                                    text: 'دریافت بروزرسانی',
-                                    onPress: () => {
-                                        navigate("StageGameUpdateScreen")
-                                    },
-                                    type:'bold'
-                                },
-                                {
-                                    text: 'لغو',
-                                    onPress: () => {
-                                        
-                                    },
-                                    type:'border'
-                                },
-                            ],
-                            options : {
-                                type: 'warning',
-                                cancelable: true,
-                                bodyAlign:'flex-start',
-                                textAlign:'flex-start'
-                            },
-                        });
+                        showUpdateAlert()
                     } else {
                         dispatch(setStatus({status: "up-to-date"}))
                     }
@@ -885,7 +848,9 @@ const showSuccessAlertForDownloaded = (firstGetContent)=>{
         buttons: [
             {
                 text: "متوجه شدم",
-                onPress: () => {},
+                onPress: () => {
+                    goBack()
+                },
                 type:'bold'
             },
         ],
@@ -894,4 +859,108 @@ const showSuccessAlertForDownloaded = (firstGetContent)=>{
             cancelable: true
         },
     });
+}
+const showUpdateAlert = ()=>{
+    const {width} = Dimensions.get("window");
+    const btn = [
+        {
+            onPress : ()=>{
+                navigate("StageGameUpdateScreen")
+            },
+            text: "دریافت بروزرسانی",
+            loading: false,
+            type: "bold",
+        },
+        {
+            onPress : ()=>{
+                
+            },
+            text: "لغو",
+            loading: false,
+            type: "border",
+        },
+    ]
+    const msg = [
+        {
+            text:"بروزرسانی محتوای بازی مرحله‌ای!",
+            style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+        },
+        {
+            text:"یک بروزرسانی برای محتوای بازی مرحله‌ای یافت شد. می‌توانید برای دریافت آن اقدام کنید.",
+            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+        {
+            text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمعن شوید.",
+            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+    ]
+    AlertBottomDrawerHelper.showAlert({
+        title:"بروزرسانی بازی مرحله‌ای",
+        message: msg,
+        buttons:btn,
+        options:{
+            cancelable: true,
+            icon:{
+                Icon:()=>(
+                    <View style={{width:width, alignItems:'center'}}>
+                        <LocalImageComponent
+                            path={require('../../assets/image/download.png')}
+                            width={40}
+                            height={40}
+                            resizeMode={'stretch'}
+                            blank_background={true}
+                        />
+                    </View>
+                )
+            }
+        }
+    })
+}
+const forceUpdateAlert = ()=>{
+    const {width} = Dimensions.get("window");
+    const btn = [
+        {
+            onPress : ()=>{
+                props.navigation.navigate("StageGameUpdateScreen")
+            },
+            text: "دریافت بروزرسانی",
+            loading: false,
+            type: "bold",
+        },
+    ]
+    const msg = [
+        {
+            text:"بروزرسانی محتوای بازی مرحله‌ای!",
+            style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+        },
+        {
+            text:"یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
+            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+        {
+            text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمعن شوید.",
+            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+    ]
+    AlertBottomDrawerHelper.showAlert({
+        title:"بروزرسانی بازی مرحله‌ای",
+        message: msg,
+        buttons:btn,
+        options:{
+            cancelable: false,
+            icon:{
+                Icon:()=>(
+                    <View style={{width:width, alignItems:'center'}}>
+                        <LocalImageComponent
+                            path={require('../../assets/image/download.png')}
+                            width={40}
+                            height={40}
+                            resizeMode={'stretch'}
+                            blank_background={true}
+                        />
+                    </View>
+                )
+            }
+        }
+    })
 }

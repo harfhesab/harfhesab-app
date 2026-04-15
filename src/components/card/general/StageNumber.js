@@ -11,10 +11,10 @@ import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
 import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
-import TextGradientSvg from '../../text-components/TextGradientSvg';
 import StageNumberCurrently from './StageNumberCurrently';
 import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import SimpleBorderText from '../../text-components/SimpleBorderText';
 
 
 
@@ -26,6 +26,9 @@ const PADDING_HORIZONTAL = 32
 export const LIST_STAGE_CARD_NUMBER_COLUMN = IS_TABLET_CONDITION?6:4
 export const STAGE_CARD_SIZE = ((width - (PADDING_HORIZONTAL*2)) / LIST_STAGE_CARD_NUMBER_COLUMN) - (STAGE_CARD_MARGIN*2)
 
+function reverseString(str) {
+  return str.split("").reverse().join("");
+}
 function StageNumber({
   number,
   lock,
@@ -40,10 +43,10 @@ function StageNumber({
   };
 
   const textLength = number.toString().length
-  const fontSizeScale = textLength == 1?1.5:textLength == 2?1.9:textLength == 3?2.3:2.7
+  const fontSizeScale = textLength == 1?1.7:textLength == 2?2:textLength == 3?2.7:3.6
   const fontSize = STAGE_CARD_SIZE/fontSizeScale
   const iconSize = STAGE_CARD_SIZE/2.2
-
+  
   return (
     lock == true?
     <ImageBackground
@@ -73,20 +76,16 @@ function StageNumber({
           resizeMode="stretch"
       >
         <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
-            <TextGradientSvg
-                  text={`${number}`}
-                  fontFamily={Font.bakh_extra_bold}
-                  fontSize={fontSize}
-                  colors={["#dce775", colors.primary.a3]}
-                  shadowColor={"#00000090"}
-                  shadowBlur={5}
-                  dropShadow={true}
-                  borderColor={"#33333385"}
-                  borderWidth={0.5}
-                  glowBlur={100}
-                  glowColor={'#fff5c8'}
-                  glowShadow={true}
-              />
+            
+              <SimpleBorderText
+                    text={reverseString(`${number}`)}
+                    width={STAGE_CARD_SIZE}
+                    height={fontSize*1.6}
+                    fontSize={fontSize}
+                    borderWidth={3}
+                    textColor={colors.primary.a5}
+                    borderColor={colors.primary.a2}
+                />
         </View>
       </ImageBackground>
     </TouchableOpacity>
@@ -94,10 +93,5 @@ function StageNumber({
 }
 
 
-const areEqual = (prevProps, nextProps) => {
-  if (prevProps.lock !== nextProps.lock) return false;
-  if (prevProps.currently !== nextProps.currently) return false;
-  return true;
-};
-export default memo(StageNumber, areEqual);
+export default memo(StageNumber);
 

@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle, memo } from 'react';
+import React, { useState, useImperativeHandle, memo, useRef } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView, StyleSheet} from 'react-native';
 import Modal from "react-native-modal";
 import Font from '../../utils/Font';
@@ -9,9 +9,11 @@ import Border from '../Border';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 import GridItem from '../list-view-items/GridItem';
+import Toast from '../custom-toast/Toast';
 
 const {width, height} = Dimensions.get('window');
 const BottomDrawerGrid = React.forwardRef((props, ref)=>{
+    const localToastRef = useRef(null);
     const colors = useAppTheme();
     const maxHeight = height*0.9 - 160;
     const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -123,6 +125,7 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
             }}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
         >
+            <Toast ref={localToastRef} defaultPosition="top" />
             <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
                 <View>
                     <View style={{width:width * 0.25, height:4, backgroundColor:colors.border.a1, marginTop:30, marginBottom:15, alignSelf:'center', borderRadius:2}}/>                  
@@ -152,6 +155,16 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                 onPress={()=>{
                                     if(item?.disabled == true){
                                         item?.onPress?.()
+                                        if(item?.disabledToastTitle || item?.disabledToastMessage){
+                                            localToastRef.current.show({
+                                                title: item?.disabledToastTitle??"",
+                                                message: item?.disabledToastMessage??"",
+                                                type: "info",
+                                                animationType: "slide",
+                                                position: "top",
+                                                duration: 6000
+                                            });
+                                        }
                                     }
                                 }}
                                 height={item?.height??gridSize+40}
@@ -165,6 +178,7 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                 selected={extendedState._id.find((i) => i == item._id) ? true : false}
                                 iconName={item?.iconName??'layers'}
                                 iconType={item?.iconType??'Ionicons'}
+                                badge={item?.badge}
                             />
                         ))}
                     </View>

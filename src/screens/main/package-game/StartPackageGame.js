@@ -8,7 +8,6 @@ import { useQuery, useObject } from '../../../realm';
 import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-game/stage-season.repository';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
-import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
@@ -211,6 +210,7 @@ function StartPackageGame(props){
                     snapToAlignment="start"       // آیتم از بالا چفت شود
                     decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
                     disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                    disableScrollViewPanResponder={true}
                     bounces={true}                // فنری بودن مانند iOS
                     ListEmptyComponent={ListEmptyComponent}
                     extraData={{ activeIndexes, lastSeasonNumber }}

@@ -71,8 +71,10 @@ function OnlineGame(props){
     const renderItem = useCallback(({item})=>(
         <OnlineGameCard
             _id={item._id}
-            title={item.title}
-            image={item.icon_image}
+            title={item?.title}
+            image={item?.icon_image}
+            badge={item?.badge}
+            active={item?.is_active}
         />
     ), [])
     const memoizedValue = useMemo(() => renderItem, [data]);
@@ -98,7 +100,7 @@ function OnlineGame(props){
                 <FlatList
                     style={{flex:1, width:"100%", paddingHorizontal:15}}
                     contentContainerStyle={[
-                        { paddingBottom:70, paddingTop:20,  rowGap:15, justifyContent:'space-between'},
+                        { paddingBottom:70, paddingTop:10,  rowGap:15, justifyContent:'space-between'},
                         data.length === 0 && {flex: 1}
                     ]}
                     showsVerticalScrollIndicator={false}
@@ -110,7 +112,7 @@ function OnlineGame(props){
                     initialNumToRender={20}
                     removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                     ListEmptyComponent={ListEmptyComponent}
-                    columnWrapperStyle={{ gap:15}}
+                    columnWrapperStyle={{ gap:10}}
                 /> 
             </View>
         </View>

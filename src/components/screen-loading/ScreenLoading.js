@@ -1,24 +1,35 @@
 import React, {memo} from 'react';
 import {StyleSheet, View, Dimensions, Text, TouchableOpacity} from 'react-native';
-import { DotIndicator, MaterialIndicator, BallIndicator } from 'react-native-indicators';
+import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
 import Font from '../../utils/Font';
 import ButtonGradient from '../buttons/ButtonGradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
+import { colors } from '../../hooks/theme/colors';
 
 const width = Dimensions.get('window').width;
-function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErrorComponent, noItem, NoItemComponent, tryAgain}){
-    const colors = useAppTheme();
+function ScreenLoading({
+    loading,
+    textColor=colors.text.a1,
+    loadingType,
+    LoadingComponent,
+    getError,
+    GetErrorComponent,
+    noItem,
+    NoItemComponent,
+    tryAgain
+}){
+
     
 
     const renderLoading = ()=>(
         <View style={{width:'100%', height:120, alignItems:'center', justifyContent:'center'}}>
             {
                 !loadingType?
-                <DotIndicator color={colors.text.a1} count={3} size={8}/>:
+                <DotIndicator color={textColor} count={3} size={8}/>:
                 loadingType == "DotIndicator"?
-                <DotIndicator color={colors.text.a1} count={3} size={8}/>:
+                <DotIndicator color={textColor} count={3} size={8}/>:
                 loadingType == "MaterialIndicator"&&
-                <MaterialIndicator color={colors.text.a1} trackWidth={3} size={30}/>
+                <MaterialIndicator color={textColor} trackWidth={3} size={30}/>
             }
         </View>
     )
@@ -33,8 +44,8 @@ function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErr
                         <GetErrorComponent/>
                         :
                         <View style={{ width:"100%", height:"100%", flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10}}>
-                            <Text style={[styles.text1, {color:colors.text.a1}]}>{"ارتباط برقرار نشد"}</Text>
-                            <Text style={[styles.text2, {color:colors.text.a3}]}>{"متأسفانه مشکلی پیش آمد. لطفا دوباره تلاش کنید."}</Text>
+                            <Text style={[styles.text1, {color:textColor??colors.text.a1}]}>{"ارتباط برقرار نشد"}</Text>
+                            <Text style={[styles.text2, {color:textColor??colors.text.a3}]}>{"متأسفانه مشکلی پیش آمد. لطفا دوباره تلاش کنید."}</Text>
                             <ButtonGradient
                                 text={"تلاش مجدد"}
                                 textSize={14}
@@ -53,8 +64,8 @@ function ScreenLoading({loading, loadingType, LoadingComponent, getError, GetErr
                         <NoItemComponent/>
                         :
                         <View style={{ width:"100%", height:"100%", flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10}}>
-                            <Text style={[styles.text1, {color:colors.text.a1}]}>{"موردی یافت نشد"}</Text>
-                            <Text style={[styles.text2, {color:colors.text.a3}]}>{"آیتمی برای نمایش وجود ندارد."}</Text>
+                            <Text style={[styles.text1, {color:textColor??colors.text.a1}]}>{"موردی یافت نشد"}</Text>
+                            <Text style={[styles.text2, {color:textColor??colors.text.a3}]}>{"آیتمی برای نمایش وجود ندارد."}</Text>
                             <ButtonGradient
                                 text={"تلاش مجدد"}
                                 textSize={14}

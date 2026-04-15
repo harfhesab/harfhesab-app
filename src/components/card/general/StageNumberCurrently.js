@@ -12,7 +12,6 @@ import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
 import Globals from '../../../utils/Globals';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
-import TextGradientSvg from '../../text-components/TextGradientSvg';
 import Animated,
 {
   useSharedValue,
@@ -22,7 +21,11 @@ import Animated,
   withTiming,
   cancelAnimation,
 } from "react-native-reanimated";
+import SimpleBorderText from '../../text-components/SimpleBorderText';
 
+function reverseString(str) {
+  return str.split("").reverse().join("");
+}
 function StageNumberCurrently({
   text,
   boxSize,
@@ -77,19 +80,14 @@ function StageNumberCurrently({
                     resizeMode="stretch"
                 >
                     <View style={{borderRadius:15, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
-                        <TextGradientSvg
-                            text={`${text}`}
-                            fontFamily={Font.bakh_extra_bold}
+                        <SimpleBorderText
+                            text={reverseString(`${text}`)}
+                            width={boxSize}
+                            height={fontSize*1.6}
                             fontSize={fontSize}
-                            colors={["#dce775", colors.primary.a3]}
-                            shadowColor={"#00000090"}
-                            shadowBlur={5}
-                            dropShadow={true}
-                            borderColor={"#33333385"}
-                            borderWidth={0.5}
-                            glowBlur={100}
-                            glowColor={'#fff5c8'}
-                            glowShadow={true}
+                            borderWidth={3}
+                            textColor={colors.primary.a5}
+                            borderColor={colors.primary.a2}
                         />
                     </View>
                 </ImageBackground>

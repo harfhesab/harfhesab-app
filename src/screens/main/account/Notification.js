@@ -64,7 +64,7 @@ function Notification(props){
             }
         }).then(async(response)=>{
             const riciveData = response.data.data?.paginateAllNotificationForUser;
-            const mergedItems = [...riciveData.publicList, ...riciveData.privateList].sort((a,b)=>b.createdAt-a.createdAt)
+            const mergedItems = [...riciveData.publicList, ...riciveData.privateList].sort(function(a, b){return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()})
             if(riciveData.hasNextPage == true){
                 setLoading(false)
                 setData(mergedItems)
@@ -133,7 +133,7 @@ function Notification(props){
             }
         }).then(async(response)=>{
             const riciveData = response.data.data?.paginateAllNotificationForUser;
-            const mergedItems = [...riciveData.publicList, ...riciveData.privateList].sort((a,b)=>b.createdAt-a.createdAt)
+            const mergedItems = [...riciveData.publicList, ...riciveData.privateList].sort(function(a, b){return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()})
             if(riciveData.hasNextPage == true){
                 setData([...data, ...mergedItems])
                 setPage(riciveData.nextPage)
@@ -269,7 +269,6 @@ function Notification(props){
                             keyExtractor={keyExtractor}
                             contentContainerStyle={{alignItems:'center', paddingTop:15, paddingBottom:15, gap:15}}
                             renderItem={memoizedValue}
-                            ListEmptyComponent={ListEmptyComponent}
                             data={data}
                             onEndReachedThreshold={0.5}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}

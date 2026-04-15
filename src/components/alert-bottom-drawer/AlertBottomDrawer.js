@@ -110,7 +110,7 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
                 </ScrollView>
                 {
                     (buttons && buttons.length > 0)&&
-                    <View style={{width:"100%", flexDirection:'row', backgroundColor:"#33333385", borderTopColor:colors.border.a1, borderTopWidth:1, paddingVertical:15, alignItems:'center', justifyContent:buttons?.length > 1?"space-between":"center", paddingHorizontal:buttons.length>1?15:20, gap:10}}>
+                    <View style={{width:"100%", flexDirection:'row', backgroundColor:"#33333385", borderTopColor:colors.border.a1, borderTopWidth:1, paddingVertical:15, alignItems:'center', justifyContent:buttons?.length > 1?"space-between":"center", paddingHorizontal:15, gap:10}}>
                         {
                             buttons.map((item, index)=>(
                                 (item?.type == "border")?
@@ -145,7 +145,7 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
                                     text={item.text}
                                     text2={item?.text2??undefined}
                                     height={item?.height??55}
-                                    width={item?.width??(buttons.length > 1?(width/2) - 25:width-40)}
+                                    width={item?.width??(buttons.length > 1?(width/2) - 25:width-30)}
                                     loading={(item?.loading == true && buttonsLoading == index)?true:false}
                                     onPress={()=>{
                                         item.onPress()
@@ -177,8 +177,8 @@ const styles = StyleSheet.create({
       borderRadius:5,
       alignSelf:'center',
       verticalAlign:'flex-end',
-      borderTopLeftRadius:30,
-      borderTopRightRadius:30,
+      borderTopLeftRadius:40,
+      borderTopRightRadius:40,
     },
 });
 export default memo(AlertBottomDrawer)

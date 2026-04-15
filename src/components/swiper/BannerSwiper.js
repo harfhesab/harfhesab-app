@@ -94,6 +94,7 @@ function BannerSwiper({items}){
                 snapToAlignment="start"            // آیتم از چپ چفت شود
                 decelerationRate="fast"            // سرعت اسنپ بهتر
                 disableIntervalMomentum={true}     // محدود کردن اسکرول به یکی یکی
+                disableScrollViewPanResponder={true}
                 bounces={true}                     // فنری بودن مثل iOS
             />
         </View>

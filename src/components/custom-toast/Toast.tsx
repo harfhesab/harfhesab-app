@@ -199,7 +199,7 @@ const ToastContent = forwardRef<ToastContentRef, ToastContentProps>(({ config, o
     : { bottom: insets.bottom + config.bottomOffset };
     
   const ICON_NAME = config.type == "success" ? "sticker-check" : config.type == "error" ? "sticker-alert" : config.type == "info" && "sticker-text";
-  const TITLE_COLOR = config.type == "success" ? "#005020" : config.type == "error" ? "#bb0000" : config.type == "info" ? "#0044aa":"#bb0000"
+  const TITLE_COLOR = config.type == "success" ? "#005020" : config.type == "error" ? "#bb0000" : config.type == "info" ? "#00025e":"#bb0000"
   return (
     <GestureHandlerRootView style={[styles.rootContainer, positionStyle]}>
       <GestureDetector gesture={panGesture}>

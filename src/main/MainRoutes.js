@@ -3,7 +3,6 @@ import { AppState, NativeModules } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { getCurrentRouteName } from './navigationService';
 import BottomTab from './BottomTab';
-import StageGameUpdateScreen from '../screens/main/update-center/StageGameUpdateScreen';
 import WordToSlotStageGame from '../screens/main/stage-game/game/WordToSlotStageGame';
 import ConnectingLettersStageGame from '../screens/main/stage-game/game/ConnectingLettersStageGame';
 import StagesStageGameSeason from '../screens/main/stage-game/StagesStageGameSeason';
@@ -24,12 +23,23 @@ import ImageScreen from '../screens/single-page/ImageScreen';
 import ViewAllPackageRating from '../screens/main/package-game/ViewAllPackageRating';
 import Notification from '../screens/main/account/Notification';
 import MessageInApp from '../screens/main/account/MessageInApp';
+import StageGameUpdateScreen from '../screens/main/account/StageGameUpdateScreen';
 
 
 const Stack = createNativeStackNavigator();
 
 const { ImmersiveMode } = NativeModules;
 const MainRoutes = (props) =>{
+
+  const limitedRoute = [
+    "WordToSlotStageGame",
+    "ConnectingLettersStageGame",
+    "StagesStageGameSeason",
+    "WordToSlotPackageGame",
+    "ConnectingLettersPackageGame",
+    "StagesPackageGameSeason",
+    "StartPackageGame"
+  ]
 
   useEffect(()=>{
     const listenner = AppState.addEventListener('change', handleAppStateChange);
@@ -41,7 +51,7 @@ const MainRoutes = (props) =>{
   const handleAppStateChange = (nextAppState) => {
     if(nextAppState === 'active'){
       const currentRoute = getCurrentRouteName();
-      if( currentRoute === "WordToSlotStageGame" || currentRoute === "ConnectingLettersStageGame" || currentRoute == "StagesStageGameSeason"){
+      if(limitedRoute.includes(currentRoute)){
         ImmersiveMode.enterImmersiveMode();
       }
     }
@@ -50,7 +60,6 @@ const MainRoutes = (props) =>{
   return(
     <Stack.Navigator screenOptions={{headerShown:false}} >
       <Stack.Screen name={"BottomTab"} component={BottomTab} />
-      <Stack.Screen name={"StageGameUpdateScreen"} component={StageGameUpdateScreen} />
       <Stack.Screen name={"WordToSlotStageGame"} component={WordToSlotStageGame} />
       <Stack.Screen name={"ConnectingLettersStageGame"} component={ConnectingLettersStageGame} />
       <Stack.Screen name={"StagesStageGameSeason"} component={StagesStageGameSeason} />
@@ -71,6 +80,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"ViewAllPackageRating"} component={ViewAllPackageRating} />
       <Stack.Screen name={"Notification"} component={Notification} />
       <Stack.Screen name={"MessageInApp"} component={MessageInApp} />
+      <Stack.Screen name={"StageGameUpdateScreen"} component={StageGameUpdateScreen} />
     </Stack.Navigator>
   )
 }

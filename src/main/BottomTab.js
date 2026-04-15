@@ -58,7 +58,7 @@ const BottomTab = (props) => {
           component={PackageGame}
           options={{
             tabBarLabel : ({color}) => (
-              <Text style={[styles.lable, {color:color}]}>{"بسته‌های بازی"}</Text>
+              <Text style={[styles.lable, {color:color}]}>{"بازی داستانی"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
               <Icon name={focused?'grid':'grid-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>

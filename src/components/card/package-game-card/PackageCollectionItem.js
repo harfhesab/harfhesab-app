@@ -18,7 +18,7 @@ function PackageCollectionItem({_id, title, image}){
         navigate("PackageInformation", {_id})
     }
     return (
-        <View style={{alignItems:'center', justifyContent:'center'}}>
+        <View style={{alignItems:'center', justifyContent:'center', borderRadius:10, overflow:'hidden'}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                 <View style={{flexDirection:'column', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:8, height:itemWidth + 65}}>
                     <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderRadius:15}}>

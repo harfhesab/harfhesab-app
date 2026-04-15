@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
-import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';

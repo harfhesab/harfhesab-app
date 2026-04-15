@@ -10,7 +10,6 @@ import { getAllLanguages } from '../../../realm/repositories/general/language.re
 import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
-import TextSkia from '../../../components/text-components/TextSkia';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageGameSeasonCard, { STAGE_GAME_SEASON_CARD_HEIGHT, STAGE_GAME_SEASON_CARD_MARGIN } from '../../../components/card/stage-game-card/StageGameSeasonCard';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
@@ -23,6 +22,8 @@ import { StageSeason } from '../../../realm/schemas/stage-game/StageSeasonSchema
 import { useIsFocused } from '@react-navigation/native';
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
+import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
+import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -88,49 +89,109 @@ function StageGame(props){
     }
     const startFirst = async() =>{
         if(versionCreatedContent == 0){
-            AlertHelper.showAlert({
-                body: "برای شروع بازی، محتوای بازی مرحله‌ای را دریافت کنید.",
-                buttons: [
-                    {
-                        text: 'دریافت محتوا',
-                        onPress: () => {
-                            props.navigation.navigate("StageGameUpdateScreen")
-                        },
-                        type:'bold'
-                    },
-                ],
-                options : {
-                    type: 'warning',
-                    cancelable: false,
-                    bodyAlign:'center',
-                    textAlign:'center',
-                },
-            });
+            stageNotFoundAlert()
         } else if(forceUpdate == true){
-            AlertHelper.showAlert({
-                body: "یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
-                buttons: [
-                    {
-                        text: 'دریافت بروزرسانی',
-                        onPress: () => {
-                            props.navigation.navigate("StageGameUpdateScreen")
-                        },
-                        type:'bold'
-                    },
-                ],
-                options : {
-                    type: 'warning',
-                    cancelable: false,
-                    bodyAlign:'flex-start',
-                    textAlign:'flex-start'
-                },
-            });
+            forceUpdateAlert()
         } else if(!stageGameLanguage){
             getLanguages()
         } else {
             const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
             checkStageGameContentVersion({ dispatch, realm, state, versionContent });
         }
+    }
+    const stageNotFoundAlert = ()=>{
+        const btn = [
+            {
+                onPress : ()=>{
+                    props.navigation.navigate("StageGameUpdateScreen")
+                },
+                text: "دریافت محتوای بازی",
+                loading: false,
+                type: "bold",
+            },
+        ]
+        const msg = [
+            {
+                text:"دریافت محتوای بازی مرحله‌ای!",
+                style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+            },
+            {
+                text:"برای شروع بازی مرحله‌ای، ابتدا محتوای بازی را دریافت کنید.",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            },
+            {
+                text:"توجه کنید هنگام دریافت محتوای بازی، از اتصال دستگاه خود به اینترنت مطمعن شوید.",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            },
+        ]
+        AlertBottomDrawerHelper.showAlert({
+            title:"دریافت بازی مرحله‌ای",
+            message: msg,
+            buttons:btn,
+            options:{
+                cancelable: false,
+                icon:{
+                    Icon:()=>(
+                        <View style={{width:width, alignItems:'center'}}>
+                            <LocalImageComponent
+                                path={require('../../../assets/image/download.png')}
+                                width={40}
+                                height={40}
+                                resizeMode={'stretch'}
+                                blank_background={true}
+                            />
+                        </View>
+                    )
+                }
+            }
+        })
+    }
+    const forceUpdateAlert = ()=>{
+        const btn = [
+            {
+                onPress : ()=>{
+                    props.navigation.navigate("StageGameUpdateScreen")
+                },
+                text: "دریافت بروزرسانی",
+                loading: false,
+                type: "bold",
+            },
+        ]
+        const msg = [
+            {
+                text:"بروزرسانی محتوای بازی مرحله‌ای!",
+                style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+            },
+            {
+                text:"یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            },
+            {
+                text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمعن شوید.",
+                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            },
+        ]
+        AlertBottomDrawerHelper.showAlert({
+            title:"بروزرسانی بازی مرحله‌ای",
+            message: msg,
+            buttons:btn,
+            options:{
+                cancelable: false,
+                icon:{
+                    Icon:()=>(
+                        <View style={{width:width, alignItems:'center'}}>
+                            <LocalImageComponent
+                                path={require('../../../assets/image/download.png')}
+                                width={40}
+                                height={40}
+                                resizeMode={'stretch'}
+                                blank_background={true}
+                            />
+                        </View>
+                    )
+                }
+            }
+        })
     }
     const getLanguages = ()=>{
         const languages = getAllLanguages(realm)
@@ -165,11 +226,15 @@ function StageGame(props){
             text1: [stageGameLanguageName],
         }:undefined;
         BottomDrawerGridHelper.showBottomDrawer({
-            title:"زبان بازی مرحله‌ای را انتخاب کنید.",
+            title:"انتخاب زبان بازی مرحله‌ای",
             list: languages.map(item => ({
                 _id: item._id,
                 text1: item.name,
-                image: item.icon_image
+                image: item.icon_image,
+                badge: item?.badge,
+                disabled: item.is_active == false?true:false,
+                disabledToastTitle:item.is_active == false?"زبان مورد نظر غیر فعال است":null,
+                disabledToastMessage:item.is_active == false?`در حال حاضر زبان "${item?.name}" در بخش بازی مرحله‌ای فعال نمی‌باشد.`:null,
             })),
             buttons:btn,
             options:{
@@ -254,7 +319,7 @@ function StageGame(props){
         }
     }).current;
     const ListEmptyComponent = ()=>(
-        <View style={{flex:1, height:"100%", width:"100%", alignItems:'center', justifyContent:'center'}}>
+        <View style={{height:height-200, width:width, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
                 loading={false}
                 getError={false}
@@ -303,6 +368,7 @@ function StageGame(props){
                     snapToAlignment="start"       // آیتم از بالا چفت شود
                     decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
                     disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                    disableScrollViewPanResponder={true}
                     bounces={true}                // فنری بودن مانند iOS
                     viewabilityConfig={viewabilityConfig}
                     onViewableItemsChanged={onViewableItemsChanged}
