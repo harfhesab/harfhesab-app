@@ -22,7 +22,7 @@ const GameAlert = React.forwardRef((props, ref) => {
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(false)
-    const [type, setType] = useState("") // "completed-word" | "completed-stage" | "completed-package"
+    const [type, setType] = useState("") // "completed-word" | "completed-stage" | "completed-package" | "completed-season"
     const [buttons, setButtons] = useState(null)
     const [title, setTitle] = useState(null)
     const [admiration, setAdmiration] = useState(null)
@@ -200,9 +200,16 @@ const GameAlert = React.forwardRef((props, ref) => {
                                             </TouchableOpacity>)
                                             : (item?.type == "ads") &&
                                             (<AdsButton
+                                                onPress={item?.onPress}
+                                                hideAction={()=>{
+                                                    setButtons(prevButtons =>
+                                                        prevButtons?.filter(item => item.type !== "ads") || []
+                                                    );
+                                                }}
                                                 key={index.toString()}
                                                 width={contentWidth * 0.5}
                                                 reward={item?.reward}
+                                                adsPosition={item?.adsPosition}
                                             />)
                                     ))
                                 }

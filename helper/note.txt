@@ -7,3 +7,9 @@ gradlew clean --refresh-dependencies
 gradlew build --refresh-dependencies --debug
 
 gradlew.bat assembleDebug --stacktrace
+
+npx react-native run-android --mode=BazaarDebug
+
+npx react-native run-android --mode=MyketDebug
+
+adb logcat | findstr /i "tapsell"

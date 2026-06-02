@@ -91,6 +91,7 @@ function Splash(props){
                             coins_for_get_help_letter_connecting_package_game,
                             coins_reward_from_play_video_ads_current_stage,
                             coins_reward_from_play_video_ads_previous_stage,
+                            coins_reward_from_play_video_ads_unknown_word,
                             coins_reward_from_stage_completed_stage_game,
                             coins_reward_from_season_completed_stage_game,
                             coins_reward_from_stage_completed_package_game,
@@ -304,8 +305,8 @@ function Splash(props){
                 <View style={{width:"100%", alignItems:'center', gap:20}}>
                     <LocalImageComponent
                         path={require('../../assets/image/icon.png')}
-                        width={120}
-                        height={120}
+                        width={150}
+                        height={150}
                         resizeMode={'cover'}
                         blank_background={true}
                         borderRadius={20}

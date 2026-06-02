@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, KeyboardAvoidingView, SafeAreaView} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
@@ -21,6 +21,9 @@ import { changeSubscriptionPlansVersion } from '../../redux/slices/subscriptionS
 import { useRealm } from '../../realm';
 import { preloadImages } from '../../utils/ImagePreloader';
 import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
+import { setUserConsent } from '@react-native-tapsell-mediation/tapsell';
+import { showToast } from '../../components/custom-toast/ToastRef';
+
 
 const {width, height} = Dimensions.get('window');
 function SignIn(props){
@@ -31,6 +34,10 @@ function SignIn(props){
     const { coinPlansVersion } = useSelector((state) => state.coins);
     const { subscriptionPlansVersion } = useSelector((state) => state.subscription);
     const [loading, setLoading] = useState(false)
+
+    useEffect(()=>{
+        setUserConsent(true);
+    }, [])
 
     const login =() =>{
         props.navigation.navigate("Login")
@@ -95,6 +102,7 @@ function SignIn(props){
                             coins_for_get_help_letter_connecting_package_game,
                             coins_reward_from_play_video_ads_current_stage,
                             coins_reward_from_play_video_ads_previous_stage,
+                            coins_reward_from_play_video_ads_unknown_word,
                             coins_reward_from_stage_completed_stage_game,
                             coins_reward_from_season_completed_stage_game,
                             coins_reward_from_stage_completed_package_game,
@@ -210,8 +218,8 @@ function SignIn(props){
                 });
             } else {
                 showToast({
-                    title: "خطا در ورود",
-                    message: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد دوباره تلاش کنید.',
+                    title: "خطا در ورود به عنوان میهمان",
+                    message: response?.data?.errors[0]?.data[0]?.message??'مشکلی پیش آمد. لحظاتی بعد دوباره تلاش کنید.',
                     type: "error",
                     animationType: "slide",
                     position: "top",
@@ -220,8 +228,8 @@ function SignIn(props){
         }).catch((error)=>{
             setLoading(false)
             showToast({
-                title: "خطا در ورود",
-                message: 'مشکلی پیش آمد دوباره تلاش کنید.',
+                title: "خطا در ورود به عنوان میهمان",
+                message: 'مشکلی پیش آمد. لحظاتی بعد دوباره تلاش کنید.',
                 type: "error",
                 animationType: "slide",
                 position: "top",

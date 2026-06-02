@@ -72,9 +72,9 @@ const Main = (props) => {
         <Toast ref={toastRef} />
         <GameAlert ref={ref => GameAlertHelper.setRef(ref)} />
         <AlertBottomDrawer ref = {Ref => {AlertBottomDrawerHelper.setRef(Ref)}}/>
+        <FullScreenLoading ref = {Ref => {FullScreenLoadingHelper.setRef(Ref)}}/>
         {!limitedRoute.includes(route)&&<Alert ref = {Ref => {AlertHelper.setRef(Ref)}}/>}
         {!limitedRoute.includes(route)&&<AlertMessageInApp ref = {Ref => {AlertMessageInAppHelper.setRef(Ref)}}/>}
-        {!limitedRoute.includes(route)&&<FullScreenLoading ref = {Ref => {FullScreenLoadingHelper.setRef(Ref)}}/>}
     </SafeAreaProvider>
   );
 };

@@ -233,6 +233,7 @@ function VerifyWithOTP(props){
                                 coins_for_get_help_letter_connecting_package_game,
                                 coins_reward_from_play_video_ads_current_stage,
                                 coins_reward_from_play_video_ads_previous_stage,
+                                coins_reward_from_play_video_ads_unknown_word,
                                 coins_reward_from_stage_completed_stage_game,
                                 coins_reward_from_season_completed_stage_game,
                                 coins_reward_from_stage_completed_package_game,

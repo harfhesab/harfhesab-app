@@ -8,6 +8,7 @@ interface ConstantsState {
     coins_for_get_help_letter_connecting_package_game : number;
     coins_reward_from_play_video_ads_current_stage : number;
     coins_reward_from_play_video_ads_previous_stage : number;
+    coins_reward_from_play_video_ads_unknown_word : number;
     coins_reward_from_stage_completed_stage_game : number;
     coins_reward_from_season_completed_stage_game : number;
     coins_reward_from_stage_completed_package_game : number;
@@ -27,7 +28,8 @@ const initialState: ConstantsState = {
     coins_for_get_help_letter_connecting_stage_game : 20,
     coins_for_get_help_letter_connecting_package_game : 20,
     coins_reward_from_play_video_ads_current_stage : 12,
-    coins_reward_from_play_video_ads_previous_stage : 7,
+    coins_reward_from_play_video_ads_previous_stage : 5,
+    coins_reward_from_play_video_ads_unknown_word : 10,
     coins_reward_from_stage_completed_stage_game : 10,
     coins_reward_from_season_completed_stage_game : 20,
     coins_reward_from_stage_completed_package_game : 10,
@@ -53,6 +55,7 @@ const constantsSlice = createSlice({
       state.coins_for_get_help_letter_connecting_package_game = action.payload.coins_for_get_help_letter_connecting_package_game;
       state.coins_reward_from_play_video_ads_current_stage = action.payload.coins_reward_from_play_video_ads_current_stage;
       state.coins_reward_from_play_video_ads_previous_stage = action.payload.coins_reward_from_play_video_ads_previous_stage;
+      state.coins_reward_from_play_video_ads_unknown_word = action.payload.coins_reward_from_play_video_ads_unknown_word;
       state.coins_reward_from_stage_completed_stage_game = action.payload.coins_reward_from_stage_completed_stage_game;
       state.coins_reward_from_season_completed_stage_game = action.payload.coins_reward_from_season_completed_stage_game;
       state.coins_reward_from_stage_completed_package_game = action.payload.coins_reward_from_stage_completed_package_game;

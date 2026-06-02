@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, Text, Linking} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -8,12 +8,180 @@ import Font from '../../../utils/Font';
 import SimpleItem from '../../../components/list-view-items/SimpleItem';
 import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
 import Globals from '../../../utils/Globals';
+import { TapsellLegacyAdapter } from '@react-native-tapsell-mediation/legacy';
+import { CompletionState, requestRewardedAd, showRewardedAd } from '@react-native-tapsell-mediation/tapsell';
+import FullScreenLoadingHelper from '../../../components/full-screen-loading/FullScreenLoadingHelper';
+import { tapsell } from '../../../utils/constants/tapsell';
+import { showToast } from '../../../components/custom-toast/ToastRef';
+import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
+import { increaseNumberCoins } from '../../../redux/slices/coinSlice';
+
 
 function FreeCoin(props){
     const dispatch = useDispatch();
     const { width, height } = Dimensions.get('window');
     const colors = useAppTheme()
     const { free_coin_completed_account_info, free_coin_follow_instagram, free_coin_View_ads, free_coin_first_rating_in_store } = useSelector((state) => state.constants);
+
+    useEffect(()=>{
+        TapsellLegacyAdapter.register();
+    }, [])
+
+    const requestShowAd = async () => {
+        FullScreenLoadingHelper.showLoading({
+            title: "در حال بارگذاری...",
+            cancelable: false
+        })
+        const ZONE_ID = tapsell.position.get_free_coin.zone_id;
+        await requestRewardedAd(ZONE_ID).then((id) => {
+            showRewardedAdCallBack(id);
+        }).catch((e)=>{
+            showToast({
+                title: `مشکلی پیش آمد`,
+                message: "مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                type: "error",
+                animationType: "slide",
+                position: "top",
+                duration: 5000
+            });
+            FullScreenLoadingHelper.hideLoading()
+        })
+    };
+    const showRewardedAdCallBack = useCallback((id) => {
+        FullScreenLoadingHelper.hideLoading()
+        if (!id) {
+            const msg = [
+                {
+                    text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                    style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                }
+            ]
+            AlertBottomDrawerHelper.showAlert({
+                title:`دریافت سکه`,
+                message: msg,
+                buttons:[
+                    {
+                        onPress : ()=>{},
+                        text: "متوجه شدم",
+                        loading: false,
+                        stayOpen: false,
+                        type: "bold",
+                    },
+                ],
+                options:{
+                    cancelable: true,
+                    icon:{
+                        Icon:()=>(
+                            <Icon name={"error-outline"} type={"MaterialIcons"} style={{color:colors.alert.a1, fontSize:50}}/>
+                        )
+                    }
+                }
+            })
+            return;
+        }
+        showRewardedAd(id, {
+            onAdImpression: () => {},
+            onAdClicked: () => {},
+            onRewarded: () => {
+                dispatch(increaseNumberCoins({number:free_coin_View_ads}))
+                const msg = [
+                    {
+                        text:`تعداد ${free_coin_View_ads} سکه با موفقیت به حساب کاربری شما اضافه شد.`,
+                        style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                    }
+                ]
+                AlertBottomDrawerHelper.showAlert({
+                    title:`دریافت سکه`,
+                    message: msg,
+                    buttons:[
+                        {
+                            onPress : ()=>{},
+                            text: "متوجه شدم",
+                            loading: false,
+                            stayOpen: false,
+                            type: "bold",
+                        },
+                    ],
+                    options:{
+                        cancelable: true,
+                        icon:{
+                            Icon:()=>(
+                                <View style={{width:width, alignItems:'center'}}>
+                                    <LocalImageComponent
+                                        path={require('../../../assets/image/coin.png')}
+                                        width={80}
+                                        height={80}
+                                        resizeMode={'stretch'}
+                                        blank_background={true}
+                                    />
+                                </View>
+                            )
+                        }
+                    }
+                })
+            },
+            onAdClosed: (completionState) => {
+                if(CompletionState[completionState] == "SKIPPED"){
+                    const msg = [
+                        {
+                            text:"برای دریافت سکه، باید ویدیو را تا انتها تماشا کنید.",
+                            style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                        }
+                    ]
+                    AlertBottomDrawerHelper.showAlert({
+                        title:`دریافت سکه`,
+                        message: msg,
+                        buttons:[
+                            {
+                                onPress : ()=>{},
+                                text: "متوجه شدم",
+                                loading: false,
+                                stayOpen: false,
+                                type: "bold",
+                            },
+                        ],
+                        options:{
+                            cancelable: true,
+                            icon:{
+                                Icon:()=>(
+                                    <Icon name={"error-outline"} type={"MaterialIcons"} style={{color:colors.alert.a1, fontSize:50}}/>
+                                )
+                            }
+                        }
+                    })
+                }
+            },
+            onAdFailed: (error) => {
+                const msg = [
+                    {
+                        text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                        style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                    }
+                ]
+                AlertBottomDrawerHelper.showAlert({
+                    title:`دریافت سکه`,
+                    message: msg,
+                    buttons:[
+                        {
+                            onPress : ()=>{},
+                            text: "متوجه شدم",
+                            loading: false,
+                            stayOpen: false,
+                            type: "bold",
+                        },
+                    ],
+                    options:{
+                        cancelable: true,
+                        icon:{
+                            Icon:()=>(
+                                <Icon name={"error-outline"} type={"MaterialIcons"} style={{color:colors.alert.a1, fontSize:50}}/>
+                            )
+                        }
+                    }
+                })
+            },
+        });
+    }, []);
 
     const coinComponent = (value)=>(
         <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
@@ -65,7 +233,7 @@ function FreeCoin(props){
                                 icon_name={"video"}
                                 icon_type={"Entypo"}
                                 icon_size={25}
-                                click={()=>{}}
+                                click={requestShowAd}
                                 ValueComponent={()=>coinComponent(free_coin_View_ads)}
                             />
                             <SimpleItem

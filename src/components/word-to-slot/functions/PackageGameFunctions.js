@@ -75,12 +75,9 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                             type:'bold'
                         },
                         {
-                            onPress: () => {
-                                goBack()
-                                goBack()
-                            },
                             type:'ads',
                             reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
+                            adsPosition: "package_game_completed_stage"
                         }
                     ],
                     options : {
@@ -150,16 +147,9 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                             type:'bold'
                         },
                         {
-                            onPress: () => {
-                                goBack()
-                                if(next.endCurrentSeason == true){
-                                    setTimeout(()=>{
-                                        endOfASeasonInStageGame({seasonNumber:last_season_number-1, packageName})
-                                    }, 500)
-                                }
-                            },
                             type:'ads',
                             reward: state.constants.coins_reward_from_play_video_ads_current_stage,
+                            adsPosition: "package_game_completed_stage"
                         }
                     ],
                     options : {
@@ -189,11 +179,9 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                     type:'bold'
                 },
                 {
-                    onPress: () => {
-                        goBack()
-                    },
                     type:'ads',
                     reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
+                    adsPosition: "package_game_completed_stage"
                 }
             ],
             options : {

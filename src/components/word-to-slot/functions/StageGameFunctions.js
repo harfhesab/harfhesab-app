@@ -37,11 +37,9 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                         type:'bold'
                     },
                     {
-                        onPress: () => {
-                            goBack()
-                        },
                         type:'ads',
                         reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
+                        adsPosition: "stage_game_completed_stage"
                     }
                 ],
                 options : {
@@ -86,16 +84,9 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                             type:'bold'
                         },
                         {
-                            onPress: () => {
-                                goBack()
-                                if(next.endCurrentSeason == true){
-                                    setTimeout(()=>{
-                                        endOfASeasonInStageGame({seasonNumber:last_season_number-1})
-                                    }, 500)
-                                }
-                            },
                             type:'ads',
                             reward: state.constants.coins_reward_from_play_video_ads_current_stage,
+                            adsPosition: "stage_game_completed_stage"
                         }
                     ],
                     options : {
@@ -125,11 +116,9 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     type:'bold'
                 },
                 {
-                    onPress: () => {
-                        goBack()
-                    },
                     type:'ads',
                     reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
+                    adsPosition: "stage_game_completed_stage"
                 }
             ],
             options : {
