@@ -218,7 +218,7 @@ function Account(props){
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                            <Icon name={"person"} type={"Ionicons"} style={{fontSize:50, color:"#ffc107"}}/>
+                            <Icon name={"person"} type={"Ionicons"} style={{fontSize:50, color:colors.primary.a3}}/>
                         </ImageBackground>
                         <View style={{flexDirection:'column', alignItems:'flex-end', gap:10}}>
                             <View style={{ flexDirection:'column', alignItems:'flex-end'}}>

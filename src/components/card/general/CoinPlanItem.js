@@ -11,9 +11,7 @@ import ButtonImgSrc from '../../buttons/ButtonImgSrc';
 
 const width = Dimensions.get('window').width
 const size = IS_TABLET_CONDITION?(width-105)/4:(width-75)/2
-function reverseString(str) {
-  return str.split("").reverse().join("");
-}
+
 function CoinPlanItem({_id, click, productId, title, badge, image, numberCoin, price, active}){
     const colors = useAppTheme();
 
@@ -43,7 +41,7 @@ function CoinPlanItem({_id, click, productId, title, badge, image, numberCoin, p
                             onPress={click}
                             fontSize={12}
                             textWidth={size - 20}
-                            text={`${reverseString(priceDigitSeperator(price/10))} تومان`}
+                            text={`${priceDigitSeperator(price/10)} تومان`}
                             height={40}
                             width={size - 20}
                             imageSrc={"2"}

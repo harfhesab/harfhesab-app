@@ -15,7 +15,8 @@ interface ConstantsState {
     coins_reward_from_season_completed_package_game : number;
     free_coin_completed_account_info : number;
     free_coin_follow_instagram : number;
-    free_coin_View_ads : number;
+    free_coin_join_telegram : number;
+    free_coin_view_ads : number;
     free_coin_first_rating_in_store : number;
 }
 // ==============================================================================================
@@ -35,9 +36,10 @@ const initialState: ConstantsState = {
     coins_reward_from_stage_completed_package_game : 10,
     coins_reward_from_season_completed_package_game : 20,
     free_coin_completed_account_info : 100,
-    free_coin_follow_instagram : 50,
-    free_coin_View_ads : 10,
-    free_coin_first_rating_in_store : 50
+    free_coin_follow_instagram : 80,
+    free_coin_join_telegram : 80,
+    free_coin_view_ads : 20,
+    free_coin_first_rating_in_store : 80
 };
 
 const constantsSlice = createSlice({
@@ -62,7 +64,8 @@ const constantsSlice = createSlice({
       state.coins_reward_from_season_completed_package_game = action.payload.coins_reward_from_season_completed_package_game;
       state.free_coin_completed_account_info = action.payload.free_coin_completed_account_info;
       state.free_coin_follow_instagram = action.payload.free_coin_follow_instagram;
-      state.free_coin_View_ads = action.payload.free_coin_View_ads;
+      state.free_coin_join_telegram = action.payload.free_coin_join_telegram;
+      state.free_coin_view_ads = action.payload.free_coin_view_ads;
       state.free_coin_first_rating_in_store = action.payload.free_coin_first_rating_in_store;
     },
   },

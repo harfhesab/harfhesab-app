@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import { Canvas, Text, useFont, Group, Skia, vec, TileMode, PaintStyle } from '@shopify/react-native-skia';
 import { useDerivedValue, SharedValue } from 'react-native-reanimated';
@@ -27,7 +27,7 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
   ltr = false,
   gradientColors = ['#9900ef',  '#662d86', '#3a194d'],
   borderColor = '#FFFFFF',
-  borderWidth = 2,
+  borderWidth = 1.5,
  }) => {
 
   const gradient = Skia.Shader.MakeLinearGradient(
@@ -40,7 +40,7 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
   const gradientPaint = Skia.Paint();
   gradientPaint.setShader(gradient);
 
-  const font = useFont(require('../../assets/fonts/IRANYekanWebBlackFaNum.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
+  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-Black.ttf'), initialFontSize);
   const scale = useDerivedValue(() => fontSize.value / initialFontSize, [fontSize]);
   const transform = useDerivedValue(() => [{ scale: scale.value }], [scale]);
 
@@ -64,7 +64,11 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
     for (const word of words) {
       const testLineWords = [...currentLineWords, word];
       const testLine = testLineWords.join(' ');
-      const testRendered = isRtl ? prepareRTLText(testLine) : testLine;
+      
+      // برای اندازه‌گیری دقیق، بهتر است اینجا هم نیم‌فاصله حذف شود
+      let testRendered = isRtl ? prepareRTLText(testLine) : testLine;
+      testRendered = testRendered.replace(/\u200C/g, ''); 
+      
       const testWidth = font.measureText(testRendered).width;
       if (testWidth <= maxWidth) {
         currentLineWords = testLineWords;
@@ -83,9 +87,15 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
     return lines;
   };
 
-  const maxTextWidth = initialWidth * 0.95; // Slightly less to avoid overflow
+  const maxTextWidth = initialWidth * 0.95; 
   const lines = wrapText(text, maxTextWidth);
-  const renderedLines = lines.map(line => isRtl ? prepareRTLText(line) : line);
+  
+  // 🌟 بخش اصلاح‌شده: حذف کامل کاراکتر نیم‌فاصله بعد از فرمت‌دهی RTL
+  const renderedLines = lines.map(line => {
+    const preparedLine = isRtl ? prepareRTLText(line) : line;
+    return preparedLine.replace(/\u200C/g, ''); // حذف ZWNJ
+  });
+  
   const lineWidths = renderedLines.map(line => font.measureText(line).width);
 
   const totalHeight = (lines.length - 1) * lineHeight + (-ascent + descent);

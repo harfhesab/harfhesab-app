@@ -68,14 +68,22 @@ class Timer extends PureComponent{
                     <Text style={this.props.style}>{this.state.minutes > 9?this.state.minutes:`0${this.state.minutes}`}</Text>
                     <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'دقیقه'}</Text>
                 </View>
-                <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
-                    <Text style={this.props.style}>{this.state.hours > 9?this.state.hours:`0${this.state.hours}`}</Text>
-                    <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'ساعت'}</Text>
-                </View>
-                <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
-                    <Text style={this.props.style}>{this.state.days}</Text>
-                    <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'روز'}</Text>
-                </View>
+                {
+                    (this.state.hours !== undefined && this.state.hours !== null) && (
+                        <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
+                            <Text style={this.props.style}>{this.state.hours > 9?this.state.hours:`0${this.state.hours}`}</Text>
+                            <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'ساعت'}</Text>
+                        </View>
+                    )
+                }
+                {
+                    (this.state.days !== undefined && this.state.days !== null) && (
+                        <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
+                            <Text style={this.props.style}>{this.state.days}</Text>
+                            <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'روز'}</Text>
+                        </View>
+                    )
+                }
             </View>
         )
     }

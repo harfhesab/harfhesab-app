@@ -199,7 +199,7 @@ function MessageInApp(props){
     const memoizedValue = useMemo(() => renderItem, [data]);
     const keyExtractor = (item,index)=>index.toString()
     const ListEmptyComponent = ()=>(
-        <View style={{width: "100%", height:ImmersiveMode.isImmersiveModeActive()?(height-(80 + STATUS_BAR_HEIGHT))*0.8:(height-80)*0.8, alignItems:'center', justifyContent:'center'}}>
+        <View style={{width: width - 60, height:ImmersiveMode.isImmersiveModeActive()?(height-(80 + STATUS_BAR_HEIGHT))*0.8:(height-80)*0.8, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
                 loading={loading}
                 getError={getError}

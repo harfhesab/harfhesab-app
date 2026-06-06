@@ -100,6 +100,10 @@ function StageGame(props){
         }
     }
     const stageNotFoundAlert = ()=>{
+        setTimeout(()=>{
+            props.navigation.navigate("StageGameUpdateScreen")
+            AlertBottomDrawerHelper.hideAlert()
+        }, 2000)
         const btn = [
             {
                 onPress : ()=>{

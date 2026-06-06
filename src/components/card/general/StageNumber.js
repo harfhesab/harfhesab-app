@@ -26,9 +26,6 @@ const PADDING_HORIZONTAL = 32
 export const LIST_STAGE_CARD_NUMBER_COLUMN = IS_TABLET_CONDITION?6:4
 export const STAGE_CARD_SIZE = ((width - (PADDING_HORIZONTAL*2)) / LIST_STAGE_CARD_NUMBER_COLUMN) - (STAGE_CARD_MARGIN*2)
 
-function reverseString(str) {
-  return str.split("").reverse().join("");
-}
 function StageNumber({
   number,
   lock,
@@ -78,7 +75,7 @@ function StageNumber({
         <View style={{width:STAGE_CARD_SIZE, height:STAGE_CARD_SIZE, borderRadius:15, alignItems:'center', justifyContent:'center'}}>
             
               <SimpleBorderText
-                    text={reverseString(`${number}`)}
+                    text={`${number}`}
                     width={STAGE_CARD_SIZE}
                     height={fontSize*1.6}
                     fontSize={fontSize}

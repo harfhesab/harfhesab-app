@@ -6,9 +6,8 @@ import Animated, {
   withTiming,
   interpolateColor,
 } from 'react-native-reanimated';
-import Font from '../../../../utils/Font';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
-import TextGradientSvg from '../../../text-components/TextGradientSvg';
+import SimpleBorderTextBold from '../../../text-components/SimpleBorderTextBold';
 
 interface PlaceholderSquareProps {
   letter: string;
@@ -62,19 +61,12 @@ const PlaceholderSquare = ({ letter, isRevealed, size, mainWord, helped = false 
             ]}
         >
           {showContent && (
-            <TextGradientSvg
+            <SimpleBorderTextBold
                 text={letter}
-                fontFamily={Font.bakh_extra_black}
-                fontSize={size/1.6}
-                colors={themeStyles.gradientColors}
-                shadowColor={"#FFFFFF90"}
-                shadowBlur={3}
-                dropShadow={true}
-                borderColor={"#FFFFFF"}
-                borderWidth={0.4}
-                glowBlur={10}
-                glowColor={'#FFFFFF'}
-                glowShadow={true} 
+                width={size}
+                height={size}
+                fontSize={size/1.4}
+                borderWidth={1}
             />
           )}
         </Animated.View>

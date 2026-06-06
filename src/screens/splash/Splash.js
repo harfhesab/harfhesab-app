@@ -24,6 +24,7 @@ import { Text } from 'react-native-gesture-handler';
 import { persistor, store } from '../../redux/store/Store';
 import { showToast } from '../../components/custom-toast/ToastRef';
 import { changeNewNotifications } from '../../redux/slices/accountSlice';
+import SimpleBorderText from '../../components/text-components/SimpleBorderText';
 
 const { width } = Dimensions.get("window");
 function Splash(props){
@@ -98,7 +99,8 @@ function Splash(props){
                             coins_reward_from_season_completed_package_game,
                             free_coin_completed_account_info,
                             free_coin_follow_instagram,
-                            free_coin_View_ads,
+                            free_coin_join_telegram,
+                            free_coin_view_ads,
                             free_coin_first_rating_in_store,
                         },
                         coin_plans{
@@ -305,11 +307,19 @@ function Splash(props){
                 <View style={{width:"100%", alignItems:'center', gap:20}}>
                     <LocalImageComponent
                         path={require('../../assets/image/icon.png')}
-                        width={150}
-                        height={150}
+                        width={100}
+                        height={100}
                         resizeMode={'cover'}
                         blank_background={true}
                         borderRadius={20}
+                    />
+                    <SimpleBorderText
+                        text={"دوکلام حرف حساب!"}
+                        width={200}
+                        height={22*1.6}
+                        fontSize={22}
+                        borderWidth={1}
+                        textColor={colors.primary.a2}
                     />
                 </View>
             </View>

@@ -109,7 +109,8 @@ function SignIn(props){
                             coins_reward_from_season_completed_package_game,
                             free_coin_completed_account_info,
                             free_coin_follow_instagram,
-                            free_coin_View_ads,
+                            free_coin_join_telegram,
+                            free_coin_view_ads,
                             free_coin_first_rating_in_store,
                         },
                         coin_plans{

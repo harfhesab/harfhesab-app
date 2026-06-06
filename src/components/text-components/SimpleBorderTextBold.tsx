@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Canvas, Text, useFont, Group, Skia, PaintStyle } from '@shopify/react-native-skia';
 import { prepareRTLText } from '../../utils/prepareRTLText';
 
-interface SimpleBorderTextProps {
+interface SimpleBorderTextBoldProps {
   text: string;
   fontSize: number;
   width: number;
@@ -15,19 +15,19 @@ interface SimpleBorderTextProps {
   borderWidth?: number;
 }
 
-const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({ 
+const SimpleBorderTextBold: React.FC<SimpleBorderTextBoldProps> = ({ 
   text,
   fontSize,
   width,
   height,
   rtl = true,
   ltr = false,
-  textColor = '#9900ef',
-  borderColor = '#FFFFFF',
+  textColor = '#960000',
+  borderColor = '#ffeb3b',
   borderWidth = 1.5,
  }) => {
 
-  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-ExtraBold.ttf'), fontSize);
+  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-ExtraBlack.ttf'), fontSize);
 
   if (font === null || !text?.trim()) {
     return null;
@@ -133,4 +133,4 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   );
 };
 
-export default memo(SimpleBorderText);
+export default memo(SimpleBorderTextBold);

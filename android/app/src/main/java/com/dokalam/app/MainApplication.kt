@@ -17,6 +17,8 @@ import android.content.res.Configuration
 import com.dokalam.app.navigationbar.NavigationBarPackage
 import com.dokalam.app.immersivemode.ImmersiveModePackage
 import com.dokalam.app.MarketPackage
+import com.dokalam.app.cafebazaar.CafeBazaarPackage
+import com.dokalam.app.myket.MyketPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -29,6 +31,8 @@ class MainApplication : Application(), ReactApplication {
               add(NavigationBarPackage()) 
               add(ImmersiveModePackage()) 
               add(MarketPackage().get())
+              add(CafeBazaarPackage())
+              add(MyketPackage())
             }
 
         override fun getJSMainModuleName(): String = "index"

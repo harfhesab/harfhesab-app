@@ -8,11 +8,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import LottieView from 'lottie-react-native';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import AdsButton from '../buttons/AdsButton';
-import MultiLineTextGradientSvg from '../text-components/MultiLineTextGradientSvg';
 import { increaseNumberCoins } from '../../redux/slices/coinSlice';
 import { useDispatch } from "react-redux";
 import SimpleBorderText from '../text-components/SimpleBorderText';
-import TextGradientSvg from '../text-components/TextGradientSvg';
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 import Border from '../Border';
 
@@ -182,19 +180,15 @@ const GameAlert = React.forwardRef((props, ref) => {
                                                     imageStyle={{ resizeMode: "stretch" }}
                                                     resizeMode="stretch"
                                                 >
-                                                    <TextGradientSvg
+                                                    
+                                                    <SimpleBorderText
                                                         text={item.text}
-                                                        fontFamily={Font.bakh_extra_bold}
-                                                        fontSize={18}
-                                                        colors={["#FFFFFF", "#fff5c8"]}
-                                                        shadowColor={"#00000090"}
-                                                        shadowBlur={5}
-                                                        dropShadow={true}
-                                                        borderColor={"#000000"}
-                                                        borderWidth={1}
-                                                        glowBlur={100}
-                                                        glowColor={'#fff5c8'}
-                                                        glowShadow={true}
+                                                        width={buttons.length > 1 ? contentWidth * 0.28 : 150}
+                                                        height={20*1.6}
+                                                        fontSize={20}
+                                                        borderWidth={1.5}
+                                                        textColor={"#fcb900"}
+                                                        borderColor={"#4d2719"}
                                                     />
                                                 </ImageBackground>
                                             </TouchableOpacity>)

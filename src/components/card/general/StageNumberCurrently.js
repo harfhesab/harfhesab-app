@@ -23,9 +23,6 @@ import Animated,
 } from "react-native-reanimated";
 import SimpleBorderText from '../../text-components/SimpleBorderText';
 
-function reverseString(str) {
-  return str.split("").reverse().join("");
-}
 function StageNumberCurrently({
   text,
   boxSize,
@@ -81,7 +78,7 @@ function StageNumberCurrently({
                 >
                     <View style={{borderRadius:15, width:"100%", height:"100%", alignItems:'center', justifyContent:'center'}}>
                         <SimpleBorderText
-                            text={reverseString(`${text}`)}
+                            text={`${text}`}
                             width={boxSize}
                             height={fontSize*1.6}
                             fontSize={fontSize}

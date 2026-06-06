@@ -1,7 +1,6 @@
 import React, {memo, useCallback, useEffect} from 'react';
 import {View, TouchableOpacity, Image, ImageBackground, Dimensions} from 'react-native';
 import Font from '../../utils/Font';
-import TextGradientSvg from '../text-components/TextGradientSvg';
 import { CompletionState, requestRewardedAd, showRewardedAd } from '@react-native-tapsell-mediation/tapsell';
 import FullScreenLoadingHelper from '../full-screen-loading/FullScreenLoadingHelper';
 import { TapsellLegacyAdapter } from '@react-native-tapsell-mediation/legacy';
@@ -12,6 +11,7 @@ import { increaseNumberCoins } from '../../redux/slices/coinSlice';
 import LocalImageComponent from '../image-components/LocalImageComponent';
 import { colors } from '../../hooks/theme/colors';
 import Icon from '../../utils/Icon';
+import SimpleBorderText from '../text-components/SimpleBorderText';
 
 
 
@@ -222,41 +222,32 @@ function AdsButton(
                 imageStyle={{ resizeMode: "stretch" }}
                 resizeMode="stretch"
             >
-                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:5, height:"100%", paddingHorizontal:10}}>
+                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', height:"100%", gap:5}}>
                     
-                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:2}}>
+                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
                         <Image
-                            style={{width:fontSize*1.1, height:fontSize*1.1}}
+                            style={{width:fontSize, height:fontSize}}
                             source={require('../../assets/image/coin.png')}
                         />
-                        <TextGradientSvg
-                            text={`+ ${reward}`}
-                            fontFamily={Font.bakh_extra_bold}
-                            fontSize={fontSize}
-                            colors={["#FFFFFF", "#fff5c8"]}
-                            shadowColor={"#00000090"}
-                            shadowBlur={5}
-                            dropShadow={true}
-                            borderColor={"#000000"}
-                            borderWidth={1}
-                            glowBlur={100}
-                            glowColor={'#fff5c8'}
-                            glowShadow={true}
+                        <SimpleBorderText
+                            text={`${reward} +`}
+                            width={30}
+                            height={17*1.6}
+                            fontSize={17}
+                            borderWidth={1.5}
+                            textColor={"#fcb900"}
+                            borderColor={"#4d2719"}
                         />
                     </View>
-                    <TextGradientSvg
-                        text={"دیدن تبلیغ"}
-                        fontFamily={Font.bakh_extra_bold}
-                        fontSize={fontSize}
-                        colors={["#FFFFFF", "#fff5c8"]}
-                        shadowColor={"#00000090"}
-                        shadowBlur={5}
-                        dropShadow={true}
-                        borderColor={"#000000"}
-                        borderWidth={1}
-                        glowBlur={100}
-                        glowColor={'#fff5c8'}
-                        glowShadow={true}
+                    
+                    <SimpleBorderText
+                        text={"نمایش ویدیو"}
+                        width={95}
+                        height={17*1.6}
+                        fontSize={17}
+                        borderWidth={1.5}
+                        textColor={"#fcb900"}
+                        borderColor={"#4d2719"}
                     />
                 </View>
             </ImageBackground>

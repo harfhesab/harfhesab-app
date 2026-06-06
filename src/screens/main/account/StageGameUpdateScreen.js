@@ -104,7 +104,7 @@ function StageGameUpdateScreen(props){
         <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
             <GeneralHeader
                 back={true}
-                title={"بروزرسانی محتوای بازی مرحله‌ای"}
+                title={"دریافت محتوای بازی مرحله‌ای"}
             />
             {
                 firstCheckLoading?
@@ -128,7 +128,7 @@ function StageGameUpdateScreen(props){
                             }
                             {
                                 (status == "need-update" || status == "force-update")&&
-                                <Text style={{fontFamily:Font.medium, color:colors.border.a1, fontSize:12, textAlign:'center', width:280, lineHeight:20}}>{"توجه کنید ممکن است دریافت اطلاعات، لحظاتی طول بکشد. لطفا هنگام دریافت اطلاعات در همین صفحه بمانید."}</Text>
+                                <Text style={{fontFamily:Font.medium, color:colors.border.a1, fontSize:12, textAlign:'center', width:280, lineHeight:20}}>{"توجه کنید لطفا هنگام دریافت اطلاعات که لحظات کوتاهی طول می‌کشد در همین صفحه بمانید."}</Text>
                             }
                         </View>
                     </View>
@@ -149,7 +149,7 @@ function StageGameUpdateScreen(props){
                             <ButtonGradient
                                 height={60}
                                 width={width - 30}
-                                text={isDownloading == true?"در حال بارگیری":(status == "force-update" || status == "need-update")?"دریافت محتوا":"شروع بازی"}
+                                text={isDownloading == true?"در حال بارگیری":(status == "force-update" || status == "need-update")?"شروع دریافت اطلاعات":"شروع بازی"}
                                 onPress={downloadUpdates}
                                 loading={isDownloading}
                                 textSize={18}
