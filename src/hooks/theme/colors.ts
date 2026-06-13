@@ -107,7 +107,9 @@ export const colors = {
     a3: '#fcb900',
     a4: '#008B02',
     a5: '#ffeb3b',
-    a6: '#0693e3'
+    a6: '#0693e3',
+    a7: '#5c2b02',
+    a8: '#960000',
   },
   text: {
     a1: '#FFFFFF',

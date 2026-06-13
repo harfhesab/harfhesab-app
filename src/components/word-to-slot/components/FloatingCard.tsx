@@ -249,8 +249,8 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
         >
           {
             (unknown_word && !effectiveUnknownCompleted)?
-            <View style={{width:CARD_SIZE_FLOATING-25, height:CARD_SIZE_FLOATING-25, borderColor:"#CC0000", borderWidth:2, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
-              <Icon name={"question"} type={"Fontisto"} style={{color:"#CC0000", fontSize:CARD_SIZE_FLOATING-45}}/>
+            <View style={{width:CARD_SIZE_FLOATING-20, height:CARD_SIZE_FLOATING-20, borderColor:"#CC000090", backgroundColor:"#CC000020", borderWidth:1.5, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
+              <Icon name={"question"} type={"Fontisto"} style={{color:"#CC0000", fontSize:CARD_SIZE_FLOATING-35}}/>
             </View>
             :
             <AnimatedSkiaText

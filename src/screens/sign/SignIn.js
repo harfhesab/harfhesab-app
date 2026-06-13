@@ -240,7 +240,7 @@ function SignIn(props){
     return(
         <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
             <View style={styles.container2}>
-                <Text style={{fontFamily:Font.black, fontSize:30, color:colors.text.a1, alignSelf:'center'}}>{"ورود به بازی"}</Text>
+                <Text style={{fontFamily:Font.bakh_bold, fontSize:20, color:colors.text.a1}}>{"دوکلام حرف حساب!"}</Text>
                 <View style={{gap:15}}>
                     <View style={{width:width, alignItems:'center'}}>
                         <ButtonGradient

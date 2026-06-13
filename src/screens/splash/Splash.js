@@ -14,7 +14,7 @@ import { updateConstantsVersion } from '../../redux/slices/constantsSlice';
 import { useRealm } from '../../realm';
 import { createCoinPlansList } from '../../realm/repositories/user/coin-plan-repository';
 import { changeCoinPlansVersion } from '../../redux/slices/coinSlice';
-import { hideSplash } from '../../redux/slices/mainSlice';
+import { changeOnboarding, hideSplash } from '../../redux/slices/mainSlice';
 import { createSubscriptionPlansList } from '../../realm/repositories/user/subscription-plan-repository';
 import AlertBottomDrawerHelper from '../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 import Icon from '../../utils/Icon';
@@ -24,7 +24,7 @@ import { Text } from 'react-native-gesture-handler';
 import { persistor, store } from '../../redux/store/Store';
 import { showToast } from '../../components/custom-toast/ToastRef';
 import { changeNewNotifications } from '../../redux/slices/accountSlice';
-import SimpleBorderText from '../../components/text-components/SimpleBorderText';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get("window");
 function Splash(props){
@@ -41,10 +41,14 @@ function Splash(props){
         startUpCheck()
     }, [])
 
-    const startUpCheck = ()=>{
+    const startUpCheck = async()=>{
         if(isLoggedIn == true && token){
             necessaryCheckAtStart()
         } else {
+            const onboarded = await AsyncStorage.getItem('onboarded');
+            if (onboarded !== '1') {
+                dispatch(changeOnboarding());
+            }
             setAppIsReady(true)
         }
     }
@@ -307,26 +311,19 @@ function Splash(props){
                 <View style={{width:"100%", alignItems:'center', gap:20}}>
                     <LocalImageComponent
                         path={require('../../assets/image/icon.png')}
-                        width={100}
-                        height={100}
+                        width={120}
+                        height={120}
                         resizeMode={'cover'}
                         blank_background={true}
                         borderRadius={20}
                     />
-                    <SimpleBorderText
-                        text={"دوکلام حرف حساب!"}
-                        width={200}
-                        height={22*1.6}
-                        fontSize={22}
-                        borderWidth={1}
-                        textColor={colors.primary.a2}
-                    />
+                    <Text style={{fontFamily:Font.bakh_bold, fontSize:18, color:colors.text.a1}}>{"دوکلام حرف حساب!"}</Text>
                 </View>
             </View>
             <View style={{width:"100%", alignItems:'center', gap:20, paddingBottom:50}}>
                 <View style={{width:"100%", alignItems:'center'}}>
-                    <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1}}>{`${Globals.game_name_en}  |  ${Globals.game_name_fa}`}</Text>
-                    <Text style={{fontFamily:Font.en_medium, fontSize:12, color:colors.text.a1}}>{DeviceInfo.getVersion()}</Text>
+                    <Text style={{fontFamily:Font.bakh_regular, fontSize:8, color:colors.text.a1}}>{`${Globals.game_name_en}  |  ${Globals.game_name_fa}`}</Text>
+                    <Text style={{fontFamily:Font.en_medium, fontSize:8, color:colors.text.a1}}>{DeviceInfo.getVersion()}</Text>
                 </View>
                 <LoadingBar 
                     barColor={colors.primary.a1}
