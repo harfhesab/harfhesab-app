@@ -4,7 +4,7 @@ export default {
     game_name_fa: "دوکلام",
     game_name_en: "DoKalam",
     instagram_page_url: "https://www.instagram.com/dokalam.app",
-    telegram_channel_url: "https://t.me/dokalam.app",
+    telegram_channel_url: "https://t.me/dokalam_app",
     baseURL: `${url}/graphql`,
     uri: url,
     android_package_name: 'com.dokalam.app',

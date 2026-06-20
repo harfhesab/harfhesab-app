@@ -4,8 +4,10 @@ import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import { useSelector } from 'react-redux';
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
+import { useWordToSlotStageGameMusic } from '../../../../utils/sound/MusicFunctions';
 
 function WordToSlotStageGame(props){
+    useWordToSlotStageGameMusic()
     const colors = useAppTheme()
     const stage = props?.route?.params?.stage
     const { lastStage } = useSelector((state) => state.stageGame);

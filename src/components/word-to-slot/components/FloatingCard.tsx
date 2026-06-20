@@ -71,6 +71,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
   });
   const offset = useSharedValue({ x: 0, y: 0 });
   const isDragging = useSharedValue(false);
+  const dragZIndex = useSharedValue(1);
   const isAssigned = useSharedValue(false);
   const dragFromSlot = useSharedValue<number | null>(null);
   const cardSize = useSharedValue(CARD_SIZE_FLOATING);
@@ -183,6 +184,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     .onStart(() => {
       'worklet';
       isDragging.value = true;
+      dragZIndex.value = 2000 + Math.floor(Math.random() * 10000);
       runOnJS(onStartDragWordToSlotCardSound)();
       runOnJS(vibrate)();
       cardSize.value = withSpring(CARD_SIZE_DRAGGING, SPRING_CONFIG_SOFT);
@@ -211,6 +213,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     })
     .onEnd(() => {
       isDragging.value = false;
+      dragZIndex.value = 1;
       snapToSlot();
     });
 
@@ -218,7 +221,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     transform: [{ translateX: position.value.x }, { translateY: position.value.y }],
     width: cardSize.value*1.3,
     height: cardSize.value,
-    zIndex: isDragging.value ? 2000 : 1,
+    zIndex: dragZIndex.value,
     elevation: isDragging.value ? 12 : 5,
   }));
 
@@ -250,7 +253,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
           {
             (unknown_word && !effectiveUnknownCompleted)?
             <View style={{width:CARD_SIZE_FLOATING-20, height:CARD_SIZE_FLOATING-20, borderColor:"#CC000090", backgroundColor:"#CC000020", borderWidth:1.5, borderRadius:CARD_SIZE_FLOATING/2, alignItems:'center', justifyContent:'center'}}>
-              <Icon name={"question"} type={"Fontisto"} style={{color:"#CC0000", fontSize:CARD_SIZE_FLOATING-35}}/>
+              <Icon name={"question"} type={"FontAwesome5"} style={{color:"#CC0000", fontSize:CARD_SIZE_FLOATING-35}}/>
             </View>
             :
             <AnimatedSkiaText

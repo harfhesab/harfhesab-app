@@ -21,11 +21,13 @@ import { useImmersiveMode } from '../../../hooks/useImmersiveMode';
 import Icon from '../../../utils/Icon';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageInfo from '../../../components/card/general/StageInfo';
+import { useStageListStageGameMusic } from '../../../utils/sound/MusicFunctions';
 
 const {width, height} = Dimensions.get("screen");
 
 function StagesStageGameSeason(props){
     useImmersiveMode()
+    useStageListStageGameMusic();
     const colors = useAppTheme()
     const tabRef = useRef()
     const realm = useRealm();

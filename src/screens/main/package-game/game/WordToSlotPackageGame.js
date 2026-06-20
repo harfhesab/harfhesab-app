@@ -3,8 +3,10 @@ import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
+import { useWordToSlotPackageGameMusic } from '../../../../utils/sound/MusicFunctions';
 
 function WordToSlotPackageGame(props){
+    useWordToSlotPackageGameMusic()
     const colors = useAppTheme()
     const stage = props?.route?.params?.stage;
     const lastStage = props?.route?.params?.lastStage;

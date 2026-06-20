@@ -44,8 +44,8 @@ const DropZone: React.FC<Props> = ({ index, word_help_used, word , unknown_word,
         :(word_help_used &&(!unknown_word || (unknown_word && unknown_word_completed)))?
         <Text style={{color:"#ff9800", fontFamily:Font.iran_yekan_black_fa, fontSize:FONT_SIZE_SLOTTED*fontSizeScale, textAlign:'center'}}>{word}</Text>
         :(word_help_used && unknown_word && !unknown_word_completed)&&
-        <View style={{width:((SLOT_SIZE*1.3))-10, height:SLOT_SIZE-10, borderColor:"#b71c1c", borderWidth:2, borderRadius:SLOT_SIZE/2, alignItems:'center', justifyContent:'center'}}>
-          <Icon name={"question"} type={"Fontisto"} style={{color:"#b71c1c", fontSize:SLOT_SIZE-25}}/>
+        <View style={{width:SLOT_SIZE-10, height:SLOT_SIZE-10, borderColor:"#b71c1c", backgroundColor:"#CC000020", borderWidth:1, borderRadius:SLOT_SIZE/2, alignItems:'center', justifyContent:'center'}}>
+          <Icon name={"question"} type={"FontAwesome5"} style={{color:"#b71c1c", fontSize:SLOT_SIZE-25}}/>
         </View>
 
       }

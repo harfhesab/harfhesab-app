@@ -22,6 +22,7 @@ import { useImmersiveModeNotExit } from '../../../hooks/useImmersiveModeNotExit'
 import Icon from '../../../utils/Icon';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageInfo from '../../../components/card/general/StageInfo';
+import { useStageListPackageGameMusic } from '../../../utils/sound/MusicFunctions';
 
 const {width, height} = Dimensions.get("screen");
 
@@ -38,6 +39,7 @@ function useUserPackageGameData({ userPackageId }) {
 }
 function StagesPackageGameSeason(props){
     useImmersiveModeNotExit()
+    useStageListPackageGameMusic()
     const colors = useAppTheme()
     const tabRef = useRef()
     const realm = useRealm();

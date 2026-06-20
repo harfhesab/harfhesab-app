@@ -27,6 +27,7 @@ import PackageHeader from '../../../components/header/PackageHeader';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import PackageGameSeasonFirstCard from '../../../components/card/package-game-card/PackageGameSeasonFirstCard';
 import { useImmersiveMode } from '../../../hooks/useImmersiveMode';
+import { useSeasonListPackageGameMusic } from '../../../utils/sound/MusicFunctions';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -64,6 +65,7 @@ function useUserPackageGameData({ _id, packageId }) {
 
 function StartPackageGame(props){
     useImmersiveMode()
+    useSeasonListPackageGameMusic()
     const isFocused = useIsFocused();
     const colors = useAppTheme()
     const dispatch = useDispatch();

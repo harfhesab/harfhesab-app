@@ -1,275 +1,59 @@
 import SoundPlayer from "./SoundPlayer";
 import { store } from "../../redux/store/Store";
 
+/**
+ * تابع مرکزی برای پخش افکت‌های صوتی کوتاه (SFX)
+ * @param {string} soundName - نام فایل صوتی
+ * @param {number} volume - میزان صدا
+ * @returns {Promise<boolean>} - آیا پخش موفقیت آمیز بود؟
+ */
+export const playSFX = async (soundName, volume = 1.0) => {
+  try {
+    const state = store.getState();
+    if (!state.setting.sound) return false;
 
-export const tabScreenSoundInOnClick = async (volume=0.8) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('tab.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
+    const player = await SoundPlayer.create(soundName, false, false, volume);
+
+    // تبدیل کال‌بک به پرامیس برای مدیریت راحت‌تر
+    return new Promise((resolve) => {
+      player.play((success) => {
+        player.release(); // چه موفق بود چه نبود، حافظه باید آزاد بشه
+        resolve(success); // نتیجه رو برمیگردونیم
+      });
+    });
+  } catch (e) {
+    console.log(`خطا در پخش افکت صوتی ${soundName}:`, e);
+    return false;
+  }
 };
-
+// ===================================================================================================================
+export const tabScreenSoundInOnClick = (volume = 0.5) => playSFX('tab.wav', volume);
 // ===================================================================================================================
 // ============================= Word To Slot ========================================================================
-// ===================================================================================================================
-
-export const onStartDragWordToSlotCardSound = async (volume=0.8) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('pop.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
+export const onStartDragWordToSlotCardSound = (volume = 0.8) => playSFX('pop.wav', volume);
+export const dropWordToSlotCardInFloatingSound = (volume = 0.8) => playSFX('soft_whoosh.wav', volume);
+export const dropWordToSlotCardInSlotSound = (volume = 0.4) => playSFX('snap.wav', volume);
+export const successfulCompletionOfStageSound = async (volume = 1) => {
+  await playSFX('success.wav', volume);
+  await playSFX('coin_reward.wav', volume);
 };
-
-export const dropWordToSlotCardInFloatingSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('btn.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
+export const typingSentenceSucccessSound = (volume = 0.8) => playSFX('connected_1.wav', volume);
+export const typingSentenceErrorSound = (volume = 0.8) => playSFX('denied.wav', volume);
+export const successfulCompletionOfSeasonSound = async (volume = 1) => {
+  await playSFX('level_up.wav', volume);
+  await playSFX('coin_reward.wav', volume);
 };
-
-export const dropWordToSlotCardInSlotSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('click.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const successfulCompletionOfStageSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('success_1.wav', false, false, volume);
-            const player2 = await SoundPlayer.create('coin_reward_2.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                    player2.play((success) => {
-                        if (success) {
-                            player2.release();
-                            
-                        }
-                    });
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const typingSentenceSucccessSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('connected_1.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const typingSentenceErrorSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('connected_2.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const successfulCompletionOfSeasonSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('level_up_2.wav', false, false, volume);
-            const player2 = await SoundPlayer.create('coin_reward_2.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                    player2.play((success) => {
-                        if (success) {
-                            player2.release();
-                            
-                        }
-                    });
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
 // ===================================================================================================================
 // ============================== Connecting Letter ==================================================================
-// ===================================================================================================================
-
-export const connectingLetterSucccessSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('connected_1.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
+export const connectingLetterSucccessSound = (volume = 0.8) => playSFX('connected_1.wav', volume);
+export const connectingLetterDuplicateSound = (volume = 0.2) => playSFX('notification.wav', volume);
+export const connectingLetterErrorSound = (volume = 0.8) => playSFX('denied.wav', volume);
+export const selectCardSoundInLettersConnecting = (volume = 0.4) => playSFX('whoop.wav', volume);
+export const deselectCardSoundInLettersConnecting = (volume = 0.8) => playSFX('pop.wav', volume);
+export const successfulCompletionOfConnectingLetterSound = async (volume = 1) => {
+  await playSFX('success.wav', volume);
+  await playSFX('coin_reward.wav', volume);
 };
-
-export const connectingLetterDuplicateSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('notification.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const connectingLetterErrorSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('connected_2.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const selectCardSoundInLettersConnecting = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('btn.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const deselectCardSoundInLettersConnecting = async (volume=0.8) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('pop.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
-export const successfulCompletionOfConnectingLetterSound = async (volume=1) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('success_1.wav', false, false, volume);
-            const player2 = await SoundPlayer.create('coin_reward_2.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                    player2.play((success) => {
-                        if (success) {
-                            player2.release();
-                            
-                        }
-                    });
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
-
 // ===================================================================================================================
 // ============================= Coin Sound ==========================================================================
-// ===================================================================================================================
-export const coinCountUpdateSound = async (volume=0.4) => {
-    try {
-        const state = store.getState()
-        if(state.setting.sound == true){
-            const player = await SoundPlayer.create('coin.wav', false, false, volume);
-            player.play((success) => {
-                if (success) {
-                    player.release();
-                }
-            });
-        }
-    } catch (e) {
-        null
-    }
-};
+export const coinCountUpdateSound = (volume = 0.2) => playSFX('coin.ogg', volume);

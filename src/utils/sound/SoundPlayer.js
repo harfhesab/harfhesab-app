@@ -1,3 +1,4 @@
+import { AppState } from 'react-native';
 import Sound from 'react-native-sound';
 
 // تنظیم دسته‌بندی پخش برای اجازه پخش در حالت سکوت (اختیاری اما مفید)
@@ -5,19 +6,19 @@ Sound.setCategory('Playback');
 
 /**
  * کلاس SoundPlayer برای مدیریت پخش صدا به صورت حرفه‌ای.
- * این کلاس امکان پخش صدا از باندل اپلیکیشن یا از استوریج محلی (حافظه دستگاه) را فراهم می‌کند.
- * همچنین متدهایی برای کنترل پخش مانند play، pause، stop و تنظیم لوپ (تکرار پشت سر هم) دارد.
- * 
- * @param {string} soundName - نام فایل صدا (مانند 'pop.wav'). اگر fromStorage=true باشد، این باید مسیر کامل فایل باشد (مانند '/sdcard/Downloads/pop.wav').
- * @param {boolean} [fromStorage=false] - اگر true باشد، صدا از استوریج محلی بارگذاری می‌شود (basePath خالی می‌ماند).
- * @param {boolean} [loop=false] - اگر true باشد، صدا به صورت تکراری (لوپ) پخش می‌شود.
- * @param {number} [volume=1.0] - حجم صدا (از 0.0 تا 1.0). مقدار پیش‌فرض 1.0 (حداکثر حجم).
+ * این کلاس امکان پخش صدا از باندل اپلیکیشن یا از استوریج محلی را فراهم می‌کند.
+ * مدیریت خودکار پخش/توقف در حالت بک‌گراند و فورگراند اپلیکیشن اضافه شده است.
  */
 class SoundPlayer {
   constructor(soundName, fromStorage = false, loop = false, volume = 1.0) {
     this.sound = null;
     this.isLoaded = false;
     this.error = null;
+
+    // --- متغیرهای جدید برای مدیریت بک‌گراند/فورگراند ---
+    this.isPlaying = false;        // وضعیت فعلی پخش
+    this._systemPaused = false;    // آیا سیستم‌عامل (بک‌گراند شدن) آهنگ را متوقف کرده؟
+    this.onEndCallback = null;     // ذخیره کال‌بک کاربر برای زمانی که آهنگ بعد از رزومه شدن تمام می‌شود
 
     // تعیین basePath بر اساس fromStorage
     const basePath = fromStorage ? '' : Sound.MAIN_BUNDLE;
@@ -29,33 +30,58 @@ class SoundPlayer {
         return;
       }
       this.isLoaded = true;
-      // تنظیم حجم صدا
       this.sound.setVolume(volume);
-      // تنظیم لوپ اگر درخواست شده باشد
       if (loop) {
         this.setLoop(true);
       }
     });
+
+    // سابسکرایب به تغییرات وضعیت اپلیکیشن (Background / Foreground)
+    this.appStateSubscription = AppState.addEventListener('change', this._handleAppStateChange);
   }
 
   /**
-   * Factory method برای ایجاد instance به صورت async و منتظر ماندن برای لود.
-   * @returns {Promise<SoundPlayer>} - promise که instance آماده رو برمی‌گردونه.
+   * متد خصوصی برای هندل کردن وضعیت بک‌گراند و فورگراند
+   */
+  _handleAppStateChange = (nextAppState) => {
+    if (nextAppState.match(/inactive|background/)) {
+      // اگر اپلیکیشن به بک‌گراند رفت و آهنگ در حال پخش بود:
+      if (this.isPlaying && this.sound) {
+        this._systemPaused = true; // فلگ می‌زنیم که سیستم متوقفش کرده
+        this.sound.pause();
+      }
+    } else if (nextAppState === 'active') {
+      // اگر اپلیکیشن به فورگراند برگشت و سیستم آهنگ را متوقف کرده بود:
+      if (this._systemPaused && this.sound) {
+        this._systemPaused = false;
+        
+        // ادامه پخش آهنگ
+        this.sound.play((success) => {
+          if (this._systemPaused) return; // جلوگیری از تداخل در رفت و آمدهای سریع
+          this.isPlaying = false;
+          // فراخوانی کال‌بکی که کاربر از قبل پاس داده بود
+          if (this.onEndCallback) {
+            this.onEndCallback(success);
+          }
+        });
+      }
+    }
+  };
+
+  /**
+   * Factory method برای ایجاد instance به صورت async
    */
   static async create(soundName, fromStorage = false, loop = false, volume = 1.0) {
     const player = new SoundPlayer(soundName, fromStorage, loop, volume);
     return new Promise((resolve, reject) => {
-      // اگر بلافاصله error داشته باشه
       if (player.error) {
         reject(player.error);
         return;
       }
-      // اگر بلافاصله لود شده باشه (نادر اما ممکن)
       if (player.isLoaded) {
         resolve(player);
         return;
       }
-      // منتظر callback لود (با استفاده از interval ساده برای چک)
       const interval = setInterval(() => {
         if (player.error) {
           clearInterval(interval);
@@ -64,8 +90,7 @@ class SoundPlayer {
           clearInterval(interval);
           resolve(player);
         }
-      }, 50); // چک هر 50ms - می‌تونی تنظیم کنی
-      // تایم‌اوت برای جلوگیری از لوپ بی‌نهایت (مثلاً 5 ثانیه)
+      }, 50);
       setTimeout(() => {
         clearInterval(interval);
         reject(new Error('Sound loading timeout'));
@@ -74,28 +99,36 @@ class SoundPlayer {
   }
 
   /**
-   * پخش صدا. اگر صدا بارگذاری نشده باشد، خطا می‌دهد.
+   * پخش صدا.
    * @param {function} [onEndCallback] - کال‌بک اختیاری برای پایان پخش.
    */
   play(onEndCallback = null) {
     if (!this.isLoaded) {
       return;
     }
+    
+    this.isPlaying = true;
+    this._systemPaused = false;
+    this.onEndCallback = onEndCallback; // کال‌بک را در کلاس ذخیره می‌کنیم
+
     this.sound.play((success) => {
-      if (success) {
-      } else {
-      }
-      if (onEndCallback) {
-        onEndCallback(success);
+      // اگر توقف به دلیل بک‌گراند رفتن بوده، این رویدادِ پایانِ موفقیت‌آمیز نیست، پس نادیده‌اش می‌گیریم
+      if (this._systemPaused) return;
+
+      this.isPlaying = false;
+      if (this.onEndCallback) {
+        this.onEndCallback(success);
       }
     });
   }
 
   /**
-   * مکث پخش صدا.
+   * مکث پخش صدا به صورت دستی.
    */
   pause() {
     if (this.sound) {
+      this.isPlaying = false;
+      this._systemPaused = false; // چون دستی پاوز شده، پس وقتی برگشتیم به اپ نباید خودکار پخش بشه
       this.sound.pause();
     }
   }
@@ -105,14 +138,14 @@ class SoundPlayer {
    */
   stop() {
     if (this.sound) {
-      this.sound.stop(() => {
-      });
+      this.isPlaying = false;
+      this._systemPaused = false;
+      this.sound.stop(() => {});
     }
   }
 
   /**
    * تنظیم حالت لوپ (تکرار پشت سر هم).
-   * @param {boolean} enable - اگر true باشد، لوپ فعال می‌شود (-1 برای تکرار نامحدود)، иначе تک‌باره پخش می‌شود.
    */
   setLoop(enable) {
     if (this.sound) {
@@ -122,13 +155,19 @@ class SoundPlayer {
 
   /**
    * آزادسازی منابع صدا برای جلوگیری از نشت حافظه.
-   * بعد از اتمام استفاده، این متد را فراخوانی کنید.
    */
   release() {
+    // حذف EventListener تا حافظه را پر نکند (Memory Leak)
+    if (this.appStateSubscription) {
+      this.appStateSubscription.remove();
+    }
+
     if (this.sound) {
       this.sound.release();
       this.sound = null;
       this.isLoaded = false;
+      this.isPlaying = false;
+      this._systemPaused = false;
     }
   }
 }
