@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { View, TouchableOpacity, TextInput, StyleSheet, ImageBackground } from "react-native";
 import Animated, {
   useSharedValue,
@@ -7,9 +7,11 @@ import Animated, {
   withSequence,
   withTiming,
   withRepeat,
+  withDelay,
   cancelAnimation,
   useAnimatedProps,
   Easing,
+  runOnJS,
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import Font from "../../utils/Font";
@@ -33,31 +35,25 @@ function formatWithSeparator(n: number): string {
   return out;
 }
 
-// نسخه تایپ‌اسکریپت صحیح برای wait
-const wait = (ms: number): Promise<void> =>
-  new Promise((resolve) => {
-    setTimeout(() => resolve(), ms);
-  });
-
-function NumberCoins({
-  onPress = () => {},
-}: {
+interface NumberCoinsProps {
   onPress?: () => void;
-}) {
-  
+}
+
+function NumberCoins({ onPress = () => {} }: NumberCoinsProps) {
   const { numberCoins } = useSelector((state: any) => state.coins);
 
-  const size = useSharedValue(25);
+  const scale = useSharedValue(1.25);
   const rotateY = useSharedValue(0);
 
   const animatedValue = useSharedValue<number>(numberCoins ?? 0);
-  const isCounting = useSharedValue(false);
+  const isCounting = useRef(false);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      width: size.value,
-      height: size.value,
-      transform: [{ rotateY: `${rotateY.value}deg` }],
+      transform: [
+        { scale: scale.value },
+        { rotateY: `${rotateY.value}deg` }
+      ],
     };
   });
 
@@ -67,69 +63,84 @@ function NumberCoins({
     } as any;
   });
 
-  // انیمیشن آرام پیش‌فرض سکه
+  // تابع Idle کاملاً امن در لایه JS
+  const startIdleAnimation = () => {
+    if (isCounting.current) return;
+
+    scale.value = withRepeat(
+      withSequence(
+        withSpring(1.25, { damping: 5, stiffness: 280, mass: 0.8, overshootClamping: false }),
+        withDelay(1200, withSpring(1.0, { damping: 5, stiffness: 280, mass: 0.8, overshootClamping: false })),
+        withDelay(12000, withTiming(1.0, { duration: 0 }))
+      ),
+      -1,
+      false
+    );
+
+    rotateY.value = withRepeat(
+      withSequence(
+        withDelay(3200, withTiming(70, { duration: 1000 })),
+        withDelay(2000, withTiming(-70, { duration: 2000 })),
+        withDelay(2000, withTiming(0, { duration: 1000 })),
+        withDelay(4000, withTiming(0, { duration: 0 }))
+      ),
+      -1,
+      false
+    );
+  };
+
+  // تعریف یک تابع جداگانه در JS Thread برای جلوگیری از کرش Worklet
+  const finishCounting = () => {
+    isCounting.current = false;
+    startIdleAnimation();
+  };
+
   useEffect(() => {
-    let isMounted = true;
-
-    const loopAnimations = async () => {
-      while (isMounted) {
-        if (!isCounting.value) {
-          size.value = withSequence(
-            withSpring(25, { damping: 5, stiffness: 280, mass:0.8, overshootClamping:false }),
-          );
-          await wait(1200);
-          size.value = withSequence(
-            withSpring(20, { damping: 5, stiffness: 280, mass:0.8, overshootClamping:false })
-          );
-          await wait(2000);
-          rotateY.value = withTiming(70, { duration: 1000 });
-          await wait(2000);
-          rotateY.value = withTiming(-70, { duration: 2000 });
-          await wait(2000);
-          rotateY.value = withTiming(0, { duration: 1000 });
-          await wait(4000);
-        } else {
-          await wait(300); // وقتی شمارش فعاله، لوپ متوقف باشه
-        }
-      }
-    };
-
-    loopAnimations();
+    startIdleAnimation();
     return () => {
-      isMounted = false;
+      cancelAnimation(scale);
+      cancelAnimation(rotateY);
     };
   }, []);
 
-  // شمارش + انیمیشن چرخش
   useEffect(() => {
     const current = animatedValue.value;
     const target = typeof numberCoins === "number" ? numberCoins : 0;
     const diff = Math.abs(target - current);
+    
     if (diff === 0) return;
 
-    isCounting.value = true;
+    isCounting.current = true;
 
-    // شروع چرخش سریع بی‌نهایت
+    cancelAnimation(scale);
     cancelAnimation(rotateY);
+    scale.value = 1;
+
     rotateY.value = withRepeat(
       withTiming(360, { duration: 500, easing: Easing.linear }),
       -1,
       false
     );
-    coinCountUpdateSound()
+
+    coinCountUpdateSound();
+
     animatedValue.value = withTiming(
       target,
-      { duration: 1000, easing: Easing.out(Easing.quad) }, // ← کندتر و واضح‌تر
+      { duration: 1000, easing: Easing.out(Easing.quad) },
       (finished) => {
         if (finished) {
-          isCounting.value = false;
           cancelAnimation(rotateY);
 
-          // بعد از شمارش: فرفره‌وار بچرخه و کم‌کم کند بشه
-          rotateY.value = withTiming(rotateY.value + 1440, {
-            duration: 2000,
-            easing: Easing.out(Easing.quad),
-          });
+          rotateY.value = withTiming(
+            rotateY.value + 1440,
+            { duration: 2000, easing: Easing.out(Easing.quad) },
+            (rotFinished) => {
+              if (rotFinished) {
+                // فراخوانی امن تابعِ JS از درون Worklet
+                runOnJS(finishCounting)();
+              }
+            }
+          );
         }
       }
     );
@@ -137,71 +148,82 @@ function NumberCoins({
 
   const onClick = () => {
     onPress?.();
-    navigate("CoinPlans")
+    navigate("CoinPlans");
   };
+
+  const coinStr = String(numberCoins ?? 0);
+  const fontSize = coinStr.length > 5 ? 12 : coinStr.length > 4 ? 13 : 15;
 
   return (
     <TouchableOpacity activeOpacity={0.85} onPress={onClick}>
       <ImageBackground
-          source={require("../../assets/image/frame_coin.png")}
-          style={{ width: 115, height: 40, justifyContent: "center", alignItems: "center" }}
-          imageStyle={{ resizeMode: "stretch" }}
-          resizeMode="stretch"
+        source={require("../../assets/image/frame_coin.png")}
+        style={styles.backgroundImage}
+        imageStyle={styles.imageStyle}
+        resizeMode="stretch"
       >
-        <View
-            style={styles.container}
-          >
-            
-            <View style={{width:50, alignItems:'center'}}>
-              <AnimatedTextInput
-                editable={false}
-                underlineColorAndroid="transparent"
-                animatedProps={animatedTextProps}
-                defaultValue={priceDigitSeperator(String(numberCoins ?? 0))}
-                style={{
-                  fontFamily: Font.black,
-                  fontSize: numberCoins.toString().length > 5?12:numberCoins.toString().length>4?13:15,
-                  color: "#FFFFFF",
-                  padding: 0,
-                  textAlign: "center",
-                }}
-              />
-            </View>
-            
-
-            <View style={styles.coinWrapper}>
-              <Animated.Image
-                style={animatedStyle}
-                source={require("../../assets/image/coin.png")}
-              />
-            </View>
+        <View style={styles.container}>
+          <View style={styles.textWrapper}>
+            <AnimatedTextInput
+              editable={false}
+              underlineColorAndroid="transparent"
+              animatedProps={animatedTextProps}
+              defaultValue={priceDigitSeperator(coinStr)}
+              style={[styles.textInput, { fontSize }]}
+            />
           </View>
+
+          <View style={styles.coinWrapper}>
+            <Animated.Image
+              style={[styles.coinImage, animatedStyle]}
+              source={require("../../assets/image/coin.png")}
+            />
+          </View>
+        </View>
       </ImageBackground>
-      
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    width: 115,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageStyle: {
+    resizeMode: "stretch",
+  },
   container: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
     height: "100%",
-    paddingEnd:9,
-    paddingStart:25,
-    paddingBottom:2
+    paddingEnd: 9,
+    paddingStart: 25,
+    paddingBottom: 2,
   },
-  iconContainer: {
+  textWrapper: {
+    width: 50,
     alignItems: "center",
-    justifyContent: "center",
+  },
+  textInput: {
+    fontFamily: Font.black,
+    color: "#FFFFFF",
+    padding: 0,
+    textAlign: "center",
   },
   coinWrapper: {
     width: 20,
     height: 20,
     alignItems: "center",
     justifyContent: "center",
+  },
+  coinImage: {
+    width: 20,
+    height: 20,
   },
 });
 
