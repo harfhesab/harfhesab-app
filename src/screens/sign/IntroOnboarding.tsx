@@ -16,7 +16,7 @@ const slidesData: SlideItem[] = [
   {
     id: '1',
     title: 'خوش آمدید',
-    description: 'دو کلام، حرف حساب بازی کنید!',
+    description: 'تو این دنیای بی حساب، دو کلام، حرف حساب بازی کنید!',
     CustomComponent: ()=>{
       return<DoKalamLogoAnimation
         animate={true}

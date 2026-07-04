@@ -1,8 +1,19 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { Canvas, Text, useFont, Group, Skia, vec, TileMode, PaintStyle } from '@shopify/react-native-skia';
+import { 
+  Canvas, 
+  Group, 
+  Skia, 
+  vec, 
+  Paragraph, 
+  useFonts, 
+  TextAlign, 
+  TextDirection,
+  Mask,
+  Rect,
+  LinearGradient
+} from '@shopify/react-native-skia';
 import { useDerivedValue, SharedValue } from 'react-native-reanimated';
-import { prepareRTLText } from '../../utils/prepareRTLText';
 
 interface AnimatedSkiaTextProps {
   text: string;
@@ -11,7 +22,6 @@ interface AnimatedSkiaTextProps {
   initialWidth: number;
   initialHeight: number;
   rtl?: boolean;
-  ltr?: boolean;
   gradientColors?: string[];
   borderColor?: string;
   borderWidth?: number;
@@ -24,116 +34,111 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
   initialWidth,
   initialHeight,
   rtl = true,
-  ltr = false,
-  gradientColors = ['#9900ef',  '#662d86', '#3a194d'],
+  gradientColors = ['#9d34da', '#3800b9'],
   borderColor = '#FFFFFF',
-  borderWidth = 1.5,
- }) => {
+  borderWidth = 1,
+}) => {
 
-  const gradient = Skia.Shader.MakeLinearGradient(
-    vec(0, 0),
-    vec(initialWidth, 0),
-    gradientColors.map((c) => Skia.Color(c)),
-    null,
-    TileMode.Clamp
-  );
-  const gradientPaint = Skia.Paint();
-  gradientPaint.setShader(gradient);
+  // بارگذاری فونت منیجر
+  const customFontMgr = useFonts({
+    'YekanBakh': [require('../../assets/fonts/YekanBakhFaNum-Black.ttf')]
+  });
 
-  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-Black.ttf'), initialFontSize);
   const scale = useDerivedValue(() => fontSize.value / initialFontSize, [fontSize]);
   const transform = useDerivedValue(() => [{ scale: scale.value }], [scale]);
 
-  if (font === null) {
+  // تبدیل رنگ‌ها به فرمت قابل فهم برای Skia
+  const parsedBorderColor = useMemo(() => Skia.Color(borderColor), [borderColor]);
+  const parsedWhiteColor = useMemo(() => Skia.Color('#FFFFFF'), []);
+
+  const { maskParagraph, borderParagraph, paraHeight, paraWidth } = useMemo(() => {
+    if (!customFontMgr) return { maskParagraph: null, borderParagraph: null, paraHeight: 0, paraWidth: 0 };
+
+    const maxWidth = initialWidth * 0.95;
+
+    // یک تابع سازنده برای تولید پاراگراف با رنگ‌های Solid (بدون Paint)
+    const buildPara = (color: Float32Array) => {
+      const builder = Skia.ParagraphBuilder.Make({
+        textAlign: TextAlign.Center,
+        textDirection: rtl ? TextDirection.RTL : TextDirection.LTR,
+      }, customFontMgr);
+
+      builder.pushStyle({
+        fontFamilies: ['YekanBakh'],
+        fontSize: initialFontSize,
+        color: color, // 🌟 اینجا فقط رنگ ساده پاس داده می‌شود تا کرش نکند
+      });
+
+      builder.addText(text); 
+      const p = builder.build();
+      p.layout(maxWidth); 
+      return p;
+    };
+
+    // ساخت دو پاراگراف: یکی برای حاشیه (با رنگ بوردر) و یکی برای ماسک (رنگ سفید)
+    const pBorder = buildPara(parsedBorderColor);
+    const pMask = buildPara(parsedWhiteColor);
+
+    return {
+      maskParagraph: pMask,
+      borderParagraph: pBorder,
+      paraHeight: pBorder.getHeight(),
+      paraWidth: maxWidth
+    };
+  }, [customFontMgr, text, rtl, initialFontSize, initialWidth, parsedBorderColor, parsedWhiteColor]);
+
+  if (!customFontMgr || !maskParagraph || !borderParagraph) {
     return null;
   }
+
+  const x = (initialWidth - paraWidth) / 2;
+  const y = (initialHeight - paraHeight) / 2;
   
-  const isRtl = rtl === true && ltr === false;
-  const metrics = font.getMetrics();
-  const ascent = metrics.ascent;
-  const descent = metrics.descent;
-  const leading = metrics.leading;
-  const lineHeight = -ascent + descent + leading;
-
-  // Function to wrap text into lines
-  const wrapText = (text: string, maxWidth: number) => {
-    const words = text.split(' ');
-    const lines: string[] = [];
-    let currentLineWords: string[] = [];
-
-    for (const word of words) {
-      const testLineWords = [...currentLineWords, word];
-      const testLine = testLineWords.join(' ');
-      
-      // برای اندازه‌گیری دقیق، بهتر است اینجا هم نیم‌فاصله حذف شود
-      let testRendered = isRtl ? prepareRTLText(testLine) : testLine;
-      testRendered = testRendered.replace(/\u200C/g, ''); 
-      
-      const testWidth = font.measureText(testRendered).width;
-      if (testWidth <= maxWidth) {
-        currentLineWords = testLineWords;
-      } else {
-        if (currentLineWords.length > 0) {
-          const currentLine = currentLineWords.join(' ');
-          lines.push(currentLine);
-        }
-        currentLineWords = [word];
-      }
-    }
-    if (currentLineWords.length > 0) {
-      const currentLine = currentLineWords.join(' ');
-      lines.push(currentLine);
-    }
-    return lines;
-  };
-
-  const maxTextWidth = initialWidth * 0.95; 
-  const lines = wrapText(text, maxTextWidth);
-  
-  // 🌟 بخش اصلاح‌شده: حذف کامل کاراکتر نیم‌فاصله بعد از فرمت‌دهی RTL
-  const renderedLines = lines.map(line => {
-    const preparedLine = isRtl ? prepareRTLText(line) : line;
-    return preparedLine.replace(/\u200C/g, ''); // حذف ZWNJ
-  });
-  
-  const lineWidths = renderedLines.map(line => font.measureText(line).width);
-
-  const totalHeight = (lines.length - 1) * lineHeight + (-ascent + descent);
-  const top = (initialHeight - totalHeight) / 2;
-  const firstBaseline = top - ascent;
-
-  const strokePaint = Skia.Paint();
-  strokePaint.setColor(Skia.Color(borderColor));
-  strokePaint.setStyle(PaintStyle.Stroke);
-  strokePaint.setStrokeWidth(borderWidth);
+  // محاسبه مختصات برای افکت Stroke با استفاده از ۸ کپی از متن
+  const d = borderWidth;
+  const strokeOffsets = [
+    [-d, -d], [0, -d], [d, -d],
+    [-d,  0],          [d,  0],
+    [-d,  d], [0,  d], [d,  d]
+  ];
 
   return (
     <Canvas style={styles.canvas}>
       <Group transform={transform}>
-        {lines.map((logicalLine, index) => {
-          const line = renderedLines[index];
-          const y = firstBaseline + index * lineHeight;
-          const x = (initialWidth - lineWidths[index]) / 2;
-          return (
-            <React.Fragment key={index}>
-              {/* بوردر */}
-              <Text
-                x={x}
-                y={y}
-                text={line}
-                font={font}
-                paint={strokePaint}
+        
+        {/* لایه اول: استروک (Stroke) */}
+        {/* رسم چندین باره‌ی پاراگراف با جابه‌جایی‌های ریز برای ایجاد حاشیه */}
+        {strokeOffsets.map(([dx, dy], index) => (
+          <Paragraph 
+            key={`stroke-${index}`}
+            paragraph={borderParagraph} 
+            x={x + dx} 
+            y={y + dy} 
+            width={paraWidth} // 🌟 اضافه شدن width الزامی برای حل ارور تایپ‌اسکریپت
+          />
+        ))}
+
+        {/* لایه دوم: گرادیانت روی متن اصلی */}
+        {/* استفاده از Paragraph به عنوان یک ماسک برای بُرش دادن مستطیل گرادیانت‌دار */}
+        
+          <Mask
+            mask={
+              <Paragraph 
+                paragraph={maskParagraph} 
+                x={x} 
+                y={y} 
+                width={paraWidth} 
               />
-              <Text
-                x={x}
-                y={y}
-                text={line}
-                font={font}
-                paint={gradientPaint}
+            }
+          >
+            <Rect x={x} y={y} width={paraWidth} height={paraHeight}>
+              <LinearGradient
+                start={vec(0, y)}
+                end={vec(0, y + paraHeight)}
+                colors={gradientColors}
               />
-            </React.Fragment>
-          );
-        })}
+            </Rect>
+          </Mask>
       </Group>
     </Canvas>
   );

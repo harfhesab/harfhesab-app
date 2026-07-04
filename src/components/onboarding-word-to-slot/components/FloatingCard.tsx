@@ -26,10 +26,18 @@ interface Props {
 }
 
 
-function getFontScale(word:string) {
-  const len = (word?.length || 0);
-  const scale = 1.8 - 0.13 * len + 0.003 * len * len;
-  return Math.max(0.8, Math.min(1.6, scale));
+
+function getFontScale(word: string) {
+  const len = word?.length || 0;
+
+  const scale =
+    1.75 -
+    0.3 * Math.log(len + 1) -
+    0.015 * len +
+    0.35 / (len + 1) +
+    0.15 * Math.exp(-Math.pow(len - 1, 2) / 2);
+
+  return Math.max(0.95, Math.min(1.8, scale));
 }
 
 function FloatingCard({ word, index, unknown_word }: Props) {

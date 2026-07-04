@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
 import TopHeader from './TopHeader';
 import { typingSentenceErrorSound, typingSentenceSucccessSound } from '../../../utils/sound/SoundFunctions';
+import DynamicProSkiaText from '../../text-components/DynamicProSkiaText';
 
 
 const SentenceDisplay = () => {
@@ -68,17 +69,13 @@ const SentenceDisplay = () => {
                     {
                       completedSentences?.map((item, index)=>(
                         <View key={index.toString()} style={{backgroundColor:`${colors.primary.a1}90`, paddingHorizontal:15, paddingVertical:1, borderRadius:10, alignItems:'center', justifyContent:'center'}}>
-                            <MultiLineTextGradientSvg
-                                text={item}
-                                fontFamily={Font.iran_yekan_bold}
-                                fontSize={18}
-                                dropShadow={true}
-                                shadowColor={'#000000'}
-                                shadowBlur={10}
-                                glowBlur={50}
-                                glowColor={'#FFFFFF'}
-                                glowShadow={true}
-                                colors={['#FFFFFF', '#fcb900']}
+                          
+                            <DynamicProSkiaText 
+                              text={item}
+                              textColor={colors.primary.a3} 
+                              borderColor={colors.primary.a7} 
+                              borderWidth={1.5}
+                              fontSize={20}
                             />
                         </View>
                       ))
