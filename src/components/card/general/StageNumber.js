@@ -47,7 +47,7 @@ function StageNumber({
   return (
     lock == true?
     <ImageBackground
-        source={require("../../../assets/image/square_black.png")}
+        source={require("../../../assets/image/square_red.png")}
         style={{ width: STAGE_CARD_SIZE, height: STAGE_CARD_SIZE, justifyContent: "center", alignItems: "center", margin:STAGE_CARD_MARGIN }}
         imageStyle={{ resizeMode: "stretch" }}
         resizeMode="stretch"

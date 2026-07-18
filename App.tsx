@@ -4,9 +4,10 @@ import { store, persistor } from './src/redux/store/Store';
 import { PersistGate } from 'redux-persist/integration/react';
 import Main from './src/main/Main';
 import { RealmProviderWrapper } from './src/realm/RealmProviderWrapper';
-import PersistGateLoader from './src/components/loader/PersistGateLoader';
 import axios from 'axios';
 import Globals from './src/utils/Globals';
+import { SkiaFontProvider } from './src/context/SkiaFontProvider';
+import { ProvidersLoader } from './src/components/loader/ProvidersLoader';
 
 
 axios.defaults.baseURL = Globals.baseURL;
@@ -17,8 +18,10 @@ function App(): React.JSX.Element {
   return (
     <RealmProviderWrapper>
       <Provider store={store}> 
-        <PersistGate loading={<PersistGateLoader/>} persistor={persistor}>
-          <Main/>
+        <PersistGate loading={<ProvidersLoader />} persistor={persistor}>
+          <SkiaFontProvider>
+            <Main/>
+          </SkiaFontProvider>
         </PersistGate>
       </Provider>
     </RealmProviderWrapper>

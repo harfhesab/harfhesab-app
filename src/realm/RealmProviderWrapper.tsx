@@ -1,6 +1,6 @@
 // import React, { useRef } from 'react';
 // import { RealmProvider } from '.';
-// import { DatabaseLoader } from '../components/loader/DatabaseLoader';
+// import { ProvidersLoader } from '../components/loader/ProvidersLoader';
 
 // interface Props {
 //   children: React.ReactNode;
@@ -11,7 +11,7 @@
 
 //   return (
 //     <RealmProvider
-//       fallback={<DatabaseLoader />}
+//       fallback={<ProvidersLoader />}
 //       realmRef={realmRef}
 //       closeOnUnmount={false}
 //     >
@@ -24,8 +24,8 @@
 // RealmProviderWrapper.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { RealmProvider } from '.';
-import { DatabaseLoader } from '../components/loader/DatabaseLoader';
 import { getOrCreateRealmEncryptionKey } from './security/realmEncryptionKey';
+import { ProvidersLoader } from '../components/loader/ProvidersLoader';
 
 interface Props {
   children: React.ReactNode;
@@ -53,12 +53,12 @@ export const RealmProviderWrapper = ({ children }: Props) => {
   }, []);
 
   if (!encryptionKey) {
-    return <DatabaseLoader />;
+    return <ProvidersLoader />;
   }
 
   return (
     <RealmProvider
-      fallback={<DatabaseLoader />}
+      fallback={<ProvidersLoader />}
       realmRef={realmRef}
       closeOnUnmount={false}
       encryptionKey={encryptionKey}

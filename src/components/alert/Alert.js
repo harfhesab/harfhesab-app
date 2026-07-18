@@ -64,6 +64,7 @@ const Alert = React.forwardRef((props, ref)=>{
     useImperativeHandle(ref, ()=>({
         open
     }))
+    if (!visible) return null;
     return(
         <Modal
                 animationIn={'fadeIn'}

@@ -7,7 +7,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
-import SimpleBorderTextBold from '../../../text-components/SimpleBorderTextBold';
+import SimpleBorderText from '../../../text-components/SimpleBorderText';
 
 interface PlaceholderSquareProps {
   letter: string;
@@ -60,12 +60,15 @@ const PlaceholderSquare = ({ letter, isRevealed, size, mainWord }: PlaceholderSq
             ]}
         >
           {showContent && (
-            <SimpleBorderTextBold
+            <SimpleBorderText
                 text={letter}
                 width={size}
                 height={size}
                 fontSize={size/1.4}
                 borderWidth={1}
+                textColor={"#960000"}
+                borderColor={"#ffeb3b"}
+                fontName={"YekanBakh-ExtraBlack"}
             />
           )}
         </Animated.View>

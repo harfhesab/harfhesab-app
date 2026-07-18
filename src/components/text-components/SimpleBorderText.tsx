@@ -1,7 +1,7 @@
-import React, {memo} from 'react';
-import { StyleSheet } from 'react-native';
-import { Canvas, Text, useFont, Group, Skia, PaintStyle } from '@shopify/react-native-skia';
+import React, { memo, useMemo } from 'react';
+import { Canvas, Text, Group, Skia, PaintStyle } from '@shopify/react-native-skia';
 import { prepareRTLText } from '../../utils/prepareRTLText';
+import { useGlobalFonts } from '../../context/SkiaFontProvider';
 
 interface SimpleBorderTextProps {
   text: string;
@@ -13,6 +13,7 @@ interface SimpleBorderTextProps {
   textColor?: string;
   borderColor?: string;
   borderWidth?: number;
+  fontName?: string;
 }
 
 const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({ 
@@ -25,9 +26,28 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   textColor = '#9900ef',
   borderColor = '#FFFFFF',
   borderWidth = 1.5,
+  fontName = 'YekanBakh-ExtraBold',
  }) => {
 
-  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-ExtraBold.ttf'), fontSize);
+  // 🌟 دریافت مدیر فونت از کانتکست
+  const { customFontMgr } = useGlobalFonts();
+
+  // 🌟 ساخت داینامیکِ شیء Font برای استفاده در کامپوننت Text
+  const font = useMemo(() => {
+    if (!customFontMgr) return null;
+
+    // پیدا کردن Typeface مربوط به این نام از درون Font Manager
+    // مقادیر weight: 400, width: 5, slant: 0 حالت استاندارد برای جستجوی فونت هستند
+    const typeface = customFontMgr.matchFamilyStyle(fontName, { weight: 400, width: 5, slant: 0 });
+    
+    if (!typeface) {
+      console.warn(`Font family "${fontName}" not found in customFontMgr.`);
+      return null;
+    }
+    
+    // تبدیل Typeface به شیء SkFont که برای اندازه‌گیری و رندر متن نیاز داریم
+    return Skia.Font(typeface, fontSize);
+  }, [customFontMgr, fontName, fontSize]);
 
   if (font === null || !text?.trim()) {
     return null;
@@ -40,7 +60,7 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   const leading = metrics.leading;
   const lineHeight = -ascent + descent + leading;
 
-  // Function to wrap text into lines 
+  // Function to wrap text into lines (منطق کاملاً دست‌نخورده باقی ماند)
   const wrapText = (text: string, maxWidth: number) => {
     const words = text.split(' ');
     const lines: string[] = [];
@@ -50,7 +70,6 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
       const testLineWords = [...currentLineWords, word];
       const testLine = testLineWords.join(' ');
       
-      // 🌟 اصلاح: حذف نیم‌فاصله برای محاسبه دقیق عرض
       let testRendered = isRtl ? prepareRTLText(testLine) : testLine;
       testRendered = testRendered.replace(/\u200C/g, ''); 
       
@@ -75,7 +94,6 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   const maxTextWidth = width * 0.95;
   const lines = wrapText(text, maxTextWidth);
   
-  // 🌟 اصلاح: حذف نیم‌فاصله از خطوط رندر شده نهایی
   const renderedLines = lines.map(line => {
     const preparedLine = isRtl ? prepareRTLText(line) : line;
     return preparedLine.replace(/\u200C/g, '');
@@ -99,7 +117,6 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   strokePaint.setStyle(PaintStyle.Stroke);
   strokePaint.setStrokeWidth(borderWidth);
 
-  // جایگزین flatMap: استفاده از reduce برای ساخت array
   const textElements = renderedLines.reduce<React.ReactNode[]>((acc, line, index) => {
     const y = firstBaseline + index * lineHeight;
     const x = (width - lineWidths[index]) / 2;
@@ -109,7 +126,7 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
         x={x}
         y={y}
         text={line}
-        font={font}
+        font={font} // 🌟 همان شیء font تولید شده پاس داده می‌شود
         paint={strokePaint}
       />,
       <Text

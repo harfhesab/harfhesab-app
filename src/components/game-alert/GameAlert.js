@@ -63,12 +63,14 @@ const GameAlert = React.forwardRef((props, ref) => {
             setDescription(null)
             setMoreDescription(null)
             setCompletedSentences(null)
+            setStageHint(null)
             setReward(null)
         }, 400)
     }
     useImperativeHandle(ref, () => ({
         open
     }))
+    if (!visible) return null;
     return (
         <Modal
             animationIn={'fadeIn'}

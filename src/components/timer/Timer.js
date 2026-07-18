@@ -62,17 +62,17 @@ class Timer extends PureComponent{
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
                 <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
                     <Text style={this.props.style}>{this.state.seconds > 9?this.state.seconds:`0${this.state.seconds}`}</Text>
-                    <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'ثانیه'}</Text>
+                    <Text style={[{fontSize:this.props.style.fontSize / 2}, this.props.titleStyle]}>{'ثانیه'}</Text>
                 </View>
                 <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
                     <Text style={this.props.style}>{this.state.minutes > 9?this.state.minutes:`0${this.state.minutes}`}</Text>
-                    <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'دقیقه'}</Text>
+                    <Text style={[{fontSize:this.props.style.fontSize / 2}, this.props.titleStyle]}>{'دقیقه'}</Text>
                 </View>
                 {
                     (this.state.hours !== undefined && this.state.hours !== null) && (
                         <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
                             <Text style={this.props.style}>{this.state.hours > 9?this.state.hours:`0${this.state.hours}`}</Text>
-                            <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'ساعت'}</Text>
+                            <Text style={[{fontSize:this.props.style.fontSize / 2}, this.props.titleStyle]}>{'ساعت'}</Text>
                         </View>
                     )
                 }
@@ -80,7 +80,7 @@ class Timer extends PureComponent{
                     (this.state.days !== undefined && this.state.days !== null) && (
                         <View style={{flexDirection:'column', alignItems:'center', width:this.props.style.fontSize * 2, marginHorizontal:2}}>
                             <Text style={this.props.style}>{this.state.days}</Text>
-                            <Text style={[this.props.titleStyle, {fontSize:this.props.style.fontSize / 2}]}>{'روز'}</Text>
+                            <Text style={[{fontSize:this.props.style.fontSize / 2}, this.props.titleStyle]}>{'روز'}</Text>
                         </View>
                     )
                 }

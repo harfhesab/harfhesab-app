@@ -51,7 +51,7 @@ function AdsButton(
             FullScreenLoadingHelper.hideLoading()
             const msg = [
                 {
-                    text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                    text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
                     style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                 }
             ]
@@ -83,7 +83,7 @@ function AdsButton(
         if (!id) {
             const msg = [
                 {
-                    text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                    text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
                     style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                 }
             ]
@@ -186,7 +186,7 @@ function AdsButton(
             onAdFailed: (error) => {
                 const msg = [
                     {
-                        text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                        text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
                         style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                     }
                 ]

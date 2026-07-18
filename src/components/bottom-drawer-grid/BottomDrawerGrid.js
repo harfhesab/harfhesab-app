@@ -95,9 +95,8 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
         item?.onPress?.()
     };
 
-    
+    if (!visible) return null;
     return(
-        visible == true&&
         <Modal
             swipeDirection={cancelable == true?['down']:null}
             swipeThreshold={180}

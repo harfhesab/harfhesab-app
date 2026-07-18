@@ -57,11 +57,11 @@ export const useBackgroundMusic = (musicName, volume = 0.8) => {
 
 
 // ================================= Stage Game Music ================================================================
-export const useStageListStageGameMusic = (volume = 0.25) => useBackgroundMusic('music_stage_list.ogg', volume);
-export const useWordToSlotStageGameMusic = (volume = 0.05) => useBackgroundMusic('music_word_to_slot.ogg', volume);
-export const useConnectingLetterStageGameMusic = (volume = 0.15) => useBackgroundMusic('music_connecting_letter.ogg', volume);
+export const useStageListStageGameMusic = (volume = 0.3) => useBackgroundMusic('music_stage_list.ogg', volume);
+export const useWordToSlotStageGameMusic = (volume = 0.2) => useBackgroundMusic('music_word_to_slot.ogg', volume);
+export const useConnectingLetterStageGameMusic = (volume = 0.3) => useBackgroundMusic('music_connecting_letter.ogg', volume);
 // ================================= Package Game Music ==============================================================
-export const useSeasonListPackageGameMusic = (volume = 0.1) => useBackgroundMusic('music_season_list.ogg', volume);
-export const useStageListPackageGameMusic = (volume = 0.25) => useBackgroundMusic('music_stage_list.ogg', volume);
-export const useWordToSlotPackageGameMusic = (volume = 0.05) => useBackgroundMusic('music_word_to_slot.ogg', volume);
-export const useConnectingLetterPackageGameMusic = (volume = 0.15) => useBackgroundMusic('music_connecting_letter.ogg', volume);
+export const useSeasonListPackageGameMusic = (volume = 0.3) => useBackgroundMusic('music_season_list.ogg', volume);
+export const useStageListPackageGameMusic = (volume = 0.3) => useBackgroundMusic('music_stage_list.ogg', volume);
+export const useWordToSlotPackageGameMusic = (volume = 0.2) => useBackgroundMusic('music_word_to_slot.ogg', volume);
+export const useConnectingLetterPackageGameMusic = (volume = 0.3) => useBackgroundMusic('music_connecting_letter.ogg', volume);

@@ -4,7 +4,6 @@ import { useDragDrop } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import LinearGradient from 'react-native-linear-gradient';
-import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
 import TopHeader from './TopHeader';
 import { typingSentenceErrorSound, typingSentenceSucccessSound } from '../../../utils/sound/SoundFunctions';
 import DynamicProSkiaText from '../../text-components/DynamicProSkiaText';

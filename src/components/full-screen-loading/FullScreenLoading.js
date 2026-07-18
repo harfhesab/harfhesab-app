@@ -49,8 +49,8 @@ const FullScreenLoading = React.forwardRef((props, ref)=>{
         close
     }))
     
+    if (!visible) return null;
     return(
-        visible === true &&
         <Modal
             animationIn={'fadeIn'}
             animationOut={'fadeOut'}

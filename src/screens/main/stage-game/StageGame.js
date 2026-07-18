@@ -103,7 +103,7 @@ function StageGame(props){
         setTimeout(()=>{
             props.navigation.navigate("StageGameUpdateScreen")
             AlertBottomDrawerHelper.hideAlert()
-        }, 2000)
+        }, 500)
         const btn = [
             {
                 onPress : ()=>{

@@ -10,7 +10,6 @@ import {
 import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
 import ImageComponent from '../../image-components/ImageComponent';
-import MultiLineTextGradientSvg from '../../text-components/MultiLineTextGradientSvg';
 import ButtonImgSrc from '../../buttons/ButtonImgSrc';
 import LockedSeasonAnimation from '../../LockedSeasonAnimation';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';

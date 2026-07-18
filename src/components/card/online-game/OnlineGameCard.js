@@ -12,12 +12,12 @@ import { showToast } from '../../custom-toast/ToastRef';
 
 const width = Dimensions.get('window').width
 const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
-function OnlineGameCard({_id, title, image, badge, active}){
+function OnlineGameCard({_id, title, image, badge, active, onPress}){
     const colors = useAppTheme();
 
     const click = ()=>{
         if(active == true){
-
+            onPress()
         } else {
             showToast({
                 title: `سرویس غیر فعال`,
@@ -30,7 +30,7 @@ function OnlineGameCard({_id, title, image, badge, active}){
         }
     }
     return (
-        <View style={{alignItems:'center', justifyContent:'center', borderRadius:10, overflow:'hidden'}}>
+        <View style={{alignItems:'center', justifyContent:'center', overflow:'hidden', borderRadius:15}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                 <View style={{flexDirection:'column', gap:10, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:10}}>
                     <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', borderWidth:1.5, borderColor:colors.primary.a3, borderRadius:itemWidth*0.185, backgroundColor:colors.primary.a2}}>
@@ -42,6 +42,7 @@ function OnlineGameCard({_id, title, image, badge, active}){
                                 height={itemWidth-3}
                                 resizeMode="cover"
                                 blank_background={true}
+                                borderRadius={itemWidth*0.185}
                             />
                             :
                             <Icon name={'camera-off'} type={'Feather'} style={{fontSize:itemWidth*0.45, color:colors.text.a5}}/>

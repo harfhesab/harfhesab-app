@@ -6,7 +6,6 @@ import {
   Skia, 
   vec, 
   Paragraph, 
-  useFonts, 
   TextAlign, 
   TextDirection,
   Mask,
@@ -14,6 +13,8 @@ import {
   LinearGradient
 } from '@shopify/react-native-skia';
 import { useDerivedValue, SharedValue } from 'react-native-reanimated';
+// مسیر این ایمپورت را بر اساس ساختار پوشه‌های خود تنظیم کنید
+import { useGlobalFonts } from '../../context/SkiaFontProvider';
 
 interface AnimatedSkiaTextProps {
   text: string;
@@ -25,6 +26,7 @@ interface AnimatedSkiaTextProps {
   gradientColors?: string[];
   borderColor?: string;
   borderWidth?: number;
+  fontName?: string;
 }
 
 const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({ 
@@ -37,12 +39,11 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
   gradientColors = ['#9d34da', '#3800b9'],
   borderColor = '#FFFFFF',
   borderWidth = 1,
+  fontName = 'YekanBakh-Black',
 }) => {
 
-  // بارگذاری فونت منیجر
-  const customFontMgr = useFonts({
-    'YekanBakh': [require('../../assets/fonts/YekanBakhFaNum-Black.ttf')]
-  });
+  // 🌟 دریافت مدیر فونت از کانتکست گلوبال
+  const { customFontMgr } = useGlobalFonts();
 
   const scale = useDerivedValue(() => fontSize.value / initialFontSize, [fontSize]);
   const transform = useDerivedValue(() => [{ scale: scale.value }], [scale]);
@@ -61,12 +62,12 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
       const builder = Skia.ParagraphBuilder.Make({
         textAlign: TextAlign.Center,
         textDirection: rtl ? TextDirection.RTL : TextDirection.LTR,
-      }, customFontMgr);
+      }, customFontMgr); // 👈 مدیر فونت پاس داده شد
 
       builder.pushStyle({
-        fontFamilies: ['YekanBakh'],
+        fontFamilies: [fontName], // 👈 نام فونت به صورت داینامیک اعمال می‌شود
         fontSize: initialFontSize,
-        color: color, // 🌟 اینجا فقط رنگ ساده پاس داده می‌شود تا کرش نکند
+        color: color, 
       });
 
       builder.addText(text); 
@@ -85,7 +86,7 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
       paraHeight: pBorder.getHeight(),
       paraWidth: maxWidth
     };
-  }, [customFontMgr, text, rtl, initialFontSize, initialWidth, parsedBorderColor, parsedWhiteColor]);
+  }, [customFontMgr, text, rtl, initialFontSize, initialWidth, parsedBorderColor, parsedWhiteColor, fontName]); // 👈 fontName اضافه شد
 
   if (!customFontMgr || !maskParagraph || !borderParagraph) {
     return null;
@@ -114,31 +115,31 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
             paragraph={borderParagraph} 
             x={x + dx} 
             y={y + dy} 
-            width={paraWidth} // 🌟 اضافه شدن width الزامی برای حل ارور تایپ‌اسکریپت
+            width={paraWidth} 
           />
         ))}
 
         {/* لایه دوم: گرادیانت روی متن اصلی */}
         {/* استفاده از Paragraph به عنوان یک ماسک برای بُرش دادن مستطیل گرادیانت‌دار */}
+        <Mask
+          mask={
+            <Paragraph 
+              paragraph={maskParagraph} 
+              x={x} 
+              y={y} 
+              width={paraWidth} 
+            />
+          }
+        >
+          <Rect x={x} y={y} width={paraWidth} height={paraHeight}>
+            <LinearGradient
+              start={vec(0, y)}
+              end={vec(0, y + paraHeight)}
+              colors={gradientColors}
+            />
+          </Rect>
+        </Mask>
         
-          <Mask
-            mask={
-              <Paragraph 
-                paragraph={maskParagraph} 
-                x={x} 
-                y={y} 
-                width={paraWidth} 
-              />
-            }
-          >
-            <Rect x={x} y={y} width={paraWidth} height={paraHeight}>
-              <LinearGradient
-                start={vec(0, y)}
-                end={vec(0, y + paraHeight)}
-                colors={gradientColors}
-              />
-            </Rect>
-          </Mask>
       </Group>
     </Canvas>
   );

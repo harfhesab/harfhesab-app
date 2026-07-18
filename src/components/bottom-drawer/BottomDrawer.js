@@ -183,6 +183,7 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
             />
         )
     }
+    if (!visible) return null;
     return(
         <Modal
             swipeDirection={cancelable == true?['down']:null}

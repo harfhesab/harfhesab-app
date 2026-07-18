@@ -119,7 +119,7 @@ function StageGameUpdateScreen(props){
                 />
                 :
                 <View style={{flex:1, flexDirection:'column', justifyContent:'space-between'}}>
-                    <View style={{flex:1, paddingHorizontal:15}}>
+                    <View style={{flex:1, paddingHorizontal:30}}>
                         <View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center', gap:10}}>
                             <Text style={{fontFamily:Font.bold, color:(status == "need-update" || status == "force-update")?colors.alert.a1:colors.primary.a6, fontSize:16, lineHeight:32, textAlign:'center'}}>{title}</Text>
                             {
@@ -128,7 +128,7 @@ function StageGameUpdateScreen(props){
                             }
                             {
                                 (status == "need-update" || status == "force-update")&&
-                                <Text style={{fontFamily:Font.medium, color:colors.border.a1, fontSize:12, textAlign:'center', width:280, lineHeight:20}}>{"توجه کنید لطفا هنگام دریافت اطلاعات که لحظات کوتاهی طول می‌کشد در همین صفحه بمانید."}</Text>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:12, textAlign:'center', lineHeight:24}}>{"توجه کنید، هنگام دریافت اطلاعات و داده‌های بازی در همین صفحه بمانید و از اتصال دستگاه خود به اینترنت مطمعن شوید."}</Text>
                             }
                         </View>
                     </View>
@@ -149,10 +149,10 @@ function StageGameUpdateScreen(props){
                             <ButtonGradient
                                 height={60}
                                 width={width - 30}
-                                text={isDownloading == true?"در حال بارگیری":(status == "force-update" || status == "need-update")?"شروع دریافت اطلاعات":"شروع بازی"}
+                                text={isDownloading == true?"در حال بارگیری":(status == "force-update" || status == "need-update")?"دریافت مراحل بازی":"شروع بازی"}
                                 onPress={downloadUpdates}
                                 loading={isDownloading}
-                                textSize={18}
+                                textSize={16}
                                 borderRadius={10}
                             />
                         </View>

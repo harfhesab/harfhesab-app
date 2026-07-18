@@ -10,7 +10,6 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CARD_SIZE } from '../../../components/card/general/StageNumber';
 import GeneralHeader from '../../../components/header/GeneralHeader';
-import MultiLineTextGradientSvg from '../../../components/text-components/MultiLineTextGradientSvg';
 import SeasonHeader from '../../../components/header/SeasonHeader';
 import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';

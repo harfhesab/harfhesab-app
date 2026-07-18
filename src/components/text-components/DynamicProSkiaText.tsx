@@ -4,35 +4,36 @@ import {
   Canvas, 
   Skia, 
   Paragraph, 
-  useFonts, 
   TextAlign, 
   TextDirection 
 } from '@shopify/react-native-skia';
+// مسیر این ایمپورت را بر اساس ساختار پوشه‌های خود تنظیم کنید
+import { useGlobalFonts } from '../../context/SkiaFontProvider'; 
 
 interface DynamicProSkiaTextProps {
   text: string;
-  maxWidth?: number;      // حداکثر عرض مجاز (اختیاری). اگر ندهید، عرض صفحه در نظر گرفته می‌شود
+  maxWidth?: number;      
   textColor?: string;
   borderColor?: string;
   borderWidth?: number;
   fontSize?: number;
+  fontName?: string; // 👈 پراپ جدید برای دریافت داینامیک فونت
 }
 
-// گرفتن عرض کل صفحه به عنوان مقدار پیش‌فرض
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({ 
   text,
-  maxWidth = SCREEN_WIDTH - 40, // یک حاشیه امن پیش‌فرض (۲۰ پیکسل از هر طرف)
+  maxWidth = SCREEN_WIDTH - 40, 
   textColor = '#FFFFFF',
   borderColor = '#3a194d',
   borderWidth = 1.5,
   fontSize = 24,
+  fontName = 'YekanBakh-Black', // 👈 مقدار پیش‌فرض مطابق با یکی از فونت‌های کانتکست
 }) => {
 
-  const customFontMgr = useFonts({
-    'YekanBakh': [require('../../assets/fonts/YekanBakhFaNum-Black.ttf')]
-  });
+  // 🌟 مدیر فونت را از کانتکست سراسری اپلیکیشن می‌گیریم
+  const { customFontMgr } = useGlobalFonts();
 
   const { fillParagraph, borderParagraph, paraHeight, paraWidth } = useMemo(() => {
     if (!customFontMgr) return { fillParagraph: null, borderParagraph: null, paraHeight: 0, paraWidth: 0 };
@@ -41,17 +42,16 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
     const parsedBorderColor = Skia.Color(borderColor);
 
     const paddingForBorder = borderWidth * 2;
-    // عرض مفیدی که پاراگراف اجازه دارد در آن متن را بشکند
     const availableMaxWidth = maxWidth - paddingForBorder;
 
     const buildPara = (color: Float32Array) => {
       const builder = Skia.ParagraphBuilder.Make({
         textAlign: TextAlign.Center, 
         textDirection: TextDirection.RTL,
-      }, customFontMgr);
+      }, customFontMgr); // 👈 مدیر فونت پاس داده شد
 
       builder.pushStyle({
-        fontFamilies: ['YekanBakh'],
+        fontFamilies: [fontName], // 👈 استفاده از نام فونت دریافتی
         fontSize: fontSize,
         color: color,
       });
@@ -59,7 +59,6 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
       builder.addText(text); 
       const p = builder.build();
       
-      // ۱. ابتدا پاراگراف را با حداکثر عرض مجاز شکل می‌دهیم (سطرشکنی انجام می‌شود)
       p.layout(availableMaxWidth); 
       return p;
     };
@@ -67,19 +66,15 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
     const pFill = buildPara(parsedTextColor);
     const pBorder = buildPara(parsedBorderColor);
 
-    // 🌟 ۲. جادوی محاسبه داینامیک: گرفتن عرضِ دقیقِ متن
-    // getLongestLine() عرض دقیق طولانی‌ترین خط را برمی‌گرداند (چه متن یک خطی باشد، چه چند خطی)
     const exactTextWidth = pFill.getLongestLine();
 
     return {
       fillParagraph: pFill,
       borderParagraph: pBorder,
-      // ۳. به عرض و ارتفاع محاسبه شده، فضای لازم برای بوردر را هم اضافه می‌کنیم
-      // از Math.ceil استفاده می‌کنیم تا اعشار پیکسلی باعث بریده شدن میلی‌متری لبه‌ها نشود
       paraWidth: Math.ceil(exactTextWidth + paddingForBorder),
       paraHeight: Math.ceil(pFill.getHeight() + paddingForBorder),
     };
-  }, [customFontMgr, text, textColor, borderColor, maxWidth, fontSize, borderWidth]);
+  }, [customFontMgr, text, textColor, borderColor, maxWidth, fontSize, borderWidth, fontName]); // 👈 fontName به وابستگی‌ها اضافه شد
 
   if (!customFontMgr || !fillParagraph || !borderParagraph) {
     return null;
@@ -93,7 +88,6 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
   ];
 
   return (
-    /* 🌟 حالا View دقیقا هم‌سایز خود متن (Shrink-wrap) می‌شود */
     <View style={{ width: paraWidth, height: paraHeight }}>
       <Canvas style={styles.canvas}>
         

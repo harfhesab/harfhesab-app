@@ -41,6 +41,7 @@ function OnlineGame(props){
                             title,
                             description,
                             badge,
+                            route,
                             icon_image,
                             is_active,
                         }
@@ -75,6 +76,12 @@ function OnlineGame(props){
             image={item?.icon_image}
             badge={item?.badge}
             active={item?.is_active}
+            onPress={()=>{
+                console.log(item)
+                if(item?.route && item.is_active == true){
+                    props.navigation.navigate(item?.route)
+                }
+            }}
         />
     ), [])
     const memoizedValue = useMemo(() => renderItem, [data]);
@@ -100,7 +107,7 @@ function OnlineGame(props){
                 <FlatList
                     style={{flex:1, width:"100%", paddingHorizontal:15}}
                     contentContainerStyle={[
-                        { paddingBottom:70, paddingTop:10,  rowGap:15, justifyContent:'space-between'},
+                        { paddingBottom:70, paddingTop:10,  rowGap:15},
                         data.length === 0 && {flex: 1}
                     ]}
                     showsVerticalScrollIndicator={false}
@@ -112,7 +119,7 @@ function OnlineGame(props){
                     initialNumToRender={20}
                     removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                     ListEmptyComponent={ListEmptyComponent}
-                    columnWrapperStyle={{ gap:10}}
+                    columnWrapperStyle={{ gap:10, justifyContent:'space-between'}}
                 /> 
             </View>
         </View>

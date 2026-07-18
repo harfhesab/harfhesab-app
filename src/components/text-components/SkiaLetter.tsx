@@ -1,8 +1,17 @@
-import React, {memo} from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Canvas, Text, useFont, Group, Skia, vec, TileMode, PaintStyle, Shadow } from '@shopify/react-native-skia';
-import Animated, { useDerivedValue, SharedValue } from 'react-native-reanimated';
+import React, { memo, useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import { 
+  Canvas, 
+  Text, 
+  Group, 
+  Skia, 
+  vec, 
+  TileMode, 
+  PaintStyle 
+} from '@shopify/react-native-skia';
+import { useDerivedValue, SharedValue } from 'react-native-reanimated';
 import { prepareRTLText } from '../../utils/prepareRTLText';
+import { useGlobalFonts } from '../../context/SkiaFontProvider';
 
 interface SkiaLetterProps {
   text: string;
@@ -15,6 +24,7 @@ interface SkiaLetterProps {
   gradientColors?: string[];
   borderColor?: string;
   borderWidth?: number;
+  fontName?: string;
 }
 
 const SkiaLetter: React.FC<SkiaLetterProps> = ({ 
@@ -28,7 +38,25 @@ const SkiaLetter: React.FC<SkiaLetterProps> = ({
   gradientColors = ['#512da8',  '#7b1fa2'],
   borderColor = '#FFFFFF',
   borderWidth = 2,
+  fontName = 'YekanBakh-ExtraBlack',
  }) => {
+
+  // 🌟 دریافت مدیر فونت از کانتکست گلوبال
+  const { customFontMgr } = useGlobalFonts();
+
+  // 🌟 ساخت داینامیک فونت با استفاده از Typeface
+  const font = useMemo(() => {
+    if (!customFontMgr) return null;
+
+    const typeface = customFontMgr.matchFamilyStyle(fontName, { weight: 400, width: 5, slant: 0 });
+    
+    if (!typeface) {
+      console.warn(`Font family "${fontName}" not found in customFontMgr.`);
+      return null;
+    }
+    
+    return Skia.Font(typeface, initialFontSize);
+  }, [customFontMgr, fontName, initialFontSize]);
 
   const gradient = Skia.Shader.MakeLinearGradient(
     vec(0, 0),
@@ -40,7 +68,6 @@ const SkiaLetter: React.FC<SkiaLetterProps> = ({
   const gradientPaint = Skia.Paint();
   gradientPaint.setShader(gradient);
 
-  const font = useFont(require('../../assets/fonts/YekanBakhFaNum-ExtraBlack.ttf'), initialFontSize); // مسیر فونت را جایگزین کنید
   const scale = useDerivedValue(() => fontSize.value / initialFontSize, [fontSize]);
   const transform = useDerivedValue(() => [{ scale: scale.value }], [scale]);
 
@@ -48,15 +75,11 @@ const SkiaLetter: React.FC<SkiaLetterProps> = ({
     return null;
   }
   
-  const renderedText = (rtl == true && ltr == false)?prepareRTLText(text):text;
+  const renderedText = (rtl === true && ltr === false) ? prepareRTLText(text) : text;
   const textWidth = font.measureText(renderedText).width;
   const metrics = font.getMetrics();
   const x = ((initialWidth) - textWidth) / 2;
   const y = initialHeight / 1.25 + (metrics.ascent + metrics.descent) / 2;
-
-  if (font === null) {
-    return null;
-  }
 
   const strokePaint = Skia.Paint();
   strokePaint.setColor(Skia.Color(borderColor));
@@ -74,6 +97,7 @@ const SkiaLetter: React.FC<SkiaLetterProps> = ({
           font={font}
           paint={strokePaint}
         />
+        {/* متن اصلی با گرادیانت */}
         <Text
           text={renderedText}
           font={font}

@@ -49,9 +49,8 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
         open,
         close
     }))
-    
+    if (!visible) return null;
     return(
-        visible == true&&
         <Modal
             swipeDirection={cancelable == true?['down']:null}
             swipeThreshold={180}

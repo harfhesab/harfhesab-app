@@ -276,9 +276,8 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
             }
         })
     }
-    
+    if (!visible) return null;
     return(
-        visible == true&&
         <Modal
             swipeDirection={null}
             animationIn="slideInUp"

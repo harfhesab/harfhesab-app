@@ -94,7 +94,7 @@ function FreeCoin(props){
             }).catch((e)=>{
                 showToast({
                     title: `مشکلی پیش آمد`,
-                    message: "مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                    message: "مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
                     type: "error",
                     animationType: "slide",
                     position: "top",
@@ -118,7 +118,7 @@ function FreeCoin(props){
         if (!id) {
             const msg = [
                 {
-                    text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                    text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
                     style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                 }
             ]
@@ -221,7 +221,7 @@ function FreeCoin(props){
             onAdFailed: (error) => {
                 const msg = [
                     {
-                        text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود دار بررسی کرده و دوباره تلاش کنید.",
+                        text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
                         style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                     }
                 ]
