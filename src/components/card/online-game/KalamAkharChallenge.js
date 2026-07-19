@@ -9,11 +9,10 @@ import ImageComponent from '../../image-components/ImageComponent';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { navigate } from '../../../main/navigationService';
 import { showToast } from '../../custom-toast/ToastRef';
-import Timer from '../../timer/Timer';
 import DynamicProSkiaText from '../../text-components/DynamicProSkiaText';
 import { priceDigitSeperator } from '../../../utils/PriceDigitSeperator';
 
-const width = Dimensions.get('window').width
+const {width} = Dimensions.get('screen')
 const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
 function KalamAkharChallenge({
     _id,
@@ -74,19 +73,6 @@ function KalamAkharChallenge({
                                 <Text style={{color:colors.primary.a8, fontFamily:Font.bakh_black, fontSize:title.length > 14?itemWidth*0.08:title.length > 13?itemWidth*0.085:itemWidth*0.09}}>{title}</Text>
                             </View>
                         </ImageBackground>
-                        {/* {
-                            timer&&
-                            <View style={{backgroundColor:"#00000099", borderRadius:5, paddingVertical:1}}>
-                                <Timer
-                                    style={{fontSize: itemWidth*0.065, fontFamily: Font.black, color: colors.primary.a3}}
-                                    titleStyle={{fontSize: itemWidth*0.045, fontFamily: Font.medium, color: `${colors.primary.a3}99`}}
-                                    seconds={timer?.seconds}
-                                    minutes={timer?.minutes}
-                                    hours={timer?.hours}
-                                    days={timer?.days}
-                                />
-                            </View>
-                        } */}
                     </View>
                     {
                         (reward_coins || reward_subscription)&&
@@ -129,18 +115,28 @@ function KalamAkharChallenge({
                         <TouchableOpacity onPress={click} activeOpacity={0.7} style={{ alignItems:'center', justifyContent:'center', marginStart:"3%"}}>
                             <ImageBackground
                                 source={cardImageButton}
-                                style={{ width:itemWidth*0.35, height:itemWidth*0.35, alignItems:'center', justifyContent:'center' }}
+                                style={{ width:itemWidth*0.4, height:itemWidth*0.4, alignItems:'center', justifyContent:'center' }}
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                                <View style={{ alignItems:'center', justifyContent:'center', height:"100%", gap:5}}>
+                                <View style={{ alignItems:'center', justifyContent:'center', height:"100%"}}>
                                     <DynamicProSkiaText 
                                         text={"شروع"}
                                         textColor={colors.primary.a3} 
                                         borderColor={colors.primary.a7} 
                                         borderWidth={1}
-                                        fontSize={itemWidth*0.085}
+                                        fontSize={entry_fee_coins && entry_fee_coins>0?itemWidth*0.075:itemWidth*0.085}
                                     />
+                                    {
+                                        (entry_fee_coins && entry_fee_coins>0)&&
+                                        <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:2}}>
+                                            <Text style={{color:colors.primary.a5, fontFamily:Font.bakh_bold, fontSize:itemWidth*0.06}}>{priceDigitSeperator(entry_fee_coins)}</Text>
+                                            <Image
+                                                style={{height:itemWidth*0.06, width:itemWidth*0.06}}
+                                                source={require('../../../assets/image/coin.png')}
+                                            />
+                                        </View> 
+                                    }
                                 </View>
                             </ImageBackground>
                         </TouchableOpacity>

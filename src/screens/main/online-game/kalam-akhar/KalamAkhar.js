@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Platform, StyleSheet, View, Dimensions, FlatList, Text, SafeAreaView } from 'react-native';
+import { Platform, StyleSheet, View, Dimensions, FlatList, Text, SafeAreaView, StatusBar } from 'react-native';
 import axios from 'axios';
 import ScreenLoading from '../../../../components/screen-loading/ScreenLoading';
 import Border from '../../../../components/Border';
@@ -8,10 +8,29 @@ import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import FooterLoading from '../../../../components/screen-loading/FooterLoading';
 import Font from '../../../../utils/Font';
 import KalamAkharChallenge from '../../../../components/card/online-game/KalamAkharChallenge';
-import { IS_TABLET_CONDITION } from '../../../../utils/constants/constants';
+import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
+import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
+import { WaveIndicator } from 'react-native-indicators';
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('screen');
+
+const NUM_COLUMNS = IS_TABLET_CONDITION ? 3 : 2;
+const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
+const ITEM_HEIGHT = itemWidth * 1.25;
+const ROW_GAP = 20;
+const ROW_HEIGHT = ITEM_HEIGHT + ROW_GAP;
+const TOP_PADDING = STATUS_BAR_HEIGHT + 70;
+
+const getItemLayout = (_, index) => {
+    const rowIndex = Math.floor(index / NUM_COLUMNS);
+
+    return {
+        length: ROW_HEIGHT,
+        offset: TOP_PADDING + rowIndex * ROW_HEIGHT,
+        index,
+    };
+};
 
 const GET_ITEMS_QUERY = `
   query paginateKalamAkharChallenges($page : Int){
@@ -48,6 +67,7 @@ const calculateTimeRemaining = (endDate, serverNow) => {
 };
 
 function KalamAkhar(props) {
+    useImmersiveMode()
     const colors = useAppTheme();
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
@@ -180,19 +200,30 @@ function KalamAkhar(props) {
                 getError={getError}
                 noItem={noItem}
                 tryAgain={tryAgain}
+                LoadingComponent={()=>{
+                    return(
+                        <WaveIndicator
+                            color={`#FFFFFF`}
+                            size={width/2}
+                            count={1}
+                            waveMode="fill"
+                        />
+                    )
+                }}
             />
         </View>
     ), [loading, getError, noItem, tryAgain]);
 
     return (
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
+            <StatusBar translucent={true} hidden={true} />
             <GalaxyTwinkle >
                 <View style={{flex:1 }}> 
                     <View style={styles.container}>
                         <FlatList
                             style={{flex:1, width:"100%", paddingHorizontal:20}}
                             contentContainerStyle={[
-                                { paddingBottom:70, paddingTop:10,  rowGap:20},
+                                { paddingBottom:70, paddingTop:STATUS_BAR_HEIGHT+70,  rowGap:20},
                                 data.length === 0 && {flex: 1}
                             ]}
                             columnWrapperStyle={{ justifyContent:'space-between', gap:20}}
@@ -210,10 +241,23 @@ function KalamAkhar(props) {
                             windowSize={11}
                             removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                             updateCellsBatchingPeriod={50}
+                            getItemLayout={getItemLayout}
                         />
                     </View>
                 </View>
             </GalaxyTwinkle>
+            <View style={{position:'absolute', paddingTop:STATUS_BAR_HEIGHT, backgroundColor:'#12042685'}}>
+                <GeneralHeader
+                    backgroundColor={'transparent'}
+                    back={true}
+                    coin={true}
+                    subscription={true}
+                    shadowColor={'transparent'}
+                    borderBottomColor={'transparent'}
+                    borderBottomWidth={0}
+                    height={60}
+                />
+            </View>
         </SafeAreaView>
     );
 }
