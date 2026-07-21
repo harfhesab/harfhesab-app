@@ -34,7 +34,7 @@ function ButtonBorder({
     onPress,
     borderRadius = 8,
     borderWidth = 0.75,
-    borderColor = colors.primary.a1,
+    borderColor = colors.primary.a3,
     width,
     height,
     text,
@@ -46,7 +46,7 @@ function ButtonBorder({
     fontFamily = Font.medium,
     justifyContent = 'center',
     flexDirection = "row",
-    textColor = colors.primary.a1,
+    textColor = colors.primary.a3,
     CustomContent
 }:Props) {
 
@@ -70,8 +70,8 @@ function ButtonBorder({
             height: height,
             overflow: 'hidden',
             borderWidth: borderWidth,
-            borderColor: borderColor,
-            backgroundColor: borderColor ? `${borderColor}15` : `${colors.primary.a1}25`
+            borderColor: `${borderColor}99`,
+            backgroundColor: borderColor ? `${borderColor}15` : `${colors.primary.a1}15`
         }}>
             <TouchableNativeFeedback
                 disabled={loading}

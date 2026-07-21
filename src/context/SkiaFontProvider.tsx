@@ -20,7 +20,6 @@ export const SkiaFontProvider = ({ children }: SkiaFontProviderProps) => {
     'YekanBakh-ExtraBold': [require('../assets/fonts/YekanBakhFaNum-ExtraBold.ttf')],
     'YekanBakh-Black': [require('../assets/fonts/YekanBakhFaNum-Black.ttf')],
     'YekanBakh-ExtraBlack': [require('../assets/fonts/YekanBakhFaNum-ExtraBlack.ttf')],
-    'IranSans-Bold': [require('../assets/fonts/IRANSans(FaNum)_Bold.ttf')],
   });
 
   if (!customFontMgr) {

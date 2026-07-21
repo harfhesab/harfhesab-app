@@ -11,8 +11,8 @@ import Globals from "../../utils/Globals";
 
 
 const width = Dimensions.get("screen").width;
-function SeasonMediaSwiper({items, title, height}){
-    const bannerWidth = IS_TABLET_CONDITION?460:width - 20
+function SeasonMediaSwiper({items, title, height, frameWidth}){
+    const bannerWidth = frameWidth?frameWidth:IS_TABLET_CONDITION?460:width - 20
     const mediaWidth = bannerWidth*0.94
     const mediaHeight = height*0.85
     const titleWidth = bannerWidth*0.7
@@ -78,22 +78,25 @@ function SeasonMediaSwiper({items, title, height}){
                         }
                     </MaskedView>
             </ImageBackground>
-            <View style={{position:'absolute'}}>
-                <ImageBackground
-                    source={require("../../assets/image/frame_stage_title.png")}
-                    style={{ width: titleWidth, height: titleWidth/5, justifyContent: "center", alignItems: "center", top:-titleWidth/10, paddingBottom:2}}
-                    imageStyle={{ resizeMode: "stretch" }}
-                    resizeMode="stretch"
-                >
-                    <SimpleBorderText
-                        text={title}
-                        width={titleWidth}
-                        height={16*1.6}
-                        fontSize={16}
-                        borderWidth={2}
-                    />
-                </ImageBackground>
-            </View>
+            {
+                title&&
+                <View style={{position:'absolute'}}>
+                    <ImageBackground
+                        source={require("../../assets/image/frame_stage_title.png")}
+                        style={{ width: titleWidth, height: titleWidth/5, justifyContent: "center", alignItems: "center", top:-titleWidth/10, paddingBottom:2}}
+                        imageStyle={{ resizeMode: "stretch" }}
+                        resizeMode="stretch"
+                    >
+                        <SimpleBorderText
+                            text={title}
+                            width={titleWidth}
+                            height={16*1.6}
+                            fontSize={16}
+                            borderWidth={2}
+                        />
+                    </ImageBackground>
+                </View>
+            }
         </View>
     )
 }

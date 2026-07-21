@@ -11,8 +11,8 @@ import NotificationCard from '../../../components/card/notification/Notification
 
 const { ImmersiveMode } = NativeModules;
 function MessageInApp(props){
-    const dispatch = useDispatch();
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)

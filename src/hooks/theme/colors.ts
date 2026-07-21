@@ -15,6 +15,7 @@ export const themes = {
         a6: '#0693e3',
         a7: '#5c2b02',
         a8: '#960000',
+        a9: '#9900ef',
       },
       background:{
         a1:'#001c20',

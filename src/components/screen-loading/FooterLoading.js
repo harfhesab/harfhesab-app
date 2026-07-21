@@ -15,7 +15,7 @@ function FooterLoading({loading, tryAgain, tryOperation}){
         </View>)
         :loading == true?
         (<View style={styles.container}>
-            <ActivityIndicator color={colors.color} size={'large'}/>
+            <ActivityIndicator color={colors.primary.a3} size={'large'}/>
         </View>)
         :null
     )

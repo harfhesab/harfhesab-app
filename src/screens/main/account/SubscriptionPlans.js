@@ -23,8 +23,8 @@ import FullScreenLoadingHelper from '../../../components/full-screen-loading/Ful
 import { showToast } from '../../../components/custom-toast/ToastRef';
 import axios from 'axios';
 import { updateSubscriptionStatus } from '../../../redux/slices/subscriptionSlice';
-import Timer from '../../../components/timer/Timer';
 import { toGregorian, toJalaali} from 'jalaali-js';
+import TimerUIThread from '../../../components/timer/TimerUIThread';
 
 const usePaymentHook = TARGET_STORE == "cafebazaar"?
     require('@cafebazaar/react-native-poolakey').useBazaar
@@ -34,7 +34,6 @@ const usePaymentHook = TARGET_STORE == "cafebazaar"?
 
 const { ImmersiveMode } = NativeModules;
 const numColumns = IS_TABLET_CONDITION ? 4 : 2
-
 function SubscriptionPlans(props){
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const { subscriptionExpiration, activeSubscription} = useSelector((state) => state.subscription);
@@ -356,10 +355,10 @@ function SubscriptionPlans(props){
                 <View style={{width:"100%", alignItems:'center', direction:'rtl'}}>
                     <View style={{width:width - 60, backgroundColor:`#00000090`, paddingVertical:20, borderRadius:20, gap:20, alignItems:'center'}}>
                         <View>
-                            <Text style={{fontFamily:Font.medium, fontSize:14, lineHeight:27, color:colors.text.a1, width:width*0.75, textAlign:'justify'}}>
-                                {`با داشتن اشتراک فعال روی حساب کاربری‌تان، می‌توانید بیشتر بسته‌های بازی را به صورت رایگان دریافت کنید.`}
+                            <Text style={{fontFamily:Font.bakh_regular, fontSize:13, lineHeight:27, color:colors.text.a1, width:width*0.75, textAlign:'justify'}}>
+                                {`با داشتن اشتراک فعال روی حساب کاربری‌تان، می‌توانید بیشتر بسته‌های داستانی بازی را به صورت رایگان دریافت کرده و به تمام آیتم‌های بازی‌های آنلاین دسترسی داشته باشید.`}
                             </Text>
-                            <Text style={{fontFamily:Font.medium, fontSize:14, lineHeight:27, color:colors.text.a1, width:width*0.75, textAlign:'justify'}}>{"برای این حساب کاربری، تا تاریخ "}<Text style={{color:colors.primary.a1}}>{shamsiDate}</Text>{" تا ساعت "}<Text style={{color:colors.primary.a1}}>{clock}</Text>{" اشتراک فعال می‌باشد."}</Text>
+                            <Text style={{fontFamily:Font.bakh_regular, fontSize:13, lineHeight:27, color:colors.text.a1, width:width*0.75, textAlign:'justify'}}>{"برای این حساب کاربری، تا تاریخ "}<Text style={{color:colors.primary.a1}}>{shamsiDate}</Text>{" تا ساعت "}<Text style={{color:colors.primary.a1}}>{clock}</Text>{" اشتراک فعال می‌باشد."}</Text>
                         </View>
                         <ImageBackground
                             source={require("../../../assets/image/frame_stage_info.png")}
@@ -368,7 +367,7 @@ function SubscriptionPlans(props){
                             resizeMode="stretch"
                         >
                             <View style={{width:"100%", alignItems:'center', justifyContent:'center'}}>
-                                <Timer
+                                <TimerUIThread
                                     style={{fontSize: 25, fontFamily: Font.black, color: colors.primary.a3}}
                                     titleStyle={{fontFamily: Font.medium, color: `${colors.primary.a3}99`}}
                                     seconds={second}
@@ -385,8 +384,8 @@ function SubscriptionPlans(props){
             return(
                 <View style={{width:"100%", alignItems:'center', direction:'rtl'}}>
                     <View style={{width:width - 60, backgroundColor:`#00000080`, paddingVertical:20, borderRadius:20, gap:20, alignItems:'center'}}>
-                        <Text style={{fontFamily:Font.medium, fontSize:14, lineHeight:27, color:colors.text.a1, width:width*0.75, textAlign:'justify'}}>
-                            {`با داشتن اشتراک فعال روی حساب کاربری‌تان، می‌توانید بیشتر بسته‌های بازی را به صورت رایگان دریافت کنید.`}
+                        <Text style={{fontFamily:Font.bakh_regular, fontSize:13, lineHeight:27, color:colors.text.a1, width:width*0.75, textAlign:'justify'}}>
+                                {`با داشتن اشتراک فعال روی حساب کاربری‌تان، می‌توانید بیشتر بسته‌های داستانی بازی را به صورت رایگان دریافت کرده و به تمام آیتم‌های بازی‌های آنلاین دسترسی داشته باشید.`}
                         </Text>
                     </View>
                 </View>
@@ -402,7 +401,7 @@ function SubscriptionPlans(props){
             <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
                 <ImageBackground
                     source={require("../../../assets/image/frame_list.png")}
-                    style={{ width: width - 20, height: height-115, paddingTop:"3.2%", paddingBottom:"4.1%"}}
+                    style={{ width: width - 20, height:ImmersiveMode.isImmersiveModeActive()?height-(115 + STATUS_BAR_HEIGHT):height-115, paddingTop:"3.2%", paddingBottom:"4.1%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >

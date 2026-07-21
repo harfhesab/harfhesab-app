@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
-import { View, Dimensions, TouchableOpacity, Text, ScrollView, StyleSheet} from 'react-native';
+import { View, Dimensions, TouchableOpacity, Text, ScrollView, StyleSheet, NativeModules} from 'react-native';
 import Modal from "react-native-modal";
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
@@ -11,8 +11,9 @@ import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 import GridItem from '../list-view-items/GridItem';
 import Toast from '../custom-toast/Toast';
 
-const {width, height} = Dimensions.get('window');
+const { ImmersiveMode } = NativeModules;
 const BottomDrawerGrid = React.forwardRef((props, ref)=>{
+    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const localToastRef = useRef(null);
     const colors = useAppTheme();
     const maxHeight = height*0.9 - 160;
@@ -123,9 +124,12 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                 }
             }}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
+            deviceHeight={height}
+            statusBarTranslucent={ImmersiveMode.isImmersiveModeActive()?true:false}
+            coverScreen={true}
         >
             <Toast ref={localToastRef} defaultPosition="top" />
-            <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
+            <View style={[styles.modalContainer, {width:width, backgroundColor:colors.bottom_drawer.background}]}>
                 <View>
                     <View style={{width:width * 0.25, height:4, backgroundColor:colors.border.a1, marginTop:30, marginBottom:15, alignSelf:'center', borderRadius:2}}/>                  
                     {
@@ -207,9 +211,9 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                             }
                                         }
                                     }}
-                                    borderRadius={item?.borderRadius??5}
+                                    borderRadius={item?.borderRadius??10}
                                     textSize={item?.textSize??14}
-                                    borderColor={item?.color??colors.alert.a1}
+                                    borderColor={item?.color??undefined}
                                     iconName={item?.iconName??undefined}
                                     iconType={item?.iconType??undefined}
                                     iconSize={item?.iconSize??undefined}
@@ -236,7 +240,7 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                             }
                                         }
                                     }}
-                                    borderRadius={item?.borderRadius??5}
+                                    borderRadius={item?.borderRadius??10}
                                     textSize={item?.textSize??16}
                                     backgorundGradinte={item?.color??undefined}
                                     iconName={item?.iconName??undefined}
@@ -255,12 +259,11 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
 })
 const styles = StyleSheet.create({
     modalContainer:{
-      width:width,
       borderRadius:5,
       alignSelf:'center',
       verticalAlign:'flex-end',
-      borderTopLeftRadius:20,
-      borderTopRightRadius:20,
+      borderTopLeftRadius:30,
+      borderTopRightRadius:30,
     },
 });
 export default memo(BottomDrawerGrid)

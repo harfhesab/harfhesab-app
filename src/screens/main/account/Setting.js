@@ -9,8 +9,8 @@ import { changeMusicGame, changeSoundGame, changeVibrationGame } from '../../../
 
 const { ImmersiveMode } = NativeModules;
 function Setting(props){
-    const dispatch = useDispatch();
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
+    const dispatch = useDispatch();
     const colors = useAppTheme()
     const { sound, music, vibration } = useSelector((state) => state.setting);
 

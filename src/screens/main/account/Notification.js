@@ -12,8 +12,8 @@ import { changeNewNotifications } from '../../../redux/slices/accountSlice';
 
 const { ImmersiveMode } = NativeModules;
 function Notification(props){
-    const dispatch = useDispatch();
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)

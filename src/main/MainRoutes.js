@@ -25,6 +25,7 @@ import Notification from '../screens/main/account/Notification';
 import MessageInApp from '../screens/main/account/MessageInApp';
 import StageGameUpdateScreen from '../screens/main/account/StageGameUpdateScreen';
 import KalamAkhar from '../screens/main/online-game/kalam-akhar/KalamAkhar';
+import KalamAkharInformation from '../screens/main/online-game/kalam-akhar/KalamAkharInformation';
 
 
 const Stack = createNativeStackNavigator();
@@ -83,6 +84,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"MessageInApp"} component={MessageInApp} />
       <Stack.Screen name={"StageGameUpdateScreen"} component={StageGameUpdateScreen} />
       <Stack.Screen name={"KalamAkhar"} component={KalamAkhar} />
+      <Stack.Screen name={"KalamAkharInformation"} component={KalamAkharInformation} />
     </Stack.Navigator>
   )
 }

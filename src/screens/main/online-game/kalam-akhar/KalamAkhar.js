@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Platform, StyleSheet, View, Dimensions, FlatList, Text, SafeAreaView, StatusBar } from 'react-native';
+import { Platform, StyleSheet, View, Dimensions, FlatList, Text, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import ScreenLoading from '../../../../components/screen-loading/ScreenLoading';
 import Border from '../../../../components/Border';
@@ -12,6 +13,8 @@ import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../../utils/consta
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
 import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 import { WaveIndicator } from 'react-native-indicators';
+import BottomDrawerGrid from '../../../../components/bottom-drawer-grid/BottomDrawerGrid';
+import BottomDrawerGridHelper from '../../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 
 const { width } = Dimensions.get('screen');
 
@@ -38,33 +41,17 @@ const GET_ITEMS_QUERY = `
       list {
         _id,
         title,
-        time_limit,
         entry_fee_coins,
         subscription_required,
         reward_coins,
         reward_subscription,
-        end_date,
         is_active
       },
-      server_now,
       hasNextPage,
       nextPage
     }
   }
 `;
-
-const calculateTimeRemaining = (endDate, serverNow) => {
-    const diff = new Date(endDate).getTime() - new Date(serverNow).getTime();
-    if (diff <= 0 || isNaN(diff)) {
-        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-    return {
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / 1000 / 60) % 60),
-        seconds: Math.floor((diff / 1000) % 60)
-    };
-};
 
 function KalamAkhar(props) {
     useImmersiveMode()
@@ -104,26 +91,15 @@ function KalamAkhar(props) {
             
             const receivedData = response.data?.data?.paginateKalamAkharChallenges;
             if (!receivedData || !Array.isArray(receivedData.list)) throw new Error("Invalid data");
-            
-            const serverNow = receivedData.server_now;
-            const processedList = receivedData.list.map(item => {
-                if (item.end_date) {
-                    return {
-                        ...item,
-                        timer: calculateTimeRemaining(item.end_date, serverNow)
-                    };
-                }
-                return item;
-            });
             if (isFirstLoad) {
-                if (processedList.length === 0) {
+                if (receivedData.list.length === 0) {
                     setNoItem(true);
                     setData([]);
                 } else {
-                    setData(processedList);
+                    setData(receivedData.list);
                 }
             } else {
-                setData(prevData => [...prevData, ...processedList]);
+                setData(prevData => [...prevData, ...receivedData.list]);
             }
 
             if (receivedData.hasNextPage) {
@@ -168,12 +144,10 @@ function KalamAkhar(props) {
         <KalamAkharChallenge
             _id={item?._id}
             title={item?.title}
-            time_limit={item?.time_limit}
             entry_fee_coins={item?.entry_fee_coins}
             subscription_required={item?.subscription_required}
             reward_coins={item?.reward_coins}
             reward_subscription={item?.reward_subscription}
-            timer={item?.timer}
             is_active={item?.is_active}
         />
     ), []);
@@ -221,12 +195,12 @@ function KalamAkhar(props) {
                 <View style={{flex:1 }}> 
                     <View style={styles.container}>
                         <FlatList
-                            style={{flex:1, width:"100%", paddingHorizontal:20}}
+                            style={{flex:1, width:"100%"}}
                             contentContainerStyle={[
                                 { paddingBottom:70, paddingTop:STATUS_BAR_HEIGHT+70,  rowGap:20},
                                 data.length === 0 && {flex: 1}
                             ]}
-                            columnWrapperStyle={{ justifyContent:'space-between', gap:20}}
+                            columnWrapperStyle={{ justifyContent:'space-between', gap:20, paddingHorizontal:20}}
                             numColumns={IS_TABLET_CONDITION?3:2}
                             showsVerticalScrollIndicator={false}
                             data={data}
@@ -246,7 +220,7 @@ function KalamAkhar(props) {
                     </View>
                 </View>
             </GalaxyTwinkle>
-            <View style={{position:'absolute', paddingTop:STATUS_BAR_HEIGHT, backgroundColor:'#12042685'}}>
+            <View style={{position:'absolute', paddingTop:STATUS_BAR_HEIGHT, backgroundColor:'#12042670'}}>
                 <GeneralHeader
                     backgroundColor={'transparent'}
                     back={true}
@@ -258,6 +232,7 @@ function KalamAkhar(props) {
                     height={60}
                 />
             </View>
+            <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </SafeAreaView>
     );
 }

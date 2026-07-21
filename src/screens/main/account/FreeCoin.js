@@ -22,11 +22,12 @@ import * as Progress from 'react-native-progress';
 import BackgroundTimer from 'react-native-background-timer';
 import axios from 'axios';
 import { getRewardAdsStatus, registerRewardAdWatch } from '../../../utils/adsLimitStorage';
-import Timer from '../../../components/timer/Timer';
+import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
+import TimerUIThread from '../../../components/timer/TimerUIThread';
 
-const {CafeBazaar, Myket} = NativeModules;
-const { width, height } = Dimensions.get('window');
+const {CafeBazaar, Myket, ImmersiveMode} = NativeModules;
 function FreeCoin(props){
+    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'):Dimensions.get('window');
     const dispatch = useDispatch();
     const colors = useAppTheme()
     const [adsStatus, setAdsStatus] = useState(null)
@@ -274,7 +275,7 @@ function FreeCoin(props){
         <View style={{flexDirection:'row', alignItems:'center'}}>
             {
                 adsStatus?.allowed === false?
-                <Timer
+                <TimerUIThread
                     style={{fontSize: 14, fontFamily: Font.black, color: colors.primary.a3}}
                     titleStyle={{fontFamily: Font.medium, color: `${colors.primary.a3}99`}}
                     seconds={adsStatus.seconds}
@@ -699,16 +700,16 @@ function FreeCoin(props){
         })
     }
     return(
-        <View style={{flex:1, backgroundColor:colors.background.a1}}>
+        <View style={{flex:1, backgroundColor:colors.background.a2, paddingTop:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
             <GeneralHeader
                 coin={true}
                 back={true}
                 title={"دریافت سکه رایگان"}
             />
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <View style={{flex:1, alignItems:'center', justifyContent:'center', backgroundColor:colors.background.a1}}>
                 <ImageBackground
                     source={require("../../../assets/image/menu_frame_full.png")}
-                    style={{ width: width - 20, height:height-80, paddingVertical:"3.5%"}}
+                    style={{ width: width - 20, height:ImmersiveMode.isImmersiveModeActive()?height-(80 + STATUS_BAR_HEIGHT):height-80, paddingVertical:"3.5%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >

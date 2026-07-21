@@ -11,21 +11,25 @@ import { navigate } from '../../../main/navigationService';
 import { showToast } from '../../custom-toast/ToastRef';
 import DynamicProSkiaText from '../../text-components/DynamicProSkiaText';
 import { priceDigitSeperator } from '../../../utils/PriceDigitSeperator';
+import { useSelector } from 'react-redux';
+import BottomDrawerGridHelper from '../../bottom-drawer-grid/BottomDrawerGridHelper';
+import AlertBottomDrawerHelper from '../../alert-bottom-drawer/AlertBottomDrawerHelper';
 
 const {width} = Dimensions.get('screen')
 const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
+const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function KalamAkharChallenge({
     _id,
     title,
-    time_limit,
     entry_fee_coins,
     subscription_required,
     reward_coins,
     reward_subscription,
-    timer,
     is_active
 }){
     const colors = useAppTheme();
+    const { numberCoins } = useSelector((state) => state.coins);
+    const { activeSubscription } = useSelector((state) => state.subscription);
 
     const cardImageBackground = subscription_required == true?
         require("../../../assets/image/kalam-akhar-card-2.png"):
@@ -41,7 +45,96 @@ function KalamAkharChallenge({
 
     const click = ()=>{
         if(is_active == true){
-
+            if(subscription_required == true && activeSubscription !== true){
+                const btn = [
+                    {
+                        onPress : ()=>{
+                            navigate("SubscriptionPlans")
+                        },
+                        text: "خرید اشتراک",
+                        type: "bold",
+                    },
+                    {
+                        onPress : ()=>{},
+                        text: "لغو",
+                        type: "border",
+                    },
+                ]
+                AlertBottomDrawerHelper.showAlert({
+                    title:"شروع این چالش نیاز به اشتراک فعال دارد!",
+                    buttons:btn,
+                    options:{
+                        cancelable: true,
+                        icon:{
+                            Icon:()=>(
+                                <Image
+                                    style={{height:gridSize, width:gridSize}}
+                                    source={require('../../../assets/image/diamond.png')}
+                                />
+                            )
+                        }
+                    }
+                })
+            } else if(entry_fee_coins && entry_fee_coins > numberCoins){
+                const previousSelected = {
+                    _id:["2"],
+                    text1:["دریافت سکه رایگان"]
+                }
+                BottomDrawerGridHelper.showBottomDrawer({
+                    title:`شروع این چالش نیاز به پرداخت ${entry_fee_coins} سکه می‌باشد!`,
+                    list:[
+                        {
+                            _id: "1",
+                            text1: "خرید سکه",
+                            image: require('../../../assets/image/coin.png'),
+                            localImage: true,
+                            height:gridSize + 40,
+                            width:gridSize,
+                            blank_background: true,
+                            onPress : ()=>{}
+                        },
+                        {
+                            _id: "2",
+                            text1: "دریافت سکه رایگان",
+                            image: require('../../../assets/image/coin.png'),
+                            localImage: true,
+                            height:gridSize + 40,
+                            width:gridSize,
+                            blank_background: true,
+                            onPress : ()=>{}
+                        }
+                    ],
+                    buttons:[
+                        {
+                            onPress : ({data})=>{
+                                if(data._id[0] == "1"){
+                                    navigate("CoinPlans")
+                                } else if(data._id[0] == "2"){
+                                    navigate("FreeCoin")
+                                }
+                            },
+                            text: "افزایش سکه",
+                            loading: false,
+                            type: "bold",
+                            selectRequired:true
+                        },
+                        {
+                            onPress : ({data})=>{},
+                            text: "لغو",
+                            loading: false,
+                            type: "border",
+                        },
+                    ],
+                    options:{
+                        numberSelectable: 1,
+                        previousSelected:previousSelected,
+                        cancelable: true,
+                        selectRequired: true,
+                    }
+                })
+            } else {
+                navigate("KalamAkharInformation", {_id:_id})
+            }
         } else {
             showToast({
                 title: "این آیتم غیر فعال است.",
@@ -58,7 +151,7 @@ function KalamAkharChallenge({
             <ImageBackground
                 source={cardImageBackground}
                 style={{ width: itemWidth, height: itemWidth*1.25}}
-                imageStyle={{ resizeMode: "stretch" }}
+                imageStyle={{ resizeMode: "stretch", opacity: 0.75 }}
                 resizeMode="stretch"
             >
                 <View style={{flexDirection:'column', alignItems:'center', justifyContent:'space-between', width:"100%", height:"100%", paddingTop:'14%', paddingBottom:'8%'}}>
@@ -83,7 +176,7 @@ function KalamAkharChallenge({
                             resizeMode="stretch"
                         >
                             <View style={{width:"100%", height:"100%", paddingVertical:1, flexDirection:'column', alignItems:'center', justifyContent:'space-between', paddingHorizontal:"12%", paddingVertical:"5%"}}>
-                                <Text style={{color:colors.primary.a4, fontFamily:Font.bakh_bold, fontSize:itemWidth*0.05}}>{"جایزه"}</Text>
+                                <Text style={{color:colors.primary.a8, fontFamily:Font.bakh_bold, fontSize:itemWidth*0.05}}>{"جایزه"}</Text>
                                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:(reward_coins && reward_subscription)?'space-between':'center', width:"100%"}}>
                                 {
                                     reward_coins&&
@@ -150,12 +243,10 @@ const areEqual = (prevProps, nextProps) => {
     return (
         prevProps._id === nextProps._id &&
         prevProps.title === nextProps.title &&
-        prevProps.time_limit === nextProps.time_limit &&
         prevProps.entry_fee_coins === nextProps.entry_fee_coins &&
         prevProps.subscription_required === nextProps.subscription_required &&
         prevProps.reward_coins === nextProps.reward_coins &&
-        prevProps.reward_subscription === nextProps.reward_subscription &&
-        prevProps.timer === nextProps.timer
+        prevProps.reward_subscription === nextProps.reward_subscription
     );
 };
 
