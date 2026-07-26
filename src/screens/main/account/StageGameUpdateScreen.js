@@ -128,7 +128,7 @@ function StageGameUpdateScreen(props){
                             }
                             {
                                 (status == "need-update" || status == "force-update")&&
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:12, textAlign:'center', lineHeight:24}}>{"توجه کنید، هنگام دریافت اطلاعات و داده‌های بازی در همین صفحه بمانید و از اتصال دستگاه خود به اینترنت مطمعن شوید."}</Text>
+                                <Text style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:12, textAlign:'center', lineHeight:24}}>{"توجه کنید، هنگام دریافت اطلاعات و داده‌های بازی در همین صفحه بمانید و از اتصال دستگاه خود به اینترنت مطمئن شوید."}</Text>
                             }
                         </View>
                     </View>

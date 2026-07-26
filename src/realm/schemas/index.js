@@ -11,6 +11,7 @@ import { UserStageGameProgress } from "./user/UserStageGameProgressSchema";
 import { UserPackage } from "./user/UserPackageSchema";
 import { CoinPlan } from "./user/CoinPlanSchema";
 import { SubscriptionPlan } from "./user/SubscriptionPlanSchema";
+import { KalamAkharChallenge } from "./kalam-akhar/KalamAkharChallengeSchema";
 
 export const realmSchemas = [
   StageGameVersionControl,
@@ -26,5 +27,6 @@ export const realmSchemas = [
   UserStageGameProgress,
   UserPackage,
   CoinPlan,
-  SubscriptionPlan
+  SubscriptionPlan,
+  KalamAkharChallenge
 ];

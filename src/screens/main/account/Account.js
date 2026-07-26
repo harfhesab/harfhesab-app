@@ -131,7 +131,7 @@ function Account(props){
                 style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
-                text:"توجه کنید برای ذخیره‌ی آخرین اطلاعات بازی روی حساب کاربری، از اتصال دستگاه خود به اینترنت مطمعن شوید تا همه‌ی اطلاعات، روی حسابتان ذخیره شود.",
+                text:"توجه کنید برای ذخیره‌ی آخرین اطلاعات بازی روی حساب کاربری، از اتصال دستگاه خود به اینترنت مطمئن شوید تا همه‌ی اطلاعات، روی حسابتان ذخیره شود.",
                 style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
             {

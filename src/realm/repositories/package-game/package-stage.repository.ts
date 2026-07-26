@@ -39,11 +39,11 @@ export const createPackageStage = (
     const languageId = typeof data.language_ref === "string"? new BSON.ObjectId(data.language_ref):data.language_ref;
     const packageId = typeof data.package === "string"? new BSON.ObjectId(data.package):data.package;
     const seasonId = typeof data.season == "string"? new BSON.ObjectId(data.season):data.season;
-    const exists = realm.objectForPrimaryKey("Stage", objectId);
+    const exists = realm.objectForPrimaryKey("PackageStage", objectId);
     if (exists) return false;
 
     realm.write(() => {
-      realm.create("Stage", {
+      realm.create("PackageStage", {
         ...data,
         _id: objectId,
         language_ref : languageId,

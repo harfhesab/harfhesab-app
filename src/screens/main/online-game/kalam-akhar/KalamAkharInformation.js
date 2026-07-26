@@ -14,6 +14,10 @@ import { priceDigitSeperator } from '../../../../utils/PriceDigitSeperator';
 import SeasonMediaSwiper from '../../../../components/swiper/SeasonMediaSwiper';
 import TimerUIThread from '../../../../components/timer/TimerUIThread';
 import { useSelector } from 'react-redux';
+import { useRealm } from '../../../../realm';
+import { createKalamAkharChallenge } from '../../../../realm/repositories/kalam-akhar/kalam-akhar-challenge.repository';
+import Icon from '../../../../utils/Icon';
+import SandTimer from '../../../../components/timer/sand-timer/SandTimer';
 
 
 
@@ -29,10 +33,24 @@ const calculateTimeRemaining = (endDate, serverNow) => {
         seconds: Math.floor((diff / 1000) % 60)
     };
 };
+function secondsToTimeObject(totalSeconds) {
+    totalSeconds = Math.max(0, Math.floor(totalSeconds));
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return {
+        days: days > 0 ? days : undefined,
+        hours: days > 0 ? hours : (hours > 0 ? hours : undefined),
+        minutes,
+        seconds
+    };
+}
 const {width, height} = Dimensions.get("screen")
 const itemWidth = IS_TABLET_CONDITION?width*0.7:width - 30
 function KalamAkharInformation(props){
     const colors = useAppTheme()
+    const realm = useRealm();
     const { numberCoins } = useSelector((state) => state.coins);
     const [data, setData] = useState(null)
     const [progress, setProgress] = useState(null)
@@ -41,6 +59,8 @@ function KalamAkharInformation(props){
     const [timer, setTimer] = useState(null)
     const [loading2, setLoading2] = useState(false)
     const challengeParamId = props?.route?.params?._id
+    const timeLimit = data?.time_limit > 0?secondsToTimeObject(data?.time_limit):null;
+    const remainingTimeSeconds =  progress?.remaining_time_seconds > 0?secondsToTimeObject(progress?.remaining_time_seconds):null;
 
     const cardImageBackground = data?.subscription_required == true?
         require("../../../../assets/image/kalam-akhar-card-2.png"):
@@ -75,14 +95,9 @@ function KalamAkharInformation(props){
                                 subscription_required
                                 reward_coins
                                 reward_subscription
-                                start_date
                                 end_date
-                                order
-                                media{path, file_type, order}
-                                voice{path}
-                                stage_hint
+                                media{path file_type order}
                                 language_info{name}
-                                is_active
                             }
                             user_progress{
                                 session
@@ -139,7 +154,29 @@ function KalamAkharInformation(props){
                         _id
                         status
                         message
-                        seconds
+                        remaining_time_seconds
+                        kalam_akhar_challenge{
+                            parts{
+                                _id
+                                sentence
+                                sentence_hint
+                                sentence_display
+                                words{
+                                    _id
+                                    word
+                                    word_hint
+                                    unknown_word
+                                    letters
+                                    additional_words
+                                    hidden_words
+                                    order
+                                }
+                                order
+                            }
+                            voice{path}
+                            stage_hint
+                            language_ref
+                        }
                     }
                 }
                 `,
@@ -150,12 +187,38 @@ function KalamAkharInformation(props){
                 }
             }
         }).then((response)=>{
+            console.log("1111111111", response)
             setLoading2(false)
-            const data = response.data.data?.startNewSessionForKalamAkharChallenge
-            if(data?.status == 200){
+            const receivedData = response.data.data?.startNewSessionForKalamAkharChallenge
+            if(receivedData?.status == 200){
+                const expiration = data?.time_limit?data.time_limit*2:7200
+                const timeLimit = receivedData?.time_limit
+
+
+
+
+
+
+
+
                 
+
+
+
+
+
+
+
+
+                const res = createKalamAkharChallenge(
+                    realm,
+                    data,
+                    expiration,
+                    timeLimit
+                )
             }
         }).catch((error)=>{
+            console.log("2222222222222", error)
             setLoading2(false)
         })
     }
@@ -244,85 +307,133 @@ function KalamAkharInformation(props){
                                         {progress?.message&&<View style={{width:itemWidth - 60, paddingHorizontal:10, paddingVertical:5, backgroundColor:`${colors.primary.a8}99`, borderRadius:5, marginTop:data?.media?.length > 0?0:30}}>
                                             <Text style={{fontSize:10, fontFamily:Font.bakh_semi_bold, color:colors.primary.a5, lineHeight:17}}>{progress?.message}</Text>
                                         </View>}
-                                        {
-                                            (data?.reward_coins || data?.reward_subscription)&&
-                                            <View style={{width:itemWidth - 60, paddingTop:10, paddingBottom:5, backgroundColor:`${colors.primary.a2}60`, borderRadius:10, alignItems:'center', gap:10, marginTop:data?.media?.length > 0?0:30}}>
-                                                <Text style={{fontSize:12, fontFamily:Font.bakh_bold, color:colors.primary.a5, lineHeight:17}}>{"جایزهٔ چالش"}</Text>
-                                                <View style={{flexDirection:'row', alignItems:'center', justifyContent:(data?.reward_coins && data?.reward_subscription)?'space-evenly':'center', width:"100%"}}>
-                                                    {
-                                                        data?.reward_coins&&
-                                                        <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
-                                                            <Image
-                                                                style={{height:20, width:20}}
-                                                                source={require('../../../../assets/image/coin.png')}
-                                                            />
-                                                            <Text style={{color:colors.primary.a7, fontFamily:Font.bakh_extra_bold, fontSize:20}}>{priceDigitSeperator(data?.reward_coins)}</Text>
-                                                        </View> 
-                                                    }
-                                                    {
-                                                        data?.reward_subscription&&
-                                                        <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
-                                                            <Image
-                                                                style={{height:20, width:20}}
-                                                                source={require('../../../../assets/image/diamond.png')}
-                                                            />
-                                                            <Text style={{color:colors.primary.a7, fontFamily:Font.bakh_extra_bold, fontSize:20}}>{`${data?.reward_subscription} روز`}</Text>
-                                                        </View> 
-                                                    }
-                                                </View>
-                                            </View>
-                                        }
-                                    </View>
-                                    <View style={{width:"100%"}}>
-                                        <View style={{flexDirection:'row', alignItems:'center', width:"100%", justifyContent:'space-between', paddingHorizontal:30, paddingBottom:15}}>
-                                            <View style={{alignItems:'center', gap:10}}>
-                                                <View style={{flexDirection:'row', alignItems:'center'}}>
-                                                    <View style={{backgroundColor:`${colors.primary.a2}30`, paddingHorizontal:10, paddingVertical:3, borderRadius:15, borderColor:colors.primary.a2, borderWidth:1, borderStyle:'dashed'}}>
-                                                        {
-                                                            progress?
-                                                            <View>
-
-                                                            </View>
-                                                            :data?.entry_fee_coins > 0?
-                                                            <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
-                                                                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.primary.a2, fontSize:12}}>{`پرداخت ${data?.entry_fee_coins}`}</Text>
-                                                                <Image
-                                                                    style={{height:12, width:12}}
-                                                                    source={require('../../../../assets/image/coin.png')}
-                                                                />
-                                                            </View>
-                                                            :
-                                                            <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
-                                                                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.primary.a2, fontSize:12}}>{"رایگان"}</Text>
-                                                            </View>
-                                                        }
-                                                    </View>
-
-                                                </View>
-                                                <TouchableOpacity onPress={startChallenge} disabled={(progress && progress?.can_resume !== true)?true:false} activeOpacity={0.7} style={{ alignItems:'center', justifyContent:'center', marginStart:"3%"}}>
-                                                    <ImageBackground
-                                                        source={cardImageButton}
-                                                        style={{ width:110, height:110, alignItems:'center', justifyContent:'center' }}
-                                                        imageStyle={{ resizeMode: "stretch", opacity:(progress && progress?.can_resume !== true)?0.4:1 }}
-                                                        resizeMode="stretch"
-                                                    >
-                                                        <View style={{ alignItems:'center', justifyContent:'center', height:"100%", width:"100%"}}>
+                                        {/* {
+                                            (data?.language_info?.name || data?.reward_coins || data?.reward_subscription || data?.subscription_required || data?.entry_fee_coins || data?.time_limit)&&
+                                            <View style={{width:itemWidth - 60, paddingTop:10, paddingBottom:5, backgroundColor:`${colors.primary.a6}70`, borderRadius:10, alignItems:'center', gap:5, marginTop:data?.media?.length > 0?0:30}}>
+                                                {
+                                                    (data?.reward_coins || data?.reward_subscription)&&
+                                                    <View style={{width:"100%", flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
+                                                        <Text style={{fontSize:12, fontFamily:Font.bakh_semi_bold, color:colors.primary.a7}}>{"جایزهٔ چالش"}</Text>
+                                                        <View style={{flexDirection:'row', alignItems:'center', justifyContent:"center", gap:10}}>
                                                             {
-                                                                loading2 == true?
-                                                                <ActivityIndicator color={colors.primary.a5} size={'large'}/>
-                                                                :
+                                                                data?.reward_subscription&&
+                                                                <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
+                                                                    <Image
+                                                                        style={{height:14, width:14}}
+                                                                        source={require('../../../../assets/image/diamond.png')}
+                                                                    />
+                                                                    <Text style={{color:"#035c05", fontFamily:Font.bakh_bold, fontSize:14}}>{`${data?.reward_subscription}+ روز`}</Text>
+                                                                </View> 
+                                                            }
+                                                            {
+                                                                data?.reward_coins&&
+                                                                <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
+                                                                    <Image
+                                                                        style={{height:14, width:14}}
+                                                                        source={require('../../../../assets/image/coin.png')}
+                                                                    />
+                                                                    <Text style={{color:"#035c05", fontFamily:Font.bakh_bold, fontSize:14}}>{`${priceDigitSeperator(data?.reward_coins)}`}</Text>
+                                                                </View> 
+                                                            }
+                                                        </View>
+                                                    </View>
+                                                }
+                                                {
+                                                    (data?.subscription_required || data?.entry_fee_coins)&&
+                                                    <View style={{width:"100%", flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
+                                                        <Text style={{fontSize:12, fontFamily:Font.bakh_semi_bold, color:colors.primary.a7}}>{"ورودی چالش"}</Text>
+                                                        <View style={{flexDirection:'row', alignItems:'center', justifyContent:"center", gap:10}}>
+                                                            {
+                                                                data?.subscription_required&&
+                                                                <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
+                                                                    <Text style={{color:colors.primary.a7, fontFamily:Font.bakh_semi_bold, fontSize:14}}>(<Image
+                                                                        style={{height:14, width:14}}
+                                                                        source={require('../../../../assets/image/diamond.png')}
+                                                                    />با اشتراک)</Text>
+                                                                    
+                                                                </View> 
+                                                            }
+                                                            {
+                                                                data?.entry_fee_coins&&
+                                                                <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
+                                                                    <Image
+                                                                        style={{height:14, width:14}}
+                                                                        source={require('../../../../assets/image/coin.png')}
+                                                                    />
+                                                                    <Text style={{color:"#aa0000", fontFamily:Font.bakh_bold, fontSize:14}}>{`${priceDigitSeperator(data?.entry_fee_coins)}`}</Text>
+                                                                </View> 
+                                                            }
+                                                        </View>
+                                                    </View>
+                                                }
+                                                {
+                                                    data?.time_limit&&
+                                                    <View style={{width:"100%", flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
+                                                        <Text style={{fontSize:12, fontFamily:Font.bakh_semi_bold, color:colors.primary.a7}}>{"زمان بازی"}</Text>
+                                                        <View style={{flexDirection:'row', alignItems:'center', justifyContent:"center", gap:3}}>
+                                                            <Icon name={"stopwatch"} type={"Entypo"} style={{color:colors.primary.a7, fontSize:14}}/>
+                                                            <Text style={{fontSize: 14, fontFamily: Font.bakh_bold, color: colors.primary.a7}}>{`${timeLimit?.hours?`${timeLimit.hours}:`:""}${String(timeLimit?.minutes).padStart(2, '0')}:${String(timeLimit?.seconds).padStart(2, '0')}`}</Text>
+                                                        </View>
+                                                    </View>
+                                                }
+                                                {
+                                                    data?.language_info?.name&&
+                                                    <View style={{width:"100%", flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
+                                                        <Text style={{fontSize:12, fontFamily:Font.bakh_semi_bold, color:colors.primary.a7}}>{"زبان محتوا"}</Text>
+                                                        <View style={{flexDirection:'row', alignItems:'center', justifyContent:"center", gap:5}}>
+                                                            <Text style={{fontSize: 14, fontFamily: Font.bakh_bold, color: colors.primary.a7}}>{data?.language_info?.name}</Text>
+                                                        </View>
+                                                    </View>
+                                                }
+                                            </View>
+                                        } */}
+                                        <SandTimer totalSeconds={300} onFinish={() => console.log('done')} />
+                                    </View>
+
+
+                                    
+
+                                    <View style={{width:"100%"}}>
+                                        <View style={{flexDirection:'row', alignItems:'center', width:"100%", justifyContent:'space-between', paddingHorizontal:30, paddingBottom:30}}>
+
+                                            <TouchableOpacity onPress={startChallenge} disabled={(progress && progress?.can_resume !== true)?true:false} activeOpacity={0.7} style={{ alignItems:'center', justifyContent:'center'}}>
+                                                <ImageBackground
+                                                    source={cardImageButton}
+                                                    style={{ width:110, height:110, alignItems:'center', justifyContent:'center' }}
+                                                    imageStyle={{ resizeMode: "stretch", opacity:(progress && progress?.can_resume !== true)?0.4:1 }}
+                                                    resizeMode="stretch"
+                                                >
+                                                    <View style={{ alignItems:'center', justifyContent:'center', height:"100%", width:"100%"}}>
+                                                        {
+                                                            loading2 == true?
+                                                            <ActivityIndicator color={colors.primary.a5} size={'large'}/>
+                                                            :
+                                                            <View style={{width:"100%", alignItems:'center', gap:5}}>
                                                                 <DynamicProSkiaText 
-                                                                    text={(progress && progress?.can_resume !== true)?`پایان!`:(progress && progress?.can_resume == true)?`ادامهٔ\nچالش`:`شروع\nچالش`}
+                                                                    text={(progress && progress?.can_resume !== true)?`پایان!`:(progress && progress?.can_resume == true)?`ادامه`:`شروع`}
                                                                     textColor={colors.primary.a3} 
                                                                     borderColor={colors.primary.a7} 
                                                                     borderWidth={1}
-                                                                    fontSize={20}
+                                                                    fontSize={22}
                                                                 />
-                                                            }
-                                                        </View>
-                                                    </ImageBackground>
-                                                </TouchableOpacity>
-                                            </View>
+                                                                {
+                                                                    (progress && progress?.can_resume == true && remainingTimeSeconds)&&
+                                                                    <TimerUIThread
+                                                                        style={{fontSize: 12, fontFamily: Font.black, color: colors.primary.a5}}
+                                                                        seconds={remainingTimeSeconds?.seconds}
+                                                                        minutes={remainingTimeSeconds?.minutes}
+                                                                        hours={remainingTimeSeconds?.hours}
+                                                                        days={remainingTimeSeconds?.days}
+                                                                        separator={":"}
+                                                                        hideTitle={true}
+                                                                    />
+                                                                }
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                </ImageBackground>
+                                            </TouchableOpacity>
+
                                             {
                                                 timer&&
                                                 <View style={{alignItems:'center'}}>

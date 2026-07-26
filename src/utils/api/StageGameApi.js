@@ -890,7 +890,7 @@ const showUpdateAlert = ()=>{
             style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
-            text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمعن شوید.",
+            text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
             style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
     ]
@@ -938,7 +938,7 @@ const forceUpdateAlert = ()=>{
             style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
-            text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمعن شوید.",
+            text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
             style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
     ]
