@@ -36,12 +36,14 @@ const LUT_STEPS = 24;
 
 export function buildGeometry(width, height) {
   const bodyInset = width * 0.17;
-  const neckW = Math.max(6, width * 0.09);
+  // As narrow as practical while staying visible/functional — grains still
+  // need to visibly pass through it.
+  const neckW = Math.max(3, width * 0.032);
   const topY = height * 0.12;
   const bottomY = height * 0.88;
   const neckY = height / 2;
   const cx = width / 2;
-  const capH = height * 0.045;
+  const capH = height * 0.035;
 
   // Right-side control points only — the left side is a mirror of these
   // around cx, both for drawing the glass and for sand-edge lookups.

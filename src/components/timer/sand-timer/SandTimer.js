@@ -56,7 +56,7 @@ export default function SandTimer({
   grainCount = 14,
   sandColors = ['#f3d493', '#dba84e', '#a97a30'],
   frameColor = '#6b4226',
-  frameColorDark = '#432911',
+  frameColorDark = '#431111',
   glassTint = 'rgba(210,232,240,0.16)',
   onFinish,
 }) {
@@ -114,15 +114,17 @@ export default function SandTimer({
     []
   );
 
-  const grainRadius = Math.max(1.1, width * 0.011);
+  // Clamp to the (now much narrower) neck so grains never look oversized
+  // for the channel they're falling through.
+  const grainRadius = Math.min(Math.max(1.1, width * 0.011), geo.neckW * 0.3);
 
   return (
     <View style={{ width, height }}>
       <Canvas style={{ width, height }}>
         <HourglassBase geo={geo} frameColor={frameColor} frameColorDark={frameColorDark} />
         <Group clip={geo.outer}>
-          <TopSandPile progress={progress} geo={geo} colors={sandColors} />
-          <BottomSandPile progress={progress} geo={geo} colors={sandColors} />
+          <TopSandPile progress={progress} geo={geo} clock={clock} colors={sandColors} />
+          <BottomSandPile progress={progress} geo={geo} clock={clock} colors={sandColors} />
           <SandStream
             count={grainCount}
             clock={clock}

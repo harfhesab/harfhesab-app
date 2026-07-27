@@ -17,7 +17,6 @@ import { useSelector } from 'react-redux';
 import { useRealm } from '../../../../realm';
 import { createKalamAkharChallenge } from '../../../../realm/repositories/kalam-akhar/kalam-akhar-challenge.repository';
 import Icon from '../../../../utils/Icon';
-import SandTimer from '../../../../components/timer/sand-timer/SandTimer';
 
 
 
@@ -307,7 +306,7 @@ function KalamAkharInformation(props){
                                         {progress?.message&&<View style={{width:itemWidth - 60, paddingHorizontal:10, paddingVertical:5, backgroundColor:`${colors.primary.a8}99`, borderRadius:5, marginTop:data?.media?.length > 0?0:30}}>
                                             <Text style={{fontSize:10, fontFamily:Font.bakh_semi_bold, color:colors.primary.a5, lineHeight:17}}>{progress?.message}</Text>
                                         </View>}
-                                        {/* {
+                                        {
                                             (data?.language_info?.name || data?.reward_coins || data?.reward_subscription || data?.subscription_required || data?.entry_fee_coins || data?.time_limit)&&
                                             <View style={{width:itemWidth - 60, paddingTop:10, paddingBottom:5, backgroundColor:`${colors.primary.a6}70`, borderRadius:10, alignItems:'center', gap:5, marginTop:data?.media?.length > 0?0:30}}>
                                                 {
@@ -386,8 +385,7 @@ function KalamAkharInformation(props){
                                                     </View>
                                                 }
                                             </View>
-                                        } */}
-                                        <SandTimer totalSeconds={300} onFinish={() => console.log('done')} />
+                                        }
                                     </View>
 
 

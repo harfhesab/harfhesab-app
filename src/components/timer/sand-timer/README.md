@@ -58,6 +58,38 @@ import SandTimer from './sand-timer/SandTimer';
   expensive on some Android GPUs — you can just remove that one shape), and
   the `LUT_STEPS` constant in `geometry.js` (try 16).
 
+## Recent refinements
+
+- **Darker grain palette**: the falling grains use earthier, higher-contrast
+  browns now (`Grains.js`) instead of pale gold, which was hard to see
+  against the light glass tint.
+- **Bottom pile now level-fills, zero gap guaranteed**: instead of a
+  free-floating cone shape (which could visibly separate from the glass
+  wall depending on fill level), the bottom pile uses the exact same
+  wall-tracing technique as the top pile — its side edges are built from
+  `rightEdgeBetween`, so by construction there's never a gap between the
+  sand and the glass. A small wave + a modest central mound (fading out as
+  the chamber nears full) sit on top of that level surface for character.
+- **Narrower neck**: the connecting channel is now ~1/3 the width it was,
+  tuned in `geometry.js` (`neckW`). Grain radius is clamped to it so grains
+  never look oversized relative to the channel.
+- **Wavy top surface**: the draining sand's surface is a multi-point sine
+  wave (amplitude fading to 0 at the walls and fading out entirely as the
+  pile empties) instead of a flat line, with a slow phase drift for a
+  subtle "alive" look.
+- **Glass depth**: `HourglassGlass` now layers per-bulb radial shading, a
+  wide diagonal highlight, a thin secondary highlight streak, and a
+  soft dark outer rim + bright inner rim to suggest glass thickness.
+- **Grain texture** (`SandTexture.js`): an extra multiply-blended layer
+  using a tiny custom GPU shader (SkSL hash noise) for a granular look,
+  essentially free performance-wise since it runs per-pixel on the GPU, not
+  per-frame on the JS/UI thread. **This is the one part of this project I
+  could not test-run** (no RN device/simulator here) — it's written to fail
+  safely: if `Skia.RuntimeEffect.Make` doesn't work in your setup for any
+  reason, that one layer just doesn't render and everything else (the
+  gradient-filled pile, the rest of the scene) is unaffected. If it doesn't
+  show up, tell me and I'll debug the SkSL.
+
 ## Honest limitations
 
 - This is **not** a per-grain physics simulation. Real grain-by-grain

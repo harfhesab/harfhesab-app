@@ -62,8 +62,10 @@ export function rightEdgeBetween(yFrom, yTo, geo) {
   return points;
 }
 
-// Height of the bottom pile's peak for a given progress (0 -> 1).
+// Height of the bottom pile's rising surface for a given progress (0 -> 1).
+// Kept as the single source of truth so the pile shape and the falling
+// grains (which need to know where to land) always agree.
 export function peakYAt(progress, geo) {
   'worklet';
-  return lerp(geo.bottomY, geo.neckY + (geo.bottomY - geo.neckY) * 0.06, progress);
+  return lerp(geo.bottomY, geo.neckY, progress);
 }

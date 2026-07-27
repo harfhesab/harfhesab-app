@@ -3,9 +3,10 @@ import { Circle } from '@shopify/react-native-skia';
 import { useDerivedValue } from 'react-native-reanimated';
 import { peakYAt } from './sandMath';
 
-// A few tonal variations so the stream doesn't look like a single flat
-// color repeated — cheap (just picks from a fixed palette per grain).
-const PALETTE = ['#f6dd9c', '#e9c374', '#dba84e', '#c4923c'];
+// Darker, earthier tones — the previous pale-gold palette had too little
+// contrast against the light glass tint (especially in the empty top
+// chamber) and read as washed-out/blurry rather than distinct grains.
+const PALETTE = ['#7c4a1e', '#8f5726', '#6b3c16', '#59300f'];
 
 function Grain({ seed, clock, progress, geo, baseRadius, colorIndex }) {
   const speed = 0.55 + seed * 0.6; // loops/sec, varied so grains don't sync up
