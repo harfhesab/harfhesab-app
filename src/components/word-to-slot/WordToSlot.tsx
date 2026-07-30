@@ -28,7 +28,7 @@ const WordToSlot = ({
 }:{
   id:string;
   currentStageId:string;
-  type:string; // "stage-game" | "package-game"
+  type:string; // "stage-game" | "package-game" | "kalam-akhar"
   packageRef:string | undefined | null;
   userPackage:string | undefined | null;
   packageName:string | undefined | null;

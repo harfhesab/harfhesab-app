@@ -10,7 +10,7 @@ import {
 
 import { buildGeometry } from './geometry';
 import { TopSandPile, BottomSandPile } from './SandPiles';
-import { SandStream } from './Grains';
+import { SandStream, SandStreamLine } from './Grains';
 import { HourglassBase, HourglassGlass } from './HourglassFrame';
 
 /**
@@ -56,7 +56,7 @@ export default function SandTimer({
   grainCount = 14,
   sandColors = ['#f3d493', '#dba84e', '#a97a30'],
   frameColor = '#6b4226',
-  frameColorDark = '#431111',
+  frameColorDark = '#432911',
   glassTint = 'rgba(210,232,240,0.16)',
   onFinish,
 }) {
@@ -80,8 +80,26 @@ export default function SandTimer({
     onFinishRef.current?.();
   };
 
+  // Tracks when the current pause began (JS thread, wall-clock ms). Not a
+  // shared value — only ever read/written here, in this effect.
+  const pauseStartedAtRef = useRef(paused ? Date.now() : null);
+
   useEffect(() => {
     pausedSV.value = paused;
+
+    if (paused) {
+      pauseStartedAtRef.current = Date.now();
+    } else if (pauseStartedAtRef.current != null) {
+      // THE FIX: without this, `startedAt` stays anchored to the original
+      // start time, so on resume `Date.now() - startedAt` suddenly counts
+      // the entire paused duration as "elapsed" — the sand would dump
+      // forward instantly to reflect the dead time. Shifting the anchor
+      // forward by exactly how long we were paused makes the countdown
+      // resume from precisely where it left off.
+      const pausedDuration = Date.now() - pauseStartedAtRef.current;
+      startedAt.value += pausedDuration;
+      pauseStartedAtRef.current = null;
+    }
   }, [paused]);
 
   // Re-anchor whenever the parent supplies a new remaining/total time —
@@ -114,9 +132,8 @@ export default function SandTimer({
     []
   );
 
-  // Clamp to the (now much narrower) neck so grains never look oversized
-  // for the channel they're falling through.
-  const grainRadius = Math.min(Math.max(1.1, width * 0.011), geo.neckW * 0.3);
+  // Sized to visually match the (now wider) stream line, not overpower it.
+  const grainRadius = Math.min(Math.max(1.3, width * 0.013), geo.neckW * 0.16);
 
   return (
     <View style={{ width, height }}>
@@ -124,14 +141,20 @@ export default function SandTimer({
         <HourglassBase geo={geo} frameColor={frameColor} frameColorDark={frameColorDark} />
         <Group clip={geo.outer}>
           <TopSandPile progress={progress} geo={geo} clock={clock} colors={sandColors} />
-          <BottomSandPile progress={progress} geo={geo} clock={clock} colors={sandColors} />
+          {/* Drawn BEFORE the bottom pile on purpose: the pile (painted
+              after) naturally covers whatever portion of the line/grains
+              falls "inside" it, so neither needs to precisely track the
+              mound's wavy surface — see Grains.js for details. */}
+          <SandStreamLine geo={geo} progress={progress} pausedSV={pausedSV} color={sandColors[1]} />
           <SandStream
             count={grainCount}
             clock={clock}
             progress={progress}
             geo={geo}
             baseRadius={grainRadius}
+            pausedSV={pausedSV}
           />
+          <BottomSandPile progress={progress} geo={geo} clock={clock} colors={sandColors} />
         </Group>
         <HourglassGlass geo={geo} glassTint={glassTint} />
       </Canvas>

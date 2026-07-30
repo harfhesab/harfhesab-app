@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView, I18nManager, Image, ImageBackground } from 'react-native';
-import Modal from "react-native-modal";
+import Modal from '../custom-modal/Modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
 import ButtonGradient from '../buttons/ButtonGradient';
@@ -70,7 +70,7 @@ const GameAlert = React.forwardRef((props, ref) => {
     useImperativeHandle(ref, () => ({
         open
     }))
-    if (!visible) return null;
+
     return (
         <Modal
             animationIn={'fadeIn'}

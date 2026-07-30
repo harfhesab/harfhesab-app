@@ -8,51 +8,20 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 
-/**
- * High-performance countdown timer for React Native.
- *
- * Why this exists:
- * The original implementation ticked via `setState` on the JS thread every
- * second. On heavy screens (Skia canvases, many Reanimated worklets, gesture
- * handlers) the JS thread gets congested, so JS timers get delayed/skipped
- * and every tick triggers a full React re-render -> visible stutter.
- *
- * This version:
- *  1. Ticks on the UI thread via `useFrameCallback`, which keeps running
- *     smoothly even when the JS thread is busy.
- *  2. Tracks an absolute end timestamp (Date.now()-based) instead of
- *     decrementing a counter, so it self-corrects after dropped frames,
- *     JS-thread stalls, or the app being backgrounded — it can never drift.
- *  3. Writes the digits directly into native TextInput views through
- *     `useAnimatedProps` ("text on the UI thread" trick), so ticking NEVER
- *     triggers a React re-render. Only genuine prop changes from the parent
- *     (restarting the countdown) cause a re-render.
- *  4. Only touches shared values when the *displayed* second actually
- *     changes, not on every single frame.
- *
- * Extra props:
- *  - hideTitle (boolean, default false): hides the unit labels
- *    (ثانیه/دقیقه/ساعت/روز) under each digit group. Only affects the
- *    default boxed layout.
- *  - separator (string, optional): switches to a compact inline layout,
- *    joining the units (largest -> smallest, only the ones provided) with
- *    this string, e.g. separator=":" -> "10:15:58". No labels are shown
- *    in this mode.
- */
-
-// Defensive: on some Reanimated/RN version combinations (mainly older
-// Android setups) the "text" prop needs to be explicitly whitelisted for
-// useAnimatedProps to be allowed to write it natively. In current
-// Reanimated 3 this is usually handled automatically, but whitelisting it
-// again is a harmless no-op and removes any doubt.
 Animated.addWhitelistedNativeProps({ text: true });
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
+// نسخه‌ی worklet — فقط داخل UI thread / frame callback استفاده می‌شود.
 const pad2 = (n) => {
   'worklet';
   return n < 10 ? `0${n}` : `${n}`;
 };
+
+// نسخه‌ی معمولی JS (غیر worklet) — همین‌جا، حین render، برای ساختن
+// defaultValue استفاده می‌شود. چون هیچ shared value ای نمی‌خواند،
+// خواندنش در طول render هیچ وارنینگی تولید نمی‌کند.
+const pad2Plain = (n) => (n < 10 ? `0${n}` : `${n}`);
 
 const toTotalSeconds = ({ seconds = 0, minutes = 0, hours = 0, days = 0 }) =>
   seconds + minutes * 60 + hours * 3600 + days * 86400;
@@ -60,8 +29,12 @@ const toTotalSeconds = ({ seconds = 0, minutes = 0, hours = 0, days = 0 }) =>
 /**
  * A single digit group. Renders through an uneditable TextInput whose text
  * is bound via animatedProps, so updates never go through React/JS thread.
+ *
+ * `initialText` is a *plain* string computed by the parent using plain JS
+ * (not by reading a shared value's `.value` during render) and is only
+ * used as the native `defaultValue`, so the view never mounts empty.
  */
-function Digit({ sharedText, style }) {
+function Digit({ sharedText, initialText, style }) {
   const animatedProps = useAnimatedProps(() => ({
     text: sharedText.value,
   }));
@@ -70,7 +43,7 @@ function Digit({ sharedText, style }) {
     <AnimatedTextInput
       style={style}
       animatedProps={animatedProps}
-      defaultValue={sharedText.value}
+      defaultValue={initialText}
       editable={false}
       focusable={false}
       caretHidden
@@ -103,9 +76,9 @@ function TimerUIThread({
     Date.now() + toTotalSeconds({ seconds, minutes, hours, days }) * 1000
   );
 
-  const secondsSV = useSharedValue(pad2(seconds));
-  const minutesSV = useSharedValue(pad2(minutes));
-  const hoursSV = useSharedValue(showHours ? pad2(hours) : '00');
+  const secondsSV = useSharedValue(pad2Plain(seconds));
+  const minutesSV = useSharedValue(pad2Plain(minutes));
+  const hoursSV = useSharedValue(showHours ? pad2Plain(hours) : '00');
   const daysSV = useSharedValue(showDays ? String(days) : '0');
 
   const lastRenderedSecond = useSharedValue(-1);
@@ -117,10 +90,6 @@ function TimerUIThread({
     onFinishRef.current = onFinish;
   }, [onFinish]);
 
-  // A STABLE, plain JS-thread function. It's referenced by identifier
-  // (not as `ref.current`) wherever we pass it to runOnJS, and it reads the
-  // ref itself on the JS thread — so no ref/function ever needs to be
-  // cloned into the UI thread closure.
   const handleFinish = useCallback(() => {
     onFinishRef.current?.();
   }, []);
@@ -141,15 +110,11 @@ function TimerUIThread({
     const remainingMs = endAt.value - Date.now();
     const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
 
-    // Skip all work unless the visible second actually changed.
     if (remainingSec === lastRenderedSecond.value) return;
     lastRenderedSecond.value = remainingSec;
 
     secondsSV.value = pad2(remainingSec % 60);
     minutesSV.value = pad2(Math.floor(remainingSec / 60) % 60);
-    // Update unconditionally — writing to a shared value that isn't
-    // currently rendered costs nothing, and this avoids ever depending on
-    // a plain JS boolean (showHours/showDays) captured in this closure.
     hoursSV.value = pad2(Math.floor(remainingSec / 3600) % 24);
     daysSV.value = String(Math.floor(remainingSec / 86400));
 
@@ -168,6 +133,16 @@ function TimerUIThread({
     []
   );
 
+  const initialTexts = useMemo(
+    () => ({
+      seconds: pad2Plain(seconds),
+      minutes: pad2Plain(minutes),
+      hours: showHours ? pad2Plain(hours) : '00',
+      days: showDays ? String(days) : '0',
+    }),
+    [seconds, minutes, hours, days, showHours, showDays]
+  );
+
   const { boxStyle, digitStyle, labelStyle } = useMemo(() => {
     const fontSize = style?.fontSize ?? 20;
     return {
@@ -184,16 +159,16 @@ function TimerUIThread({
 
   if (separator) {
     const units = [];
-    units.push(secondsSV);
-    units.push(minutesSV);
-    if (showHours) units.push(hoursSV);
-    if (showDays) units.push(daysSV);
+    units.push({ sv: secondsSV, initial: initialTexts.seconds });
+    units.push({ sv: minutesSV, initial: initialTexts.minutes });
+    if (showHours) units.push({ sv: hoursSV, initial: initialTexts.hours });
+    if (showDays) units.push({ sv: daysSV, initial: initialTexts.days });
 
     return (
       <View style={styles.inlineRow}>
-        {units.map((sv, index) => (
+        {units.map((u, index) => (
           <React.Fragment key={index}>
-            <Digit sharedText={sv} style={digitStyle} />
+            <Digit sharedText={u.sv} initialText={u.initial} style={digitStyle} />
             {index < units.length - 1 && (
               <Text style={style}>{separator}</Text>
             )}
@@ -206,22 +181,22 @@ function TimerUIThread({
   return (
     <View style={styles.row}>
       <View style={boxStyle}>
-        <Digit sharedText={secondsSV} style={digitStyle} />
+        <Digit sharedText={secondsSV} initialText={initialTexts.seconds} style={digitStyle} />
         {!hideTitle && <Text style={labelStyle}>{'ثانیه'}</Text>}
       </View>
       <View style={boxStyle}>
-        <Digit sharedText={minutesSV} style={digitStyle} />
+        <Digit sharedText={minutesSV} initialText={initialTexts.minutes} style={digitStyle} />
         {!hideTitle && <Text style={labelStyle}>{'دقیقه'}</Text>}
       </View>
       {showHours && (
         <View style={boxStyle}>
-          <Digit sharedText={hoursSV} style={digitStyle} />
+          <Digit sharedText={hoursSV} initialText={initialTexts.hours} style={digitStyle} />
           {!hideTitle && <Text style={labelStyle}>{'ساعت'}</Text>}
         </View>
       )}
       {showDays && (
         <View style={boxStyle}>
-          <Digit sharedText={daysSV} style={digitStyle} />
+          <Digit sharedText={daysSV} initialText={initialTexts.days} style={digitStyle} />
           {!hideTitle && <Text style={labelStyle}>{'روز'}</Text>}
         </View>
       )}

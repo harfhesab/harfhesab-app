@@ -26,6 +26,8 @@ import MessageInApp from '../screens/main/account/MessageInApp';
 import StageGameUpdateScreen from '../screens/main/account/StageGameUpdateScreen';
 import KalamAkhar from '../screens/main/online-game/kalam-akhar/KalamAkhar';
 import KalamAkharInformation from '../screens/main/online-game/kalam-akhar/KalamAkharInformation';
+import WordToSlotKalamAkhar from '../screens/main/online-game/kalam-akhar/WordToSlotKalamAkhar';
+import ConnectingLettersKalamAkhar from '../screens/main/online-game/kalam-akhar/ConnectingLettersKalamAkhar';
 
 
 const Stack = createNativeStackNavigator();
@@ -85,6 +87,8 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"StageGameUpdateScreen"} component={StageGameUpdateScreen} />
       <Stack.Screen name={"KalamAkhar"} component={KalamAkhar} />
       <Stack.Screen name={"KalamAkharInformation"} component={KalamAkharInformation} />
+      <Stack.Screen name={"WordToSlotKalamAkhar"} component={WordToSlotKalamAkhar} />
+      <Stack.Screen name={"ConnectingLettersKalamAkhar"} component={ConnectingLettersKalamAkhar} />
     </Stack.Navigator>
   )
 }

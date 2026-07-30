@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView, StyleSheet, NativeModules} from 'react-native';
-import Modal from "react-native-modal";
+import Modal from '../custom-modal/Modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
 import ButtonBorder from '../buttons/ButtonBorder';
@@ -96,7 +96,6 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
         item?.onPress?.()
     };
 
-    if (!visible) return null;
     return(
         <Modal
             swipeDirection={cancelable == true?['down']:null}

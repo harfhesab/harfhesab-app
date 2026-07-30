@@ -19,11 +19,18 @@ import { TARGET_STORE } from '../../../utils/constants/build-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WaveIndicator } from 'react-native-indicators';
 import * as Progress from 'react-native-progress';
-import BackgroundTimer from 'react-native-background-timer';
 import axios from 'axios';
 import { getRewardAdsStatus, registerRewardAdWatch } from '../../../utils/adsLimitStorage';
 import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import TimerUIThread from '../../../components/timer/TimerUIThread';
+import {
+    useSharedValue,
+    withTiming,
+    Easing,
+    runOnJS,
+    useAnimatedReaction,
+    cancelAnimation,
+} from 'react-native-reanimated';
 
 const {CafeBazaar, Myket, ImmersiveMode} = NativeModules;
 function FreeCoin(props){
@@ -802,30 +809,42 @@ const styles = StyleSheet.create({
     },
 });
 
+
 const TimerComponent = ({iconName, iconType, color, endTime}) => {
     const colors = useAppTheme()
     const time = 30
     const [second, setSecond] = useState(time);
 
+    const timeLeft = useSharedValue(time);
+
     useEffect(() => {
-        const id = BackgroundTimer.setInterval(() => {
-            setSecond(prev => {
-                if(prev > 0){
-                    return prev - 1;
-                } else {
-                    endTime()
-                    BackgroundTimer.clearInterval(id);
-                    return 0;
+        timeLeft.value = withTiming(
+            0,
+            {
+                duration: time * 1000, 
+                easing: Easing.linear, 
+            },
+            (finished) => {
+                if (finished) {
+                    runOnJS(endTime)();
                 }
-            });
-        }, 1000);
+            }
+        );
         return () => {
-            BackgroundTimer.clearInterval(id);
+            cancelAnimation(timeLeft);
         };
     }, []);
+    useAnimatedReaction(
+        () => Math.ceil(timeLeft.value),
+        (currentValue, previousValue) => {
+            if (currentValue !== previousValue && currentValue >= 0) {
+                runOnJS(setSecond)(currentValue);
+            }
+        }
+    );
 
     return (
-        <View style={{ width, alignItems: 'center' }}>
+        <View style={{ width:"100%", alignItems: 'center' }}>
             <View style={{width: 120, height: 120, alignItems: 'center', justifyContent: 'center'}}>
                 <Icon name={iconName} type={iconType} style={{ fontSize: 50, color }}/>
                 <View style={{position: 'absolute', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center'}}>
@@ -847,8 +866,12 @@ const TimerComponent = ({iconName, iconType, color, endTime}) => {
                     />
                 </View>
             </View>
-            <Text style={{fontFamily: Font.black, color: colors.primary.a3, fontSize: 25}}>{String(second).padStart(2, '0')}</Text>
-            <Text style={{fontFamily: Font.medium, color: `${colors.primary.a3}99`, fontSize: 12}}>{"در حال بررسی..."}</Text>
+            <Text style={{fontFamily: Font.black, color: colors.primary.a3, fontSize: 25}}>
+                {String(second).padStart(2, '0')}
+            </Text>
+            <Text style={{fontFamily: Font.medium, color: `${colors.primary.a3}99`, fontSize: 12}}>
+                {"در حال بررسی..."}
+            </Text>
         </View>
     );
 };

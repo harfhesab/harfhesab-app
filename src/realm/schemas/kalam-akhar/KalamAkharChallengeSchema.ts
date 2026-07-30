@@ -7,6 +7,8 @@ export class KalamAkharChallenge extends Realm.Object<KalamAkharChallenge> {
   title!: string;
   description?: string;
   time_limit?: number;
+  remaining_time_seconds?: number;
+  remaining_synced_at?: Date;
   entry_fee_coins?: number;
   subscription_required?: boolean;
   reward_coins?: number;
@@ -26,6 +28,8 @@ export class KalamAkharChallenge extends Realm.Object<KalamAkharChallenge> {
       title: "string",
       description: "string?",
       time_limit: "int?",
+      remaining_time_seconds: "int?",
+      remaining_synced_at: "date?",
       entry_fee_coins: "int?",
       subscription_required: "bool?",
       reward_coins: "int?",

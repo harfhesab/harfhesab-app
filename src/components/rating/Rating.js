@@ -4,7 +4,7 @@ import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import Globals from '../../utils/Globals';
 import ButtonBorder from '../buttons/ButtonBorder';
-import Modal from "react-native-modal";
+import Modal from '../custom-modal/Modal';
 import { useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import ButtonGradient from '../buttons/ButtonGradient';

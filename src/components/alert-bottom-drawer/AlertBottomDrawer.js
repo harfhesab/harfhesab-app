@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
 import { View, Dimensions, Text, ScrollView, StyleSheet, NativeModules} from 'react-native';
-import Modal from "react-native-modal";
+import Modal from '../custom-modal/Modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
 import ButtonBorder from '../buttons/ButtonBorder';
@@ -49,7 +49,7 @@ const AlertBottomDrawer = React.forwardRef((props, ref)=>{
         open,
         close
     }))
-    if (!visible) return null;
+   
     return(
         <Modal
             swipeDirection={cancelable == true?['down']:null}

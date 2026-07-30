@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
 import { View, Dimensions, Text, ScrollView, StyleSheet, NativeModules, Linking, TouchableOpacity} from 'react-native';
-import Modal from "react-native-modal";
+import Modal from '../custom-modal/Modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
 import ButtonBorder from '../buttons/ButtonBorder';
@@ -276,7 +276,7 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
             }
         })
     }
-    if (!visible) return null;
+
     return(
         <Modal
             swipeDirection={null}

@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
 import { View, Dimensions, Text, StyleSheet, NativeModules} from 'react-native';
-import Modal from "react-native-modal";
+import Modal from '../custom-modal/Modal';
 import Font from '../../utils/Font';
 import { DotIndicator } from 'react-native-indicators';
 
@@ -49,7 +49,6 @@ const FullScreenLoading = React.forwardRef((props, ref)=>{
         close
     }))
     
-    if (!visible) return null;
     return(
         <Modal
             animationIn={'fadeIn'}

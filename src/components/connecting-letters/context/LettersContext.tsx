@@ -18,7 +18,6 @@ import {
   saveUnknownWordCompletedInStageGame,
   saveUserHelpRequestsInStageGame
 } from '../../../realm/repositories/user/user-stage-game-progress.repository';
-import { unknownWordCompletedInStageGame } from '../functions/StageGameFunctions';
 import {
   saveMainWordBuildedInPackageGame,
   saveNewAdditionalWordsBuildedInPackageGame,
@@ -26,7 +25,6 @@ import {
   saveUnknownWordCompletedInPackageGame,
   saveUserHelpRequestsInPackageGame
 } from '../../../realm/repositories/user/user-package-game-progress.repository';
-import { unknownWordCompletedInPackageGame } from '../functions/PackageGameFunctions';
 import { showToast } from '../../custom-toast/ToastRef';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '../../../redux/store/RootReducer';
@@ -157,14 +155,16 @@ export const LettersProvider: React.FC<{
     if (newState.main && additional_words.every((word: string) => newState.additional.has(word))) {
       if(type == "stage-game"){
         saveUnknownWordCompletedInStageGame( realm, stageId, partIndex, wordId );
-        setTimeout(()=>{
+        setTimeout(async()=>{
+          const { unknownWordCompletedInStageGame } = await import('../functions/StageGameFunctions');
           unknownWordCompletedInStageGame()
-        }, 500)
+        }, 2000)
       } else if(type == "package-game"){
         saveUnknownWordCompletedInPackageGame( realm, stageId, partIndex, wordId );
-        setTimeout(()=>{
+        setTimeout(async()=>{
+          const { unknownWordCompletedInPackageGame } = await import('../functions/PackageGameFunctions');
           unknownWordCompletedInPackageGame()
-        }, 500)
+        }, 2000)
       }
     }
   };

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Font from '../../../../utils/Font';
 import {setToken} from '../../../../redux/actions/MainAction';
 import { DotIndicator } from 'react-native-indicators';
-import TimerShowOTP from '../../../../components/timer/TimerShowOTP';
 import axios from 'axios';
 import { phoneDigitSeperator } from '../../../../utils/PhoneDigitSeprator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -34,6 +33,7 @@ import { showToast } from '../../../../components/custom-toast/ToastRef';
 import { updateNumberHiddenWords } from '../../../../redux/slices/hiddenWordSlice';
 import { BUILD_TYPE, TARGET_STORE } from '../../../../utils/constants/build-config';
 import { seenAllGuide } from '../../../../redux/slices/settingSlice';
+import TimerUIThread from '../../../../components/timer/TimerUIThread';
   
   
 const {width, height} = Dimensions.get('window');
@@ -361,12 +361,13 @@ function VerifyLoginToAccount(props){
                                     <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'درخواست مجدد کد'}</Text>
                                 </TouchableOpacity>
                                 :
-                                <TimerShowOTP
-                                    minutes={minutes}
+                                <TimerUIThread
+                                    style={{fontSize: 16, fontFamily: Font.black, color: colors.text.a1}}
                                     seconds={seconds}
-                                    endOfTime={endOfTime}
-                                    fontSize={16}
-                                    fontFamily={Font.black}
+                                    minutes={minutes}
+                                    separator={":"}
+                                    hideTitle={true}
+                                    onFinish={endOfTime}
                                 />
                             }
                         </View>

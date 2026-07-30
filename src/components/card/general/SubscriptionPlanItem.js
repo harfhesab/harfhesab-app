@@ -3,11 +3,11 @@ import {View, Text, Dimensions, ImageBackground} from 'react-native';
 import Icon from '../../../utils/Icon';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
-import ImageComponent from '../../image-components/ImageComponent';
 import { navigate } from '../../../main/navigationService';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { priceDigitSeperator } from '../../../utils/PriceDigitSeperator';
 import ButtonImgSrc from '../../buttons/ButtonImgSrc';
+import AdvancedImageComponent from '../../image-components/AdvancedImageComponent';
 
 const width = Dimensions.get('window').width
 const size = IS_TABLET_CONDITION?(width-105)/4:(width-75)/2
@@ -26,7 +26,7 @@ function SubscriptionPlanItem({_id, click, productId, title, badge, image, durat
             >
                 <View style={{flexDirection:'column', alignItems:'center', justifyContent:"space-between", width:"100%", height:"100%"}}>
                     <View style={{width:size*0.91, height:size*0.91, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderTopLeftRadius:size*0.11, borderTopRightRadius:size*0.11, borderBottomLeftRadius:5, borderBottomRightRadius:5}}>
-                        <ImageComponent
+                        <AdvancedImageComponent
                             uri={image}
                             width={size*0.91}
                             height={size*0.91}

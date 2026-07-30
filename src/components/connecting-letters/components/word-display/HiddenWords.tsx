@@ -12,7 +12,7 @@ import Animated, {
     Easing,
     withDelay // 1. اضافه کردن withDelay
 } from 'react-native-reanimated';
-import Modal from "react-native-modal";
+import Modal from '../../../custom-modal/Modal';
 import { IS_TABLET_CONDITION } from '../../../../utils/constants/constants';
 import SimpleBorderText from '../../../text-components/SimpleBorderText';
 import LocalImageComponent from '../../../image-components/LocalImageComponent';

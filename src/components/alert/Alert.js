@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo } from 'react';
 import { View, Dimensions, TouchableOpacity, Text, ScrollView} from 'react-native';
-import Modal from "react-native-modal";
+import Modal from '../custom-modal/Modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
 import ButtonBorder from '../buttons/ButtonBorder';
@@ -64,7 +64,7 @@ const Alert = React.forwardRef((props, ref)=>{
     useImperativeHandle(ref, ()=>({
         open
     }))
-    if (!visible) return null;
+
     return(
         <Modal
                 animationIn={'fadeIn'}
@@ -141,14 +141,14 @@ const Alert = React.forwardRef((props, ref)=>{
                                         (<ButtonBorder
                                             key={index.toString()}
                                             text={item.text}
-                                            height={item?.height??40}
+                                            height={item?.height??45}
                                             width={item?.width??(buttons.length > 1?(contentWidth/2) - 20:(contentWidth/2)+20)}
                                             loading={false}
                                             onPress={()=>{
                                                 item.onPress()
                                                 close()
                                             }}
-                                            borderRadius={item?.borderRadius??5}
+                                            borderRadius={item?.borderRadius??10}
                                             textSize={item?.textSize??14}
                                             borderColor={item?.color??undefined}
                                         />)
@@ -156,14 +156,14 @@ const Alert = React.forwardRef((props, ref)=>{
                                         (<ButtonGradient
                                             key={index.toString()}
                                             text={item.text}
-                                            height={item?.height??40}
+                                            height={item?.height??45}
                                             width={item?.width??(buttons.length > 1?(contentWidth/2) - 20:(contentWidth/2)+20)}
                                             loading={false}
                                             onPress={()=>{
                                                 item.onPress()
                                                 close()
                                             }}
-                                            borderRadius={item?.borderRadius??5}
+                                            borderRadius={item?.borderRadius??10}
                                             textSize={item?.textSize??14}
                                         />)
                                         :

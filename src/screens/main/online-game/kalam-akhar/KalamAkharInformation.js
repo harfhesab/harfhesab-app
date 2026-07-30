@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, StatusBar, ImageBackground, Image, ActivityIndicator} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
@@ -13,10 +13,13 @@ import Font from '../../../../utils/Font';
 import { priceDigitSeperator } from '../../../../utils/PriceDigitSeperator';
 import SeasonMediaSwiper from '../../../../components/swiper/SeasonMediaSwiper';
 import TimerUIThread from '../../../../components/timer/TimerUIThread';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRealm } from '../../../../realm';
 import { createKalamAkharChallenge } from '../../../../realm/repositories/kalam-akhar/kalam-akhar-challenge.repository';
 import Icon from '../../../../utils/Icon';
+import { showToast } from '../../../../components/custom-toast/ToastRef';
+import { reduceNumberCoins } from '../../../../redux/slices/coinSlice';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -48,6 +51,7 @@ function secondsToTimeObject(totalSeconds) {
 const {width, height} = Dimensions.get("screen")
 const itemWidth = IS_TABLET_CONDITION?width*0.7:width - 30
 function KalamAkharInformation(props){
+    const dispatch = useDispatch();
     const colors = useAppTheme()
     const realm = useRealm();
     const { numberCoins } = useSelector((state) => state.coins);
@@ -59,7 +63,7 @@ function KalamAkharInformation(props){
     const [loading2, setLoading2] = useState(false)
     const challengeParamId = props?.route?.params?._id
     const timeLimit = data?.time_limit > 0?secondsToTimeObject(data?.time_limit):null;
-    const remainingTimeSeconds =  progress?.remaining_time_seconds > 0?secondsToTimeObject(progress?.remaining_time_seconds):null;
+    const remainingTime =  progress?.remaining_time_seconds > 0?secondsToTimeObject(progress?.remaining_time_seconds):null;
 
     const cardImageBackground = data?.subscription_required == true?
         require("../../../../assets/image/kalam-akhar-card-2.png"):
@@ -69,10 +73,15 @@ function KalamAkharInformation(props){
         require("../../../../assets/image/circle_blue.png"):
         require("../../../../assets/image/circle_red.png")
 
-
-    useEffect(()=>{
-        getData()
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+            return () => {
+                setLoading(true)
+                setLoading2(false)
+            };
+        }, [])
+    );
     const getData = async()=>{
         await axios({
             url:'/',
@@ -133,6 +142,29 @@ function KalamAkharInformation(props){
         setGetError(false)
         getData()
     }
+    const startChallengeCheck = ()=>{
+        if(progress && progress?.can_resume !== true){
+            showToast({
+                title: "پایان!",
+                message: progress?.has_completed == true?"این چالش با موفقیت به پایان رسیده است!":"زمان بازی برای ادامه تمام شده است!",
+                type: "error",
+                animationType: "slide",
+                position: "top",
+                duration: 4000
+            });
+        } else if(!progress && numberCoins < data?.entry_fee_coins) {
+            showToast({
+                title: `شروع این چالش نیاز به پرداخت ${data?.entry_fee_coins} سکه می‌باشد!`,
+                message: "",
+                type: "error",
+                animationType: "slide",
+                position: "top",
+                duration: 4000
+            });
+        } else {
+            startChallenge()
+        }
+    }
     const startChallenge = async()=>{
         setLoading2(true)
         await axios({
@@ -186,40 +218,68 @@ function KalamAkharInformation(props){
                 }
             }
         }).then((response)=>{
-            console.log("1111111111", response)
-            setLoading2(false)
             const receivedData = response.data.data?.startNewSessionForKalamAkharChallenge
             if(receivedData?.status == 200){
                 const expiration = data?.time_limit?data.time_limit*2:7200
-                const timeLimit = receivedData?.time_limit
-
-
-
-
-
-
-
-
-                
-
-
-
-
-
-
-
-
+                const remainingTimeSeconds = receivedData?.remaining_time_seconds?receivedData.remaining_time_seconds:data?.time_limit?data.time_limit:null
+                const documentData = {
+                    ...data,
+                    ...receivedData.kalam_akhar_challenge
+                }
                 const res = createKalamAkharChallenge(
                     realm,
-                    data,
+                    documentData,
                     expiration,
-                    timeLimit
+                    remainingTimeSeconds
                 )
+                if(data?._id && res == true){
+                    if(!progress){
+                        const entryFeeCoins = data?.entry_fee_coins
+                        if(typeof entryFeeCoins == "number" && entryFeeCoins > 0 && numberCoins >= entryFeeCoins){
+                            dispatch(reduceNumberCoins({number:entryFeeCoins}))
+                            props.navigation.navigate("WordToSlotKalamAkhar", {stage:data?._id})
+                            setProgress({
+                                session: receivedData?._id,
+                                remaining_time_seconds: data?.time_limit?data.time_limit:undefined
+                            });
+                        } else if(!entryFeeCoins || entryFeeCoins == 0) {
+                            props.navigation.navigate("WordToSlotKalamAkhar", {stage:data?._id})
+                            setProgress({
+                                session: receivedData?._id,
+                                remaining_time_seconds: data?.time_limit?data.time_limit:undefined
+                            });
+
+                        }
+                    } else {
+                        props.navigation.navigate("WordToSlotKalamAkhar", {stage:data?._id})
+                    }
+                }
+            } else {
+                setLoading2(false)
             }
         }).catch((error)=>{
-            console.log("2222222222222", error)
+            showToast({
+                title: "مشکلی پیش آمد.",
+                message: "در شروع بازی مشکلی پیش آمد. اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
+                type: "error",
+                animationType: "slide",
+                position: "top",
+                duration: 4000
+            });
             setLoading2(false)
         })
+    }
+    const finishRemainingTimeSeconds = ()=>{
+        setProgress(prev => {
+            if (!prev || !('can_resume' in prev)) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                can_resume: false,
+            };
+        });
     }
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
@@ -394,7 +454,7 @@ function KalamAkharInformation(props){
                                     <View style={{width:"100%"}}>
                                         <View style={{flexDirection:'row', alignItems:'center', width:"100%", justifyContent:'space-between', paddingHorizontal:30, paddingBottom:30}}>
 
-                                            <TouchableOpacity onPress={startChallenge} disabled={(progress && progress?.can_resume !== true)?true:false} activeOpacity={0.7} style={{ alignItems:'center', justifyContent:'center'}}>
+                                            <TouchableOpacity onPress={startChallengeCheck} activeOpacity={0.7} style={{ alignItems:'center', justifyContent:'center'}}>
                                                 <ImageBackground
                                                     source={cardImageButton}
                                                     style={{ width:110, height:110, alignItems:'center', justifyContent:'center' }}
@@ -415,15 +475,16 @@ function KalamAkharInformation(props){
                                                                     fontSize={22}
                                                                 />
                                                                 {
-                                                                    (progress && progress?.can_resume == true && remainingTimeSeconds)&&
+                                                                    (progress && progress?.can_resume == true && remainingTime)&&
                                                                     <TimerUIThread
                                                                         style={{fontSize: 12, fontFamily: Font.black, color: colors.primary.a5}}
-                                                                        seconds={remainingTimeSeconds?.seconds}
-                                                                        minutes={remainingTimeSeconds?.minutes}
-                                                                        hours={remainingTimeSeconds?.hours}
-                                                                        days={remainingTimeSeconds?.days}
+                                                                        seconds={remainingTime?.seconds}
+                                                                        minutes={remainingTime?.minutes}
+                                                                        hours={remainingTime?.hours}
+                                                                        days={remainingTime?.days}
                                                                         separator={":"}
                                                                         hideTitle={true}
+                                                                        onFinish={finishRemainingTimeSeconds}
                                                                     />
                                                                 }
                                                             </View>
@@ -444,6 +505,7 @@ function KalamAkharInformation(props){
                                                             minutes={timer?.minutes}
                                                             hours={timer?.hours}
                                                             days={timer?.days}
+                                                            onFinish={finishRemainingTimeSeconds}
                                                         />
                                                     </View>
                                                 </View>
@@ -464,6 +526,6 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
     },
-    centerFlex: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom:60 },
+    centerFlex: { flex: 1, width:width, alignItems: 'center', justifyContent: 'center', paddingBottom:60 },
 });
 export default KalamAkharInformation;

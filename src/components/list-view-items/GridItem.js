@@ -5,8 +5,8 @@ import Font from '../../utils/Font';
 import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
-import ImageComponent from '../image-components/ImageComponent';
 import LocalImageComponent from '../image-components/LocalImageComponent';
+import AdvancedImageComponent from '../image-components/AdvancedImageComponent';
 
 
 function GridItem({
@@ -73,7 +73,7 @@ function GridItem({
                                 blank_background
                             />
                             :
-                            <ImageComponent
+                            <AdvancedImageComponent
                                 uri={image}
                                 width={width - 20}
                                 height={width - 20}
@@ -83,7 +83,6 @@ function GridItem({
                                 iconName={iconName}
                                 iconType={iconType}
                                 iconSize={width/2}
-                                blank_background
                             />
                         }
                     </View>

@@ -4,7 +4,6 @@ import { navigate } from "../../../main/navigationService";
 import Icon from "../../../utils/Icon";
 import Font from "../../../utils/Font";
 import useAppTheme from "../../../hooks/theme/useAppTheme";
-import ImageComponent from "../../image-components/ImageComponent";
 import { convertDate } from "../../../utils/ConvertDate";
 import ButtonBorder from "../../buttons/ButtonBorder";
 import LocalImageComponent from "../../image-components/LocalImageComponent";
@@ -14,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from "../../../redux/store/Store";
 import { increaseNumberCoins } from "../../../redux/slices/coinSlice";
 import { updateSubscriptionStatus } from "../../../redux/slices/subscriptionSlice";
+import ImageComponent from "../../image-components/ImageComponent";
 
 interface PackageProps {
     _id : string;

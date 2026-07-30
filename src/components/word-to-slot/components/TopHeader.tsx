@@ -14,11 +14,12 @@ import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import { Text } from '@react-navigation/elements';
 import { showToast } from '../../custom-toast/ToastRef';
 import MeaningSentence from '../../coin/MeaningSentence';
+import TimerAndSandTimer from '../../timer/TimerAndSandTimer';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
   const {coins_for_get_help_word_to_slot_stage_game, coins_for_get_help_word_to_slot_package_game} = useSelector((state: RootState) => state.constants);
-  const { changePlayingIndex, currentPartIndex, playingPartIndex, numberParts, type, applyForHelp, sentenceHint, numberOfCards, existUnknownWord } = useDragDrop();
+  const { changePlayingIndex, currentPartIndex, playingPartIndex, numberParts, type, applyForHelp, sentenceHint, numberOfCards, existUnknownWord, timeLimitData } = useDragDrop();
 
   const onChangePlayingIndex = (index:number)=>{
     if(index == playingPartIndex) return
@@ -35,23 +36,14 @@ const TopHeader = () => {
     }
   }
   return (
-    <View style={{width:width, marginTop:STATUS_BAR_HEIGHT}}>
-        <View style={styles.header}>
-            <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-                <Setting/>
-                <View style={{direction:'rtl'}}>
-                    <NumberCoins />
-                </View>
-            </View>
-            <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-            <NumberCoinsHelp
-              numberCoinsHelp={type == "stage-game"?coins_for_get_help_word_to_slot_stage_game:type == "package-game"&&coins_for_get_help_word_to_slot_package_game}
-              onPress={applyForHelp}
-            />
-            <Back/>
-            </View>
-        </View>
-        <View style={{flexDirection:'row', width:'100%', alignItems:'center', justifyContent:numberParts>1?"space-between":"flex-end", paddingHorizontal:10, marginTop:5}}>
+    <View style={{width:width, marginTop:STATUS_BAR_HEIGHT, flexDirection:'row', alignItems:'flex-start', justifyContent:'space-between', paddingHorizontal:10}}>
+        <View style={{flexDirection:'column', alignItems:'flex-start', gap:10}}>
+          <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
+              <Setting/>
+              <View style={{direction:'rtl'}}>
+                  <NumberCoins />
+              </View>
+          </View>
           {
             numberParts>1&&
             <View style={{flexDirection:'row', alignItems:'center', gap:8, justifyContent:'flex-start'}}>
@@ -82,39 +74,59 @@ const TopHeader = () => {
                 }
             </View>
           }
-          {
-            sentenceHint&&
-            <MeaningSentence
-              numberCoinsHelp={currentPartIndex == playingPartIndex?numberOfCards*2:0}
-              onPress={()=>{
-                if(existUnknownWord == true){
+        </View>
+        <View style={{flexDirection:'row', alignItems:'flex-start', gap:7}}>
+          <View style={{flexDirection:'column', alignItems:'flex-end'}}>
+            {
+              type !== "kalam-akhar"?
+              <NumberCoinsHelp
+                numberCoinsHelp={type == "stage-game"?coins_for_get_help_word_to_slot_stage_game:type == "package-game"&&coins_for_get_help_word_to_slot_package_game}
+                onPress={applyForHelp}
+              />
+              :(type == "kalam-akhar" && timeLimitData?.time_limit)&&
+              <TimerAndSandTimer
+                totalSeconds={timeLimitData?.time_limit}
+                remainingSeconds={timeLimitData?.remaining_time_seconds}
+                remainingSyncedAt={timeLimitData?.remaining_synced_at}
+              />
+            }
+          </View>
+          <View style={{flexDirection:'column', alignItems:'flex-end', gap:10}}>
+            <Back/>
+            {
+              sentenceHint&&
+              <MeaningSentence
+                numberCoinsHelp={currentPartIndex == playingPartIndex?numberOfCards*2:0}
+                onPress={()=>{
+                  if(existUnknownWord == true){
+                      showToast({
+                          title: "وجود کلمه نامعلوم",
+                          message: "برای دیدن معنی جمله، نباید هیچ کلمه نامعلومی در کارت‌ها موجود باشد.",
+                          type: "error",
+                          animationType: "slide",
+                          position: "top",
+                          duration:6000
+                      });
+                  } else {
                     showToast({
-                        title: "وجود کلمه نامعلوم",
-                        message: "برای دیدن معنی جمله، نباید هیچ کلمه نامعلومی در کارت‌ها موجود باشد.",
-                        type: "error",
+                        title: "معنی جمله",
+                        message: `${sentenceHint}`,
+                        type: "success",
                         animationType: "slide",
                         position: "top",
-                        duration:6000
+                        duration: 10000,
+                        topOffset: 80
                     });
-                } else {
-                  showToast({
-                      title: "معنی جمله",
-                      message: `${sentenceHint}`,
-                      type: "success",
-                      animationType: "slide",
-                      position: "top",
-                      duration: 10000,
-                      topOffset: 80
-                  });
-                  if(currentPartIndex == playingPartIndex){
-                    return true
-                  } else {
-                    return false
+                    if(currentPartIndex == playingPartIndex){
+                      return true
+                    } else {
+                      return false
+                    }
                   }
-                }
-              }}
-            />
-          }
+                }}
+              />
+            }
+          </View>
         </View>
     </View>
     
@@ -131,14 +143,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: Font.black,
     textAlign: 'center',
-  },
-  header: {
-    height:55,
-    width:width,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between',
-    paddingHorizontal:10,
   },
 });
 

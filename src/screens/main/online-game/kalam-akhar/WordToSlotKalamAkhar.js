@@ -10,7 +10,6 @@ function WordToSlotKalamAkhar(props){
     useWordToSlotStageGameMusic()
     const colors = useAppTheme()
     const stage = props?.route?.params?.stage
-    const { lastStage } = useSelector((state) => state.stageGame);
    
     
     return(
@@ -19,7 +18,6 @@ function WordToSlotKalamAkhar(props){
                 <SafeAreaView style={styles.container}>
                     <WordToSlot 
                         id={stage}
-                        currentStageId={lastStage}
                         type={"kalam-akhar"}
                     />
                 </SafeAreaView>

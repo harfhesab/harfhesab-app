@@ -17,7 +17,11 @@ export function TopSandPile({ progress, geo, clock, colors }) {
   const phaseOffset = useMemo(() => Math.random() * 10, []);
 
   const path = useDerivedValue(() => {
-    const remaining = 1 - progress.value;
+    // Same non-linear reasoning as peakYAt (see sandMath.js): remaining
+    // height fraction is the cube root of the remaining time fraction, not
+    // the time fraction itself — the top chamber empties slowly at first
+    // and accelerates as it narrows toward the neck.
+    const remaining = Math.pow(1 - progress.value, 1 / 3);
     const surfaceY = lerp(geo.neckY, geo.topY, remaining);
     const edge = rightEdgeBetween(surfaceY, geo.neckY, geo);
 

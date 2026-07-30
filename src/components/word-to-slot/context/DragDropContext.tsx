@@ -14,7 +14,6 @@ import {
     MIN_VELOCITY,
     FONT_SIZE_SLOTTED,
 } from "../constants/constants";
-import { endOfAStageInStageGame } from '../functions/StageGameFunctions';
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from '../../../redux/store/Store';
 import { useRealm } from '../../../realm';
@@ -24,9 +23,9 @@ import { Stage } from '../../../realm/schemas/stage-game/StageSchema';
 import { saveCompletedPartAndSentenceBuilded, saveWordHelpUsedInStageGame } from '../../../realm/repositories/user/user-stage-game-progress.repository';
 import { PackageStage } from '../../../realm/schemas/package-game/PackageStageSchema';
 import { saveCompletedPartAndSentenceBuildedInPackageGame, saveWordHelpUsedInPackageGame } from '../../../realm/repositories/user/user-package-game-progress.repository';
-import { endOfAStageInPackageGame } from '../functions/PackageGameFunctions';
 import { showToast } from '../../custom-toast/ToastRef';
 import { RootState } from '../../../redux/store/RootReducer';
+import { KalamAkharChallenge } from '../../../realm/schemas/kalam-akhar/KalamAkharChallengeSchema';
 
 interface Position {
   x: number;
@@ -73,6 +72,7 @@ interface ContextProps {
   stageId: string;
   applyForHelp: () => void;
   sentenceHint?: string | null;
+  timeLimitData?: any
 }
 
 const DragDropContext = createContext<ContextProps>({} as ContextProps);
@@ -103,15 +103,28 @@ export const DragDropProvider: React.FC<{
   const { wordToSlotGuide, unknownWordGuide } = useSelector((state: RootState) => state.setting);
   const realm = useRealm();
   const objectId = typeof stageId === 'string' ? new BSON.ObjectId(stageId) : stageId;
-  const data = type == "stage-game" ? useObject<Stage>("Stage", objectId) : type == "package-game"? useObject<PackageStage>("PackageStage", objectId): undefined;
+  const data = type == "stage-game" ? useObject<Stage>("Stage", objectId):
+      type == "package-game"? useObject<PackageStage>("PackageStage", objectId):
+      type == "kalam-akhar"&&useObject<KalamAkharChallenge>("KalamAkharChallenge", objectId);
   let stageNumber: number | undefined;
+  let timeLimitData: any
   if (type === "stage-game" && data) {
-    const stageData = data as Stage; // 👈 اینجا type narrowing
+    const stageData = data as Stage;
     stageNumber = stageData.stage_number_in_language;
   } else if (type === "package-game" && data) {
     const packageData = data as PackageStage;
     stageNumber = packageData.stage_number_in_package;
+  } else if (type === "kalam-akhar" && data){
+    const KalamAkharData = data as KalamAkharChallenge
+    if(KalamAkharData?.time_limit){
+      timeLimitData = {
+        time_limit: KalamAkharData?.time_limit,
+        remaining_time_seconds: KalamAkharData?.remaining_time_seconds,
+        remaining_synced_at: KalamAkharData?.remaining_synced_at
+      }
+    }
   }
+
   const languageId = (type == "stage-game" && data)?data?.language_ref?.toHexString():undefined
   const parts = data?data?.parts:[]
   const [cards, setCards] = useState<Record<string, Card>>({});
@@ -188,6 +201,8 @@ export const DragDropProvider: React.FC<{
     } else if(type == "package-game"){
       const partIndex = playingPartIndex
       saveCompletedPartAndSentenceBuildedInPackageGame( realm, stageId, partIndex);
+    } else if(type == "kalam-akhar"){
+
     }
     if (playingPartIndex < parts.length - 1) {
       setTimeout(()=>{
@@ -202,23 +217,27 @@ export const DragDropProvider: React.FC<{
         // setSlotPositions({})
         setCardSlotMap({})
         setLockedPan(false)
-      }, 1000)
+      }, 1500)
     } else {
       const sentences = parts.map((part) => ({
         sentence: part.sentence_display ?? part.sentence,
         hint: part.sentence_hint,
       }));
       const stageHint = data?.stage_hint
-      setTimeout(()=>{
+      setTimeout(async()=>{
         setSlots({})
         setLockedPan(false)
         if(type == "stage-game"){
+          const { endOfAStageInStageGame } = await import('../functions/StageGameFunctions');
           const language_ref = languageId
           endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences, stageHint})
         } else if(type == "package-game"){
+          const { endOfAStageInPackageGame } = await import('../functions/PackageGameFunctions');
           endOfAStageInPackageGame({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences, stageHint})
+        } else if(type == "kalam-akhar"){
+
         }
-      }, 1000)
+      }, 2000)
     }
   }, [currentPartIndex, playingPartIndex, parts]);
 
@@ -583,7 +602,8 @@ export const DragDropProvider: React.FC<{
         type,
         stageId,
         applyForHelp,
-        sentenceHint
+        sentenceHint,
+        timeLimitData
       }}
     >
       {children}

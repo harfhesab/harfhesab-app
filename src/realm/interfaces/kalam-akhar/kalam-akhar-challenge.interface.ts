@@ -7,6 +7,8 @@ export interface IKalamAkharChallenge {
   title: string;
   description?: string;
   time_limit?: number;
+  remaining_time_seconds?: number;
+  remaining_synced_at?: Date;
   entry_fee_coins?: number;
   subscription_required?: boolean;
   reward_coins?: number;

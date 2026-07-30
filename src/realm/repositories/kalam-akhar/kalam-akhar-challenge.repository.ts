@@ -34,7 +34,7 @@ export const createKalamAkharChallenge = (
   realm: Realm,
   data: Partial<KalamAkharChallenge> & {_id: BSON.ObjectId | string;},
   expiration: number,
-  timeLimit?: number,
+  remainingTimeSeconds?: number,
 ): boolean => {
   try {
     const objectId = typeof data._id === "string"? new BSON.ObjectId(data._id): data._id;
@@ -56,10 +56,9 @@ export const createKalamAkharChallenge = (
     };
 
     // اولویت با پارامتر timeLimit
-    if (typeof timeLimit === "number") {
-      documentData.time_limit = timeLimit;
-    } else if (typeof data.time_limit === "number") {
-      documentData.time_limit = data.time_limit;
+    if (typeof remainingTimeSeconds === "number") {
+      documentData.remaining_time_seconds = remainingTimeSeconds;
+      documentData.remaining_synced_at = new Date()
     }
 
     realm.write(() => {

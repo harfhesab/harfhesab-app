@@ -65,7 +65,18 @@ export function rightEdgeBetween(yFrom, yTo, geo) {
 // Height of the bottom pile's rising surface for a given progress (0 -> 1).
 // Kept as the single source of truth so the pile shape and the falling
 // grains (which need to know where to land) always agree.
+//
+// This is NOT linear in progress. Both chambers are (roughly) conical, and
+// a hourglass's neck passes sand at a constant VOLUMETRIC rate (that's the
+// whole reason it works as a timer) — but volume in a cone scales with the
+// cube of height, so height does NOT change at a constant rate. Filled
+// height fraction = 1 - (remaining time fraction)^(1/3): it rises slowly
+// at first (chamber is wide near the base) and accelerates as the
+// available cross-section narrows near the neck.
+const CONE_EXPONENT = 1 / 3;
+
 export function peakYAt(progress, geo) {
   'worklet';
-  return lerp(geo.bottomY, geo.neckY, progress);
+  const filledFraction = 1 - Math.pow(1 - progress, CONE_EXPONENT);
+  return lerp(geo.bottomY, geo.neckY, filledFraction);
 }
