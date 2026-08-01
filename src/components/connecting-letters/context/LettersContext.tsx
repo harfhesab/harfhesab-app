@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useCallback, useRef, useState, useEffect } from 'react';
 import { SharedValue, withTiming } from 'react-native-reanimated';
 import { useFrameCallback, useSharedValue, Easing as ReanimatedEasing } from 'react-native-reanimated';
-import Realm from 'realm';
 import {
   BOUNDARY_WIDTH,
   BOUNDARY_HEIGHT,
@@ -11,20 +10,6 @@ import {
   MIN_VELOCITY,
 } from '../constants/constants';
 import { deselectCardSoundInLettersConnecting, tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
-import {
-  saveMainWordBuildedInStageGame,
-  saveNewAdditionalWordsBuildedInStageGame,
-  saveNewHiddenWordsBuildedInStageGame,
-  saveUnknownWordCompletedInStageGame,
-  saveUserHelpRequestsInStageGame
-} from '../../../realm/repositories/user/user-stage-game-progress.repository';
-import {
-  saveMainWordBuildedInPackageGame,
-  saveNewAdditionalWordsBuildedInPackageGame,
-  saveNewHiddenWordsBuildedInPackageGame,
-  saveUnknownWordCompletedInPackageGame,
-  saveUserHelpRequestsInPackageGame
-} from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { showToast } from '../../custom-toast/ToastRef';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '../../../redux/store/RootReducer';
@@ -79,14 +64,25 @@ interface FoundWords {
 
 export const LettersProvider: React.FC<{
   children: React.ReactNode;
-  realm: Realm;
   data: any;
   type: string;
-  stageId: string;
-  partIndex: number;
-  wordId: string;
   stageNumber: number | undefined;
-}> = ({ children, realm, data, type, stageId, partIndex, wordId, stageNumber }) => {
+  saveMainWordBuilded:()=>void;
+  saveNewAdditionalWordsBuilded:(word: string)=>void;
+  saveNewHiddenWordsBuilded:(word: string)=>void;
+  completedOperation:()=>void;
+  saveUserHelpRequests:(newLettersHelpUsed: number[])=>void;
+}> = ({
+  children,
+  data,
+  type,
+  stageNumber,
+  saveMainWordBuilded,
+  saveNewAdditionalWordsBuilded,
+  saveNewHiddenWordsBuilded,
+  completedOperation,
+  saveUserHelpRequests,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { connectingLetterGuide } = useSelector((state: RootState) => state.setting);
   const [connectedLetters, setConnectedLetters] = useState<string[]>([]);
@@ -114,11 +110,7 @@ export const LettersProvider: React.FC<{
       checkCompleted(newState)
       return newState;
     });
-    if(type == "stage-game"){
-      saveMainWordBuildedInStageGame( realm, stageId, partIndex, wordId );
-    } else if(type == "package-game"){
-      saveMainWordBuildedInPackageGame( realm, stageId, partIndex, wordId );
-    }
+    saveMainWordBuilded()
   };
 
   const handleNewAdditionalWordFound = (word: string) => {
@@ -129,11 +121,7 @@ export const LettersProvider: React.FC<{
       checkCompleted(newState)
       return newState;
     });
-    if(type == "stage-game"){
-      saveNewAdditionalWordsBuildedInStageGame( realm, stageId, partIndex, wordId, word );
-    } else if(type == "package-game"){
-      saveNewAdditionalWordsBuildedInPackageGame( realm, stageId, partIndex, wordId, word );
-    }
+    saveNewAdditionalWordsBuilded(word)
   };
 
   const handleNewHiddenWordFound = (word: string) => {
@@ -143,29 +131,13 @@ export const LettersProvider: React.FC<{
       return { ...prevState, hidden: newHidden };
     });
     dispatch(findingOneNewHiddenWord())
-    if(type == "stage-game"){
-      saveNewHiddenWordsBuildedInStageGame( realm, stageId, partIndex, wordId, word );
-    } else if(type == "package-game"){
-      saveNewHiddenWordsBuildedInPackageGame( realm, stageId, partIndex, wordId, word );
-    }
+    saveNewHiddenWordsBuilded(word)
   };
 
   const checkCompleted = (newState: FoundWords): void => {
     const { additional_words } = data;
     if (newState.main && additional_words.every((word: string) => newState.additional.has(word))) {
-      if(type == "stage-game"){
-        saveUnknownWordCompletedInStageGame( realm, stageId, partIndex, wordId );
-        setTimeout(async()=>{
-          const { unknownWordCompletedInStageGame } = await import('../functions/StageGameFunctions');
-          unknownWordCompletedInStageGame()
-        }, 2000)
-      } else if(type == "package-game"){
-        saveUnknownWordCompletedInPackageGame( realm, stageId, partIndex, wordId );
-        setTimeout(async()=>{
-          const { unknownWordCompletedInPackageGame } = await import('../functions/PackageGameFunctions');
-          unknownWordCompletedInPackageGame()
-        }, 2000)
-      }
+      completedOperation()
     }
   };
 
@@ -191,24 +163,7 @@ export const LettersProvider: React.FC<{
         if (!lettersHelpUsed.includes(idx)) {
           const newLettersHelpUsed = [...lettersHelpUsed, idx];
           setLettersHelpUsed(newLettersHelpUsed);
-
-          if (type === "stage-game") {
-            saveUserHelpRequestsInStageGame(
-              realm,
-              stageId,
-              partIndex,
-              wordId,
-              newLettersHelpUsed
-            );
-          } else if(type === "package-game"){
-            saveUserHelpRequestsInPackageGame(
-              realm,
-              stageId,
-              partIndex,
-              wordId,
-              newLettersHelpUsed
-            );
-          }
+          saveUserHelpRequests(newLettersHelpUsed)
           return true;
         }
       }

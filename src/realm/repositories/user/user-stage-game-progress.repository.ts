@@ -464,7 +464,7 @@ export const saveWordHelpUsedInStageGame = (
         return false;
     }
 };
-export const saveCompletedPartAndSentenceBuilded = (
+export const saveCompletedPartAndSentenceBuildedInStageGame = (
     realm: Realm,
     stageId: BSON.ObjectId | string,
     partIndex: number,

@@ -12,46 +12,39 @@ import {
   BOUNDARY_BORDER_WIDTH,
   BOUNDARY_BOTTOM_OFFSET,
 } from './constants/constants';
-import { getStageById } from '../../realm/repositories/stage-game/stage.repository';
-import { useRealm } from '../../realm';
-import { getPackageStageById } from '../../realm/repositories/package-game/package-stage.repository';
-import { Stage } from '../../realm/schemas/stage-game/StageSchema';
-import { PackageStage } from '../../realm/schemas/package-game/PackageStageSchema';
 
 interface Props {
   type: string;
-  stageId: string;
-  partIndex: number;
-  wordId: string;
+  data: any;
+  stageNumber: number | undefined;
+  saveMainWordBuilded:()=>void;
+  saveNewAdditionalWordsBuilded:(word:string)=>void;
+  saveNewHiddenWordsBuilded:(word:string)=>void;
+  completedOperation:()=>void;
+  saveUserHelpRequests:(newLettersHelpUsed:number[])=>void;
 }
-const ConnectingLetters = ({type, stageId, partIndex, wordId}: Props) => {
-  const realm = useRealm();
-  
-  const stageData = type == "stage-game"? getStageById(realm, stageId):type == "package-game"?getPackageStageById(realm, stageId):undefined
-  const partWords = stageData?.parts[partIndex]?.words
-  const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
-  const data = wordIndex !== undefined && wordIndex > -1  && partWords? partWords[wordIndex]:undefined
-
-
-  let stageNumber: number | undefined;
-  if (type === "stage-game" && stageData) {
-    const stageGameData = stageData as Stage;
-    stageNumber = stageGameData.stage_number_in_language;
-  } else if (type === "package-game" && stageData) {
-    const packageGameData = stageData as PackageStage;
-    stageNumber = packageGameData.stage_number_in_package;
-  }
+const ConnectingLetters = ({
+  type,
+  data,
+  stageNumber,
+  saveMainWordBuilded,
+  saveNewAdditionalWordsBuilded,
+  saveNewHiddenWordsBuilded,
+  completedOperation,
+  saveUserHelpRequests
+}: Props) => {
   
   return (
     <View style={{ flex: 1 }}>
-      <LettersProvider 
-        realm={realm}
+      <LettersProvider
         data={data}
         type={type}
-        stageId={stageId}
-        partIndex={partIndex}
-        wordId={wordId}
         stageNumber={stageNumber}
+        saveMainWordBuilded={saveMainWordBuilded}
+        saveNewAdditionalWordsBuilded={(word)=>saveNewAdditionalWordsBuilded(word)}
+        saveNewHiddenWordsBuilded={(word)=>saveNewHiddenWordsBuilded(word)}
+        completedOperation={completedOperation}
+        saveUserHelpRequests={(newLettersHelpUsed)=>saveUserHelpRequests(newLettersHelpUsed)}
       >
         <SafeAreaView style={styles.container}>
           <WordDisplay />

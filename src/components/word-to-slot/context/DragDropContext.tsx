@@ -16,16 +16,9 @@ import {
 } from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from '../../../redux/store/Store';
-import { useRealm } from '../../../realm';
-import { useObject } from '../../../realm';
 import { BSON } from 'realm';
-import { Stage } from '../../../realm/schemas/stage-game/StageSchema';
-import { saveCompletedPartAndSentenceBuilded, saveWordHelpUsedInStageGame } from '../../../realm/repositories/user/user-stage-game-progress.repository';
-import { PackageStage } from '../../../realm/schemas/package-game/PackageStageSchema';
-import { saveCompletedPartAndSentenceBuildedInPackageGame, saveWordHelpUsedInPackageGame } from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { showToast } from '../../custom-toast/ToastRef';
 import { RootState } from '../../../redux/store/RootReducer';
-import { KalamAkharChallenge } from '../../../realm/schemas/kalam-akhar/KalamAkharChallengeSchema';
 
 interface Position {
   x: number;
@@ -85,56 +78,49 @@ function getFontScale(word:string) {
 export const DragDropProvider: React.FC<{
   children: React.ReactNode;
   stageId: string;
-  currentStageId: string;
   type: string;
-  packageRef:string | undefined | null;
-  userPackage:string | undefined | null;
-  packageName:string | undefined | null;
+  data: any;
+  saveWordHelpUsed:(partIndex:number, wordId:BSON.ObjectId | string)=>void;
+  saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;
+  endOfAStage:()=>void;
 }> = ({
   children,
   stageId,
-  currentStageId,
   type,
-  packageRef,
-  userPackage,
-  packageName,
+  data,
+  saveWordHelpUsed,
+  saveCompletedPartAndSentenceBuilded,
+  endOfAStage,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { wordToSlotGuide, unknownWordGuide } = useSelector((state: RootState) => state.setting);
-  const realm = useRealm();
-  const objectId = typeof stageId === 'string' ? new BSON.ObjectId(stageId) : stageId;
-  const data = type == "stage-game" ? useObject<Stage>("Stage", objectId):
-      type == "package-game"? useObject<PackageStage>("PackageStage", objectId):
-      type == "kalam-akhar"&&useObject<KalamAkharChallenge>("KalamAkharChallenge", objectId);
+
   let stageNumber: number | undefined;
-  let timeLimitData: any
-  if (type === "stage-game" && data) {
-    const stageData = data as Stage;
-    stageNumber = stageData.stage_number_in_language;
-  } else if (type === "package-game" && data) {
-    const packageData = data as PackageStage;
-    stageNumber = packageData.stage_number_in_package;
-  } else if (type === "kalam-akhar" && data){
-    const KalamAkharData = data as KalamAkharChallenge
-    if(KalamAkharData?.time_limit){
+  let timeLimitData: any;
+  if(type === "stage-game"){
+    stageNumber = data.stage_number_in_language;
+  } else if(type === "package-game"){
+    stageNumber = data.stage_number_in_package;
+  }
+  if (type === "kalam-akhar" && data){
+    if(data?.time_limit){
       timeLimitData = {
-        time_limit: KalamAkharData?.time_limit,
-        remaining_time_seconds: KalamAkharData?.remaining_time_seconds,
-        remaining_synced_at: KalamAkharData?.remaining_synced_at
+        time_limit: data?.time_limit,
+        remaining_time_seconds: data?.remaining_time_seconds,
+        remaining_synced_at: data?.remaining_synced_at
       }
     }
   }
 
-  const languageId = (type == "stage-game" && data)?data?.language_ref?.toHexString():undefined
-  const parts = data?data?.parts:[]
+  const parts = data?.parts
   const [cards, setCards] = useState<Record<string, Card>>({});
   const [slots, setSlots] = useState<Record<number, string>>({});
   const [slotPositions, setSlotPositions] = useState<Record<number, Position>>({});
   const [cardSlotMap, setCardSlotMap] = useState<Record<string, number>>({});
-  const [currentPartIndex, setCurrentPartIndex] = useState(Math.max(0, parts.findIndex(item => item.sentence_builded !== true)));
-  const [playingPartIndex, setPlayingPartIndex] = useState(Math.max(0, parts.findIndex(item => item.sentence_builded !== true)))
+  const [currentPartIndex, setCurrentPartIndex] = useState(Math.max(0, parts.findIndex((item:any) => item.sentence_builded !== true)));
+  const [playingPartIndex, setPlayingPartIndex] = useState(Math.max(0, parts.findIndex((item:any) => item.sentence_builded !== true)))
   const [completedSentences, setCompletedSentences] = useState<string[]>(
-    () => parts.filter(p => p.sentence_builded).map(p => p?.sentence_display??p.sentence)
+    () => parts.filter((p:any) => p.sentence_builded).map((p:any) => p?.sentence_display??p.sentence)
   );
   const [lockedPan, setLockedPan] = useState<boolean>(false)
   const numberParts = parts.length
@@ -150,7 +136,7 @@ export const DragDropProvider: React.FC<{
 
   const numberOfCards = currentWords.length;
   const existUnknownWord = currentWords.some(
-    (w) => w.unknown_word === true && w.unknown_word_completed === false
+    (w:any) => w.unknown_word === true && w.unknown_word_completed === false
   );
 
   function applyForHelp() {
@@ -171,14 +157,8 @@ export const DragDropProvider: React.FC<{
       } else {
         const partIndex = playingPartIndex
         const wordId = element._id
-        if(type == "stage-game"){
-          saveWordHelpUsedInStageGame( realm, stageId, partIndex, wordId);
-          return true
-        } else if(type == "package-game"){
-          saveWordHelpUsedInPackageGame( realm, stageId, partIndex, wordId);
-          return true
-        }
-        break
+        saveWordHelpUsed(partIndex, wordId)
+        return true;
       }
     }
   }
@@ -195,15 +175,8 @@ export const DragDropProvider: React.FC<{
       });
     }
     setLockedPan(true)
-    if(type == "stage-game"){
-      const partIndex = playingPartIndex
-      saveCompletedPartAndSentenceBuilded( realm, stageId, partIndex);
-    } else if(type == "package-game"){
-      const partIndex = playingPartIndex
-      saveCompletedPartAndSentenceBuildedInPackageGame( realm, stageId, partIndex);
-    } else if(type == "kalam-akhar"){
-
-    }
+    const partIndex = playingPartIndex
+    saveCompletedPartAndSentenceBuilded(partIndex)
     if (playingPartIndex < parts.length - 1) {
       setTimeout(()=>{
         if(currentPartIndex == playingPartIndex){
@@ -219,25 +192,11 @@ export const DragDropProvider: React.FC<{
         setLockedPan(false)
       }, 1500)
     } else {
-      const sentences = parts.map((part) => ({
-        sentence: part.sentence_display ?? part.sentence,
-        hint: part.sentence_hint,
-      }));
-      const stageHint = data?.stage_hint
       setTimeout(async()=>{
         setSlots({})
         setLockedPan(false)
-        if(type == "stage-game"){
-          const { endOfAStageInStageGame } = await import('../functions/StageGameFunctions');
-          const language_ref = languageId
-          endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences, stageHint})
-        } else if(type == "package-game"){
-          const { endOfAStageInPackageGame } = await import('../functions/PackageGameFunctions');
-          endOfAStageInPackageGame({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences, stageHint})
-        } else if(type == "kalam-akhar"){
-
-        }
-      }, 2000)
+        endOfAStage()
+      }, 1500)
     }
   }, [currentPartIndex, playingPartIndex, parts]);
 
@@ -569,12 +528,12 @@ export const DragDropProvider: React.FC<{
       setTimeout(()=>{
         const sentence = parts[playingPartIndex]?.sentence_display??parts[playingPartIndex].sentence;
         showWordToSlotGuide({dispatch, currentWords, sentence})
-      }, 3000)
-    } else if(unknownWordGuide == false && existUnknownWord == true && stageNumber !== undefined && stageNumber < 4){
+      }, 2000)
+    } else if(unknownWordGuide == false && existUnknownWord == true && stageNumber && stageNumber < 4){
       const { showUnknownWordGuide } = await import('../../../utils/functions/Guide');
       setTimeout(()=>{
         showUnknownWordGuide({dispatch})
-      }, 3000)
+      }, 2000)
     }
   }
 

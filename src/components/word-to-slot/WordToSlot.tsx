@@ -17,32 +17,33 @@ import {
   DISTANCE_BOUNDARY_AND_SLOT
 } from './constants/constants';
 import SentenceDisplay from './components/SentenceDisplay';
+import { BSON } from 'realm';
 
 const WordToSlot = ({
   id,
-  currentStageId,
   type,
-  packageRef,
-  userPackage,
-  packageName,
+  data,
+  saveWordHelpUsed,
+  saveCompletedPartAndSentenceBuilded,
+  endOfAStage,
 }:{
   id:string;
-  currentStageId:string;
   type:string; // "stage-game" | "package-game" | "kalam-akhar"
-  packageRef:string | undefined | null;
-  userPackage:string | undefined | null;
-  packageName:string | undefined | null;
+  data:any;
+  saveWordHelpUsed:(partIndex:number, wordId:BSON.ObjectId | string)=>void;
+  saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;
+  endOfAStage:()=>void;
 }) => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <DragDropProvider
         stageId={id}
-        currentStageId={currentStageId}
         type={type}
-        packageRef={packageRef}
-        userPackage={userPackage}
-        packageName={packageName}
+        data={data}
+        saveWordHelpUsed={(partIndex, wordId)=>saveWordHelpUsed(partIndex, wordId)}
+        saveCompletedPartAndSentenceBuilded={(partIndex)=>saveCompletedPartAndSentenceBuilded(partIndex)}
+        endOfAStage={endOfAStage}
       >
         <SafeAreaView style={styles.container}>
           <SentenceDisplay />

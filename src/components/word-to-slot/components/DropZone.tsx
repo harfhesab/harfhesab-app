@@ -21,12 +21,42 @@ interface Props {
   unknown_word: boolean;
   unknown_word_completed: boolean;
 }
+function getFontScale(word:string) {
+  const trimmed = (word || '').trim();
+  const len = trimmed.length;
 
+  if (len === 0) return 1.8;
+
+  const hasSpace = /\s/.test(trimmed);
+  const SINGLE_WORD_THRESHOLD = 9;
+
+  let scale =
+    1.75 -
+    0.3 * Math.log(len + 1) -
+    0.015 * len +
+    0.35 / (len + 1) +
+    0.15 * Math.exp(-Math.pow(len - 1, 2) / 2);
+
+  if (!hasSpace) {
+    if (len > SINGLE_WORD_THRESHOLD) {
+      const excess = len - SINGLE_WORD_THRESHOLD;
+      const penalty = 0.045 * excess + 0.12 * Math.log(excess + 1);
+      scale -= penalty;
+    } else {
+      const boost = 0.28 * Math.exp(-len / 5) - 0.045;
+      scale += Math.max(0, boost);
+    }
+  }
+
+  const minScale = (!hasSpace && len > SINGLE_WORD_THRESHOLD) ? 0.8 : 0.95;
+
+  return Math.max(minScale, Math.min(1.8, scale));
+}
 const DropZone: React.FC<Props> = ({ index, word_help_used, word , unknown_word, unknown_word_completed}) => {
   const colors = useAppTheme();
   const ref = useRef<View>(null);
   const { registerSlot } = useDragDrop();
-  const fontSizeScale = (word.length < 3)?1.6:(word.length < 4)?1.4:(word.length < 5)?1.3:(word.length < 6)?1.2:(word.length < 7)?1.1:(word.length < 8)?1:(word.length > 12)?0.8:0.9;
+  const fontSizeScale = getFontScale(word)
 
   const onLayout = () => {
     ref.current?.measure((x, y, width, height, pageX, pageY) => {
