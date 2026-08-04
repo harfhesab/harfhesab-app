@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 14, 
-    fontFamily: Font.bold
+    fontFamily: Font.bakh_bold
   },
   messageContainer: {
     width: '100%', 
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     color: "#111111", 
-    fontFamily: Font.medium, 
+    fontFamily: Font.bakh_semi_bold, 
   }
 });
 

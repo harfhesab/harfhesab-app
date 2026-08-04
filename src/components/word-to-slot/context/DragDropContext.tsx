@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { useFrameCallback, withSpring, SharedValue } from 'react-native-reanimated';
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useFrameCallback, withSpring, SharedValue, runOnJS } from 'react-native-reanimated';
 import {
-    BOUNDARY_TOP_OFFSET,
     BOUNDARY_HORIZONTAL_OFFSET,
     BOUNDARY_WIDTH,
     BOUNDARY_HEIGHT,
@@ -9,16 +8,22 @@ import {
     CARD_SIZE_DRAGGING,
     CARD_SIZE_SLOTTED,
     FONT_SIZE_FLOATING,
+    FONT_SIZE_DRAGGING,
     SLOT_SIZE,
     MAX_VELOCITY,
     MIN_VELOCITY,
     FONT_SIZE_SLOTTED,
+    COLLISION_RESTITUTION,
+    PHYSICS_MAX_DELTA_MS,
+    PHYSICS_MIN_DELTA_MS,
 } from "../constants/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from '../../../redux/store/Store';
-import { BSON } from 'realm';
 import { showToast } from '../../custom-toast/ToastRef';
 import { RootState } from '../../../redux/store/RootReducer';
+import { getFontScale } from '../utils/getFontScale';
+import { dropWordToSlotCardInSlotSound, onStartDragWordToSlotCardSound } from '../../../utils/sound/SoundFunctions';
+import { vibrate } from '../../../utils/vibrationManager';
 
 interface Position {
   x: number;
@@ -37,19 +42,37 @@ interface Card {
   position: SharedValue<Position>;
   velocity: SharedValue<Velocity>;
   isDragging: SharedValue<boolean>;
+  dragZIndex: SharedValue<number>;
   isAssigned: SharedValue<boolean>;
   cardSize: SharedValue<number>;
   fontSize: SharedValue<number>;
 }
 
+// ============================================================================
+// معماری Context: به‌جای یک Context بزرگ که هر تغییری (حتی جابه‌جایی یک کارت)
+// باعث رندر مجدد همه‌ی FloatingCard/DropZone/TopHeader می‌شد، سه Context جدا با
+// نرخ تغییر متفاوت داریم:
+//
+// 1) DragDropRegistryContext  -> فقط getSlotOfCard/getSlotPosition. این دو تابع
+//    باید هنگام هر برخورد/جابه‌جایی کارت به‌روز شوند و از UI thread (worklet) هم
+//    صدا زده می‌شوند، پس هویت‌شان لزوماً با هر جابه‌جایی عوض می‌شود. فقط FloatingCard
+//    به این‌ها نیاز دارد، پس فقط FloatingCard مشترک این Context است.
+// 2) DragDropContext (اصلی)  -> بقیه‌ی مقادیر/توابع که دیگر با ref پایدار شده‌اند
+//    و فقط در رویدادهای کم‌تکرار (تغییر پارت و...) عوض می‌شوند. FloatingCard,
+//    DropZone, TopHeader از این استفاده می‌کنند.
+// 3) SlotsStateContext       -> فقط cards/slots، که فقط SentenceDisplay برای
+//    ساختن جمله و بررسی صحت آن لازم دارد.
+// ============================================================================
+
+interface RegistryContextProps {
+  getSlotPosition: (index: number) => Position | undefined;
+  getSlotOfCard: (cardId: string) => number | null;
+}
+
 interface ContextProps {
   registerCard: (card: Card) => void;
-  getSlotPosition: (index: number) => Position | undefined;
   assignCardToSlot: (cardId: string, slotIndex: number, fromSlot: number | null) => void;
   unassignCardFromSlot: (slotIndex: any) => void;
-  getSlotOfCard: (cardId: string) => number | null;
-  cards: Record<string, Card>;
-  slots: Record<number, string>;
   registerSlot: (index: number, pos: Position) => void;
   currentWords: any[];
   completeCurrentPart: () => void;
@@ -68,19 +91,26 @@ interface ContextProps {
   timeLimitData?: any
 }
 
-const DragDropContext = createContext<ContextProps>({} as ContextProps);
-function getFontScale(word:string) {
-  const len = (word?.length || 0);
-  const scale = 1.8 - 0.13 * len + 0.003 * len * len;
-  return Math.max(0.8, Math.min(1.6, scale));
+interface SlotsStateContextProps {
+  cards: Record<string, Card>;
+  slots: Record<number, string>;
 }
+
+// همان تنظیمات springای که در FloatingCard.tsx برای درگ واقعی استفاده می‌شود؛ این‌جا هم
+// عیناً استفاده می‌شوند تا انیمیشن «راهنما» دقیقاً همان حس‌وحال درگ‌ودراپ دستی را بدهد.
+const HELP_PICKUP_SPRING = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // فاز اول: برداشتن/بزرگ‌شدن کارت
+const HELP_DROP_SPRING = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // فاز دوم: نشستن در اسلات/کوچک‌شدن
+
+const DragDropRegistryContext = createContext<RegistryContextProps>({} as RegistryContextProps);
+const DragDropContext = createContext<ContextProps>({} as ContextProps);
+const SlotsStateContext = createContext<SlotsStateContextProps>({} as SlotsStateContextProps);
 
 export const DragDropProvider: React.FC<{
   children: React.ReactNode;
   stageId: string;
   type: string;
   data: any;
-  saveWordHelpUsed:(partIndex:number, wordId:BSON.ObjectId | string)=>void;
+  saveWordHelpUsed:(partIndex:number, wordId:any)=>void;
   saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;
   endOfAStage:()=>void;
 }> = ({
@@ -126,42 +156,69 @@ export const DragDropProvider: React.FC<{
   const numberParts = parts.length
   const sentenceHint = parts[playingPartIndex]?.sentence_hint
 
-  const currentWords = parts[playingPartIndex]?.words.map((w: any) => ({
-    _id: w._id,
-    word: w.word,
-    unknown_word: w.unknown_word,
-    unknown_word_completed: w.unknown_word_completed,
-    word_help_used: w.word_help_used
-  })) || [];
+  // کلماتی که همین الان (در همین session، مستقل از تأخیر رفت‌وبرگشت دیتابیس) برایشان
+  // راهنما درخواست شده‌اند. چون word_help_used در props تا پایان انیمیشن + ذخیره‌سازی
+  // آپدیت نمی‌شود، applyForHelp بدون این ref با چند تپ سریع همیشه یک کلمه را پیدا می‌کرد.
+  const helpRequestedIndexesRef = useRef<Set<number>>(new Set());
+
+  // --------------------------------------------------------------------
+  // ref هایی که همیشه هم‌زمان با state آپدیت می‌شوند (نه با یک تیک تأخیر مثل
+  // useEffect). این ref ها فقط از JS thread خوانده می‌شوند (نه از worklet روی
+  // UI thread)، پس امن هستند. هدف: توابعی مثل assignCardToSlot/unassignCardFromSlot
+  // بتوانند همیشه به آخرین مقدار دسترسی داشته باشند بدون این‌که هویت‌شان
+  // (identity) با هر تغییر state عوض شود؛ همین یعنی Context اصلی دیگر با هر
+  // جابه‌جایی کارت رفرنس تازه نمی‌گیرد و FloatingCard/DropZone/TopHeader
+  // بی‌دلیل رندر نمی‌شوند.
+  // --------------------------------------------------------------------
+  const cardsRef = useRef<Record<string, Card>>({});
+  const slotsRef = useRef<Record<number, string>>({});
+  const cardSlotMapRef = useRef<Record<string, number>>({});
+
+  type Updater<T> = T | ((prev: T) => T);
+
+  const setCardsSynced = useCallback((value: Updater<Record<string, Card>>) => {
+    const next = typeof value === 'function'
+      ? (value as (p: Record<string, Card>) => Record<string, Card>)(cardsRef.current)
+      : value;
+    cardsRef.current = next; // آپدیت فوری، نه داخل callback تأخیری setState
+    setCards(next);
+  }, []);
+
+  const setSlotsSynced = useCallback((value: Updater<Record<number, string>>) => {
+    const next = typeof value === 'function'
+      ? (value as (p: Record<number, string>) => Record<number, string>)(slotsRef.current)
+      : value;
+    slotsRef.current = next;
+    setSlots(next);
+  }, []);
+
+  const setCardSlotMapSynced = useCallback((value: Updater<Record<string, number>>) => {
+    const next = typeof value === 'function'
+      ? (value as (p: Record<string, number>) => Record<string, number>)(cardSlotMapRef.current)
+      : value;
+    cardSlotMapRef.current = next;
+    setCardSlotMap(next);
+  }, []);
+
+  // useMemo با وابستگی درست (parts, playingPartIndex) باعث می‌شود این آرایه فقط وقتی
+  // واقعاً کلمات پارت جاری عوض می‌شوند از نو ساخته شود، نه در هر رندر (مثلاً هر بار که یک
+  // کارت جابه‌جا می‌شود). قبلاً این آرایه در هر رندر از نو ساخته می‌شد که باعث می‌شد
+  // useMemo داخل FloatingCardList/DropZoneList عملاً همیشه باطل شود و کل لیست کارت‌ها/اسلات‌ها
+  // بی‌دلیل دوباره محاسبه شوند.
+  const currentWords = useMemo(() => {
+    return parts[playingPartIndex]?.words.map((w: any) => ({
+      _id: w._id,
+      word: w.word,
+      unknown_word: w.unknown_word,
+      unknown_word_completed: w.unknown_word_completed,
+      word_help_used: w.word_help_used
+    })) || [];
+  }, [parts, playingPartIndex]);
 
   const numberOfCards = currentWords.length;
   const existUnknownWord = currentWords.some(
     (w:any) => w.unknown_word === true && w.unknown_word_completed === false
   );
-
-  function applyForHelp() {
-    for (let index = 0; index < currentWords.length; index++) {
-      const element = currentWords[index];
-      if(element.word_help_used == true){
-        if(index == currentWords.length - 1){
-          showToast({
-              title: "راهنما یافت نشد",
-              message: "آیتمی برای راهنمایی موجود نیست!",
-              type: "error",
-              animationType: "slide",
-              position: "top",
-          });
-          return false
-        }
-        continue
-      } else {
-        const partIndex = playingPartIndex
-        const wordId = element._id
-        saveWordHelpUsed(partIndex, wordId)
-        return true;
-      }
-    }
-  }
 
   const completeCurrentPart = useCallback(() => {
     if(playingPartIndex == currentPartIndex){
@@ -185,33 +242,38 @@ export const DragDropProvider: React.FC<{
         } else {
           setPlayingPartIndex(prev => prev + 1)
         }
-        setSlots({})
-        setCards({})
+        setSlotsSynced({})
+        setCardsSynced({})
         // setSlotPositions({})
-        setCardSlotMap({})
+        setCardSlotMapSynced({})
         setLockedPan(false)
       }, 1500)
     } else {
       setTimeout(async()=>{
-        setSlots({})
+        setSlotsSynced({})
         setLockedPan(false)
         endOfAStage()
       }, 1500)
     }
-  }, [currentPartIndex, playingPartIndex, parts]);
+  }, [currentPartIndex, playingPartIndex, parts, setSlotsSynced, setCardsSynced, setCardSlotMapSynced]);
 
   const changePlayingIndex = useCallback((index: number) => {
     setPlayingPartIndex(index)
-    setSlots({})
-    setCards({})
+    setSlotsSynced({})
+    setCardsSynced({})
     // setSlotPositions({})
-    setCardSlotMap({})
+    setCardSlotMapSynced({})
     setLockedPan(true)
     setTimeout(()=>{
       setLockedPan(false)
     }, 2000)
-  }, [playingPartIndex]);
+  }, [setSlotsSynced, setCardsSynced, setCardSlotMapSynced]);
 
+  // این دو تابع هم از JS thread (رویدادهای React) و هم از UI thread (worklet های
+  // ژست/فیزیک) صدا زده می‌شوند، پس باید همچنان از روی state (نه ref) بسته شوند تا
+  // Reanimated بتواند نسخه‌ی تازه را به UI thread هم برساند. به همین دلیل هویت‌شان
+  // با تغییر cardSlotMap/slotPositions عوض می‌شود؛ همین‌هاست که در Context جدا
+  // (DragDropRegistryContext) قرار گرفته‌اند تا فقط FloatingCard از تغییرشان تأثیر بگیرد.
   const getSlotOfCard = useCallback(
     (cardId: string) => {
       'worklet';
@@ -228,12 +290,15 @@ export const DragDropProvider: React.FC<{
     [slotPositions]
   );
 
+  // فقط از JS thread صدا زده می‌شود (داخل registerCard، هنگام mount شدن کارت‌ها)،
+  // پس امن است که از ref بخواند و هویتش برای همیشه ثابت بماند.
   const isOverlapping = useCallback(
     (newPos: Position, cardId: string) => {
-      'worklet';
-      for (const otherCardId in cards) {
-        if (otherCardId === cardId || getSlotOfCard(otherCardId) !== null) continue;
-        const otherPos = cards[otherCardId].position.value;
+      const currentCards = cardsRef.current;
+      const currentCardSlotMap = cardSlotMapRef.current;
+      for (const otherCardId in currentCards) {
+        if (otherCardId === cardId || currentCardSlotMap[otherCardId] != null) continue;
+        const otherPos = currentCards[otherCardId].position.value;
         if (!otherPos) continue;
         const dx = newPos.x + (CARD_SIZE_FLOATING*1.3) / 2 - (otherPos.x + (CARD_SIZE_FLOATING*1.3) / 2);
         const dy = newPos.y + CARD_SIZE_FLOATING / 2 - (otherPos.y + CARD_SIZE_FLOATING / 2);
@@ -242,13 +307,13 @@ export const DragDropProvider: React.FC<{
       }
       return false;
     },
-    [cards, getSlotOfCard]
+    []
   );
 
   const registerCard = useCallback(
     (card: Card) => {
-      if (cards[card.id]) return;
-      setCards(prev => ({ ...prev, [card.id]: card }));
+      if (cardsRef.current[card.id]) return;
+      setCardsSynced(prev => ({ ...prev, [card.id]: card }));
 
       let newPos = card.homePosition;
       let attempts = 0;
@@ -265,7 +330,7 @@ export const DragDropProvider: React.FC<{
         vy: (Math.random() - 0.5) * MAX_VELOCITY,
       };
     },
-    [cards, isOverlapping]
+    [isOverlapping, setCardsSynced]
   );
 
   const registerSlot = useCallback((index: number, pos: Position) => {
@@ -274,36 +339,189 @@ export const DragDropProvider: React.FC<{
       });
     }, []);
 
+  // فقط از JS thread صدا زده می‌شود (از طریق runOnJS)، پس از ref می‌خواند.
   const unassignCardFromSlot = useCallback((slotIndex: number) => {
-      const cardId = cardSlotMap[slotIndex] || slots[slotIndex];
+      const cardId = cardSlotMapRef.current[slotIndex] || slotsRef.current[slotIndex];
       if (!cardId) return;
-      setSlots(prev => {
+      setSlotsSynced(prev => {
         const newSlots = { ...prev };
         delete newSlots[slotIndex];
         return newSlots;
       });
-      setCardSlotMap(prev => {
+      setCardSlotMapSynced(prev => {
         const newMap = { ...prev };
         delete newMap[cardId];
         return newMap;
       });
-    }, [cardSlotMap, slots]);
+    }, [setSlotsSynced, setCardSlotMapSynced]);
 
+  // همین‌طور فقط از JS thread صدا زده می‌شود (از طریق runOnJS)، پس از ref می‌خواند.
   const assignCardToSlot = useCallback(
-  (cardId: string, slotIndex: number, fromSlot: number | null) => {
-    const occupyingCardId = slots[slotIndex] ?? null;
-    const newSlots = { ...slots };
-    const newCardSlotMap = { ...cardSlotMap };
+    (cardId: string, slotIndex: number, fromSlot: number | null) => {
+      const currentCards = cardsRef.current;
+      const currentSlots = slotsRef.current;
+      const currentCardSlotMap = cardSlotMapRef.current;
+
+      const occupyingCardId = currentSlots[slotIndex] ?? null;
+      const newSlots = { ...currentSlots };
+      const newCardSlotMap = { ...currentCardSlotMap };
+
+      if (occupyingCardId && occupyingCardId !== cardId) {
+        const occupyingCard = currentCards[occupyingCardId];
+        const fromUpperZone = fromSlot === null;
+
+        if (fromUpperZone) {
+          // قانون A: کارت از منطقه بالایی آمده است
+          unassignCardFromSlot(slotIndex); // صراحتاً کارت قبلی را حذف کن
+          const fontSizeScale = getFontScale(occupyingCard.word)
+          const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
+          occupyingCard.isAssigned.value = false;
+          occupyingCard.position.value = withSpring(
+            { x: occupyingCard.homePosition.x, y: occupyingCard.homePosition.y },
+            { stiffness: 180, damping: 18 }
+          );
+          occupyingCard.velocity.value = {
+            vx: (Math.random() - 0.5) * 200,
+            vy: (Math.random() - 0.5) * 200,
+          };
+          delete newSlots[slotIndex];
+          delete newCardSlotMap[occupyingCardId];
+          occupyingCard.cardSize.value = withSpring(
+            CARD_SIZE_FLOATING,
+            { stiffness: 180, damping: 18 }
+          );
+          occupyingCard.fontSize.value = withSpring(
+            FONT_SIZE_FLOATING_SCALED,
+            { stiffness: 180, damping: 18 }
+          );
+        } else {
+          // قانون B: کارت از یک اسلات دیگر آمده است
+          const posToReturn = getSlotPosition(fromSlot);
+          if (posToReturn) {
+            // انتقال کارت موجود به اسلات مبدا
+            occupyingCard.position.value = withSpring(
+              {
+                x: posToReturn.x - (CARD_SIZE_SLOTTED + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+                y: posToReturn.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + 2,
+              },
+              { stiffness: 200, damping: 18 }
+            );
+            occupyingCard.isAssigned.value = true;
+            newSlots[fromSlot] = occupyingCardId;
+            newCardSlotMap[occupyingCardId] = fromSlot;
+          }
+        }
+      } else if (fromSlot !== null) {
+        // اگر کارت از اسلات دیگری آمده و اسلات مقصد خالی است، اسلات مبدا را آزاد کن
+        delete newSlots[fromSlot];
+        delete newCardSlotMap[cardId];
+      }
+
+      newSlots[slotIndex] = cardId;
+      newCardSlotMap[cardId] = slotIndex;
+
+      // تخصیص کارت جدید به اسلات مقصد
+      const fontSizeScale = getFontScale(currentCards[cardId].word);
+      const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;
+      const target = getSlotPosition(slotIndex);
+      if (target) {
+        currentCards[cardId].position.value = withSpring(
+          {
+            x: target.x - (CARD_SIZE_SLOTTED + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+            y: target.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + 2,
+          },
+          { stiffness: 200, damping: 18 }
+        );
+        currentCards[cardId].isAssigned.value = true;
+        currentCards[cardId].cardSize.value = withSpring(
+          CARD_SIZE_SLOTTED,
+          { stiffness: 180, damping: 18 }
+        );
+        currentCards[cardId].fontSize.value = withSpring(
+          FONT_SIZE_SLOTTED_SCALED,
+          { stiffness: 180, damping: 18 }
+        );
+      }
+
+      // به‌روزرسانی state فقط یک بار در انتها
+      setSlotsSynced(prev => ({ ...prev, ...newSlots }));
+      setCardSlotMapSynced(prev => ({ ...prev, ...newCardSlotMap }));
+    },
+    [getSlotPosition, unassignCardFromSlot, setSlotsSynced, setCardSlotMapSynced]
+  );
+
+
+  // این تابع دقیقاً لحظه‌ی «نشستن واقعی» کارت روی اسلات صدا زده می‌شود (نه لحظه‌ی کلیک).
+  // چون prev همیشه جدیدترین state واقعی در آن لحظه است (نه یک snapshot قدیمی از لحظه‌ی
+  // کلیک)، چند فراخوانی هم‌زمان/سریع دیگر همدیگر را overwrite نمی‌کنند - هرکدام فقط
+  // کلیدهای خودش را روی جدیدترین نسخه پچ می‌زند.
+  const commitHelpSlotAssignment = useCallback((
+    cardId: string,
+    slotIndex: number,
+    vacatedSlot: number | null,
+    kickedCardId: string | null
+  ) => {
+    setSlotsSynced(prev => {
+      const next = { ...prev };
+      // فقط اگر اسلات مبدا هنوز واقعاً متعلق به همین کارت است آزادش کن. اگر در همین فاصله
+      // (بین شروع و پایان این انیمیشن) یک reveal دیگر چیز دیگری آن‌جا گذاشته، این حذف
+      // دیگر معتبر نیست و نباید انجام شود - وگرنه دقیقاً همین جاست که کارت تازه‌نشسته
+      // بی‌دلیل پاک می‌شود.
+      if (vacatedSlot != null && vacatedSlot !== slotIndex && next[vacatedSlot] === cardId) {
+        delete next[vacatedSlot];
+      }
+      next[slotIndex] = cardId;
+      return next;
+    });
+    setCardSlotMapSynced(prev => {
+      const next = { ...prev };
+      // همین‌طور فقط اگر کارت کنارگذاشته‌شده هنوز واقعاً روی همان اسلاتی نشسته که فکر
+      // می‌کردیم حذفش کن. اگر خودش (با reveal یا درگ خودش) در همین فاصله جای دیگری رفته،
+      // این حذف دیگر معتبر نیست و نباید مپینگ تازه‌اش پاک شود.
+      if (kickedCardId && kickedCardId !== cardId && next[kickedCardId] === slotIndex) {
+        delete next[kickedCardId];
+      }
+      next[cardId] = slotIndex;
+      return next;
+    });
+  }, [setSlotsSynced, setCardSlotMapSynced]);
+
+
+  // ------------------------------------------------------------------------
+  // انیمیشن دکمه‌ی «راهنما»: کارت مربوط به کلمه را - از هر کجا که هست (فضای شناور یا
+  // یک اسلات اشتباه) - دقیقاً با همان حس‌وحال یک درگ‌ودراپ واقعی (بزرگ‌شدن هنگام
+  // «برداشتن»، حرکت، و کوچک‌شدن هنگام «نشستن») به اسلات درست منتقل می‌کند.
+  // اگر کارت دیگری در اسلات مقصد نشسته باشد، به فضای شناور برمی‌گردد (بدون افکت
+  // برداشتن، چون این کارت پرتاب/کنارگذاشته می‌شود نه هدفِ کاربر).
+  // فقط از JS thread صدا زده می‌شود (از applyForHelp)، پس امن است که از ref بخواند.
+  // ------------------------------------------------------------------------
+  const revealCardWithHelp = useCallback((cardId: string, slotIndex: number, partIndex:number, wordId:any) => {
+    const currentCards = cardsRef.current;
+    const currentSlots = slotsRef.current;
+    const currentCardSlotMap = cardSlotMapRef.current;
+
+    const card = currentCards[cardId];
+    if (!card) return;
+
+    if (card.isAssigned.value === true && (currentCardSlotMap[cardId] ?? null) === slotIndex) {
+      return;
+    }
+
+    const target = getSlotPosition(slotIndex);
+    if (!target) return;
+    
+    // نکته‌ی مهم: دیگر یک snapshot کامل از slots/cardSlotMap نمی‌سازیم که ۱ ثانیه بعد
+    // به‌عنوان جایگزین کامل state استفاده شود (این باعث lost-update بین دو کمک هم‌زمان
+    // می‌شد). فقط دو مقدار ساده را نگه می‌داریم تا در لحظه‌ی commit (پایان انیمیشن) روی
+    // جدیدترین state واقعی اعمال شوند.
+    const cardCurrentSlot = currentCardSlotMap[cardId] ?? null;
+    const occupyingCardId = currentSlots[slotIndex] ?? null;
 
     if (occupyingCardId && occupyingCardId !== cardId) {
-      const occupyingCard = cards[occupyingCardId];
-      const fromUpperZone = fromSlot === null;
-
-      if (fromUpperZone) {
-        // قانون A: کارت از منطقه بالایی آمده است
-        unassignCardFromSlot(slotIndex); // صراحتاً کارت قبلی را حذف کن
-        const fontSizeScale = getFontScale(occupyingCard.word)
-        const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
+      const occupyingCard = currentCards[occupyingCardId];
+      if (occupyingCard) {
+        const occupyingFontScale = getFontScale(occupyingCard.word);
+        occupyingCard.isDragging.value = false;
         occupyingCard.isAssigned.value = false;
         occupyingCard.position.value = withSpring(
           { x: occupyingCard.homePosition.x, y: occupyingCard.homePosition.y },
@@ -313,89 +531,126 @@ export const DragDropProvider: React.FC<{
           vx: (Math.random() - 0.5) * 200,
           vy: (Math.random() - 0.5) * 200,
         };
-        delete newSlots[slotIndex];
-        delete newCardSlotMap[occupyingCardId];
-        occupyingCard.cardSize.value = withSpring(
-          CARD_SIZE_FLOATING,
-          { stiffness: 180, damping: 18 }
-        );
+        occupyingCard.cardSize.value = withSpring(CARD_SIZE_FLOATING, { stiffness: 180, damping: 18 });
         occupyingCard.fontSize.value = withSpring(
-          FONT_SIZE_FLOATING_SCALED,
+          FONT_SIZE_FLOATING * occupyingFontScale,
           { stiffness: 180, damping: 18 }
         );
-      } else {
-        // قانون B: کارت از یک اسلات دیگر آمده است
-        const posToReturn = getSlotPosition(fromSlot);
-        if (posToReturn) {
-          // انتقال کارت موجود به اسلات مبدا
-          occupyingCard.position.value = withSpring(
-            {
-              x: posToReturn.x - (CARD_SIZE_SLOTTED + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
-              y: posToReturn.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + 2,
-            },
-            { stiffness: 200, damping: 18 }
-          );
-          occupyingCard.isAssigned.value = true;
-          newSlots[fromSlot] = occupyingCardId;
-          newCardSlotMap[occupyingCardId] = fromSlot;
-        }
       }
-    } else if (fromSlot !== null) {
-      // اگر کارت از اسلات دیگری آمده و اسلات مقصد خالی است، اسلات مبدا را آزاد کن
-      delete newSlots[fromSlot];
-      delete newCardSlotMap[cardId];
     }
 
-    // تخصیص کارت جدید به اسلات مقصد
-    const fontSizeScale = getFontScale(cards[cardId].word);
-    const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontSizeScale;
-    const target = getSlotPosition(slotIndex);
-    if (target) {
-      cards[cardId].position.value = withSpring(
-        {
-          x: target.x - (CARD_SIZE_SLOTTED + SLOT_SIZE*1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
-          y: target.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + 2,
-        },
-        { stiffness: 200, damping: 18 }
-      );
-      cards[cardId].isAssigned.value = true;
-      cards[cardId].cardSize.value = withSpring(
-        CARD_SIZE_SLOTTED,
-        { stiffness: 180, damping: 18 }
-      );
-      cards[cardId].fontSize.value = withSpring(
-        FONT_SIZE_SLOTTED_SCALED,
-        { stiffness: 180, damping: 18 }
-      );
+    const fontScale = getFontScale(card.word);
+    const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontScale;
+    const FONT_SIZE_SLOTTED_SCALED = FONT_SIZE_SLOTTED * fontScale;
+
+    const currentSize = card.cardSize.value;
+    const currentPos = card.position.value;
+
+    const pickupPos = {
+      x: currentPos.x - ((CARD_SIZE_DRAGGING * 1.3) - (currentSize * 1.3)) / 2,
+      y: currentPos.y - (CARD_SIZE_DRAGGING - currentSize) / 2,
+    };
+
+    const hoverAboveSlotPos = {
+      x: target.x - (CARD_SIZE_DRAGGING * 1.3 + SLOT_SIZE * 1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+      y: target.y - (CARD_SIZE_DRAGGING + SLOT_SIZE) / 4 + 2,
+    };
+
+    const finalPos = {
+      x: target.x - (CARD_SIZE_SLOTTED + SLOT_SIZE * 1.3) / 4 - BOUNDARY_HORIZONTAL_OFFSET,
+      y: target.y - (CARD_SIZE_SLOTTED + SLOT_SIZE) / 4 + 2,
+    };
+
+    const HELP_TRAVEL_SPRING = { stiffness: 70, damping: 20, mass: 1.3, overshootClamping: true };
+
+    runOnJS(onStartDragWordToSlotCardSound)();
+    runOnJS(vibrate)();
+    card.velocity.value = { vx: 0, vy: 0 };
+    card.isDragging.value = true;
+    card.dragZIndex.value = 99999;
+    card.isAssigned.value = true;
+
+    card.position.value = withSpring(pickupPos, HELP_PICKUP_SPRING, (finished1) => {
+      'worklet';
+      if (!finished1) return;
+      card.position.value = withSpring(hoverAboveSlotPos, HELP_TRAVEL_SPRING, (finished2) => {
+        'worklet';
+        if (!finished2) return;
+        card.position.value = withSpring(finalPos, HELP_DROP_SPRING, (finished3) => {
+          'worklet';
+          if (finished3) {
+            card.isDragging.value = false;
+            card.dragZIndex.value = 1;
+            runOnJS(dropWordToSlotCardInSlotSound)();
+            runOnJS(saveWordHelpUsed)(partIndex, wordId);
+            // پچ جزئی روی جدیدترین state، نه جایگزینی کامل با snapshot قدیمی
+            runOnJS(commitHelpSlotAssignment)(cardId, slotIndex, cardCurrentSlot, occupyingCardId);
+          }
+        });
+        card.cardSize.value = withSpring(CARD_SIZE_SLOTTED, HELP_DROP_SPRING);
+        card.fontSize.value = withSpring(FONT_SIZE_SLOTTED_SCALED, HELP_DROP_SPRING);
+      });
+    });
+    card.cardSize.value = withSpring(CARD_SIZE_DRAGGING, HELP_PICKUP_SPRING);
+    card.fontSize.value = withSpring(FONT_SIZE_DRAGGING_SCALED, HELP_PICKUP_SPRING);
+  }, [getSlotPosition, commitHelpSlotAssignment]);
+
+  const applyForHelp = useCallback(() => {
+    for (let index = 0; index < currentWords.length; index++) {
+      const element = currentWords[index];
+      const alreadyHandled = element.word_help_used == true || helpRequestedIndexesRef.current.has(index);
+
+      if (alreadyHandled) {
+        if (index == currentWords.length - 1) {
+          showToast({
+              title: "راهنما یافت نشد",
+              message: "آیتمی برای راهنمایی موجود نیست!",
+              type: "error",
+              animationType: "slide",
+              position: "top",
+          });
+          return false
+        }
+        continue
+      } else {
+        // claim فوری و همزمان - قبل از هرگونه انیمیشن/async - تا تپ بعدی حتی یک میکروثانیه
+        // بعد، سراغ کلمه‌ی بعدی برود نه همین یکی
+        helpRequestedIndexesRef.current.add(index);
+
+        const wordId = element._id
+        const partIndex = playingPartIndex
+        if (!element.unknown_word || (element.unknown_word && element.unknown_word_completed)) {
+          const cardId = `${element.word}_${index}`;
+          revealCardWithHelp(cardId, index, partIndex, wordId);
+        } else {
+          saveWordHelpUsed(partIndex, wordId)
+        }
+        return true;
+      }
     }
+  }, [currentWords, playingPartIndex, saveWordHelpUsed, revealCardWithHelp]);
 
-    newSlots[slotIndex] = cardId;
-    newCardSlotMap[cardId] = slotIndex;
-
-    // به‌روزرسانی state فقط یک بار در انتها
-    setSlots(prev => ({ ...prev, ...newSlots }));
-    setCardSlotMap(prev => ({ ...prev, ...newCardSlotMap }));
-  },
-  [cards, cardSlotMap, slots, getSlotPosition, unassignCardFromSlot]
-);
-
-  const frameCallback = useFrameCallback(() => {
+  const frameCallback = useFrameCallback((frameInfo) => {
     'worklet';
+
+    // ===== ثابت‌های حرکت مستقل از فریم‌ریت =====
+    const rawDtMs = frameInfo.timeSincePreviousFrame ?? 16.667;
+    const dtMs = Math.min(Math.max(rawDtMs, PHYSICS_MIN_DELTA_MS), PHYSICS_MAX_DELTA_MS);
+    const dt = dtMs / 1000; // ثانیه
+
     const allCardIds = Object.keys(cards);
-    
-    // فقط کارت‌هایی که شناور هستند را برای فیزیک در نظر بگیرید
+
     const floatingCardIds = allCardIds.filter(id => {
       const card = cards[id];
       return card && !card.isDragging.value && !card.isAssigned.value;
     });
 
     const numCards = floatingCardIds.length;
-    
-    // مرحله ۱: به‌روزرسانی اولیه موقعیت و برخورد با دیوارها برای همه کارت‌های شناور
+
     for (let i = 0; i < numCards; i++) {
       const cardId = floatingCardIds[i];
       const card = cards[cardId];
-      
+
       const pos = card.position.value;
       const velocity = card.velocity.value;
 
@@ -403,47 +658,49 @@ export const DragDropProvider: React.FC<{
         continue;
       }
 
-      // محدود کردن سرعت
       const speed = Math.sqrt(velocity.vx * velocity.vx + velocity.vy * velocity.vy);
+      let vx = velocity.vx;
+      let vy = velocity.vy;
       if (speed > MAX_VELOCITY) {
         const scale = MAX_VELOCITY / speed;
-        velocity.vx *= scale;
-        velocity.vy *= scale;
+        vx *= scale;
+        vy *= scale;
       } else if (speed < MIN_VELOCITY && speed > 0) {
         const scale = MIN_VELOCITY / speed;
-        velocity.vx *= scale;
-        velocity.vy *= scale;
+        vx *= scale;
+        vy *= scale;
       }
 
-      // محاسبه موقعیت جدید بر اساس سرعت
-      let newX = pos.x + velocity.vx * 0.016; // 0.016 for ~60fps
-      let newY = pos.y + velocity.vy * 0.016;
+      let newX = pos.x + vx * dt;
+      let newY = pos.y + vy * dt;
 
-      // برخورد با دیواره‌ها
       if (newX < 0) {
         newX = 0;
-        velocity.vx *= -1;
+        vx *= -1;
       } else if (newX > BOUNDARY_WIDTH - (CARD_SIZE_FLOATING*1.3)) {
         newX = BOUNDARY_WIDTH - (CARD_SIZE_FLOATING*1.3);
-        velocity.vx *= -1;
+        vx *= -1;
       }
       if (newY < 0) {
         newY = 0;
-        velocity.vy *= -1;
+        vy *= -1;
       } else if (newY > BOUNDARY_HEIGHT - CARD_SIZE_FLOATING) {
         newY = BOUNDARY_HEIGHT - CARD_SIZE_FLOATING;
-        velocity.vy *= -1;
+        vy *= -1;
       }
-      
+
+      // نکته‌ی مهم: اینجا عمداً یک آبجکت جدید ساخته می‌شود. SharedValue های Reanimated
+      // تغییر را با مقایسه‌ی رفرنس تشخیص می‌دهند؛ اگر همان رفرنس قبلی (فقط با فیلدهای
+      // تغییریافته) دوباره ست شود، Reanimated «تغییری» نمی‌بیند و listener ها (از جمله
+      // useAnimatedStyle که رندر کارت را می‌سازد) صدا زده نمی‌شوند.
       card.position.value = { x: newX, y: newY };
-      card.velocity.value = velocity;
+      card.velocity.value = { vx, vy };
     }
 
-    if (numCards < 2) { // اگر کمتر از ۲ کارت شناور داریم، نیازی به بررسی برخورد نیست
+    if (numCards < 2) {
         return;
     }
 
-    // مرحله ۲: بررسی برخورد کارت‌ها با یکدیگر و اعمال واکنش فیزیکی
     for (let i = 0; i < numCards; i++) {
       const cardA = cards[floatingCardIds[i]];
 
@@ -455,11 +712,9 @@ export const DragDropProvider: React.FC<{
         const posB = cardB.position.value;
         const velB = cardB.velocity.value;
 
-        // تعریف مستطیل‌های کارت‌ها
         const rectA = { left: posA.x, right: posA.x + (CARD_SIZE_FLOATING*1.3), top: posA.y, bottom: posA.y + CARD_SIZE_FLOATING };
         const rectB = { left: posB.x, right: posB.x + (CARD_SIZE_FLOATING*1.3), top: posB.y, bottom: posB.y + CARD_SIZE_FLOATING };
 
-        // بررسی همپوشانی مستطیل‌ها
         const isColliding =
           rectA.left < rectB.right &&
           rectA.right > rectB.left &&
@@ -467,11 +722,9 @@ export const DragDropProvider: React.FC<{
           rectA.bottom > rectB.top;
 
         if (isColliding) {
-          // محاسبه مقدار همپوشانی
           const overlapX = Math.min(rectA.right - rectB.left, rectB.right - rectA.left);
           const overlapY = Math.min(rectA.bottom - rectB.top, rectB.bottom - rectA.top);
 
-          // جابه‌جایی برای رفع همپوشانی
           let dx = 0;
           let dy = 0;
           if (overlapX < overlapY) {
@@ -480,33 +733,37 @@ export const DragDropProvider: React.FC<{
             dy = rectA.top < rectB.top ? -(overlapY / 2) : overlapY / 2;
           }
 
-          posA.x += dx;
-          posA.y += dy;
-          posB.x -= dx;
-          posB.y -= dy;
-          
-          // محاسبه جهت برخورد (نرمال)
+          const newPosAx = posA.x + dx;
+          const newPosAy = posA.y + dy;
+          const newPosBx = posB.x - dx;
+          const newPosBy = posB.y - dy;
+
           const collisionNormalX = dx !== 0 ? (dx > 0 ? 1 : -1) : 0;
           const collisionNormalY = dy !== 0 ? (dy > 0 ? 1 : -1) : 0;
 
-          // به‌روزرسانی سرعت‌ها (برخورد الاستیک)
           const relativeVx = velA.vx - velB.vx;
           const relativeVy = velA.vy - velB.vy;
           const dotProduct = relativeVx * collisionNormalX + relativeVy * collisionNormalY;
 
+          let newVelAx = velA.vx;
+          let newVelAy = velA.vy;
+          let newVelBx = velB.vx;
+          let newVelBy = velB.vy;
+
           if (dotProduct < 0) {
-            const impulse = dotProduct; // Assuming mass of 1 for both
-            velA.vx -= impulse * collisionNormalX;
-            velA.vy -= impulse * collisionNormalY;
-            velB.vx += impulse * collisionNormalX;
-            velB.vy += impulse * collisionNormalY;
+            // ضریب COLLISION_RESTITUTION باعث می‌شود هر برخورد کمی انرژی از دست بدهد،
+            // و کارت‌های گیرکرده در گوشه/بین چند کارت دیگر به‌جای لرزش پیوسته، آرام باز شوند
+            const impulse = dotProduct * COLLISION_RESTITUTION;
+            newVelAx -= impulse * collisionNormalX;
+            newVelAy -= impulse * collisionNormalY;
+            newVelBx += impulse * collisionNormalX;
+            newVelBy += impulse * collisionNormalY;
           }
 
-          // به‌روزرسانی مقادیر در shared value ها
-          cardA.position.value = { x: posA.x, y: posA.y };
-          cardB.position.value = { x: posB.x, y: posB.y };
-          cardA.velocity.value = { vx: velA.vx, vy: velA.vy };
-          cardB.velocity.value = { vx: velB.vx, vy: velB.vy };
+          cardA.position.value = { x: newPosAx, y: newPosAy };
+          cardB.position.value = { x: newPosBx, y: newPosBy };
+          cardA.velocity.value = { vx: newVelAx, vy: newVelAy };
+          cardB.velocity.value = { vx: newVelBx, vy: newVelBy };
         }
       }
     }
@@ -537,37 +794,69 @@ export const DragDropProvider: React.FC<{
     }
   }
 
+  const registryValue = useMemo<RegistryContextProps>(() => ({
+    getSlotPosition,
+    getSlotOfCard,
+  }), [getSlotPosition, getSlotOfCard]);
+
+  const mainValue = useMemo<ContextProps>(() => ({
+    registerCard,
+    assignCardToSlot,
+    unassignCardFromSlot,
+    registerSlot,
+    currentWords,
+    completeCurrentPart,
+    changePlayingIndex,
+    currentPartIndex,
+    playingPartIndex,
+    completedSentences,
+    numberOfCards,
+    existUnknownWord,
+    numberParts,
+    lockedPan,
+    type,
+    stageId,
+    applyForHelp,
+    sentenceHint,
+    timeLimitData,
+  }), [
+    registerCard,
+    assignCardToSlot,
+    unassignCardFromSlot,
+    registerSlot,
+    currentWords,
+    completeCurrentPart,
+    changePlayingIndex,
+    currentPartIndex,
+    playingPartIndex,
+    completedSentences,
+    numberOfCards,
+    existUnknownWord,
+    numberParts,
+    lockedPan,
+    type,
+    stageId,
+    applyForHelp,
+    sentenceHint,
+    timeLimitData,
+  ]);
+
+  const slotsStateValue = useMemo<SlotsStateContextProps>(() => ({
+    cards,
+    slots,
+  }), [cards, slots]);
+
   return (
-    <DragDropContext.Provider
-      value={{
-        registerCard,
-        getSlotPosition,
-        assignCardToSlot,
-        unassignCardFromSlot,
-        getSlotOfCard,
-        cards,
-        slots,
-        registerSlot,
-        currentWords,
-        completeCurrentPart,
-        changePlayingIndex,
-        currentPartIndex,
-        playingPartIndex,
-        completedSentences,
-        numberOfCards,
-        existUnknownWord,
-        numberParts,
-        lockedPan,
-        type,
-        stageId,
-        applyForHelp,
-        sentenceHint,
-        timeLimitData
-      }}
-    >
-      {children}
+    <DragDropContext.Provider value={mainValue}>
+      <DragDropRegistryContext.Provider value={registryValue}>
+        <SlotsStateContext.Provider value={slotsStateValue}>
+          {children}
+        </SlotsStateContext.Provider>
+      </DragDropRegistryContext.Provider>
     </DragDropContext.Provider>
   );
 };
 
 export const useDragDrop = () => useContext(DragDropContext);
+export const useDragDropRegistry = () => useContext(DragDropRegistryContext);
+export const useSlotsState = () => useContext(SlotsStateContext);

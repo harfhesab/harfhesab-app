@@ -89,10 +89,10 @@ function KalamAkharInformation(props){
             data: {
                 query : `
                     query getKalamAkharChallengeInformationAndUserStatus(
-                        $_id : ID!,
+                        $_id : ID!
                     ){
                         getKalamAkharChallengeInformationAndUserStatus(
-                            _id : $_id,
+                            _id : $_id
                         ) {
                             kalam_akhar_challenge{
                                 _id

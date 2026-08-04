@@ -152,7 +152,7 @@ function NumberCoins({ onPress = () => {} }: NumberCoinsProps) {
   };
 
   const coinStr = String(numberCoins ?? 0);
-  const fontSize = coinStr.length > 5 ? 12 : coinStr.length > 4 ? 13 : 15;
+  const fontSize = coinStr.length > 5 ? 13 : coinStr.length > 4 ? 14 : 16;
 
   return (
     <TouchableOpacity activeOpacity={0.85} onPress={onClick}>
@@ -203,14 +203,13 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingEnd: 9,
     paddingStart: 25,
-    paddingBottom: 2,
   },
   textWrapper: {
     width: 50,
     alignItems: "center",
   },
   textInput: {
-    fontFamily: Font.black,
+    fontFamily: Font.bakh_bold,
     color: "#FFFFFF",
     padding: 0,
     textAlign: "center",
@@ -220,6 +219,7 @@ const styles = StyleSheet.create({
     height: 20,
     alignItems: "center",
     justifyContent: "center",
+    paddingBottom: 2,
   },
   coinImage: {
     width: 20,

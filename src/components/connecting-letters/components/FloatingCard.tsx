@@ -15,6 +15,8 @@ import {
   CARD_ZINDEX_NORMAL,
   CARD_BORDER_RADIUS,
   FONT_SIZE_SELECTED,
+  MAX_VELOCITY,
+  MIN_VELOCITY,
 } from '../constants/constants';
 import SkiaLetter from '../../text-components/SkiaLetter';
 import { selectCardSoundInLettersConnecting } from '../../../utils/sound/SoundFunctions';
@@ -25,17 +27,19 @@ const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpaci
 interface Props {
   letter: string;
   index: number;
+  initialPosition: { x: number; y: number };
 }
 
-function FloatingCard({ letter, index }: Props) {
+function FloatingCard({ letter, index, initialPosition }: Props) {
   const id = `${letter}_${index}`;
 
-  // موقعیت اولیه (مثل کد قبلی‌ات)
-  const initialX = Math.random() * (/* use BOUNDARY_WIDTH - CARD_SIZE_FLOATING or keep your calc */ 200);
-  const initialY = Math.random() * 200;
-
-  const position = useSharedValue({ x: initialX, y: initialY });
-  const velocity = useSharedValue({ vx: (Math.random() - 0.5) * 200, vy: (Math.random() - 0.5) * 200 });
+  // x/y و vx/vy به‌صورت SharedValue عددی جدا نگه داشته می‌شوند (نه یک آبجکت {x,y}).
+  // این کار تخصیص آبجکت در هر فریم موتور فیزیک را حذف می‌کند؛ برای جزئیات دلیل
+  // این تغییر به کامنت بالای frameCallback در LettersContext.tsx مراجعه کن.
+  const x = useSharedValue(initialPosition.x);
+  const y = useSharedValue(initialPosition.y);
+  const vx = useSharedValue((Math.random() - 0.5) * 2 * MAX_VELOCITY * 0.7);
+  const vy = useSharedValue((Math.random() - 0.5) * 2 * MAX_VELOCITY * 0.7);
   const cardSize = useSharedValue(CARD_SIZE_FLOATING);
   const fontSize = useSharedValue(FONT_SIZE_FLOATING);
 
@@ -48,9 +52,10 @@ function FloatingCard({ letter, index }: Props) {
     registerCard({
       id,
       letter,
-      startPosition: { x: initialX, y: initialY },
-      position,
-      velocity,
+      x,
+      y,
+      vx,
+      vy,
       cardSize,
       fontSize,
       selected,
@@ -74,12 +79,12 @@ function FloatingCard({ letter, index }: Props) {
   );
 
   const cardStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: position.value.x }, { translateY: position.value.y }],
+    transform: [{ translateX: x.value }, { translateY: y.value }],
     width: cardSize.value,
     height: cardSize.value,
     zIndex: selected.value === 1 ? CARD_ZINDEX_SELECTED : CARD_ZINDEX_NORMAL,
     elevation: selected.value === 1 ? 1 : 10,
-  }), []);
+  }));
 
   const onClick = () => {
     selectCard(id);

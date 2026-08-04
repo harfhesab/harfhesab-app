@@ -33,15 +33,15 @@ function NumberCoinsHelp({ onPress = () => {}, numberCoinsHelp }) {
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                    <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', height:"100%", width:"100%", overflow:'hidden', paddingBottom:2, paddingHorizontal:8}}>
+                    <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', height:"100%", width:"100%", overflow:'hidden', paddingBottom:2, paddingHorizontal:10}}>
                         <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
-                            <Text style={{fontFamily:Font.bold, fontSize:11, color:"#FFFFFF"}}>{numberCoinsHelp}</Text>
+                            <Text style={{fontFamily:Font.bakh_extra_bold, fontSize:11, color:"#FFFFFF"}}>{numberCoinsHelp}</Text>
                             <Image
                                 style={{height:12, width:12}}
                                 source={require('../../assets/image/coin.png')}
                             />
                         </View>
-                        <Text style={{fontFamily:Font.medium, fontSize:11, color:"#FFFFFF"}}>{"راهنما"}</Text>
+                        <Text style={{fontFamily:Font.bakh_bold, fontSize:11, color:"#FFFFFF"}}>{"راهنما"}</Text>
                     </View>
             </ImageBackground>
         </TouchableOpacity>

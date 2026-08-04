@@ -5,19 +5,14 @@ import { DragDropProvider } from './context/DragDropContext';
 import FloatingCardList from './components/FloatingCardList';
 import DropZoneList from './components/DropZoneList';
 import {
-  BOUNDARY_TOP_OFFSET,
-  BOUNDARY_HORIZONTAL_OFFSET,
   BOUNDARY_HEIGHT,
   BOUNDARY_WIDTH,
   BOUNDARY_BORDER_RADIUS,
-  BOUNDARY_BORDER_WIDTH,
   SLOT_GAP,
-  SLOT_BOTTOM_OFFSET,
   BOUNDARY_BOTTOM_OFFSET,
   DISTANCE_BOUNDARY_AND_SLOT
 } from './constants/constants';
 import SentenceDisplay from './components/SentenceDisplay';
-import { BSON } from 'realm';
 
 const WordToSlot = ({
   id,
@@ -30,7 +25,7 @@ const WordToSlot = ({
   id:string;
   type:string; // "stage-game" | "package-game" | "kalam-akhar"
   data:any;
-  saveWordHelpUsed:(partIndex:number, wordId:BSON.ObjectId | string)=>void;
+  saveWordHelpUsed:(partIndex:number, wordId:any)=>void;
   saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;
   endOfAStage:()=>void;
 }) => {

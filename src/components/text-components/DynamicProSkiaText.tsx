@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useMemo, useEffect, useState } from 'react';
+import { View, StyleSheet, Dimensions, AppState, AppStateStatus } from 'react-native';
 import { 
   Canvas, 
   Skia, 
@@ -7,7 +7,6 @@ import {
   TextAlign, 
   TextDirection 
 } from '@shopify/react-native-skia';
-// مسیر این ایمپورت را بر اساس ساختار پوشه‌های خود تنظیم کنید
 import { useGlobalFonts } from '../../context/SkiaFontProvider'; 
 
 interface DynamicProSkiaTextProps {
@@ -17,7 +16,7 @@ interface DynamicProSkiaTextProps {
   borderColor?: string;
   borderWidth?: number;
   fontSize?: number;
-  fontName?: string; // 👈 پراپ جدید برای دریافت داینامیک فونت
+  fontName?: string; 
 }
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -27,16 +26,29 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
   maxWidth = SCREEN_WIDTH - 40, 
   textColor = '#FFFFFF',
   borderColor = '#3a194d',
-  borderWidth = 1.5,
+  borderWidth = 1,
   fontSize = 24,
-  fontName = 'YekanBakh-Black', // 👈 مقدار پیش‌فرض مطابق با یکی از فونت‌های کانتکست
+  fontName = 'YekanBakh-Black',
 }) => {
-
-  // 🌟 مدیر فونت را از کانتکست سراسری اپلیکیشن می‌گیریم
   const { customFontMgr } = useGlobalFonts();
+  
+  // 🌟 اضافه شدن لیسنر برای وضعیت اپلیکیشن (اکتیو بودن یا در بک‌گراند بودن)
+  const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      setAppState(nextAppState);
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const { fillParagraph, borderParagraph, paraHeight, paraWidth } = useMemo(() => {
     if (!customFontMgr) return { fillParagraph: null, borderParagraph: null, paraHeight: 0, paraWidth: 0 };
+
+    // 🌟 جلوگیری از کرش موتور اسکیا به خاطر رشته خالی
+    const safeText = (text && text.length > 0) ? text : ' ';
 
     const parsedTextColor = Skia.Color(textColor);
     const parsedBorderColor = Skia.Color(borderColor);
@@ -48,15 +60,15 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
       const builder = Skia.ParagraphBuilder.Make({
         textAlign: TextAlign.Center, 
         textDirection: TextDirection.RTL,
-      }, customFontMgr); // 👈 مدیر فونت پاس داده شد
+      }, customFontMgr);
 
       builder.pushStyle({
-        fontFamilies: [fontName], // 👈 استفاده از نام فونت دریافتی
+        fontFamilies: [fontName], 
         fontSize: fontSize,
         color: color,
       });
 
-      builder.addText(text); 
+      builder.addText(safeText); 
       const p = builder.build();
       
       p.layout(availableMaxWidth); 
@@ -74,7 +86,8 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
       paraWidth: Math.ceil(exactTextWidth + paddingForBorder),
       paraHeight: Math.ceil(pFill.getHeight() + paddingForBorder),
     };
-  }, [customFontMgr, text, textColor, borderColor, maxWidth, fontSize, borderWidth, fontName]); // 👈 fontName به وابستگی‌ها اضافه شد
+  }, [customFontMgr, text, textColor, borderColor, maxWidth, fontSize, borderWidth, fontName, appState]); 
+  // 👆 appState به وابستگی‌ها اضافه شد تا با بازگشت به برنامه پاراگراف‌ها رفرش شوند
 
   if (!customFontMgr || !fillParagraph || !borderParagraph) {
     return null;
@@ -90,7 +103,6 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
   return (
     <View style={{ width: paraWidth, height: paraHeight }}>
       <Canvas style={styles.canvas}>
-        
         {strokeOffsets.map(([dx, dy], index) => (
           <Paragraph 
             key={`stroke-${index}`}
@@ -100,14 +112,12 @@ const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({
             width={paraWidth} 
           />
         ))}
-
         <Paragraph 
           paragraph={fillParagraph} 
           x={d} 
           y={d} 
           width={paraWidth} 
         />
-        
       </Canvas>
     </View>
   );

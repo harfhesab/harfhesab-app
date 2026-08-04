@@ -8,6 +8,8 @@ import {
   CARD_SELECTION_DURATION,
   MAX_VELOCITY,
   MIN_VELOCITY,
+  PHYSICS_MAX_DELTA_MS,
+  COLLISION_RESTITUTION,
 } from '../constants/constants';
 import { deselectCardSoundInLettersConnecting, tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import { showToast } from '../../custom-toast/ToastRef';
@@ -16,20 +18,23 @@ import { RootState } from '../../../redux/store/RootReducer';
 import { AppDispatch } from '../../../redux/store/Store';
 import { findingOneNewHiddenWord } from '../../../redux/slices/hiddenWordSlice';
 
-interface Position { x: number; y: number; }
-interface Velocity { vx: number; vy: number; }
-
 interface SubmittedInfo {
   word: string;
   letters: string[];
 }
 
+// توجه: به‌جای یک SharedValue آبجکتی {x,y} از دو SharedValue عددی جدا استفاده می‌کنیم.
+// دلیل: در worklet فیزیک، هر فریم برای هر کارت مقدار position/velocity خوانده و نوشته می‌شود.
+// اگر این مقدار یک آبجکت باشد، هر بار نوشتن (card.position.value = {x, y}) یک آبجکت جدید
+// روی UI thread تخصیص می‌دهد. با N کارت در ۶۰fps این یعنی تخصیص/GC مداوم که می‌تواند
+// روی گوشی‌های ضعیف باعث افت نرمی (jank) شود. SharedValue عددی این تخصیص را کاملاً حذف می‌کند.
 interface Card {
   id: string;
   letter: string;
-  startPosition: Position;
-  position: SharedValue<Position>;
-  velocity: SharedValue<Velocity>;
+  x: SharedValue<number>;
+  y: SharedValue<number>;
+  vx: SharedValue<number>;
+  vy: SharedValue<number>;
   cardSize: SharedValue<number>;
   fontSize: SharedValue<number>;
   selected: SharedValue<number>; // 0 = normal, 1 = selected
@@ -246,10 +251,16 @@ export const LettersProvider: React.FC<{
   }, [clearSelectionTimer, startSelectionProgress, deselectAll]);
 
   const selectCard = useCallback((id: string) => {
-    if (submittedInfo) setSubmittedInfo(null);
-    if(delayTimerRef.current) clearTimeout(delayTimerRef.current);
     const card = cardsMapRef.current[id];
     if (!card) return;
+    // جلوگیری از انتخاب دوباره‌ی کارتی که همین الان انتخاب شده (کوچک و پشت بقیه است).
+    // در نسخه‌ی قبلی این گارد وجود نداشت؛ اگر کاربر روی یک کارت انتخاب‌شده دوباره لمس
+    // موفق می‌داشت (مثلاً لحظه‌ای که از پشت کارت‌های دیگر آزاد می‌شود)، حرف آن دوباره
+    // به connectedLetters اضافه می‌شد و کلمه‌ی ساخته‌شده اشتباه می‌شد.
+    if (card.selected.value === 1) return;
+
+    if (submittedInfo) setSubmittedInfo(null);
+    if (delayTimerRef.current) clearTimeout(delayTimerRef.current);
     card.selected.value = 1;
 
     setConnectedLetters(prev => [...prev, card.letter]);
@@ -263,54 +274,63 @@ export const LettersProvider: React.FC<{
   }, [clearSelectionTimer, deselectAll, submittedInfo, startSelectionProgress]);
 
   // =========================================================================
-  // Frame Callback: مدیریت فیزیک و برخورد (برگرفته از منطق DragDropContext)
+  // Frame Callback: مدیریت فیزیک و برخورد
   // =========================================================================
-  const frameCallback = useFrameCallback(() => {
+  const frameCallback = useFrameCallback((frameInfo) => {
     'worklet';
     const cards = cardsRefArray.current;
     const n = cards.length;
     if (n === 0) return;
-    const dt = 0.016; 
 
-    // مرحله 1: حرکت و برخورد با دیواره‌ها
+    // به‌جای dt ثابت ۰.۰۱۶ (فرض ۶۰fps)، از زمان واقعی بین دو فریم استفاده می‌کنیم.
+    // چرا مهم است: useFrameCallback با نرخ رفرش واقعی صفحه اجرا می‌شود (۶۰ / ۹۰ / ۱۲۰Hz
+    // بسته به گوشی). با dt ثابت، روی گوشی ۱۲۰Hz توپ‌ها دقیقاً دو برابر سریع‌تر از حالت
+    // ۶۰Hz حرکت می‌کنند و روی گوشی‌ای که فریم افت می‌کند (مثلاً ۳۰fps) کندتر از واقعیت
+    // به نظر می‌رسند. با dt واقعی، سرعت حرکت روی همه‌ی دستگاه‌ها یکسان و قابل پیش‌بینی است.
+    // clamp هم برای جلوگیری از "جهش" بزرگ بعد از برگشت از background یا افت فریم سنگین است.
+    const rawDeltaMs = frameInfo.timeSincePreviousFrame ?? 16.6667;
+    const dt = Math.min(rawDeltaMs, PHYSICS_MAX_DELTA_MS) / 1000;
+
+    // مرحله ۱: حرکت و برخورد با دیواره‌ها
     for (let i = 0; i < n; i++) {
       const card = cards[i];
-      const pos = card.position.value;
-      const vel = card.velocity.value;
-      const currentSize = card.cardSize.value ?? CARD_SIZE_FLOATING; // سایز لحظه‌ای کارت
+      let x = card.x.value;
+      let y = card.y.value;
+      let vx = card.vx.value;
+      let vy = card.vy.value;
+      const currentSize = card.cardSize.value ?? CARD_SIZE_FLOATING;
 
-      // بررسی NaN برای جلوگیری از کرش
-      if (isNaN(pos.x) || isNaN(pos.y) || isNaN(vel.vx) || isNaN(vel.vy)) {
+      if (isNaN(x) || isNaN(y) || isNaN(vx) || isNaN(vy)) {
         continue;
       }
 
-      // محدود کردن سرعت (Velocity Clamping)
-      let speed = Math.sqrt(vel.vx * vel.vx + vel.vy * vel.vy);
+      let speed = Math.sqrt(vx * vx + vy * vy);
       if (speed > MAX_VELOCITY) {
         const scale = MAX_VELOCITY / speed;
-        vel.vx *= scale;
-        vel.vy *= scale;
+        vx *= scale;
+        vy *= scale;
       } else if (speed < MIN_VELOCITY && speed > 0) {
         const scale = MIN_VELOCITY / speed;
-        vel.vx *= scale;
-        vel.vy *= scale;
+        vx *= scale;
+        vy *= scale;
       }
 
-      let newX = pos.x + vel.vx * dt;
-      let newY = pos.y + vel.vy * dt;
+      let newX = x + vx * dt;
+      let newY = y + vy * dt;
 
-      // برخورد با دیواره‌ها
-      if (newX < 0) { newX = 0; vel.vx *= -1; }
-      else if (newX > BOUNDARY_WIDTH - currentSize) { newX = BOUNDARY_WIDTH - currentSize; vel.vx *= -1; }
+      if (newX < 0) { newX = 0; vx = -vx; }
+      else if (newX > BOUNDARY_WIDTH - currentSize) { newX = BOUNDARY_WIDTH - currentSize; vx = -vx; }
 
-      if (newY < 0) { newY = 0; vel.vy *= -1; }
-      else if (newY > BOUNDARY_HEIGHT - currentSize) { newY = BOUNDARY_HEIGHT - currentSize; vel.vy *= -1; }
+      if (newY < 0) { newY = 0; vy = -vy; }
+      else if (newY > BOUNDARY_HEIGHT - currentSize) { newY = BOUNDARY_HEIGHT - currentSize; vy = -vy; }
 
-      card.position.value = { x: newX, y: newY };
-      card.velocity.value = { vx: vel.vx, vy: vel.vy };
+      card.x.value = newX;
+      card.y.value = newY;
+      card.vx.value = vx;
+      card.vy.value = vy;
     }
 
-    // مرحله 2: برخورد کارت‌ها با یکدیگر (منطق DragDrop)
+    // مرحله ۲: برخورد کارت‌ها با یکدیگر
     for (let i = 0; i < n; i++) {
       const cardA = cards[i];
       for (let j = i + 1; j < n; j++) {
@@ -320,63 +340,59 @@ export const LettersProvider: React.FC<{
         // اگر وضعیت انتخاب یکی نباشد (یکی کوچک یکی بزرگ)، از هم رد می‌شوند
         if (cardA.selected.value !== cardB.selected.value) continue;
 
-        const posA = cardA.position.value;
-        const posB = cardB.position.value;
-        const velA = cardA.velocity.value;
-        const velB = cardB.velocity.value;
-        
+        const ax = cardA.x.value;
+        const ay = cardA.y.value;
+        const bx = cardB.x.value;
+        const by = cardB.y.value;
+
         const sizeA = cardA.cardSize.value ?? CARD_SIZE_FLOATING;
         const sizeB = cardB.cardSize.value ?? CARD_SIZE_FLOATING;
 
-        // تعریف مستطیل‌ها
-        const rectA = { left: posA.x, right: posA.x + sizeA, top: posA.y, bottom: posA.y + sizeA };
-        const rectB = { left: posB.x, right: posB.x + sizeB, top: posB.y, bottom: posB.y + sizeB };
-
         const isColliding =
-          rectA.left < rectB.right &&
-          rectA.right > rectB.left &&
-          rectA.top < rectB.bottom &&
-          rectA.bottom > rectB.top;
+          ax < bx + sizeB &&
+          ax + sizeA > bx &&
+          ay < by + sizeB &&
+          ay + sizeA > by;
 
-        if (isColliding) {
-          // محاسبه همپوشانی
-          const overlapX = Math.min(rectA.right - rectB.left, rectB.right - rectA.left);
-          const overlapY = Math.min(rectA.bottom - rectB.top, rectB.bottom - rectA.top);
+        if (!isColliding) continue;
 
-          // جابه‌جایی برای رفع همپوشانی (Position Correction) - این بخش جلوی گیر کردن را می‌گیرد
-          let dx = 0;
-          let dy = 0;
-          if (overlapX < overlapY) {
-            dx = rectA.left < rectB.left ? -overlapX / 2 : overlapX / 2;
-          } else {
-            dy = rectA.top < rectB.top ? -overlapY / 2 : overlapY / 2;
-          }
+        const overlapX = Math.min(ax + sizeA - bx, bx + sizeB - ax);
+        const overlapY = Math.min(ay + sizeA - by, by + sizeB - ay);
 
-          posA.x += dx;
-          posA.y += dy;
-          posB.x -= dx;
-          posB.y -= dy;
-
-          const nx = dx !== 0 ? (dx > 0 ? 1 : -1) : 0;
-          const ny = dy !== 0 ? (dy > 0 ? 1 : -1) : 0;
-
-          // برخورد الاستیک
-          const relativeVx = velA.vx - velB.vx;
-          const relativeVy = velA.vy - velB.vy;
-          const dot = relativeVx * nx + relativeVy * ny;
-
-          if (dot < 0) {
-            const impulse = dot;
-            velA.vx -= impulse * nx; velA.vy -= impulse * ny;
-            velB.vx += impulse * nx; velB.vy += impulse * ny;
-          }
-
-          // اعمال مقادیر جدید به SharedValues
-          cardA.position.value = { x: posA.x, y: posA.y };
-          cardB.position.value = { x: posB.x, y: posB.y };
-          cardA.velocity.value = { vx: velA.vx, vy: velA.vy };
-          cardB.velocity.value = { vx: velB.vx, vy: velB.vy };
+        let dx = 0;
+        let dy = 0;
+        if (overlapX < overlapY) {
+          dx = ax < bx ? -overlapX / 2 : overlapX / 2;
+        } else {
+          dy = ay < by ? -overlapY / 2 : overlapY / 2;
         }
+
+        const nx = dx !== 0 ? (dx > 0 ? 1 : -1) : 0;
+        const ny = dy !== 0 ? (dy > 0 ? 1 : -1) : 0;
+
+        let avx = cardA.vx.value;
+        let avy = cardA.vy.value;
+        let bvx = cardB.vx.value;
+        let bvy = cardB.vy.value;
+
+        const relativeVx = avx - bvx;
+        const relativeVy = avy - bvy;
+        const dot = relativeVx * nx + relativeVy * ny;
+
+        if (dot < 0) {
+          const impulse = dot * COLLISION_RESTITUTION;
+          avx -= impulse * nx; avy -= impulse * ny;
+          bvx += impulse * nx; bvy += impulse * ny;
+          cardA.vx.value = avx;
+          cardA.vy.value = avy;
+          cardB.vx.value = bvx;
+          cardB.vy.value = bvy;
+        }
+
+        cardA.x.value = ax + dx;
+        cardA.y.value = ay + dy;
+        cardB.x.value = bx - dx;
+        cardB.y.value = by - dy;
       }
     }
   }, false);

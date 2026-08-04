@@ -38,11 +38,11 @@ function MeaningSentence({ onPress = () => {}, numberCoinsHelp }) {
                   resizeMode="stretch"
               >
                  <View style={{width:"100%", height:"100%", alignItems:"center", justifyContent:"center", gap:3}}>
-                    <Text style={{fontFamily:Font.medium, fontSize:11, color:"#FFF"}}>{"معنی"}</Text>
+                    <Text style={{fontFamily:Font.bakh_bold, fontSize:11, color:"#FFF"}}>{"معنی"}</Text>
                     {
                         numberCoinsHelp > 0&&
                         <View style={{flexDirection:'row', alignItems:'center', gap:3}}>
-                            <Text style={{fontFamily:Font.bold, fontSize:11, color:"#FFFFFF"}}>{numberCoinsHelp}</Text>
+                            <Text style={{fontFamily:Font.bakh_extra_bold, fontSize:11, color:"#FFFFFF"}}>{numberCoinsHelp}</Text>
                             <Image
                                 style={{height:12, width:12}}
                                 source={require('../../assets/image/coin.png')}

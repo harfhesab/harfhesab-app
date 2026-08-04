@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState, useRef  } from 'react';
 import { View, StyleSheet, Text, ScrollView } from 'react-native';
-import { useDragDrop } from '../context/DragDropContext';
+import { useDragDrop, useSlotsState } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,7 +10,8 @@ import DynamicProSkiaText from '../../text-components/DynamicProSkiaText';
 
 
 const SentenceDisplay = () => {
-    const { slots, cards, completeCurrentPart, completedSentences, currentWords } = useDragDrop();
+    const { completeCurrentPart, completedSentences, currentWords } = useDragDrop();
+    const { slots, cards } = useSlotsState();
     const colors = useAppTheme();
     const [check, setCheck] = useState(true);
     const [currentSentenceStatusColor, setCurrentSentenceStatusColor] = useState<string[]>(['#86442d', '#4d2719']);
@@ -87,7 +88,7 @@ const SentenceDisplay = () => {
                 currentSentence?.length > 0?
                 <LinearGradient colors={currentSentenceStatusColor} style={{ borderRadius: 5 }}>
                   <View style={{ paddingHorizontal: 15 }}>
-                    <Text style={{fontFamily:Font.bakh_black, fontSize:18, color:"#FFF"}}>{currentSentence}</Text>
+                    <Text style={{fontFamily:Font.bakh_extra_bold, fontSize:18, color:"#FFF"}}>{currentSentence}</Text>
                   </View>
                 </LinearGradient>
                 :<View/>

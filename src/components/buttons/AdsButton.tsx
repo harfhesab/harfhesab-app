@@ -11,7 +11,7 @@ import { increaseNumberCoins } from '../../redux/slices/coinSlice';
 import LocalImageComponent from '../image-components/LocalImageComponent';
 import { colors } from '../../hooks/theme/colors';
 import Icon from '../../utils/Icon';
-import SimpleBorderText from '../text-components/SimpleBorderText';
+import DynamicProSkiaText from '../text-components/DynamicProSkiaText';
 
 
 
@@ -229,25 +229,22 @@ function AdsButton(
                             style={{width:fontSize, height:fontSize}}
                             source={require('../../assets/image/coin.png')}
                         />
-                        <SimpleBorderText
+                        <DynamicProSkiaText
                             text={`${reward} +`}
-                            width={30}
-                            height={17*1.6}
-                            fontSize={17}
-                            borderWidth={1.5}
-                            textColor={"#fcb900"}
-                            borderColor={"#4d2719"}
+                            textColor={colors.primary.a3} 
+                            borderColor={colors.primary.a7} 
+                            borderWidth={1}
+                            fontSize={16}
+                            fontName={"YekanBakh-ExtraBold"}
                         />
                     </View>
-                    
-                    <SimpleBorderText
+                    <DynamicProSkiaText 
                         text={"نمایش ویدیو"}
-                        width={95}
-                        height={17*1.6}
-                        fontSize={17}
-                        borderWidth={1.5}
-                        textColor={"#fcb900"}
-                        borderColor={"#4d2719"}
+                        textColor={colors.primary.a3} 
+                        borderColor={colors.primary.a7} 
+                        borderWidth={1}
+                        fontSize={16}
+                        fontName={"YekanBakh-ExtraBold"}
                     />
                 </View>
             </ImageBackground>

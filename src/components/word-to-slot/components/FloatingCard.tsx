@@ -7,13 +7,11 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { useDragDrop } from '../context/DragDropContext';
+import { useDragDrop, useDragDropRegistry } from '../context/DragDropContext';
 import Font from '../../../utils/Font';
 import {
   SLOT_SIZE,
   SLOT_SENSITIVITY_SIZE,
-  BOUNDARY_TOP_OFFSET,
-  BOUNDARY_HORIZONTAL_OFFSET,
   BOUNDARY_WIDTH,
   BOUNDARY_HEIGHT,
   BOUNDARY_X,
@@ -31,6 +29,7 @@ import { dropWordToSlotCardInFloatingSound, dropWordToSlotCardInSlotSound, onSta
 import { vibrate } from '../../../utils/vibrationManager';
 import { navigate } from '../../../main/navigationService';
 import Icon from '../../../utils/Icon';
+import { getFontScale } from '../utils/getFontScale';
 
 // تنظیمات انیمیشن برای نرم‌تر شدن
 const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای درگ و بازگشت به شناور
@@ -49,40 +48,9 @@ interface Position {
   y: number;
 }
 
-function getFontScale(word:string) {
-  const trimmed = (word || '').trim();
-  const len = trimmed.length;
-
-  if (len === 0) return 1.8;
-
-  const hasSpace = /\s/.test(trimmed);
-  const SINGLE_WORD_THRESHOLD = 9;
-
-  let scale =
-    1.75 -
-    0.3 * Math.log(len + 1) -
-    0.015 * len +
-    0.35 / (len + 1) +
-    0.15 * Math.exp(-Math.pow(len - 1, 2) / 2);
-
-  if (!hasSpace) {
-    if (len > SINGLE_WORD_THRESHOLD) {
-      const excess = len - SINGLE_WORD_THRESHOLD;
-      const penalty = 0.045 * excess + 0.12 * Math.log(excess + 1);
-      scale -= penalty;
-    } else {
-      const boost = 0.28 * Math.exp(-len / 5) - 0.045;
-      scale += Math.max(0, boost);
-    }
-  }
-
-  const minScale = (!hasSpace && len > SINGLE_WORD_THRESHOLD) ? 0.8 : 0.95;
-
-  return Math.max(minScale, Math.min(1.8, scale));
-}
-
 function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
-  const { registerCard, assignCardToSlot, getSlotPosition, getSlotOfCard, unassignCardFromSlot, numberOfCards, lockedPan, type, stageId, playingPartIndex } = useDragDrop();
+  const { registerCard, assignCardToSlot, unassignCardFromSlot, numberOfCards, lockedPan, type, stageId, playingPartIndex } = useDragDrop();
+  const { getSlotPosition, getSlotOfCard } = useDragDropRegistry();
   const fontSizeScale = getFontScale(word);
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
   const FONT_SIZE_DRAGGING_SCALED = FONT_SIZE_DRAGGING * fontSizeScale;
@@ -116,6 +84,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
       position,
       velocity,
       isDragging,
+      dragZIndex,
       isAssigned,
       cardSize,
       fontSize,

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -62,8 +62,22 @@ const WordDisplay = () => {
   const [gradientColors, setGradientColors] = useState<string[]>(COLORS.GRADIENT_NORMAL);
   const chunks = useMemo(() => chunkArray(data.additional_words, 6), [data.additional_words]);
 
+  // این دو تایمر تودرتو (feedback -> cleanup) هستند. در نسخه‌ی قبلی، تابع cleanup تایمر
+  // داخلی به‌صورت `return () => clearTimeout(cleanupTimer)` از داخل خودِ callback تایمر
+  // بیرونی برگردانده می‌شد؛ اما آن return هیچ اثری ندارد چون داخل setTimeout است، نه
+  // داخل خودِ افکت — ری‌اکت هیچ‌وقت آن را نمی‌بیند و صدا نمی‌زند. نتیجه: اگر submittedInfo
+  // یک بار دیگر (یا آنماونت) بین ۱۵۰۰ تا ۱۹۰۰ میلی‌ثانیه اتفاق بیفتد، تایمر cleanupTimer
+  // قبلی هنوز زنده می‌ماند و بعداً setSubmittedInfo(null) را روی چرخه‌ی جدید صدا می‌زند —
+  // یک race condition واقعی. اینجا هر دو تایمر را در ref نگه می‌داریم و همیشه هر دو را
+  // پاک می‌کنیم.
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cleanupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     if (!submittedInfo) return;
+
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    if (cleanupTimerRef.current) clearTimeout(cleanupTimerRef.current);
 
     const { word } = submittedInfo;
     let state = FEEDBACK_STATE.ERROR;
@@ -126,18 +140,20 @@ const WordDisplay = () => {
     setGradientColors(newGradientColors);
     feedbackProgress.value = withTiming(state, { duration: 300 });
     
-    const feedbackTimer = setTimeout(() => {
+    feedbackTimerRef.current = setTimeout(() => {
       selectedCardsOpacity.value = withTiming(0, { duration: 400 });
-      const cleanupTimer = setTimeout(() => {
+      cleanupTimerRef.current = setTimeout(() => {
         setSubmittedInfo(null);
         setGradientColors(COLORS.GRADIENT_NORMAL);
         feedbackProgress.value = withTiming(FEEDBACK_STATE.NORMAL);
       }, 400);
-      return () => clearTimeout(cleanupTimer);
     }, 1500);
 
-    return () => clearTimeout(feedbackTimer);
-  }, [submittedInfo]); // وابستگی‌ها کنترل شوند
+    return () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+      if (cleanupTimerRef.current) clearTimeout(cleanupTimerRef.current);
+    };
+  }, [submittedInfo]);
 
   useEffect(() => {
     if (connectedLetters.length > 0) {
