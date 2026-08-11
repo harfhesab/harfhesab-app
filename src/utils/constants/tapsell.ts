@@ -15,6 +15,9 @@ export const tapsell = {
         package_game_completed_stage:{
             zone_id : "6a1e0e0962158d268e955ee3",
         },
+        kalam_akhar_challenge:{
+            zone_id : "6a73d8bca2648a6350550e9a",
+        }
     }
 }
 export type AdsPosition = keyof typeof tapsell.position;

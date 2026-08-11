@@ -43,7 +43,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     }
                 ],
                 options : {
-                    type: 'completed-stage',
+                    lottie: 'success',
                     cancelable: false,
                 },
             });
@@ -90,7 +90,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                         }
                     ],
                     options : {
-                        type: 'completed-stage',
+                        lottie: 'success',
                         reward : coinsReward,
                         cancelable: false,
                     },
@@ -122,7 +122,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                 }
             ],
             options : {
-                type: 'completed-stage',
+                lottie: 'success',
                 cancelable: false,
             },
         });
@@ -148,7 +148,7 @@ const endOfASeasonInStageGame = ({seasonNumber})=>{
             }
         ],
         options : {
-            type: 'completed-season',
+            lottie: 'unlocked',
             reward : state.constants.coins_reward_from_season_completed_stage_game,
             cancelable: false,
         },

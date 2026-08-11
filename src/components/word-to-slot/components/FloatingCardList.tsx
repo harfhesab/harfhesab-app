@@ -6,20 +6,21 @@ import { BOUNDARY_HEIGHT } from '../constants/constants';
 import { WaveIndicator } from 'react-native-indicators';
 
 const FloatingCardList = () => {
-  const { currentWords, playingPartIndex, lockedPan } = useDragDrop();
+  const { currentWords, playingPartIndex, lockedPan, onClickUnknownWord } = useDragDrop();
 
   const renderedCards = useMemo(() => {
     return currentWords.map((item, index) => (
       <FloatingCard
         key={`${item.word}_${index}_${playingPartIndex}`}
-        _id={item._id}
+        wordId={item._id}
         word={item.word}
         index={index}
         unknown_word={item.unknown_word}
         unknown_word_completed={item.unknown_word_completed}
+        onClickUnknownWord={onClickUnknownWord}
       />
     ));
-  }, [currentWords, playingPartIndex]);
+  }, [currentWords, playingPartIndex, onClickUnknownWord]);
 
   return (
     <View style={{width:"100%", height:"100%"}}>

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { goBack } from "../../../main/navigationService";
 import GameAlertHelper from "../../game-alert/GameAlertHelper";
 import { successfulCompletionOfConnectingLetterSound } from "../../../utils/sound/SoundFunctions";
@@ -27,7 +26,7 @@ export const unknownWordCompletedInPackageGame = async()=>{
             }
         ],
         options : {
-            type: 'completed-word',
+            lottie: 'success',
             cancelable: false,
         },
     });

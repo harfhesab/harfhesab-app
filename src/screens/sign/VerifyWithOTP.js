@@ -301,6 +301,7 @@ function VerifyWithOTP(props){
             }).then(async(response)=>{
                 setLoading(false)
                 const data = response?.data?.data?.verifyUserLoginWithOTP
+                console.log("XXXXXXXXXXXXXXXXX", data)
                 if(data?.status == 200) {
                     const token = data?.token
                     const name = data?.user?.name ?? null

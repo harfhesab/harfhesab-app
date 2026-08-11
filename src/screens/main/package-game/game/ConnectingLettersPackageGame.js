@@ -67,10 +67,10 @@ function ConnectingLettersPackageGame(props){
                         data={data}
                         stageNumber={stageNumber}
                         saveMainWordBuilded={saveMainWordBuilded}
-                        saveNewAdditionalWordsBuilded={(word)=>saveNewAdditionalWordsBuilded(word)}
-                        saveNewHiddenWordsBuilded={(word)=>saveNewHiddenWordsBuilded(word)}
+                        saveNewAdditionalWordsBuilded={saveNewAdditionalWordsBuilded}
+                        saveNewHiddenWordsBuilded={saveNewHiddenWordsBuilded}
                         completedOperation={completedOperation}
-                        saveUserHelpRequests={(newLettersHelpUsed)=>saveUserHelpRequests(newLettersHelpUsed)}
+                        saveUserHelpRequests={saveUserHelpRequests}
                     />
                 </View>
             </NightSky>

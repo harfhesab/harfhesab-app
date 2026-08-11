@@ -16,6 +16,7 @@ import {
 interface Props {
   type: string;
   data: any;
+  timeLimitData?: any;
   stageNumber: number | undefined;
   saveMainWordBuilded:()=>void;
   saveNewAdditionalWordsBuilded:(word:string)=>void;
@@ -26,6 +27,7 @@ interface Props {
 const ConnectingLetters = ({
   type,
   data,
+  timeLimitData,
   stageNumber,
   saveMainWordBuilded,
   saveNewAdditionalWordsBuilded,
@@ -37,14 +39,15 @@ const ConnectingLetters = ({
   return (
     <View style={{ flex: 1 }}>
       <LettersProvider
-        data={data}
         type={type}
+        data={data}
+        timeLimitData={timeLimitData}
         stageNumber={stageNumber}
         saveMainWordBuilded={saveMainWordBuilded}
-        saveNewAdditionalWordsBuilded={(word)=>saveNewAdditionalWordsBuilded(word)}
-        saveNewHiddenWordsBuilded={(word)=>saveNewHiddenWordsBuilded(word)}
+        saveNewAdditionalWordsBuilded={saveNewAdditionalWordsBuilded}
+        saveNewHiddenWordsBuilded={saveNewHiddenWordsBuilded}
         completedOperation={completedOperation}
-        saveUserHelpRequests={(newLettersHelpUsed)=>saveUserHelpRequests(newLettersHelpUsed)}
+        saveUserHelpRequests={saveUserHelpRequests}
       >
         <SafeAreaView style={styles.container}>
           <WordDisplay />

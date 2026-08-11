@@ -232,18 +232,18 @@ function KalamAkharInformation(props){
                     expiration,
                     remainingTimeSeconds
                 )
-                if(data?._id && res == true){
+                if(receivedData?._id && res == true){
                     if(!progress){
                         const entryFeeCoins = data?.entry_fee_coins
                         if(typeof entryFeeCoins == "number" && entryFeeCoins > 0 && numberCoins >= entryFeeCoins){
                             dispatch(reduceNumberCoins({number:entryFeeCoins}))
-                            props.navigation.navigate("WordToSlotKalamAkhar", {stage:data?._id})
+                            props.navigation.navigate("WordToSlotKalamAkhar", {challenge:challengeParamId, session:receivedData?._id})
                             setProgress({
                                 session: receivedData?._id,
                                 remaining_time_seconds: data?.time_limit?data.time_limit:undefined
                             });
                         } else if(!entryFeeCoins || entryFeeCoins == 0) {
-                            props.navigation.navigate("WordToSlotKalamAkhar", {stage:data?._id})
+                            props.navigation.navigate("WordToSlotKalamAkhar", {challenge:challengeParamId, session:receivedData?._id})
                             setProgress({
                                 session: receivedData?._id,
                                 remaining_time_seconds: data?.time_limit?data.time_limit:undefined
@@ -251,7 +251,7 @@ function KalamAkharInformation(props){
 
                         }
                     } else {
-                        props.navigation.navigate("WordToSlotKalamAkhar", {stage:data?._id})
+                        props.navigation.navigate("WordToSlotKalamAkhar", {challenge:challengeParamId, session:receivedData?._id})
                     }
                 }
             } else {

@@ -10,6 +10,21 @@ function showAlertGame(title, admiration, description, moreDescription, complete
     }
 }
 
+function changeLoading(loadingValue, loadingMessage){
+    if(_ref){
+        _ref.changeLoading(loadingValue, loadingMessage)
+    }
+}
+
+function changeButtons(buttons){
+    if(_ref){
+        _ref.changeButtons(buttons)
+    }
+}
+
 export default {
-    setRef , showAlertGame
+    setRef,
+    showAlertGame,
+    changeLoading,
+    changeButtons
 }

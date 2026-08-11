@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
@@ -24,10 +24,12 @@ function WordToSlotPackageGame(props){
 
     const saveWordHelpUsed = (partIndex, wordId)=>{
         saveWordHelpUsedInPackageGame( realm, stageId, partIndex, wordId);
-    }
+    };
+
     const saveCompletedPartAndSentenceBuilded = (partIndex)=>{
         saveCompletedPartAndSentenceBuildedInPackageGame( realm, stageId, partIndex);
-    }
+    };
+
     const endOfAStage = ()=>{
         const currentStageId = lastStage
         const stageNumber = data.stage_number_in_package;
@@ -37,7 +39,11 @@ function WordToSlotPackageGame(props){
         }));
         const stageHint = data?.stage_hint
         endOfAStageInPackageGame({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences, stageHint})
-    }
+    };
+
+    const onPressUnknownWord = useCallback((partIndex, wordId)=>{
+        props.navigation.navigate("ConnectingLettersPackageGame", {stageId, partIndex, wordId})
+    }, [stageId, props.navigation])
     
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
@@ -47,9 +53,10 @@ function WordToSlotPackageGame(props){
                         id={stageId}
                         type={"package-game"}
                         data={data}
-                        saveWordHelpUsed={(partIndex, wordId)=>saveWordHelpUsed(partIndex, wordId)}
-                        saveCompletedPartAndSentenceBuilded={(partIndex)=>saveCompletedPartAndSentenceBuilded(partIndex)}
+                        saveWordHelpUsed={saveWordHelpUsed}
+                        saveCompletedPartAndSentenceBuilded={saveCompletedPartAndSentenceBuilded}
                         endOfAStage={endOfAStage}
+                        onPressUnknownWord={onPressUnknownWord}
                     />
                 </SafeAreaView>
             </GalaxyTwinkle>

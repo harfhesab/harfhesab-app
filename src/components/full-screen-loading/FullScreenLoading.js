@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
 import { View, Dimensions, Text, StyleSheet, NativeModules} from 'react-native';
-import Modal from '../custom-modal/Modal';
+import Modal from 'react-native-modal';
 import Font from '../../utils/Font';
 import { DotIndicator } from 'react-native-indicators';
 

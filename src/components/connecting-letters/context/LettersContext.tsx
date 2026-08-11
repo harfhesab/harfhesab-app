@@ -43,6 +43,7 @@ interface Card {
 interface ContextProps {
   registerCard: (card: Card) => void;
   data: any;
+  timeLimitData?: any
   selectCard: (id: string) => void;
   connectedLetters: string[];
   submittedInfo: SubmittedInfo | null;
@@ -70,6 +71,7 @@ interface FoundWords {
 export const LettersProvider: React.FC<{
   children: React.ReactNode;
   data: any;
+  timeLimitData?: any;
   type: string;
   stageNumber: number | undefined;
   saveMainWordBuilded:()=>void;
@@ -80,6 +82,7 @@ export const LettersProvider: React.FC<{
 }> = ({
   children,
   data,
+  timeLimitData,
   type,
   stageNumber,
   saveMainWordBuilded,
@@ -425,6 +428,7 @@ export const LettersProvider: React.FC<{
       value={{
         registerCard,
         data,
+        timeLimitData,
         selectCard,
         connectedLetters,
         submittedInfo,

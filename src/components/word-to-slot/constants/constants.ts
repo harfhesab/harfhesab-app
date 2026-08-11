@@ -35,8 +35,8 @@ export const BOUNDARY_Y = 0;
 export const FONT_SIZE_FLOATING = CARD_SIZE_FLOATING/4; // فونت سایز در حالت شناور
 export const FONT_SIZE_DRAGGING = CARD_SIZE_DRAGGING/4; // فونت سایز در حالت درگ
 export const FONT_SIZE_SLOTTED = CARD_SIZE_SLOTTED/4; // فونت سایز در حالت اسلات
-export const MAX_VELOCITY = 140;
-export const MIN_VELOCITY = 60;
+export const MAX_VELOCITY = 90;
+export const MIN_VELOCITY = 35;
 export const CARD_BORDER_RADIUS = 15;
 
 // ضریب بازگشت برخورد (Restitution). عدد ۱ یعنی برخورد کاملاً الاستیک و بدون افت انرژی

@@ -49,7 +49,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                             },
                         ],
                         options : {
-                            type: 'completed-stage',
+                            lottie: 'success',
                             reward : coinsRewardStage,
                             cancelable: false,
                         },
@@ -81,7 +81,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                         }
                     ],
                     options : {
-                        type: 'completed-stage',
+                        lottie: 'success',
                         cancelable: false,
                     },
                 });
@@ -106,7 +106,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                         },
                     ],
                     options : {
-                        type: 'completed-stage',
+                        lottie: 'success',
                         cancelable: false,
                     },
                 });
@@ -153,7 +153,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                         }
                     ],
                     options : {
-                        type: 'completed-stage',
+                        lottie: 'success',
                         reward : coinsReward,
                         cancelable: false,
                     },
@@ -185,7 +185,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                 }
             ],
             options : {
-                type: 'completed-stage',
+                lottie: 'success',
                 cancelable: false,
             },
         });
@@ -211,7 +211,7 @@ const endOfASeasonInStageGame = ({seasonNumber, packageName})=>{
             }
         ],
         options : {
-            type: 'completed-season',
+            lottie: 'unlocked',
             reward : state.constants.coins_reward_from_season_completed_package_game,
             cancelable: false,
         },
@@ -366,7 +366,7 @@ const endedUserPackageGameAlert = (packageName, packageRef, coinsRewardPackage)=
             },
         ],
         options : {
-            type: 'completed-package',
+            lottie: 'success',
             reward : coinsRewardPackage,
             cancelable: true,
         },

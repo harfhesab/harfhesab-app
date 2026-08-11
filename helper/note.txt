@@ -13,3 +13,5 @@ npx react-native run-android --mode=BazaarDebug
 npx react-native run-android --mode=MyketDebug
 
 adb logcat | findstr /i "tapsell"
+
+npx react-native start --reset-cache

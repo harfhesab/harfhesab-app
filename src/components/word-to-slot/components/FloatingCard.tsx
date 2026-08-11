@@ -36,11 +36,12 @@ const SPRING_CONFIG_SOFT = { stiffness: 200, damping: 16, mass: 1.4, overshootCl
 const SPRING_CONFIG_SOFT_SLOT = { stiffness: 200, damping: 16, mass: 1.4, overshootClamping: false }; // برای چسبیدن به اسلات
 
 interface Props {
-  _id: string;
+  wordId: any;
   word: string;
   index: number;
   unknown_word : boolean | null | undefined;
   unknown_word_completed : boolean | null | undefined;
+  onClickUnknownWord: (id: any) => void;
 }
 
 interface Position {
@@ -48,8 +49,8 @@ interface Position {
   y: number;
 }
 
-function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }: Props) {
-  const { registerCard, assignCardToSlot, unassignCardFromSlot, numberOfCards, lockedPan, type, stageId, playingPartIndex } = useDragDrop();
+function FloatingCard({wordId, word, index, unknown_word, unknown_word_completed, onClickUnknownWord }: Props) {
+  const { registerCard, assignCardToSlot, unassignCardFromSlot, numberOfCards, lockedPan } = useDragDrop();
   const { getSlotPosition, getSlotOfCard } = useDragDropRegistry();
   const fontSizeScale = getFontScale(word);
   const FONT_SIZE_FLOATING_SCALED = FONT_SIZE_FLOATING * fontSizeScale;
@@ -220,15 +221,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     elevation: isDragging.value ? 12 : 5,
   }));
 
-  const handleNavigate = () => {
-    if(type == "stage-game"){
-      navigate('ConnectingLettersStageGame', {stageId:stageId, partIndex:playingPartIndex, wordId:_id});
-    } else if(type == "package-game") {
-      navigate('ConnectingLettersPackageGame', {stageId:stageId, partIndex:playingPartIndex, wordId:_id});
-    } else if(type == "kalam-akhar") {
-      navigate('useConnectingLetterStageGameMusic', {stageId:stageId, partIndex:playingPartIndex, wordId:_id});
-    }
-  };
+
 
   const touch = Gesture.Tap()
   .enabled(unknown_word == true && effectiveUnknownCompleted == false)
@@ -236,7 +229,7 @@ function FloatingCard({_id, word, index, unknown_word, unknown_word_completed }:
     'worklet';
     runOnJS(tabScreenSoundInOnClick)()
     runOnJS(vibrate)();
-    runOnJS(handleNavigate)()
+    runOnJS(onClickUnknownWord)(wordId);
   });
 
   return (

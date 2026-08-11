@@ -1,6 +1,6 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
-import { View, Dimensions, TouchableOpacity, Text, ScrollView, StyleSheet, NativeModules} from 'react-native';
-import Modal from '../custom-modal/Modal';
+import { View, Dimensions, TouchableOpacity, Text, StyleSheet, NativeModules, ScrollView} from 'react-native';
+import Modal from 'react-native-modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
 import ButtonBorder from '../buttons/ButtonBorder';

@@ -11,11 +11,12 @@ import Setting from '../../../icon/Setting';
 import Back from '../../../icon/Back';
 import { STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
 import HiddenWords from './HiddenWords';
+import TimerAndSandTimer from '../../../timer/TimerAndSandTimer';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
   const {coins_for_get_help_letter_connecting_stage_game, coins_for_get_help_letter_connecting_package_game} = useSelector((state: RootState) => state.constants);
-  const { type, applyForHelp } = useLetters();
+  const { type, applyForHelp, timeLimitData } = useLetters();
 
   return (
     <View style={{width:width, marginTop:STATUS_BAR_HEIGHT}}>
@@ -27,13 +28,26 @@ const TopHeader = () => {
               </View>
           </View>
           <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-          <NumberCoinsHelp
-              numberCoinsHelp={type == "stage-game"?coins_for_get_help_letter_connecting_stage_game:type == "package-game"&&coins_for_get_help_letter_connecting_package_game}
-              onPress={applyForHelp}
-          />
+            {
+              type !== "kalam-akhar"&&
+              <NumberCoinsHelp
+                  numberCoinsHelp={type == "stage-game"?coins_for_get_help_letter_connecting_stage_game:type == "package-game"&&coins_for_get_help_letter_connecting_package_game}
+                  onPress={applyForHelp}
+              />
+            }
           <Back/>
           </View>
       </View>
+      {
+        (type == "kalam-akhar" && timeLimitData?.time_limit)&&
+        <View style={{position:'absolute', width:"100%", alignItems:'flex-end', end:57, paddingTop:7.5}}>
+          <TimerAndSandTimer
+            totalSeconds={timeLimitData?.time_limit}
+            remainingSeconds={timeLimitData?.remaining_time_seconds}
+            remainingSyncedAt={timeLimitData?.remaining_synced_at}
+          />
+        </View>
+      }
       <View style={{alignItems:'center', justifyContent:'center', position:'absolute', bottom:-57, start:10}}>
           <HiddenWords/>
       </View>

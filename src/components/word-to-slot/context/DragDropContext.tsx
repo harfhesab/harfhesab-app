@@ -89,6 +89,7 @@ interface ContextProps {
   applyForHelp: () => void;
   sentenceHint?: string | null;
   timeLimitData?: any
+  onClickUnknownWord: (wordId:any) => void;
 }
 
 interface SlotsStateContextProps {
@@ -113,6 +114,7 @@ export const DragDropProvider: React.FC<{
   saveWordHelpUsed:(partIndex:number, wordId:any)=>void;
   saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;
   endOfAStage:()=>void;
+  onPressUnknownWord:(partIndex:number, wordId:any)=>void;
 }> = ({
   children,
   stageId,
@@ -121,6 +123,7 @@ export const DragDropProvider: React.FC<{
   saveWordHelpUsed,
   saveCompletedPartAndSentenceBuilded,
   endOfAStage,
+  onPressUnknownWord
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { wordToSlotGuide, unknownWordGuide } = useSelector((state: RootState) => state.setting);
@@ -175,6 +178,11 @@ export const DragDropProvider: React.FC<{
   const cardSlotMapRef = useRef<Record<string, number>>({});
 
   type Updater<T> = T | ((prev: T) => T);
+
+  const onClickUnknownWord = useCallback((wordId:any)=> {
+    const partIndex = playingPartIndex
+    onPressUnknownWord(partIndex, wordId)
+  }, [playingPartIndex, onPressUnknownWord])
 
   const setCardsSynced = useCallback((value: Updater<Record<string, Card>>) => {
     const next = typeof value === 'function'
@@ -255,6 +263,7 @@ export const DragDropProvider: React.FC<{
         endOfAStage()
       }, 1500)
     }
+    helpRequestedIndexesRef.current.clear()
   }, [currentPartIndex, playingPartIndex, parts, setSlotsSynced, setCardsSynced, setCardSlotMapSynced]);
 
   const changePlayingIndex = useCallback((index: number) => {
@@ -267,6 +276,7 @@ export const DragDropProvider: React.FC<{
     setTimeout(()=>{
       setLockedPan(false)
     }, 2000)
+    helpRequestedIndexesRef.current.clear()
   }, [setSlotsSynced, setCardsSynced, setCardSlotMapSynced]);
 
   // این دو تابع هم از JS thread (رویدادهای React) و هم از UI thread (worklet های
@@ -502,10 +512,6 @@ export const DragDropProvider: React.FC<{
 
     const card = currentCards[cardId];
     if (!card) return;
-
-    if (card.isAssigned.value === true && (currentCardSlotMap[cardId] ?? null) === slotIndex) {
-      return;
-    }
 
     const target = getSlotPosition(slotIndex);
     if (!target) return;
@@ -819,6 +825,7 @@ export const DragDropProvider: React.FC<{
     applyForHelp,
     sentenceHint,
     timeLimitData,
+    onClickUnknownWord
   }), [
     registerCard,
     assignCardToSlot,
@@ -839,6 +846,7 @@ export const DragDropProvider: React.FC<{
     applyForHelp,
     sentenceHint,
     timeLimitData,
+    onClickUnknownWord
   ]);
 
   const slotsStateValue = useMemo<SlotsStateContextProps>(() => ({

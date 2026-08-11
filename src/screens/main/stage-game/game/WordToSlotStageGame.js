@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
@@ -22,22 +22,29 @@ function WordToSlotStageGame(props){
     const data = useObject("Stage", objectId)
 
     const saveWordHelpUsed = (partIndex, wordId)=>{
-        saveWordHelpUsedInStageGame( realm, stageId, partIndex, wordId);
-    }
+        saveWordHelpUsedInStageGame(realm, stageId, partIndex, wordId);
+    };
+
     const saveCompletedPartAndSentenceBuilded = (partIndex)=>{
-        saveCompletedPartAndSentenceBuildedInStageGame( realm, stageId, partIndex);
-    }
+        saveCompletedPartAndSentenceBuildedInStageGame(realm, stageId, partIndex);
+    };
+
     const endOfAStage = ()=>{
-        const language_ref = data?.language_ref?.toHexString()
-        const currentStageId = lastStage
+        const language_ref = data?.language_ref?.toHexString();
+        const currentStageId = lastStage;
         const stageNumber = data.stage_number_in_language;
         const sentences = data.parts.map((part) => ({
             sentence: part.sentence_display ?? part.sentence,
             hint: part.sentence_hint,
         }));
-        const stageHint = data?.stage_hint
-        endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences, stageHint})
-    }
+        const stageHint = data?.stage_hint;
+        endOfAStageInStageGame({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences, stageHint});
+    };
+
+    const onPressUnknownWord = useCallback((partIndex, wordId)=>{
+        props.navigation.navigate("ConnectingLettersStageGame", {stageId, partIndex, wordId})
+    }, [stageId, props.navigation])
+
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
@@ -47,9 +54,10 @@ function WordToSlotStageGame(props){
                         id={stageId}
                         type={"stage-game"}
                         data={data}
-                        saveWordHelpUsed={(partIndex, wordId)=>saveWordHelpUsed(partIndex, wordId)}
-                        saveCompletedPartAndSentenceBuilded={(partIndex)=>saveCompletedPartAndSentenceBuilded(partIndex)}
+                        saveWordHelpUsed={saveWordHelpUsed}
+                        saveCompletedPartAndSentenceBuilded={saveCompletedPartAndSentenceBuilded}
                         endOfAStage={endOfAStage}
+                        onPressUnknownWord={onPressUnknownWord}
                     />
                 </SafeAreaView>
             </GalaxyTwinkle>
