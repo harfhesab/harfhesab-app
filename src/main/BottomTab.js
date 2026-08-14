@@ -1,7 +1,6 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StyleSheet, Text, View } from 'react-native';
-import MyTransCall from '../hooks/translations/MyTrans';
 import Font from '../utils/Font';
 import Icon from '../utils/Icon';
 import PackageGame from '../screens/main/package-game/PackageGame';
@@ -104,7 +103,7 @@ const BottomTab = (props) => {
 const styles = StyleSheet.create({
   lable: {
     fontSize:10,
-    fontFamily:Font.medium,
+    fontFamily:Font.bakh_bold,
   },
 });
 export default BottomTab;

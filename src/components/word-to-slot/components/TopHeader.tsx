@@ -19,7 +19,19 @@ import TimerAndSandTimer from '../../timer/TimerAndSandTimer';
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
   const {coins_for_get_help_word_to_slot_stage_game, coins_for_get_help_word_to_slot_package_game} = useSelector((state: RootState) => state.constants);
-  const { changePlayingIndex, currentPartIndex, playingPartIndex, numberParts, type, applyForHelp, sentenceHint, numberOfCards, existUnknownWord, timeLimitData } = useDragDrop();
+  const {
+    changePlayingIndex,
+    currentPartIndex,
+    playingPartIndex,
+    numberParts,
+    type,
+    applyForHelp,
+    sentenceHint,
+    numberOfCards,
+    existUnknownWord,
+    timeLimitData,
+    gameTimeIsOver
+  } = useDragDrop();
 
   const onChangePlayingIndex = (index:number)=>{
     if(index == playingPartIndex) return
@@ -88,6 +100,7 @@ const TopHeader = () => {
                 totalSeconds={timeLimitData?.time_limit}
                 remainingSeconds={timeLimitData?.remaining_time_seconds}
                 remainingSyncedAt={timeLimitData?.remaining_synced_at}
+                onFinish={gameTimeIsOver}
               />
             }
           </View>

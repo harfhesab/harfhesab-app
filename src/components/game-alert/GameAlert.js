@@ -21,10 +21,9 @@ const ASSETS = {
     btnGreen: require("../../assets/image/paper_frame_btn_green.png"),
     longBtnGreen: require("../../assets/image/paper_frame_long_btn_green.png"),
     lottieSuccess: require('../../assets/lottie/successful.json'),
-    lottieUnlocked: require('../../assets/lottie/unlocked.json')
+    lottieUnlocked: require('../../assets/lottie/unlocked.json'),
+    lottieSandClock: require('../../assets/lottie/sand-clock.json'),
 };
-
-
 
 const GameAlert = React.forwardRef((props, ref) => {
     const colors = useAppTheme();
@@ -40,27 +39,26 @@ const GameAlert = React.forwardRef((props, ref) => {
     });
 
     const open = useCallback((dialog) => {
+        // دیتا و visible در همان تیک (synchronous) ست می‌شوند تا React آن‌ها را
+        // در یک رندر واحد batch کند و مودال از همان فریم اول با اندازه‌ی نهایی باز شود.
+        setData({
+            title: dialog?.title || null,
+            admiration: dialog?.admiration || null,
+            description: dialog?.description || null,
+            moreDescription: dialog?.moreDescription || null,
+            completedSentences: dialog?.completedSentences || null,
+            stageHint: dialog?.stageHint || null,
+            cancelable: dialog?.options?.cancelable || false,
+            buttons: dialog?.buttons || null,
+            reward: dialog?.options?.reward || null,
+            subscription: dialog?.options?.subscription || null,
+            lottie: dialog?.options?.lottie || null
+        });
         setVisible(true);
-        // تاخیر 200 میلی‌ثانیه برای جلوگیری از فریز شدن ترد UI در زمان باز شدن مودال
-        setTimeout(() => {
-            setData({
-                title: dialog?.title || null,
-                admiration: dialog?.admiration || null,
-                description: dialog?.description || null,
-                moreDescription: dialog?.moreDescription || null,
-                completedSentences: dialog?.completedSentences || null,
-                stageHint: dialog?.stageHint || null,
-                cancelable: dialog?.options?.cancelable || false,
-                buttons: dialog?.buttons || null,
-                reward: dialog?.options?.reward || null,
-                subscription: dialog?.options?.subscription || null,
-                lottie: dialog?.options?.lottie || null
-            });
 
-            if (dialog?.options?.reward > 0 && dialog.options?.isRewardDisabled !== true) {
-                dispatch(increaseNumberCoins({ number: dialog.options.reward }));
-            }
-        }, 200);
+        if (dialog?.options?.reward > 0 && dialog.options?.isRewardDisabled !== true) {
+            dispatch(increaseNumberCoins({ number: dialog.options.reward }));
+        }
     }, [dispatch]);
 
     const close = useCallback(() => {
@@ -105,11 +103,14 @@ const GameAlert = React.forwardRef((props, ref) => {
     let lottieSource = null;
     if (data.lottie === 'success') lottieSource = ASSETS.lottieSuccess;
     else if (data.lottie === 'unlocked') lottieSource = ASSETS.lottieUnlocked;
+    else if (data.lottie === 'sand-clock') lottieSource = ASSETS.lottieSandClock;
 
     const cardMaxHeight = height * 0.85;
     const cardMinHeight = height * 0.4;
-    const scrollMaxHeight = hasSentencesList ? height * 0.3 : height * 0.2; // کمی بیشتر شد
-    const scrollMinHeight = height * 0.15;
+
+    // ارتفاع بدنه (چه اسکرول‌ویو محتوا و چه باکس پیام لودینگ) یک مقدار ثابت است
+    // تا سوییچ بین این دو حالت هیچ تاثیری روی ارتفاع کلی مودال نگذارد.
+    const bodyHeight = hasSentencesList ? height * 0.3 : height * 0.2;
 
     return (
         <Modal
@@ -135,7 +136,7 @@ const GameAlert = React.forwardRef((props, ref) => {
                     imageStyle={styles.stretch}
                     resizeMode="stretch"
                 >
-                    <View style={[styles.card, { paddingTop: 20 }]}>
+                    <View style={[styles.card, { paddingTop:(!!lottieSource || hasRewards)?20:80 }]}>
 
                         {/* بخش بالا: لاتی + جوایز */}
                         <View style={styles.topSection}>
@@ -168,13 +169,12 @@ const GameAlert = React.forwardRef((props, ref) => {
                             )}
                         </View>
 
-                        {/* بخش میانی: محتوا یا پیام لودینگ */}
+                        {/* بخش میانی: محتوا یا پیام لودینگ — هر دو ارتفاع ثابت و یکسان (bodyHeight) دارند */}
                         {!loadingMessage ? (
                             <View style={[
                                 styles.scrollWrapper,
                                 {
-                                    maxHeight: scrollMaxHeight,
-                                    minHeight: scrollMinHeight,
+                                    height: bodyHeight,
                                     width: "90%",
                                     backgroundColor: `${colors.primary.a7}40`
                                 }
@@ -221,8 +221,8 @@ const GameAlert = React.forwardRef((props, ref) => {
                                 </ScrollView>
                             </View>
                         ) : (
-                            <View style={styles.loadingBox}>
-                                <Text style={{ fontFamily: Font.bakh_bold, fontSize: 14, textAlign: 'center' }}>{loadingMessage}</Text>
+                            <View style={[styles.loadingBox, { height: bodyHeight, width: "90%" }]}>
+                                <Text style={{ fontFamily: Font.bakh_bold, fontSize: 14, textAlign: 'center', lineHeight:22 }}>{loadingMessage}</Text>
                             </View>
                         )}
 
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexWrap: 'wrap',
         gap: 12,
-        paddingBottom:15
+        paddingBottom: 15
     },
     rewardBadge: {
         flexDirection: 'row',
@@ -356,8 +356,6 @@ const styles = StyleSheet.create({
     },
     scrollView: { flexGrow: 0, width: '100%' },
     loadingBox: {
-        width: '100%',
-        minHeight: 80,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 16,
@@ -386,7 +384,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 10,
+        gap: 7,
     },
     actionBtnBg: { height: 55, alignItems: 'center', justifyContent: 'center', paddingBottom: 5 },
     headerContainer: { alignSelf: 'center', position: 'absolute', top: -30, zIndex: 10 },

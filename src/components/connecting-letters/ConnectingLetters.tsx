@@ -23,6 +23,7 @@ interface Props {
   saveNewHiddenWordsBuilded:(word:string)=>void;
   completedOperation:()=>void;
   saveUserHelpRequests:(newLettersHelpUsed:number[])=>void;
+  gameTimeIsOver?:()=>void;
 }
 const ConnectingLetters = ({
   type,
@@ -33,7 +34,8 @@ const ConnectingLetters = ({
   saveNewAdditionalWordsBuilded,
   saveNewHiddenWordsBuilded,
   completedOperation,
-  saveUserHelpRequests
+  saveUserHelpRequests,
+  gameTimeIsOver
 }: Props) => {
   
   return (
@@ -48,6 +50,7 @@ const ConnectingLetters = ({
         saveNewHiddenWordsBuilded={saveNewHiddenWordsBuilded}
         completedOperation={completedOperation}
         saveUserHelpRequests={saveUserHelpRequests}
+        gameTimeIsOver={gameTimeIsOver}
       >
         <SafeAreaView style={styles.container}>
           <WordDisplay />

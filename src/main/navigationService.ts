@@ -1,4 +1,4 @@
-import { createNavigationContainerRef } from '@react-navigation/native';
+import { createNavigationContainerRef, StackActions } from '@react-navigation/native';
 
 export const navigationRef = createNavigationContainerRef<any>();
 
@@ -19,4 +19,20 @@ export function getCurrentRouteName() {
     return navigationRef.getCurrentRoute()?.name;
   }
   return null;
+}
+
+export function pop(count: number = 1) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch({
+      ...StackActions.pop(count),
+    });
+  }
+}
+
+export function popTo(name: string, params?: object) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(
+      StackActions.popTo(name, params)
+    );
+  }
 }

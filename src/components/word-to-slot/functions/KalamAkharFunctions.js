@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Dimensions, InteractionManager, NativeModules, StatusBar, View } from 'react-native';
-import { goBack, navigate } from "../../../main/navigationService";
+import { popTo } from "../../../main/navigationService";
 import GameAlertHelper from "../../game-alert/GameAlertHelper";
-import { successfulCompletionOfStageSound } from "../../../utils/sound/SoundFunctions";
+import { kalamAkharChallengeTimeIsOverSound, successfulCompletionOfStageSound } from "../../../utils/sound/SoundFunctions";
 import { store } from "../../../redux/store/Store";
 import AlertBottomDrawerHelper from "../../alert-bottom-drawer/AlertBottomDrawerHelper";
 import LocalImageComponent from "../../image-components/LocalImageComponent";
@@ -25,7 +25,7 @@ export const endOfAChallengeInKalamAkhar = async({dispatch, title, session, chal
                 onPress: () => {
                     GameAlertHelper.changeLoading({
                         loadingValue:true,
-                        loadingMessage:"در حال دریافت و اعمال جایزه..."
+                        loadingMessage:"در حال ثبت چالش و دریافت جایزه..."
                     })
                     completedSessionOfKalamAkharChallenge(dispatch, session, challengeId)
                 },
@@ -78,7 +78,7 @@ const completedSessionOfKalamAkharChallenge = async(dispatch, session, challenge
         if(dataReceived.status == 200){
             GameAlertHelper.changeLoading({
                 loadingValue:false,
-                loadingMessage:(dataReceived?.number_coins > 0 || dataReceived?.subscription_days > 0)?"جایزهٔ چالش با موفقیت دریافت شد.":"چالش با موفقیت به اتمام رسید."
+                loadingMessage:`چالش با موفقیت به پایان رسید.${dataReceived?.number_coins > 0?`\n${dataReceived.number_coins} عدد سکه دریافت شد.`:""}${dataReceived?.subscription_days > 0?`\n${dataReceived.subscription_days} روز اشتراک روی حساب کاربری فعال شد.`:""}`
             })
             if(dataReceived?.number_coins > 0){
                 dispatch(increaseNumberCoins({ number: dataReceived.number_coins }));
@@ -93,8 +93,7 @@ const completedSessionOfKalamAkharChallenge = async(dispatch, session, challenge
                     {
                         text: 'ادامه',
                         onPress: () => {
-                            goBack()
-                            goBack()
+                            popTo("KalamAkhar")
                         },
                         type:'bold'
                     },
@@ -112,5 +111,32 @@ const completedSessionOfKalamAkharChallenge = async(dispatch, session, challenge
             loadingMessage:"مشکلی در دریافت جایزه پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید."
         })
     })
+}
+export const kalamAkharChallengeTimeIsOverInWordToSlot = ()=>{
+    const state = store.getState()
+    kalamAkharChallengeTimeIsOverSound()
+    GameAlertHelper.showAlertGame({
+        title:`پایان زمان بازی`,
+        description: "متأسفانه زمان مجاز شما برای تکمیل چالش به پایان رسید.",
+        buttons: [
+            {
+                text: 'ادامه',
+                onPress: () => {
+                    popTo("KalamAkhar")
+                },
+                type:'bold'
+            },
+            {
+                type:'ads',
+                reward: state.constants.free_coin_view_ads,
+                adsPosition: "kalam_akhar_challenge"
+            }
+        ],
+        options : {
+            lottie: 'sand-clock',
+            cancelable: false,
+            isRewardDisabled: true
+        },
+    });
 }
 

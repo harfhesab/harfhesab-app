@@ -21,7 +21,8 @@ const WordToSlot = ({
   saveWordHelpUsed,
   saveCompletedPartAndSentenceBuilded,
   endOfAStage,
-  onPressUnknownWord
+  onPressUnknownWord,
+  gameTimeIsOver
 }:{
   id:string;
   type:string; // "stage-game" | "package-game" | "kalam-akhar"
@@ -30,6 +31,7 @@ const WordToSlot = ({
   saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;
   endOfAStage:()=>void;
   onPressUnknownWord:(partIndex:number, wordId:any)=>void;
+  gameTimeIsOver?:()=>void;
 }) => {
 
   return (
@@ -42,6 +44,7 @@ const WordToSlot = ({
         saveCompletedPartAndSentenceBuilded={saveCompletedPartAndSentenceBuilded}
         endOfAStage={endOfAStage}
         onPressUnknownWord={onPressUnknownWord}
+        gameTimeIsOver={gameTimeIsOver}
       >
         <SafeAreaView style={styles.container}>
           <SentenceDisplay />

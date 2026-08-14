@@ -8,7 +8,7 @@ import { useWordToSlotStageGameMusic } from '../../../../utils/sound/MusicFuncti
 import { useObject, useRealm } from '../../../../realm';
 import { BSON } from 'realm';
 import { saveCompletedPartAndSentenceBuildedInKalamAkhar } from '../../../../realm/repositories/user/user-kalam-akhar-progress.repository';
-import { endOfAChallengeInKalamAkhar } from '../../../../components/word-to-slot/functions/KalamAkharFunctions';
+import { endOfAChallengeInKalamAkhar, kalamAkharChallengeTimeIsOverInWordToSlot } from '../../../../components/word-to-slot/functions/KalamAkharFunctions';
 
 function WordToSlotKalamAkhar(props){
     useWordToSlotStageGameMusic()
@@ -42,6 +42,10 @@ function WordToSlotKalamAkhar(props){
         props.navigation.navigate("ConnectingLettersKalamAkhar", {challengeId, partIndex, wordId})
     }, [challengeId, props.navigation])
 
+    const gameTimeIsOver = useCallback(()=>{
+        kalamAkharChallengeTimeIsOverInWordToSlot()
+    }, [])
+
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
             <GalaxyTwinkle >
@@ -54,6 +58,7 @@ function WordToSlotKalamAkhar(props){
                         saveCompletedPartAndSentenceBuilded={saveCompletedPartAndSentenceBuilded}
                         endOfAStage={endOfAStage}
                         onPressUnknownWord={onPressUnknownWord}
+                        gameTimeIsOver={gameTimeIsOver}
                     />
                 </SafeAreaView>
             </GalaxyTwinkle>

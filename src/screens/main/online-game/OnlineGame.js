@@ -77,7 +77,6 @@ function OnlineGame(props){
             badge={item?.badge}
             active={item?.is_active}
             onPress={()=>{
-                console.log(item)
                 if(item?.route && item.is_active == true){
                     props.navigation.navigate(item?.route)
                 }

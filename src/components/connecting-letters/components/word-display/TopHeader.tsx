@@ -16,7 +16,7 @@ import TimerAndSandTimer from '../../../timer/TimerAndSandTimer';
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
   const {coins_for_get_help_letter_connecting_stage_game, coins_for_get_help_letter_connecting_package_game} = useSelector((state: RootState) => state.constants);
-  const { type, applyForHelp, timeLimitData } = useLetters();
+  const { type, applyForHelp, timeLimitData, gameTimeIsOver } = useLetters();
 
   return (
     <View style={{width:width, marginTop:STATUS_BAR_HEIGHT}}>
@@ -45,6 +45,7 @@ const TopHeader = () => {
             totalSeconds={timeLimitData?.time_limit}
             remainingSeconds={timeLimitData?.remaining_time_seconds}
             remainingSyncedAt={timeLimitData?.remaining_synced_at}
+            onFinish={gameTimeIsOver}
           />
         </View>
       }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Platform, StyleSheet, View, Dimensions, FlatList, Text, StatusBar, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -8,13 +8,14 @@ import GeneralHeader from '../../../../components/header/GeneralHeader';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import FooterLoading from '../../../../components/screen-loading/FooterLoading';
 import Font from '../../../../utils/Font';
-import KalamAkharChallenge from '../../../../components/card/online-game/KalamAkharChallenge';
+import KalamAkharChallengeStarted from '../../../../components/card/online-game/KalamAkharChallengeStarted';
 import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
 import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 import { WaveIndicator } from 'react-native-indicators';
-import { removeExpiredKalamAkharChallenges } from '../../../../realm/repositories/kalam-akhar/kalam-akhar-challenge.repository';
-import { useRealm } from '../../../../realm';
+import { getAllKalamAkharChallengesPlaying, removeExpiredKalamAkharChallenges } from '../../../../realm/repositories/kalam-akhar/kalam-akhar-challenge.repository';
+import { useQuery, useRealm } from '../../../../realm';
+import { KalamAkharChallenge } from '../../../../realm/schemas/kalam-akhar/KalamAkharChallengeSchema';
 
 const { width } = Dimensions.get('screen');
 
@@ -25,6 +26,10 @@ const ROW_GAP = 20;
 const ROW_HEIGHT = ITEM_HEIGHT + ROW_GAP;
 const TOP_PADDING = STATUS_BAR_HEIGHT + 70;
 
+function useChallengesStarted() {
+  const all = useQuery(KalamAkharChallenge);
+  return all;
+}
 const getItemLayout = (_, index) => {
     const rowIndex = Math.floor(index / NUM_COLUMNS);
 
@@ -35,41 +40,30 @@ const getItemLayout = (_, index) => {
     };
 };
 
-const GET_ITEMS_QUERY = `
-  query paginateKalamAkharChallenges($page : Int){
-    paginateKalamAkharChallenges(page : $page) {
-      list {
-        _id,
-        title,
-        entry_fee_coins,
-        subscription_required,
-        reward_coins,
-        reward_subscription,
-        is_active
-      },
-      hasNextPage,
-      nextPage
-    }
-  }
-`;
-
-function KalamAkhar(props) {
+function KalamAkharPlaying(props) {
     useImmersiveMode()
     const realm = useRealm()
     const colors = useAppTheme();
-    const [data, setData] = useState([]);
-    const [page, setPage] = useState(1);
+    const data = useChallengesStarted();
     const [loading, setLoading] = useState(true);
-    const [getError, setGetError] = useState(false);
     const [noItem, setNoItem] = useState(false);
-    const [footerLoading, setFooterLoading] = useState(false);
-    const [footerTry, setFooterTry] = useState(false);
-    const isFetching = useRef(false);
 
-    useEffect(() => {
-        fetchData(1, true);
+    useEffect(()=>{
         removeExpired()
-    }, []);
+    }, [])
+
+    useEffect(()=>{
+        handleLoading()
+    }, [data])
+
+    const handleLoading = ()=>{
+        setLoading(false)
+        if(data.length > 0){
+            setNoItem(false)
+        } else {
+            setNoItem(true)
+        }
+    }
 
     const removeExpired = ()=>{
         InteractionManager.runAfterInteractions(()=>{
@@ -77,109 +71,41 @@ function KalamAkhar(props) {
         })
     }
 
-    const fetchData = async (targetPage, isFirstLoad = false) => {
-        if (isFetching.current) return;
-        
-        isFetching.current = true;
-        if (isFirstLoad) {
-            setLoading(true);
-            setGetError(false);
-            setNoItem(false);
+    const getData = async () => {
+        const data = getAllKalamAkharChallengesPlaying(realm)
+        if(data?.length > 0){
+            setData(data)
+            setLoading(false)
+            setNoItem(false)
         } else {
-            setFooterTry(false);
-        }
-
-        try {
-            const response = await axios.post('/', {
-                query: GET_ITEMS_QUERY,
-                variables: { page: targetPage }
-            });
-
-            if (response.data?.errors) throw new Error("GraphQL Error");
-            
-            const receivedData = response.data?.data?.paginateKalamAkharChallenges;
-            if (!receivedData || !Array.isArray(receivedData.list)) throw new Error("Invalid data");
-            if (isFirstLoad) {
-                if (receivedData.list.length === 0) {
-                    setNoItem(true);
-                    setData([]);
-                } else {
-                    setData(receivedData.list);
-                }
-            } else {
-                setData(prevData => [...prevData, ...receivedData.list]);
-            }
-
-            if (receivedData.hasNextPage) {
-                setPage(receivedData.nextPage);
-                setFooterLoading(true);
-            } else {
-                setFooterLoading(false);
-            }
-            
-            setGetError(false);
-            
-        } catch (error) {
-            if (isFirstLoad) {
-                setGetError(true);
-                setData([]);
-            } else {
-                setFooterTry(true);
-                setFooterLoading(false);
-            }
-        } finally {
-            setLoading(false);
-            isFetching.current = false;
+            setLoading(false)
+            setNoItem(true)
         }
     };
 
     const tryAgain = useCallback(() => {
-        fetchData(1, true);
+        getData();
     }, []);
 
-    const footerTryAgain = useCallback(() => {
-        fetchData(page, false);
-        setFooterLoading(true)
-    }, [page]);
-
-    const fetchMoreData = useCallback(() => {
-        if (footerLoading === true && loading === false && !isFetching.current) {
-            fetchData(page, false);
-        }
-    }, [footerLoading, loading, page]);
-
     const renderItem = useCallback(({ item }) => (
-        <KalamAkharChallenge
+        <KalamAkharChallengeStarted
             _id={item?._id}
             title={item?.title}
             entry_fee_coins={item?.entry_fee_coins}
             subscription_required={item?.subscription_required}
             reward_coins={item?.reward_coins}
             reward_subscription={item?.reward_subscription}
-            is_active={item?.is_active}
+            expiration={item?.expiration}
         />
     ), []);
 
     const keyExtractor = useCallback((item, index) => index.toString(), []);
 
-    const ListFooterComponent = useCallback(() => {
-        if (loading === false && data.length > 0) {
-            return (
-                <FooterLoading
-                    loading={footerLoading}
-                    tryAgain={footerTry}
-                    tryOperation={footerTryAgain}
-                />
-            );
-        }
-        return null;
-    }, [loading, data.length, footerLoading, footerTry, footerTryAgain]);
-
     const ListEmptyComponent = useCallback(() => (
         <View style={styles.centerFlex}>
             <ScreenLoading
                 loading={loading}
-                getError={getError}
+                getError={false}
                 noItem={noItem}
                 tryAgain={tryAgain}
                 LoadingComponent={()=>{
@@ -194,7 +120,7 @@ function KalamAkhar(props) {
                 }}
             />
         </View>
-    ), [loading, getError, noItem, tryAgain]);
+    ), [loading, noItem, tryAgain]);
 
     return (
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
@@ -214,9 +140,7 @@ function KalamAkhar(props) {
                             data={data}
                             keyExtractor={keyExtractor}
                             renderItem={renderItem}
-                            ListFooterComponent={ListFooterComponent}
                             ListEmptyComponent={ListEmptyComponent}
-                            onEndReached={fetchMoreData}
                             onEndReachedThreshold={0.5}
                             initialNumToRender={10} 
                             maxToRenderPerBatch={10}
@@ -255,4 +179,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default KalamAkhar;
+export default KalamAkharPlaying;

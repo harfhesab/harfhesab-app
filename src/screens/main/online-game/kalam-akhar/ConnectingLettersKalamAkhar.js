@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import ConnectingLetters from '../../../../components/connecting-letters/ConnectingLetters';
@@ -12,7 +12,7 @@ import {
     saveNewHiddenWordsBuildedInKalamAkharChallenge,
     saveUnknownWordCompletedInKalamAkharChallenge
 } from '../../../../realm/repositories/user/user-kalam-akhar-progress.repository';
-import { unknownWordCompletedInKalamAkharChallenge } from '../../../../components/connecting-letters/functions/KalamAkharFunctions';
+import { kalamAkharChallengeTimeIsOverInConnectingLetters, unknownWordCompletedInKalamAkharChallenge } from '../../../../components/connecting-letters/functions/KalamAkharFunctions';
 
 function ConnectingLettersKalamAkhar(props){
     useConnectingLetterStageGameMusic()
@@ -54,6 +54,9 @@ function ConnectingLettersKalamAkhar(props){
     const saveUserHelpRequests = (newLettersHelpUsed)=>{
         null
     }
+    const gameTimeIsOver = useCallback(()=>{
+        kalamAkharChallengeTimeIsOverInConnectingLetters()
+    }, [])
     
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
@@ -69,6 +72,7 @@ function ConnectingLettersKalamAkhar(props){
                         saveNewHiddenWordsBuilded={saveNewHiddenWordsBuilded}
                         completedOperation={completedOperation}
                         saveUserHelpRequests={saveUserHelpRequests}
+                        gameTimeIsOver={gameTimeIsOver}
                     />
                 </View>
             </NightSky>

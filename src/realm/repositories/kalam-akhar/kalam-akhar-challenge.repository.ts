@@ -197,3 +197,15 @@ export const deleteKalamAkharChallengeById = (realm: Realm, id: BSON.ObjectId | 
 };
 
 
+export const getAllKalamAkharChallengesPlaying = (
+  realm: Realm,
+): KalamAkharChallenge[] => {
+  try {
+    const challenges = realm.objects<KalamAkharChallenge>(KalamAkharChallenge.schema.name);
+    return Array.from(challenges);
+  } catch (error) {
+    console.error("Error fetching KalamAkharChallenges:", error);
+    return [];
+  }
+};
+

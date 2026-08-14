@@ -90,6 +90,7 @@ interface ContextProps {
   sentenceHint?: string | null;
   timeLimitData?: any
   onClickUnknownWord: (wordId:any) => void;
+  gameTimeIsOver?: () => void;
 }
 
 interface SlotsStateContextProps {
@@ -115,6 +116,7 @@ export const DragDropProvider: React.FC<{
   saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;
   endOfAStage:()=>void;
   onPressUnknownWord:(partIndex:number, wordId:any)=>void;
+  gameTimeIsOver?:()=>void;
 }> = ({
   children,
   stageId,
@@ -123,7 +125,8 @@ export const DragDropProvider: React.FC<{
   saveWordHelpUsed,
   saveCompletedPartAndSentenceBuilded,
   endOfAStage,
-  onPressUnknownWord
+  onPressUnknownWord,
+  gameTimeIsOver
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { wordToSlotGuide, unknownWordGuide } = useSelector((state: RootState) => state.setting);
@@ -825,7 +828,8 @@ export const DragDropProvider: React.FC<{
     applyForHelp,
     sentenceHint,
     timeLimitData,
-    onClickUnknownWord
+    onClickUnknownWord,
+    gameTimeIsOver
   }), [
     registerCard,
     assignCardToSlot,
@@ -846,7 +850,8 @@ export const DragDropProvider: React.FC<{
     applyForHelp,
     sentenceHint,
     timeLimitData,
-    onClickUnknownWord
+    onClickUnknownWord,
+    gameTimeIsOver
   ]);
 
   const slotsStateValue = useMemo<SlotsStateContextProps>(() => ({

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import Icon from "../../utils/Icon";
 import Font from "../../utils/Font";
@@ -10,6 +10,7 @@ import SubscriptionInfoBtn from "../buttons/SubscriptionInfoBtn";
 import SubscriptionBtn from "../buttons/SubscriptionBtn";
 import MyPackageBtn from "../buttons/MyPackageBtn";
 import NotificationBtn from "../buttons/NotificationBtn";
+import Home from "../icon/Home";
 
 const {width} = Dimensions.get('window');
 const colors = useAppTheme();
@@ -21,6 +22,7 @@ function GeneralHeader({
     RightComponent,
     LeftComponent,
     back,
+    home,
     notification,
     myPackage,
     coin,
@@ -46,6 +48,12 @@ function GeneralHeader({
                     <RightComponent/>
                     :back&&
                     <Back/>
+                }
+                {
+                    home?.length > 0&&
+                    <Home
+                        route={home}
+                    />
                 }
                 {
                     notification&&
@@ -92,4 +100,4 @@ function GeneralHeader({
     )
 }
 
-export default GeneralHeader;
+export default memo(GeneralHeader);

@@ -58,6 +58,7 @@ interface ContextProps {
   handleMainWordFound: () => void;
   handleNewAdditionalWordFound: (word: string) => void;
   handleNewHiddenWordFound: (word: string) => void;
+  gameTimeIsOver?: () => void;
 }
 
 const LettersContext = createContext<ContextProps>({} as ContextProps);
@@ -79,6 +80,7 @@ export const LettersProvider: React.FC<{
   saveNewHiddenWordsBuilded:(word: string)=>void;
   completedOperation:()=>void;
   saveUserHelpRequests:(newLettersHelpUsed: number[])=>void;
+  gameTimeIsOver?:()=>void;
 }> = ({
   children,
   data,
@@ -90,6 +92,7 @@ export const LettersProvider: React.FC<{
   saveNewHiddenWordsBuilded,
   completedOperation,
   saveUserHelpRequests,
+  gameTimeIsOver
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { connectingLetterGuide } = useSelector((state: RootState) => state.setting);
@@ -443,6 +446,7 @@ export const LettersProvider: React.FC<{
         handleMainWordFound,
         handleNewAdditionalWordFound,
         handleNewHiddenWordFound,
+        gameTimeIsOver
       }}
     >
       {children}

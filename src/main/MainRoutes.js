@@ -24,7 +24,7 @@ import ViewAllPackageRating from '../screens/main/package-game/ViewAllPackageRat
 import Notification from '../screens/main/account/Notification';
 import MessageInApp from '../screens/main/account/MessageInApp';
 import StageGameUpdateScreen from '../screens/main/account/StageGameUpdateScreen';
-import KalamAkhar from '../screens/main/online-game/kalam-akhar/KalamAkhar';
+import KalamAkharBottomTab from '../screens/main/online-game/kalam-akhar/KalamAkharBottomTab';
 import KalamAkharInformation from '../screens/main/online-game/kalam-akhar/KalamAkharInformation';
 import WordToSlotKalamAkhar from '../screens/main/online-game/kalam-akhar/WordToSlotKalamAkhar';
 import ConnectingLettersKalamAkhar from '../screens/main/online-game/kalam-akhar/ConnectingLettersKalamAkhar';
@@ -85,7 +85,7 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"Notification"} component={Notification} />
       <Stack.Screen name={"MessageInApp"} component={MessageInApp} />
       <Stack.Screen name={"StageGameUpdateScreen"} component={StageGameUpdateScreen} />
-      <Stack.Screen name={"KalamAkhar"} component={KalamAkhar} />
+      <Stack.Screen name={"KalamAkharBottomTab"} component={KalamAkharBottomTab} />
       <Stack.Screen name={"KalamAkharInformation"} component={KalamAkharInformation} />
       <Stack.Screen name={"WordToSlotKalamAkhar"} component={WordToSlotKalamAkhar} />
       <Stack.Screen name={"ConnectingLettersKalamAkhar"} component={ConnectingLettersKalamAkhar} />

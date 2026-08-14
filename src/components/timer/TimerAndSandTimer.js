@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import SandTimer from './sand-timer/SandTimer';
 import TimerUIThread from './TimerUIThread';
 import { colors } from '../../hooks/theme/colors';
 import Font from '../../utils/Font';
+import { stopSandTimerLoopSound, useSandTimerLoopSound } from '../../utils/sound/LoopSuonndFunctions';
 
 const FRAME_IMAGE = require("../../assets/image/frame_badge.png");
 const NO_OP = () => {};
@@ -33,6 +34,7 @@ const TimerAndSandTimer = ({
   remainingSyncedAt,
   onFinish = NO_OP
 }) => {
+  useSandTimerLoopSound()
   // تبدیل Date به timestamp عددی جهت جلوگیری از ساخت آبجکت مجدد
   const syncedAtTimestamp = typeof remainingSyncedAt === 'object' && remainingSyncedAt?.getTime 
     ? remainingSyncedAt.getTime() 
@@ -42,6 +44,11 @@ const TimerAndSandTimer = ({
     () => calculateTimeRemaining(remainingSeconds, syncedAtTimestamp),
     [remainingSeconds, syncedAtTimestamp]
   );
+
+  const onFinishOperation = useCallback(()=>{
+    stopSandTimerLoopSound()
+    onFinish()
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -59,13 +66,13 @@ const TimerAndSandTimer = ({
                 hours={timer.hours}
                 days={timer.days}
                 separator=":"
+                onFinish={onFinishOperation}
             />
           </ImageBackground>
         </View>
         <SandTimer
           totalSeconds={totalSeconds}
           remainingSeconds={timer.remainingSeconds}
-          onFinish={onFinish}
           width={60}
           height={90}
         />

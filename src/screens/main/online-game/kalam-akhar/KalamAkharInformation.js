@@ -220,7 +220,7 @@ function KalamAkharInformation(props){
         }).then((response)=>{
             const receivedData = response.data.data?.startNewSessionForKalamAkharChallenge
             if(receivedData?.status == 200){
-                const expiration = data?.time_limit?data.time_limit*2:7200
+                const expiration = 43200;
                 const remainingTimeSeconds = receivedData?.remaining_time_seconds?receivedData.remaining_time_seconds:data?.time_limit?data.time_limit:null
                 const documentData = {
                     ...data,
