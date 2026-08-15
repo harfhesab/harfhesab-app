@@ -37,7 +37,7 @@ import SandTimer from './sand-timer/SandTimer';
 | `totalSeconds` | — (required) | Full duration the hourglass represents. |
 | `remainingSeconds` | `totalSeconds` | How much time is left right now — set this to start mid-way through. |
 | `width` / `height` | `160` / `240` | Canvas size. |
-| `paused` | `false` | Freezes the sand level AND the falling grains. |
+| `paused` | `useSharedValue(false)` | Freezes the sand level AND the falling grains. |
 | `grainCount` | `14` | Number of animated falling grains. |
 | `sandColors` | `['#f3d493','#dba84e','#a97a30']` | `[light, mid, dark]` gradient stops. |
 | `frameColor` / `frameColorDark` | brown tones | Wood cap colors. |

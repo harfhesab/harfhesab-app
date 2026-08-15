@@ -30,7 +30,8 @@ const TopHeader = () => {
     numberOfCards,
     existUnknownWord,
     timeLimitData,
-    gameTimeIsOver
+    gameTimeIsOver,
+    completed
   } = useDragDrop();
 
   const onChangePlayingIndex = (index:number)=>{
@@ -101,6 +102,7 @@ const TopHeader = () => {
                 remainingSeconds={timeLimitData?.remaining_time_seconds}
                 remainingSyncedAt={timeLimitData?.remaining_synced_at}
                 onFinish={gameTimeIsOver}
+                paused={completed}
               />
             }
           </View>

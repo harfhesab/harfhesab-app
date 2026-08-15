@@ -52,7 +52,7 @@ export default function SandTimer({
   remainingSeconds = totalSeconds,
   width = 160,
   height = 240,
-  paused = false,
+  paused = useSharedValue(false),
   grainCount = 14,
   sandColors = ['#f3d493', '#dba84e', '#a97a30'],
   frameColor = '#6b4226',
@@ -66,7 +66,6 @@ export default function SandTimer({
   const progress = useSharedValue(initialProgress(totalSeconds, remainingSeconds));
   const finished = useSharedValue(progress.value >= 1);
   const clock = useSharedValue(0);
-  const pausedSV = useSharedValue(paused);
 
   const onFinishRef = useRef(onFinish);
   useEffect(() => {
@@ -82,12 +81,11 @@ export default function SandTimer({
 
   // Tracks when the current pause began (JS thread, wall-clock ms). Not a
   // shared value — only ever read/written here, in this effect.
-  const pauseStartedAtRef = useRef(paused ? Date.now() : null);
+  const pauseStartedAtRef = useRef(paused.value ? Date.now() : null);
 
   useEffect(() => {
-    pausedSV.value = paused;
 
-    if (paused) {
+    if (paused.value) {
       pauseStartedAtRef.current = Date.now();
     } else if (pauseStartedAtRef.current != null) {
       // THE FIX: without this, `startedAt` stays anchored to the original
@@ -100,7 +98,7 @@ export default function SandTimer({
       startedAt.value += pausedDuration;
       pauseStartedAtRef.current = null;
     }
-  }, [paused]);
+  }, [paused.value]);
 
   // Re-anchor whenever the parent supplies a new remaining/total time —
   // e.g. the player re-entered the game screen with a freshly-known
@@ -115,7 +113,7 @@ export default function SandTimer({
 
   useFrameCallback((frame) => {
     'worklet';
-    if (finished.value || pausedSV.value) return;
+    if (finished.value || paused.value) return;
     clock.value = frame.timestamp;
 
     const elapsedMs = Date.now() - startedAt.value;
@@ -145,14 +143,14 @@ export default function SandTimer({
               after) naturally covers whatever portion of the line/grains
               falls "inside" it, so neither needs to precisely track the
               mound's wavy surface — see Grains.js for details. */}
-          <SandStreamLine geo={geo} progress={progress} pausedSV={pausedSV} color={sandColors[1]} />
+          <SandStreamLine geo={geo} progress={progress} pausedSV={paused} color={sandColors[1]} />
           <SandStream
             count={grainCount}
             clock={clock}
             progress={progress}
             geo={geo}
             baseRadius={grainRadius}
-            pausedSV={pausedSV}
+            pausedSV={paused}
           />
           <BottomSandPile progress={progress} geo={geo} clock={clock} colors={sandColors} />
         </Group>

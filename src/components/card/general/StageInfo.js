@@ -13,6 +13,7 @@ import { tabScreenSoundInOnClick } from '../../../utils/sound/SoundFunctions';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import SimpleBorderText from '../../text-components/SimpleBorderText';
 import { PacmanIndicator } from 'react-native-indicators';
+import ExpandableText from '../../text-components/expandable-text';
 
 
 
@@ -53,12 +54,23 @@ function StageInfo({
                         return(
                             <View key={index.toString()} style={{marginTop:15}}>
                                 <Text style={{fontFamily:Font.bakh_bold, color:colors.primary.a2, fontSize:15, lineHeight:25}}><Text style={{color:colors.primary.a8, fontFamily:Font.bakh_extra_bold, fontSize:18}}>{`${index + 1}_ `}</Text>{item?.sentence_display??item.sentence}</Text>
-                                {item?.sentence_hint&&<Text style={{fontFamily:Font.bakh_semi_bold, color:colors.primary.a7, fontSize:12, lineHeight:25}}><Text style={{color:`${colors.primary.a7}60`}}>{"معنی : "}</Text>{item?.sentence_hint}</Text>}
+                                {item?.sentence_hint&&<Text style={{fontFamily:Font.bakh_bold, color:colors.primary.a7, fontSize:13, lineHeight:26}}><Text style={{color:`${colors.primary.a7}90`}}>{"معنی : "}</Text>{item?.sentence_hint}</Text>}
                             </View>
                         )
                     })
                 }
-                {stage_hint&&<Text style={{fontFamily:Font.bakh_bold, color:colors.primary.a7, fontSize:14, lineHeight:26, marginTop:15}}><Text style={{color:`${colors.primary.a7}60`}}>{"توضیحات : "}</Text>{stage_hint}</Text>}
+                {stage_hint&&
+                    <ExpandableText
+                            text={stage_hint}
+                            numberOfLines={2}
+                            moreLabel={"بیشتر"}
+                            lessLabel={"بستن"}
+                            moreLabelColor={colors.primary.a8}
+                            textStyle={{fontFamily:Font.bakh_semi_bold, color:`${colors.primary.a7}99`, fontSize:12, lineHeight:24}}
+                            animationDuration={700}
+                            containerStyle={{marginTop:15}}
+                        />
+                }
             </View>
         }
     </View>

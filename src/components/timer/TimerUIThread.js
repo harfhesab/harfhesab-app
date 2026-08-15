@@ -67,14 +67,22 @@ function TimerUIThread({
   onFinish,
   hideTitle = false,
   separator,
+  // اختیاری: یک shared value بولی. وقتی paused.value === true بشود،
+  // تایمر متوقف می‌شود و وقتی دوباره false بشود، از همان نقطه‌ی
+  // متوقف‌شده به شمارش ادامه می‌دهد.
+  paused = useSharedValue(false),
 }) {
   const showHours = hours !== undefined && hours !== null;
   const showDays = days !== undefined && days !== null;
 
+  const initialTotalMs = toTotalSeconds({ seconds, minutes, hours, days }) * 1000;
+
   // Absolute end time in epoch-ms — the source of truth for the countdown.
-  const endAt = useSharedValue(
-    Date.now() + toTotalSeconds({ seconds, minutes, hours, days }) * 1000
-  );
+  const endAt = useSharedValue(Date.now() + initialTotalMs);
+
+  // زمان باقی‌مانده (به میلی‌ثانیه) در لحظه‌ای که پاز اتفاق می‌افتد،
+  // یا مقدار اولیه‌ی کل زمان اگر تایمر از همون اول paused شروع بشه.
+  const pausedRemainingMs = useSharedValue(initialTotalMs);
 
   const secondsSV = useSharedValue(pad2Plain(seconds));
   const minutesSV = useSharedValue(pad2Plain(minutes));
@@ -97,15 +105,38 @@ function TimerUIThread({
   // Re-arm whenever the parent passes a new target (e.g. restarting the
   // countdown for a new round of the game).
   useEffect(() => {
-    endAt.value = Date.now() + toTotalSeconds({ seconds, minutes, hours, days }) * 1000;
+    const totalMs = toTotalSeconds({ seconds, minutes, hours, days }) * 1000;
+    endAt.value = Date.now() + totalMs;
+    pausedRemainingMs.value = totalMs;
     finished.value = false;
     lastRenderedSecond.value = -1;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds, minutes, hours, days]);
 
+  // واکنش به تغییر paused.value:
+  // - لحظه‌ی true شدن: زمان باقی‌مانده را ذخیره می‌کنیم (فریز).
+  // - لحظه‌ی false شدن: endAt را نسبت به «الان» با همان زمان باقی‌مانده بازسازی می‌کنیم.
+  useAnimatedReaction(
+    () => paused.value,
+    (isPaused, prevIsPaused) => {
+      if (prevIsPaused === null || isPaused === prevIsPaused) return;
+      if (finished.value) return;
+
+      if (isPaused) {
+        pausedRemainingMs.value = Math.max(0, endAt.value - Date.now());
+      } else {
+        endAt.value = Date.now() + pausedRemainingMs.value;
+        // فورس رندر فوری فریم بعدی، حتی اگر ثانیه‌ی نمایشی عوض نشده باشد.
+        lastRenderedSecond.value = -1;
+      }
+    },
+    [paused]
+  );
+
   useFrameCallback((_frame) => {
     'worklet';
     if (finished.value) return;
+    if (paused.value) return; // وقتی پاز است، هیچ محاسبه‌ای انجام نمی‌شود.
 
     const remainingMs = endAt.value - Date.now();
     const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));

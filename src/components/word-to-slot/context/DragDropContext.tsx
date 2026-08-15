@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from 'react';
-import { useFrameCallback, withSpring, SharedValue, runOnJS } from 'react-native-reanimated';
+import { useFrameCallback, withSpring, SharedValue, runOnJS, useSharedValue } from 'react-native-reanimated';
 import {
     BOUNDARY_HORIZONTAL_OFFSET,
     BOUNDARY_WIDTH,
@@ -91,6 +91,7 @@ interface ContextProps {
   timeLimitData?: any
   onClickUnknownWord: (wordId:any) => void;
   gameTimeIsOver?: () => void;
+  completed: SharedValue<boolean>;
 }
 
 interface SlotsStateContextProps {
@@ -159,6 +160,7 @@ export const DragDropProvider: React.FC<{
     () => parts.filter((p:any) => p.sentence_builded).map((p:any) => p?.sentence_display??p.sentence)
   );
   const [lockedPan, setLockedPan] = useState<boolean>(false)
+  const completed = useSharedValue(false);
   const numberParts = parts.length
   const sentenceHint = parts[playingPartIndex]?.sentence_hint
 
@@ -260,6 +262,7 @@ export const DragDropProvider: React.FC<{
         setLockedPan(false)
       }, 1500)
     } else {
+      completed.value = true
       setTimeout(async()=>{
         setSlotsSynced({})
         setLockedPan(false)
@@ -829,7 +832,8 @@ export const DragDropProvider: React.FC<{
     sentenceHint,
     timeLimitData,
     onClickUnknownWord,
-    gameTimeIsOver
+    gameTimeIsOver,
+    completed
   }), [
     registerCard,
     assignCardToSlot,
@@ -851,7 +855,8 @@ export const DragDropProvider: React.FC<{
     sentenceHint,
     timeLimitData,
     onClickUnknownWord,
-    gameTimeIsOver
+    gameTimeIsOver,
+    completed
   ]);
 
   const slotsStateValue = useMemo<SlotsStateContextProps>(() => ({

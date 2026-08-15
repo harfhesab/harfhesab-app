@@ -163,7 +163,7 @@ function KalamAkharChallenge({
                             resizeMode="stretch"
                         >
                             <View style={{ alignItems:'center', justifyContent:"center", width:"100%", height:"100%"}}>
-                                <Text style={{color:colors.primary.a8, fontFamily:Font.bakh_black, fontSize:title.length > 14?itemWidth*0.08:title.length > 13?itemWidth*0.085:itemWidth*0.09}}>{title}</Text>
+                                <Text style={{color:colors.primary.a8, fontFamily:Font.bakh_black, fontSize:title.length > 14?itemWidth*0.075:title.length > 13?itemWidth*0.08:itemWidth*0.085}}>{title}</Text>
                             </View>
                         </ImageBackground>
                     </View>

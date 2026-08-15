@@ -38,7 +38,7 @@ export const kalamAkharChallengeTimeIsOverInConnectingLetters = ()=>{
             {
                 text: 'ادامه',
                 onPress: () => {
-                    popTo("KalamAkhar")
+                    popTo("KalamAkharBottomTab")
                 },
                 type:'bold'
             },

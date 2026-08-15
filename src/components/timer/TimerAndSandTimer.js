@@ -32,7 +32,8 @@ const TimerAndSandTimer = ({
   totalSeconds,
   remainingSeconds,
   remainingSyncedAt,
-  onFinish = NO_OP
+  onFinish = NO_OP,
+  paused,
 }) => {
   useSandTimerLoopSound()
   // تبدیل Date به timestamp عددی جهت جلوگیری از ساخت آبجکت مجدد
@@ -67,6 +68,7 @@ const TimerAndSandTimer = ({
                 days={timer.days}
                 separator=":"
                 onFinish={onFinishOperation}
+                paused={paused}
             />
           </ImageBackground>
         </View>
@@ -75,6 +77,7 @@ const TimerAndSandTimer = ({
           remainingSeconds={timer.remainingSeconds}
           width={60}
           height={90}
+          paused={paused}
         />
     </View>
   );
@@ -93,7 +96,8 @@ const arePropsEqual = (prevProps, nextProps) => {
     prevProps.totalSeconds === nextProps.totalSeconds &&
     prevProps.remainingSeconds === nextProps.remainingSeconds &&
     prevTimestamp === nextTimestamp &&
-    prevProps.onFinish === nextProps.onFinish
+    prevProps.onFinish === nextProps.onFinish && 
+    prevProps.paused === nextProps.paused
   );
 };
 

@@ -62,4 +62,8 @@ export const coinCountUpdateSound = (volume = 0.2) => playSFX('coin.ogg', volume
 
 // ===================================================================================================================
 // ============================= Kalam Akhar =========================================================================
-export const kalamAkharChallengeTimeIsOverSound = (volume = 0.8) => playSFX('level_up.wav', volume);
+export const kalamAkharChallengeTimeIsOverSound = (volume = 1) => playSFX('level_up.wav', volume);
+export const successfulCompletionOfKalamAkharChallenge = async(volume = 1) => {
+  await playSFX('level_up.wav', volume);
+  await playSFX('coin_reward.wav', volume);
+};

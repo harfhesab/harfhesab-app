@@ -75,7 +75,7 @@ const SentenceDisplay = () => {
                               textColor={colors.primary.a3} 
                               borderColor={colors.primary.a7} 
                               borderWidth={1.5}
-                              fontSize={20}
+                              fontSize={17}
                             />
                         </View>
                       ))
