@@ -59,7 +59,7 @@ function PackageGame(props){
                             collection{
                                 _id,
                                 title,
-                                list{_id, title, icon_image},
+                                list{_id, title, icon_image, badge},
                                 is_visible,
                                 is_active,
                             },
