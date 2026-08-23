@@ -218,7 +218,7 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
                     {
                         (title && title.length > 0)&&
                         <View style={{width:width, marginBottom:15}}>
-                            <Text style={{fontFamily:Font.medium, fontSize:14, textAlign:'center', color:colors.bottom_drawer.text2, marginHorizontal:20}}>{title}</Text>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, textAlign:'center', color:colors.bottom_drawer.text2, marginHorizontal:20}}>{title}</Text>
                             <Border
                                 height={0.5}
                                 top={15}

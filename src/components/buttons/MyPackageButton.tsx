@@ -61,14 +61,14 @@ const MyPackageButton: React.FC<MyPackageButtonProps> = ({
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%", height:"100%", paddingStart:13, paddingEnd:25}}>
+                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%", height:"100%", paddingStart:13, paddingEnd:20}}>
                     <View style={styles.iconWrapper}>
                         <Animated.Image
                             style={animatedStyle}
                             source={require("../../assets/image/my-package.png")}
                         />
                     </View>
-                    <Text style={{fontSize:12, fontFamily:Font.iran_yekan_bold, color:"#FFFFFF"}}>{"بسته‌های بازی من"}</Text>
+                    <Text style={{fontSize:14, fontFamily:Font.bakh_bold, color:"#FFFFFF"}}>{"بسته‌های بازی من"}</Text>
                 </View>
            </ImageBackground>
         </TouchableOpacity>

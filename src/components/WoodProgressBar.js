@@ -51,7 +51,7 @@ function WoodProgressBar({progressWidth, progress, maxValue, showValue=true}){
             </View>
             {showValue&&
                 <View style={{width:"100%", height:"100%", alignItems:progressPercent < 70?"flex-start":"flex-end", justifyContent:'center', paddingHorizontal:30, position:'absolute', paddingBottom:"1%"}}>
-                    <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:progressWidth/20}}>{`${maxValue} / ${progress}`}</Text>
+                    <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a1, fontSize:progressWidth/20}}>{`${maxValue} / ${progress}`}</Text>
                 </View>
             }
         </ImageBackground>

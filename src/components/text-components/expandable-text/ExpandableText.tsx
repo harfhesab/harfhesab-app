@@ -73,6 +73,20 @@ function ExpandableTextBase({
     [direction, textStyle],
   );
 
+  // استایلِ مخصوصِ پروبِ اندازه‌گیری: عینِ استایلِ واقعی است، با این تفاوت که
+  // textAlign همیشه غیر-justify است. دلیل: در حالتِ justify، RN فاصله‌ی
+  // بینِ کلمات را در هر خط (به‌جز آخرین خط) می‌کِشد تا خط کاملاً پر شود؛
+  // این باعث می‌شود عرضِ گزارش‌شده‌ی هر خط تقریبا برابرِ کل عرضِ کانتینر
+  // باشد و محاسبه‌ی «چقدر جا برای دکمه مانده» را کاملاً خراب کند. نقاطِ
+  // شکستِ خط (اینکه کدام کاراکترها در کدام خط قرار می‌گیرند) مستقل از
+  // justify است، پس اندازه‌گیری با چینشِ عادی هم برای تشخیصِ خطوط درست
+  // است و هم عددهای عرض/فاصله‌ی قابل‌اعتماد می‌دهد. متنِ واقعیِ نمایشی
+  // (baseTextStyle) هم‌چنان justify باقی می‌ماند.
+  const measureTextStyle = useMemo(
+    () => [...baseTextStyle, { textAlign: resolveTextAlign(direction) as 'left' | 'right' }],
+    [baseTextStyle, direction],
+  );
+
   // کلیدی که فقط با تغییرِ خصوصیت‌های مؤثر بر متریکِ فونت عوض می‌شود
   const fontKey = useMemo(() => {
     const flat = (StyleSheet.flatten([styles.baseText, textStyle]) ?? {}) as TextStyle;
@@ -176,7 +190,7 @@ function ExpandableTextBase({
         {needsMeasuring && (
           <View style={styles.hiddenProbe} pointerEvents="none">
             <Text
-              style={[baseTextStyle, { width: contentWidth }]}
+              style={[measureTextStyle, { width: contentWidth }]}
               onTextLayout={onFullTextLayout}
             >
               {text}

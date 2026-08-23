@@ -92,7 +92,6 @@ function SeasonMediaSwiper({items, title, height, frameWidth}){
                             width={titleWidth}
                             height={16*1.6}
                             fontSize={16}
-                            borderWidth={2}
                         />
                     </ImageBackground>
                 </View>

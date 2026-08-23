@@ -112,7 +112,7 @@ function LoginToAccount(props){
             />
             <View style={styles.container}>
                 <View style={{width:width, paddingHorizontal:20, paddingTop:20}}>
-                    <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a3, lineHeight:28, textAlign:'justify'}}>{"با ورود به حساب کاربری خود، اطلاعات و پیشرفت بازی‌هایتان را ثبت و قابل بازیابی کنید."}</Text>
+                    <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a3, lineHeight:28, textAlign:'justify'}}>{"با ورود به حساب کاربری خود، اطلاعات و پیشرفت بازی‌هایتان را ثبت و قابل بازیابی کنید."}</Text>
                 </View>
                 <View style={{gap:15}}>
                     <View style={{marginTop:50, width:width, paddingHorizontal:20}}>

@@ -203,7 +203,6 @@ function UserPackagesList(props){
                                 width={width - 100}
                                 height={20*1.6}
                                 fontSize={20}
-                                borderWidth={2}
                                 textColor={colors.primary.a5}
                                 borderColor={"#4d2719"}
                             />

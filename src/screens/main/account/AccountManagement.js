@@ -282,15 +282,15 @@ function AccountManagement(props){
                             />
                         </View>
                         <View style={{marginTop:20, width:width, paddingHorizontal:20}}>
-                            <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1, marginBottom:5}}>{"جنسیت"}</Text>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, marginBottom:5}}>{"جنسیت"}</Text>
                             <TouchableOpacity activeOpacity={0.7} onPress={changeGender} style={{backgroundColor:`${colors.primary.a1}25`, width:"100%", height:65, borderColor:colors.border.a1, borderWidth:1, alignItems:'flex-start', justifyContent:'center', paddingHorizontal:10, borderRadius:10}}>
-                                <Text style={{fontFamily:Font.medium, fontSize:16, color:gender?colors.text.a1:colors.text.a6}}>{!gender?"جنسیت":gender.text1}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:16, color:gender?colors.text.a1:colors.text.a6}}>{!gender?"جنسیت":gender.text1}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{marginTop:20, width:width, paddingHorizontal:20}}>
-                            <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1, marginBottom:5}}>{"تاریخ تولد"}</Text>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, marginBottom:5}}>{"تاریخ تولد"}</Text>
                             <TouchableOpacity activeOpacity={0.7} onPress={changeBirthday} style={{backgroundColor:`${colors.primary.a1}25`, width:"100%", height:65, borderColor:colors.border.a1, borderWidth:1, alignItems:'flex-start', justifyContent:'center', paddingHorizontal:10, borderRadius:10}}>
-                                <Text style={{fontFamily:Font.medium, fontSize:16, color:birthday?colors.text.a1:colors.text.a6}}>{!birthday?"تاریخ تولد":birthday}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:16, color:birthday?colors.text.a1:colors.text.a6}}>{!birthday?"تاریخ تولد":birthday}</Text>
                             </TouchableOpacity>
                         </View>
                     </ScrollView>

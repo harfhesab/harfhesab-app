@@ -32,7 +32,7 @@ const RatingInfo = ({reviews, rating_info, rating_average}) => {
                 </View>
                 <View style={{height:40, alignItems:'flex-start', alignSelf:'center', width:"100%"}}>
                     <Text style={{fontSize:10, color:colors.text.a4, fontFamily:Font.light}}>{'امتیاز ها و نظرات'}</Text>
-                    <Text style={{fontSize:12, color:colors.text.a3, fontFamily:Font.bold}}>{`${reviews>0?priceDigitSeperator(reviews):reviews} مرتبه`}</Text>
+                    <Text style={{fontSize:12, color:colors.text.a3, fontFamily:Font.bakh_bold}}>{`${reviews>0?priceDigitSeperator(reviews):reviews} مرتبه`}</Text>
                 </View>
             </View>
             <View style={{flexDirection:'column', alignItems:'flex-end', width:width-120, gap:5}}>

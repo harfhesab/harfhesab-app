@@ -70,10 +70,10 @@ function GeneralHeader({
                 {
                     title&&
                     <View style={{flex: 1, flexDirection:'column', alignItems:'flex-start', justifyContent:'center'}}>
-                        <Text numberOfLines={1} style={{color:colors.header.content_1, fontFamily:titleFontFamily??Font.medium, fontSize:titleFontSize??14}}>{title}</Text>
+                        <Text numberOfLines={1} style={{color:colors.header.content_1, fontFamily:titleFontFamily??Font.bakh_semi_bold, fontSize:titleFontSize??14}}>{title}</Text>
                         {
                             description&&
-                            <Text numberOfLines={1} style={{color:colors.header.content_2, fontFamily:descriptionFontFamily??Font.medium, fontSize:descriptionFontSize??10}}>{description}</Text>
+                            <Text numberOfLines={1} style={{color:colors.header.content_2, fontFamily:descriptionFontFamily??Font.bakh_semi_bold, fontSize:descriptionFontSize??10}}>{description}</Text>
                         }
                     </View>
                 }

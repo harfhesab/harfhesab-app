@@ -173,8 +173,8 @@ function NotificationCard({
 
     return (
       <View style={{width:width-55, borderRadius:15, backgroundColor:colors.primary.a7, paddingHorizontal:10, paddingTop:30, paddingBottom:10, shadowColor:"#000000", elevation:2}}>
-          <Text style={{fontFamily:Font.bold, fontSize:17, color:colors.text.a2, lineHeight:32}}>{title}</Text>
-          <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a3, lineHeight:27, marginTop:20}}>{body}</Text>
+          <Text style={{fontFamily:Font.bakh_bold, fontSize:17, color:colors.text.a2, lineHeight:32}}>{title}</Text>
+          <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a3, lineHeight:27, marginTop:20}}>{body}</Text>
           {
             (freeCoinPlan && freeCoinPlan?.number_coin > 0)&&
             <View style={{paddingVertical:20, gap:10, backgroundColor:"#00000085", borderRadius:10, paddingHorizontal:10, marginTop:15}}>
@@ -201,8 +201,8 @@ function NotificationCard({
                     }
                 </View>
                 <View style={{alignItems:'flex-start'}}>
-                  <Text numberOfLines={2} style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-155 }}>{freeCoinPlan.title}</Text>
-                  <Text numberOfLines={1} style={{fontFamily:Font.medium, fontSize:10, color:colors.primary.a3, lineHeight:18}}>{`${freeCoinPlan.number_coin} سکه`}</Text>
+                  <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-155 }}>{freeCoinPlan.title}</Text>
+                  <Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.primary.a3, lineHeight:18}}>{`${freeCoinPlan.number_coin} سکه`}</Text>
                 </View>
               </View>
               <ButtonBorder
@@ -244,8 +244,8 @@ function NotificationCard({
                     }
                 </View>
                 <View style={{alignItems:'flex-start'}}>
-                  <Text numberOfLines={2} style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-155 }}>{freeSubscriptionPlan.title}</Text>
-                  <Text numberOfLines={1} style={{fontFamily:Font.medium, fontSize:10, color:colors.primary.a6, lineHeight:18}}>{`${freeSubscriptionPlan.duration} روز اشتراک`}</Text>
+                  <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-155 }}>{freeSubscriptionPlan.title}</Text>
+                  <Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.primary.a6, lineHeight:18}}>{`${freeSubscriptionPlan.duration} روز اشتراک`}</Text>
                 </View>
               </View>
               <ButtonBorder
@@ -280,7 +280,7 @@ function NotificationCard({
                         <Icon name={'camera-off'} type={'Feather'} style={{fontSize:30, color:colors.text.a5}}/>
                     }
                 </View>
-                <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1, lineHeight:30, width: width-135}}>{packageInfo.title}</Text>
+                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, lineHeight:30, width: width-135}}>{packageInfo.title}</Text>
               </View>
             </TouchableOpacity>
           }
@@ -288,12 +288,12 @@ function NotificationCard({
             (link && link.length>7)&&
             <View style={{width:"100%", alignItems:'flex-end', marginTop:20}}>
               <TouchableOpacity activeOpacity={0.6} onPress={openLink}>
-                <Text style={{fontFamily:Font.medium, color:colors.primary.a6, fontSize:14}}>{link}</Text>
+                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.primary.a6, fontSize:14}}>{link}</Text>
               </TouchableOpacity>
             </View>
           }
           <View style={{width:"100%", alignItems:'flex-end', marginTop:15}}>
-            <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a5}}>{convertDate(createdAt)}</Text>
+            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.text.a5}}>{convertDate(createdAt)}</Text>
           </View>
       </View>
     );

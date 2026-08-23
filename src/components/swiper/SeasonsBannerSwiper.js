@@ -28,10 +28,10 @@ function SeasonsBannerSwiper({items}){
                     borderRadius={10}
                 />
                 <View style={{width:bannerWidth, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
-                    <Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12, textAlign:"center", maxWidth:bannerWidth-100}}>{item?.title}</Text>
+                    <Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:12, textAlign:"center", maxWidth:bannerWidth-100}}>{item?.title}</Text>
                     {item?.number_stage&&
                         <View style={{backgroundColor:`${colors.primary.a6}30`, paddingHorizontal:10, borderRadius:20}}>
-                            <Text style={{fontFamily:Font.medium, color:colors.primary.a6, fontSize:12, textAlign:"center"}}>{`${item?.number_stage} مرحله`}</Text>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.primary.a6, fontSize:12, textAlign:"center"}}>{`${item?.number_stage} مرحله`}</Text>
                         </View>
                     }
                 </View>

@@ -1,6 +1,14 @@
-import React, { memo, useMemo } from 'react';
-import { Canvas, Text, Group, Skia, PaintStyle } from '@shopify/react-native-skia';
-import { prepareRTLText } from '../../utils/prepareRTLText';
+import React, { useMemo, memo } from 'react';
+import { 
+  Canvas, 
+  Skia, 
+  Paragraph, 
+  TextAlign, 
+  TextDirection,
+  PaintStyle,
+  StrokeJoin,
+  StrokeCap,
+} from '@shopify/react-native-skia';
 import { useGlobalFonts } from '../../context/SkiaFontProvider';
 
 interface SimpleBorderTextProps {
@@ -16,7 +24,7 @@ interface SimpleBorderTextProps {
   fontName?: string;
 }
 
-const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({ 
+const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   text,
   fontSize,
   width,
@@ -27,125 +35,93 @@ const SimpleBorderText: React.FC<SimpleBorderTextProps> = ({
   borderColor = '#FFFFFF',
   borderWidth = 1.5,
   fontName = 'YekanBakh-ExtraBold',
- }) => {
-
-  // 🌟 دریافت مدیر فونت از کانتکست
+}) => {
   const { customFontMgr } = useGlobalFonts();
 
-  // 🌟 ساخت داینامیکِ شیء Font برای استفاده در کامپوننت Text
-  const font = useMemo(() => {
-    if (!customFontMgr) return null;
-
-    // پیدا کردن Typeface مربوط به این نام از درون Font Manager
-    // مقادیر weight: 400, width: 5, slant: 0 حالت استاندارد برای جستجوی فونت هستند
-    const typeface = customFontMgr.matchFamilyStyle(fontName, { weight: 400, width: 5, slant: 0 });
-    
-    if (!typeface) {
-      console.warn(`Font family "${fontName}" not found in customFontMgr.`);
-      return null;
-    }
-    
-    // تبدیل Typeface به شیء SkFont که برای اندازه‌گیری و رندر متن نیاز داریم
-    return Skia.Font(typeface, fontSize);
-  }, [customFontMgr, fontName, fontSize]);
-
-  if (font === null || !text?.trim()) {
-    return null;
-  }
-  
   const isRtl = rtl === true && ltr === false;
-  const metrics = font.getMetrics();
-  const ascent = metrics.ascent;
-  const descent = metrics.descent;
-  const leading = metrics.leading;
-  const lineHeight = -ascent + descent + leading;
 
-  // Function to wrap text into lines (منطق کاملاً دست‌نخورده باقی ماند)
-  const wrapText = (text: string, maxWidth: number) => {
-    const words = text.split(' ');
-    const lines: string[] = [];
-    let currentLineWords: string[] = [];
-
-    for (const word of words) {
-      const testLineWords = [...currentLineWords, word];
-      const testLine = testLineWords.join(' ');
-      
-      let testRendered = isRtl ? prepareRTLText(testLine) : testLine;
-      testRendered = testRendered.replace(/\u200C/g, ''); 
-      
-      const testWidth = font.measureText(testRendered).width;
-      if (testWidth <= maxWidth) {
-        currentLineWords = testLineWords;
-      } else {
-        if (currentLineWords.length > 0) {
-          const currentLine = currentLineWords.join(' ');
-          lines.push(currentLine);
-        }
-        currentLineWords = [word];
-      }
+  const { fillParagraph, borderParagraph, layoutWidth, offsetX, offsetY } = useMemo(() => {
+    if (!customFontMgr || !text?.trim()) {
+      return { fillParagraph: null, borderParagraph: null, layoutWidth: 0, offsetX: 0, offsetY: 0 };
     }
-    if (currentLineWords.length > 0) {
-      const currentLine = currentLineWords.join(' ');
-      lines.push(currentLine);
-    }
-    return lines;
-  };
 
-  const maxTextWidth = width * 0.95;
-  const lines = wrapText(text, maxTextWidth);
-  
-  const renderedLines = lines.map(line => {
-    const preparedLine = isRtl ? prepareRTLText(line) : line;
-    return preparedLine.replace(/\u200C/g, '');
-  }).filter(Boolean);
-  
-  const lineWidths = renderedLines.map(line => font.measureText(line).width);
+    // 🌟 فضای بیشتری برای stroke نگه می‌داریم چون خط حاشیه از مرکز به بیرون/داخل کشیده می‌شه
+    const paddingForBorder = borderWidth * 2;
+    const maxTextWidth = width * 0.95;
+    const availableWidth = Math.max(maxTextWidth - paddingForBorder, 0);
 
-  if (renderedLines.length === 0) {
+    // 🌟 پاراگراف متن اصلی (fill) - رنگ ساده
+    const fillBuilder = Skia.ParagraphBuilder.Make({
+      textAlign: TextAlign.Center,
+      textDirection: isRtl ? TextDirection.RTL : TextDirection.LTR,
+    }, customFontMgr);
+
+    fillBuilder.pushStyle({
+      fontFamilies: [fontName],
+      fontSize: fontSize,
+      color: Skia.Color(textColor),
+    });
+    fillBuilder.addText(text);
+    const pFill = fillBuilder.build();
+    pFill.layout(availableWidth);
+
+    // 🌟 پاراگراف حاشیه (border) - با foregroundPaint به‌صورت Stroke واقعی
+    const strokePaint = Skia.Paint();
+    strokePaint.setStyle(PaintStyle.Stroke);
+    strokePaint.setStrokeWidth(borderWidth * 2); // ضخامت واقعی حاشیه‌ی بیرونی
+    strokePaint.setColor(Skia.Color(borderColor));
+    strokePaint.setStrokeJoin(StrokeJoin.Round);
+    strokePaint.setStrokeCap(StrokeCap.Round);
+    strokePaint.setAntiAlias(true);
+
+    const borderBuilder = Skia.ParagraphBuilder.Make({
+      textAlign: TextAlign.Center,
+      textDirection: isRtl ? TextDirection.RTL : TextDirection.LTR,
+    }, customFontMgr);
+
+    borderBuilder.pushStyle(
+      {
+        fontFamilies: [fontName],
+        fontSize: fontSize,
+      },
+      strokePaint, // 👈 foregroundPaint - همون چیزی که کیفیت حاشیه رو واقعی می‌کنه
+    );
+    borderBuilder.addText(text);
+    const pBorder = borderBuilder.build();
+    pBorder.layout(availableWidth);
+
+    // 🌟 سنتر کردن بلاک متن به‌صورت افقی و عمودی داخل width/height ثابت
+    const x = (width - availableWidth) / 2;
+    const y = (height - pFill.getHeight()) / 2;
+
+    return {
+      fillParagraph: pFill,
+      borderParagraph: pBorder,
+      layoutWidth: availableWidth,
+      offsetX: x,
+      offsetY: y,
+    };
+  }, [customFontMgr, text, textColor, borderColor, width, height, fontSize, borderWidth, fontName, isRtl]);
+
+  if (!customFontMgr || !fillParagraph || !borderParagraph) {
     return null;
   }
-
-  const totalHeight = (renderedLines.length - 1) * lineHeight + (-ascent + descent);
-  const top = (height - totalHeight) / 2;
-  const firstBaseline = top - ascent;
-
-  const textPaint = Skia.Paint();
-  textPaint.setColor(Skia.Color(textColor));
-
-  const strokePaint = Skia.Paint();
-  strokePaint.setColor(Skia.Color(borderColor));
-  strokePaint.setStyle(PaintStyle.Stroke);
-  strokePaint.setStrokeWidth(borderWidth);
-
-  const textElements = renderedLines.reduce<React.ReactNode[]>((acc, line, index) => {
-    const y = firstBaseline + index * lineHeight;
-    const x = (width - lineWidths[index]) / 2;
-    acc.push(
-      <Text
-        key={`stroke-${index}`}
-        x={x}
-        y={y}
-        text={line}
-        font={font} // 🌟 همان شیء font تولید شده پاس داده می‌شود
-        paint={strokePaint}
-      />,
-      <Text
-        key={`fill-${index}`}
-        x={x}
-        y={y}
-        text={line}
-        font={font}
-        paint={textPaint}
-      />
-    );
-    return acc;
-  }, []);
 
   return (
     <Canvas style={{ width, height }}>
-      <Group>
-        {textElements}
-      </Group>
+      {/* حاشیه اول (زیر) بعد متن اصلی (رو) */}
+      <Paragraph
+        paragraph={borderParagraph}
+        x={offsetX}
+        y={offsetY}
+        width={layoutWidth}
+      />
+      <Paragraph
+        paragraph={fillParagraph}
+        x={offsetX}
+        y={offsetY}
+        width={layoutWidth}
+      />
     </Canvas>
   );
 };

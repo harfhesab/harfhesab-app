@@ -45,15 +45,15 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                 const msg = [
                     {
                         text:"اشتراک فعال ندارید",
-                        style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.primary.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                        style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:20, color:colors.primary.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
                     },
                     {
                         text:"با توجه به اینکه این بستهٔ بازی را از طریق اشتراک دریافت کرده‌اید، اکنون برای دسترسی رایگان به بستهٔ بازی، باید اشتراک فعال بازی را داشته باشید.",
-                        style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:27},
+                        style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:27},
                     },
                     {
                         text:"میتوانید با پرداخت سکه، برای همیشه  بستهٔ بازی را فعال کرده و بدون اشتراک به بازی دسترسی داشته باشید.",
-                        style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:27},
+                        style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:27},
                     },
                 ]
                 AlertBottomDrawerHelper.showAlert({
@@ -113,7 +113,7 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                             <View style={{flexDirection:'column', alignItems:'flex-start', height:'100%', justifyContent:'space-between', height:95}}>
                                 <View>
                                     <Text numberOfLines={2} style={{fontFamily:Font.black, color:colors.primary.a3, fontSize:16, maxWidth:width-170}}>{title}</Text>
-                                    <Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:11}}>{`${numberSeason} فصل  -  ${numberStage} مرحله`}</Text>
+                                    <Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:11}}>{`${numberSeason} فصل  -  ${numberStage} مرحله`}</Text>
                                 </View>
                                 <WoodProgressBar
                                         progressWidth={IS_TABLET_CONDITION?190:width-170}
@@ -143,7 +143,7 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                                 />
                                 :<Icon name={"cruelty-free"} type={"MaterialIcons"} style={{fontSize:14, color:colors.primary.a1}}/>
                             }
-                            {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:10}}>{accessTypeText}</Text>}
+                            {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a5, fontSize:10}}>{accessTypeText}</Text>}
                         </View>
                     </View>
                     <View style={{width:"100%", flexDirection:'row', alignItems:'flex-end', justifyContent:endedGame == true?'space-between':'flex-end', paddingHorizontal:10}}>

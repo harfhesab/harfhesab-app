@@ -32,7 +32,7 @@ function PackageInfoBtn({packageId, packageIcon}){
                 imageStyle={{ resizeMode: "stretch" }}
                 resizeMode="stretch"
             >
-                <Text numberOfLines={1} style={{color:"#FFF", fontFamily:Font.medium, fontSize:6}}>{"بستهٔ بازی"}</Text>
+                <Text numberOfLines={1} style={{color:"#FFF", fontFamily:Font.bakh_semi_bold, fontSize:6}}>{"بستهٔ بازی"}</Text>
             </ImageBackground>
         </TouchableOpacity>
     )

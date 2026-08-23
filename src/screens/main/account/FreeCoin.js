@@ -127,7 +127,7 @@ function FreeCoin(props){
             const msg = [
                 {
                     text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
-                    style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                    style:{ width:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                 }
             ]
             AlertBottomDrawerHelper.showAlert({
@@ -162,7 +162,7 @@ function FreeCoin(props){
                 const msg = [
                     {
                         text:`تعداد ${free_coin_view_ads} سکه با موفقیت به حساب کاربری شما اضافه شد.`,
-                        style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                        style:{ width:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                     }
                 ]
                 AlertBottomDrawerHelper.showAlert({
@@ -200,7 +200,7 @@ function FreeCoin(props){
                     const msg = [
                         {
                             text:"برای دریافت سکه، باید ویدیو را تا انتها تماشا کنید.",
-                            style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                            style:{ width:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                         }
                     ]
                     AlertBottomDrawerHelper.showAlert({
@@ -230,7 +230,7 @@ function FreeCoin(props){
                 const msg = [
                     {
                         text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
-                        style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                        style:{ width:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                     }
                 ]
                 AlertBottomDrawerHelper.showAlert({
@@ -284,7 +284,7 @@ function FreeCoin(props){
                 adsStatus?.allowed === false?
                 <TimerUIThread
                     style={{fontSize: 14, fontFamily: Font.black, color: colors.primary.a3}}
-                    titleStyle={{fontFamily: Font.medium, color: `${colors.primary.a3}99`}}
+                    titleStyle={{fontFamily: Font.bakh_semi_bold, color: `${colors.primary.a3}99`}}
                     seconds={adsStatus.seconds}
                     minutes={adsStatus.minutes}
                     hours={adsStatus.hours}
@@ -370,15 +370,15 @@ function FreeCoin(props){
         const msg = [
             {
                 text:`آیا به ${Globals.game_name_fa} امتیاز دادید؟`,
-                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:16, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:16, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
                 text:"* اگر امتیاز ثبت نکردید، برای دریافت سکه دوباره تلاش کنید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
             {
                 text:"* اگر امتیاز ثبت کردید، برای دریافت سکه لطفا کمی منتظر بمانید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -436,15 +436,15 @@ function FreeCoin(props){
         const msg = [
             {
                 text:`آیا صفحهٔ اینستاگرام ${Globals.game_name_fa} را دنبال کردید؟`,
-                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:16, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:16, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
                 text:"* اگر صفحهٔ اینستاگرام را دنبال نکردید، برای دریافت سکه دوباره تلاش کنید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
             {
                 text:"* اگر صفحهٔ اینستاگرام را دنبال کردید، برای دریافت سکه لطفا کمی منتظر بمانید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -502,15 +502,15 @@ function FreeCoin(props){
         const msg = [
             {
                 text:`آیا در کانال تلگرام ${Globals.game_name_fa} عضو شدید؟`,
-                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:16, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:16, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
                 text:"* اگر در کانال تلگرام عضو نشدید، برای دریافت سکه دوباره تلاش کنید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
             {
                 text:"* اگر در کانال تلگرام عضو شدید، برای دریافت سکه لطفا کمی منتظر بمانید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -665,7 +665,7 @@ function FreeCoin(props){
                 const msg = [
                     {
                         text:`تعداد ${numberFreeCoin} سکه با موفقیت به حساب کاربری شما اضافه شد.`,
-                        style:{ width:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                        style:{ width:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                     }
                 ]
                 setTimeout(()=>{
@@ -726,7 +726,7 @@ function FreeCoin(props){
                             showsVerticalScrollIndicator={false}
                         >
                             <View style={{width:"100%", backgroundColor:`#00000050`, paddingVertical:5, borderRadius:20, alignItems:'center', marginTop:5}}>
-                                <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a4}}>{"دائمی"}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a4}}>{"دائمی"}</Text>
                             </View>
                             <SimpleItem
                                 title={"نمایش ویدیو"}
@@ -739,7 +739,7 @@ function FreeCoin(props){
                                 ValueComponent={()=>coinAdsComponent(free_coin_view_ads)}
                             />
                             <View style={{width:"100%",  backgroundColor:`#00000050`, paddingVertical:5, borderRadius:20, alignItems:'center', marginTop:30}}>
-                                <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a4}}>{"فقط یکبار"}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a4}}>{"فقط یکبار"}</Text>
                             </View>
                             <SimpleItem
                                 title={"تکمیل اطلاعات حساب"}
@@ -869,7 +869,7 @@ const TimerComponent = ({iconName, iconType, color, endTime}) => {
             <Text style={{fontFamily: Font.black, color: colors.primary.a3, fontSize: 25}}>
                 {String(second).padStart(2, '0')}
             </Text>
-            <Text style={{fontFamily: Font.medium, color: `${colors.primary.a3}99`, fontSize: 12}}>
+            <Text style={{fontFamily: Font.bakh_semi_bold, color: `${colors.primary.a3}99`, fontSize: 12}}>
                 {"در حال بررسی..."}
             </Text>
         </View>

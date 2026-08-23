@@ -369,7 +369,7 @@ function SubscriptionPlans(props){
                             <View style={{width:"100%", alignItems:'center', justifyContent:'center'}}>
                                 <TimerUIThread
                                     style={{fontSize: 25, fontFamily: Font.black, color: colors.primary.a3}}
-                                    titleStyle={{fontFamily: Font.medium, color: `${colors.primary.a3}99`}}
+                                    titleStyle={{fontFamily: Font.bakh_semi_bold, color: `${colors.primary.a3}99`}}
                                     seconds={second}
                                     minutes={minute}
                                     hours={hour}
@@ -433,7 +433,6 @@ function SubscriptionPlans(props){
                             width={width - 100}
                             height={20*1.6}
                             fontSize={20}
-                            borderWidth={2}
                             textColor={colors.primary.a5}
                             borderColor={"#4d2719"}
                         />

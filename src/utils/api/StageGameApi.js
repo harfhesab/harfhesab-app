@@ -883,15 +883,15 @@ const showUpdateAlert = ()=>{
     const msg = [
         {
             text:"بروزرسانی محتوای بازی مرحله‌ای!",
-            style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
         },
         {
             text:"یک بروزرسانی برای محتوای بازی مرحله‌ای یافت شد. می‌توانید برای دریافت آن اقدام کنید.",
-            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
             text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
-            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
     ]
     AlertBottomDrawerHelper.showAlert({
@@ -931,15 +931,15 @@ const forceUpdateAlert = ()=>{
     const msg = [
         {
             text:"بروزرسانی محتوای بازی مرحله‌ای!",
-            style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
         },
         {
             text:"یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
-            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
             text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
-            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
     ]
     AlertBottomDrawerHelper.showAlert({

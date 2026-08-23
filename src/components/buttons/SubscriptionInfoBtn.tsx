@@ -87,7 +87,7 @@ function SubscriptionInfoBtn({
           >
             
             <View style={{width:50, alignItems:'center'}}>
-              <Text style={{fontFamily:Font.medium, fontSize:10, color:"#FFFFFF"}}>{`${numberDays} روز`}</Text>
+              <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:"#FFFFFF"}}>{`${numberDays} روز`}</Text>
             </View>
             
 

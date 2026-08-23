@@ -10,7 +10,7 @@ function FooterLoading({loading, tryAgain, tryOperation}){
         tryAgain == true?
         (<View style={styles.container}>
             <TouchableOpacity activeOpacity={0.7} onPress={tryOperation} style={{alignItems:'center', justifyContent:'center', borderRadius:5, borderWidth:1, borderColor:colors.border.a1, width:(width-30)/2, height:35}}>
-                <Text style={{color:colors.text.a2, fontSize:12, fontFamily:Font.medium}}>{'تلاش دوباره'}</Text>
+                <Text style={{color:colors.text.a2, fontSize:12, fontFamily:Font.bakh_semi_bold}}>{'تلاش دوباره'}</Text>
             </TouchableOpacity>
         </View>)
         :loading == true?

@@ -41,7 +41,7 @@ const TopHeader = () => {
     } else {
       showToast({
           title: "عدم دسترسی",
-          message: "جملات باید به ترتیب کامل شوند!",
+          message: "هر پارت از مرحله باید به ترتیب کامل شود.",
           type: "error",
           animationType: "slide",
           position: "top",
@@ -65,13 +65,13 @@ const TopHeader = () => {
                     <TouchableOpacity onPress={()=>onChangePlayingIndex(index)} key={index.toString()} activeOpacity={0.6} style={{alignItems:'center', justifyContent:'center'}}>
                       <ImageBackground
                           source={index <= currentPartIndex?require("../../../assets/image/card_1.png"):require("../../../assets/image/card_2.png")}
-                          style={{ width: 40, height: 52, justifyContent: "center", alignItems: "center", opacity:index == playingPartIndex?1:0.6 }}
+                          style={{ width: 40, height: 52, justifyContent: "center", alignItems: "center" }}
                           imageStyle={{ resizeMode: "stretch" }}
                           resizeMode="stretch"
                       >
                           {
                             (index <= currentPartIndex && index !== playingPartIndex) ?
-                            <Text style={{fontFamily:Font.black, fontSize:22, color:"#ffeb3b"}}>{index + 1}</Text>
+                            <Text style={{fontFamily:Font.bakh_extra_bold, fontSize:22, color:"#ffeb3b"}}>{index + 1}</Text>
                             :
                             <LocalImageComponent
                                 path={index == playingPartIndex? require("../../../assets/image/play_red_background.png"):require("../../../assets/image/lock_yellow_backgrond.png")}
@@ -88,7 +88,7 @@ const TopHeader = () => {
             </View>
           }
         </View>
-        <View style={{flexDirection:'row', alignItems:'flex-start', gap:7}}>
+        <View style={{flexDirection:'row', alignItems:'flex-start', gap:7, position:'absolute', end:10}}>
           <View style={{flexDirection:'column', alignItems:'flex-end'}}>
             {
               type !== "kalam-akhar"?

@@ -69,7 +69,7 @@ export const NextButton: React.FC<NextButtonProps> = ({
                 />
             </TouchableOpacity>
         </View>
-        <Text style={{fontFamily:Font.bold, color:colors.primary.a2, fontSize:14}}>{isLastSlide?"ورود به بازی":"بعدی"}</Text>
+        <Text style={{fontFamily:Font.bakh_bold, color:colors.primary.a2, fontSize:14}}>{isLastSlide?"ورود به بازی":"بعدی"}</Text>
     </View>
   );
 };

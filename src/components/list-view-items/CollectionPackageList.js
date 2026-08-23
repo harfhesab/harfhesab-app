@@ -21,6 +21,7 @@ function CollectionPackageList({_id, title, arrowText, list}){
                 _id={item?._id}
                 image={item?.icon_image}
                 title={item?.title}
+                badge={item?.badge}
             />
         )
     }
@@ -31,12 +32,12 @@ function CollectionPackageList({_id, title, arrowText, list}){
         <View>
             {
                 title?.length > 0 &&(
-                <TouchableNativeFeedback style={{width:width}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                    <View style={{width:width, height:50, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
-                        <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{title}</Text>
-                        <View style={{flexDirection:"row", alignItems:"center", gap:10}}>
-                            <Text style={{fontSize:14, color:colors.text.a4, fontFamily:Font.medium}}>{arrowText || "بیشتر"}</Text>
-                            <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.text.a4, fontSize:25}}/>
+                <TouchableNativeFeedback style={{width:width}} background={TouchableNativeFeedback.Ripple(colors.border.a2,false)}>
+                    <View style={{width:width, height:35, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
+                        <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a5, fontSize:14}}>{title}</Text>
+                        <View style={{flexDirection:"row", alignItems:"center", gap:15}}>
+                            <Text style={{fontSize:14, color:colors.text.a6, fontFamily:Font.bakh_semi_bold}}>{arrowText || "بیشتر"}</Text>
+                            <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.text.a6, fontSize:20}}/>
                         </View>
                     </View>
                 </TouchableNativeFeedback>)

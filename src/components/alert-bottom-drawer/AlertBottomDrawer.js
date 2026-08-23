@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         gap: 20
     },
     titleText: {
-        fontFamily: Font.medium,
+        fontFamily: Font.bakh_semi_bold,
         fontSize: 12,
         textAlign: 'center',
         marginHorizontal: 20
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
         gap: 10
     },
     defaultMessageText: {
-        fontFamily: Font.medium,
+        fontFamily: Font.bakh_semi_bold,
         fontSize: 14,
         alignSelf: 'center',
         textAlign: 'center',

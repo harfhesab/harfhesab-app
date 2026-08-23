@@ -103,7 +103,7 @@ function CommentRating({ _id, name, grade, date, comment, likeNumbers = 0, disLi
     const reportModal = useCallback(() => {
         const msg = [{
             text: "آیا محتوای این نظر نسبت به بستهٔ بازی، نامناسب است؟",
-            style: { maxWidth: width - 30, fontFamily: Font.medium, fontSize: 14, color: colors.text.a2, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 24 },
+            style: { maxWidth: width - 30, fontFamily: Font.bakh_semi_bold, fontSize: 14, color: colors.text.a2, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 24 },
         }];
         
         AlertBottomDrawerHelper.showAlert({
@@ -201,13 +201,13 @@ const styles = StyleSheet.create({
     userInfo: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginStart: 15 },
     userIcon: { fontSize: 40 },
     nameGradeContainer: { flexDirection: 'column', alignItems: 'flex-start', marginStart: 5 },
-    userName: { fontFamily: Font.medium, fontSize: 12, lineHeight: 25 },
+    userName: { fontFamily: Font.bakh_semi_bold, fontSize: 12, lineHeight: 25 },
     dateActionRow: { flexDirection: 'row', alignItems: 'center', marginEnd: 2 },
-    dateText: { fontFamily: Font.medium, fontSize: 12, marginEnd: 10 },
+    dateText: { fontFamily: Font.bakh_semi_bold, fontSize: 12, marginEnd: 10 },
     menuIconContainer: { justifyContent: 'center', alignItems: 'center', padding: 10 },
     menuIcon: { fontSize: 15 },
     commentContainer: { marginVertical: 15, paddingHorizontal: 15 },
-    commentText: { fontFamily: Font.medium, fontSize: 14, lineHeight: 23 },
+    commentText: { fontFamily: Font.bakh_semi_bold, fontSize: 14, lineHeight: 23 },
     actionsRow: { flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'flex-start', paddingHorizontal: 15, gap: 30 },
     actionItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
     actionText: { fontFamily: Font.black, fontSize: 11 }

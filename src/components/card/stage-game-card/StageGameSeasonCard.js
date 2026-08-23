@@ -109,7 +109,6 @@ function StageGameSeasonCard({
             width={STAGE_GAME_CARD_WIDTH * 0.6 - 30}
             height={18*1.6}
             fontSize={18}
-            borderWidth={2}
         />
       </ImageBackground>
     </View>
@@ -154,8 +153,8 @@ const CardContent = memo(({
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', height: '100%', paddingHorizontal:15, paddingBottom:10}}>
                 <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap:3}}>
                   <Text style={{ color: colors.text.a1, fontFamily: Font.black, fontSize: 16 }}>{`فصل ${seasonNumber}`}</Text>
-                  <Text style={{ color: colors.text.a3, fontFamily: Font.medium, fontSize: 11 }}>{`مرحله ${stageNumberFrom} تا ${stageNumberTo} (${numberStage} مرحله)`}</Text>
-                  <Text style={{ color: colors.text.a3, fontFamily: Font.medium, fontSize: 11 }}>{`زبان ${languageName}`}</Text>
+                  <Text style={{ color: colors.text.a3, fontFamily: Font.bakh_semi_bold, fontSize: 11 }}>{`مرحله ${stageNumberFrom} تا ${stageNumberTo} (${numberStage} مرحله)`}</Text>
+                  <Text style={{ color: colors.text.a3, fontFamily: Font.bakh_semi_bold, fontSize: 11 }}>{`زبان ${languageName}`}</Text>
                 </View>
                 {
                   ended == true&&

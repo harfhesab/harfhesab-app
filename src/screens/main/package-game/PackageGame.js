@@ -135,7 +135,7 @@ function PackageGame(props){
                             collection{
                                 _id,
                                 title,
-                                list{_id, title, icon_image},
+                                list{_id, title, icon_image, badge},
                                 is_visible,
                                 is_active,
                             },
@@ -244,7 +244,7 @@ function PackageGame(props){
                 <FlatList
                     style={{flex:1}}
                     contentContainerStyle={[
-                        {width: width, gap: 5, paddingBottom:70},
+                        {width: width, paddingBottom:90},
                         collection.length === 0 && {flex: 1}
                     ]}
                     showsVerticalScrollIndicator={false}

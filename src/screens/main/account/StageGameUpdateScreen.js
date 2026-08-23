@@ -121,14 +121,14 @@ function StageGameUpdateScreen(props){
                 <View style={{flex:1, flexDirection:'column', justifyContent:'space-between'}}>
                     <View style={{flex:1, paddingHorizontal:30}}>
                         <View style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center', gap:10}}>
-                            <Text style={{fontFamily:Font.bold, color:(status == "need-update" || status == "force-update")?colors.alert.a1:colors.primary.a6, fontSize:16, lineHeight:32, textAlign:'center'}}>{title}</Text>
+                            <Text style={{fontFamily:Font.bakh_bold, color:(status == "need-update" || status == "force-update")?colors.alert.a1:colors.primary.a6, fontSize:16, lineHeight:32, textAlign:'center'}}>{title}</Text>
                             {
                                 status == "force-update"&&
-                                <Text style={{fontFamily:Font.medium, color:colors.border.a1, fontSize:12, textAlign:'center', marginTop:30}}>{"دریافت این بروزرسانی اجباری است."}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.border.a1, fontSize:12, textAlign:'center', marginTop:30}}>{"دریافت این بروزرسانی اجباری است."}</Text>
                             }
                             {
                                 (status == "need-update" || status == "force-update")&&
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a5, fontSize:12, textAlign:'center', lineHeight:24}}>{"توجه کنید، هنگام دریافت اطلاعات و داده‌های بازی در همین صفحه بمانید و از اتصال دستگاه خود به اینترنت مطمئن شوید."}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a5, fontSize:12, textAlign:'center', lineHeight:24}}>{"توجه کنید، هنگام دریافت اطلاعات و داده‌های بازی در همین صفحه بمانید و از اتصال دستگاه خود به اینترنت مطمئن شوید."}</Text>
                             }
                         </View>
                     </View>

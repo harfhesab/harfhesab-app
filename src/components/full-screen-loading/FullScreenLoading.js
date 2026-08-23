@@ -78,7 +78,7 @@ const FullScreenLoading = React.forwardRef((props, ref)=>{
         >
             <View style={styles.modalContainer}>
                 {title && (
-                    <Text style={{fontFamily:Font.medium, fontSize:14, color:"#999999"}}>
+                    <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:"#999999"}}>
                         {title}
                     </Text>
                 )}

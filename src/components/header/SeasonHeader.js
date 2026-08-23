@@ -29,7 +29,7 @@ function SeasonHeader({height=65, paddingHorizontal=12, back=true, coin=true, ti
                 {
                     title&&
                     <View style={{flexDirection:'column', alignItems:'flex-start', justifyContent:'center'}}>
-                        <Text numberOfLines={1} style={{color:colors.header.content_1, maxWidth:width-100, fontFamily:Font.medium, fontSize:14}}>{title}</Text>
+                        <Text numberOfLines={1} style={{color:colors.header.content_1, maxWidth:width-100, fontFamily:Font.bakh_semi_bold, fontSize:14}}>{title}</Text>
                     </View>
                 }
             </View>

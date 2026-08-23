@@ -141,8 +141,8 @@ const HiddenWords = () => {
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                    <Text style={{ fontFamily: Font.medium, fontSize: 9, color: colors.primary.a5 }}>{"کلمات"}</Text>
-                    <Text style={{ fontFamily: Font.medium, fontSize: 9, color: colors.primary.a5 }}>{"پنهان"}</Text>
+                    <Text style={{ fontFamily: Font.bakh_semi_bold, fontSize: 9, color: colors.primary.a5 }}>{"کلمات"}</Text>
+                    <Text style={{ fontFamily: Font.bakh_semi_bold, fontSize: 9, color: colors.primary.a5 }}>{"پنهان"}</Text>
                 </AnimatedImageBackground>
             </TouchableOpacity>
             <Modal
@@ -173,12 +173,12 @@ const HiddenWords = () => {
                                     <Text style={{ fontFamily: Font.black, fontSize: 18, color: colors.primary.a2 }}>{"کل کلمات پنهان:"}</Text>
                                     <Text style={{ fontFamily: Font.black, fontSize: 22, color: colors.primary.a4 }}>{priceDigitSeperator(totalHiddenWords)}</Text>
                                 </View>
-                                <Text style={{ fontFamily: Font.medium, color: "#444444", fontSize: 9, textAlign: 'justify' }}>{"کل کلمات پنهانی که شما تاکنون در این حساب کاربری، در مراحل و چالش‌های مختلف، ایجاد کرده اید."}</Text>
+                                <Text style={{ fontFamily: Font.bakh_semi_bold, color: "#444444", fontSize: 9, textAlign: 'justify' }}>{"کل کلمات پنهانی که شما تاکنون در این حساب کاربری، در مراحل و چالش‌های مختلف، ایجاد کرده اید."}</Text>
                                 <View style={{ width: '100%', alignItems: 'center', flexDirection: 'row', gap: 5, marginTop: 5 }}>
                                     <Text style={{ fontFamily: Font.black, fontSize: 18, color: colors.primary.a2 }}>{"کلمات پنهان جدید:"}</Text>
                                     <Text style={{ fontFamily: Font.black, fontSize: 22, color: colors.primary.a4 }}>{priceDigitSeperator(newHiddenWords)}</Text>
                                 </View>
-                                <Text style={{ fontFamily: Font.medium, color: "#444444", fontSize: 9, textAlign: 'justify' }}>{"تعداد کلمات پنهانی که اخیرا ایجاد کرده‌اید و می‌توانید آن‌ها را تبدیل به سکه کنید."}</Text>
+                                <Text style={{ fontFamily: Font.bakh_semi_bold, color: "#444444", fontSize: 9, textAlign: 'justify' }}>{"تعداد کلمات پنهانی که اخیرا ایجاد کرده‌اید و می‌توانید آن‌ها را تبدیل به سکه کنید."}</Text>
                             </View>
                             <View style={{ width: "100%", alignItems: 'center', gap: 10 }}>
                                 <WoodProgressBar
@@ -238,7 +238,6 @@ const HiddenWords = () => {
                                 width={contentWidth - 100}
                                 height={22 * 1.6}
                                 fontSize={22}
-                                borderWidth={2}
                                 textColor={colors.primary.a5}
                                 borderColor={"#4d2719"}
                             />

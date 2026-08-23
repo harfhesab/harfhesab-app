@@ -98,13 +98,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     text1:{
-        fontFamily: Font.bold,
+        fontFamily: Font.bakh_bold,
         fontSize: 15,
         textAlign: 'center',
         maxWidth:"70%",
     },
     text2:{
-        fontFamily: Font.medium,
+        fontFamily: Font.bakh_semi_bold,
         fontSize: 11,
         textAlign: 'center',
         maxWidth:"70%",

@@ -281,7 +281,7 @@ function Splash(props){
         }
         const msg = message.map((item)=>({
             text:item,
-            style:{ maxWidth:width-65, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
+            style:{ maxWidth:width-65, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
             Icon:()=>(
                 <Icon name={"message-reply-text-outline"} type={"MaterialCommunityIcons"} style={{fontSize:20, color:colors.text.a2}}/>
             )

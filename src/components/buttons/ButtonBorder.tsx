@@ -43,7 +43,7 @@ function ButtonBorder({
     iconType,
     iconSize = 25,
     textSize = 16,
-    fontFamily = Font.medium,
+    fontFamily = Font.bakh_semi_bold,
     justifyContent = 'center',
     flexDirection = "row",
     textColor = colors.primary.a3,
@@ -103,7 +103,7 @@ function ButtonBorder({
                                 <Text style={{ fontFamily: fontFamily, fontSize: textSize, color: textColor, textAlign: 'center' }}>{text}</Text>
                                 {
                                     text2 &&
-                                    <Text style={{ fontFamily: Font.medium, fontSize: 12, color: textColor, textAlign: 'center' }}>{text2}</Text>
+                                    <Text style={{ fontFamily: Font.bakh_semi_bold, fontSize: 12, color: textColor, textAlign: 'center' }}>{text2}</Text>
                                 }
                             </View>)
                     }

@@ -51,7 +51,6 @@ const ButtonImgSrc: React.FC<ButtonImgSrcProps> = ({
                                 fontSize={fontSize}
                                 textColor={textColor}
                                 borderColor={textBorderColor}
-                                borderWidth={3}
                             />}
                     {(iconType && iconName)&&<Icon name={iconName} type={iconType} style={{fontSize:iconSize, color:iconColor}}/>}
                 </View>

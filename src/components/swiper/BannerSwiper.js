@@ -53,18 +53,18 @@ function BannerSwiper({items}){
                                         }
                                     </View>
                                     <View style={{flexDirection:'column', alignItems:'flex-start'}}>
-                                        <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:12, textAlign:"center"}}>{item.package?.title}</Text>
+                                        <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:13, textAlign:"center"}}>{item.package?.title}</Text>
                                     </View>
                                 </View>
                                 <View>
                                     <ButtonBorder
                                         text={"دریافت بازی"}
                                         height={35}
-                                        width={100}
+                                        width={110}
                                         loading={false}
                                         onPress={()=>{onClickItem(item)}}
                                         borderRadius={20}
-                                        textSize={14}
+                                        textSize={13}
                                         borderWidth={1}
                                     />
                                 </View>

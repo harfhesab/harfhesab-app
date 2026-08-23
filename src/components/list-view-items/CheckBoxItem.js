@@ -53,10 +53,10 @@ function CheckBoxItem({check, disabled, checkBoxSize, onPress, width, height, pa
                         />
                     }
                     <View>
-                        <Text style={{fontFamily:fontFamilyText1??Font.medium, fontSize:fontSizeText1??16, color:colors.text.a1}}>{text1}</Text>
+                        <Text style={{fontFamily:fontFamilyText1??Font.bakh_semi_bold, fontSize:fontSizeText1??16, color:colors.text.a1}}>{text1}</Text>
                         {
                             text2&&
-                            <Text style={{fontFamily:fontFamilyText2??Font.medium, fontSize:fontSizeText2??12, color:colors.text.a3}}>{text2}</Text>
+                            <Text style={{fontFamily:fontFamilyText2??Font.bakh_semi_bold, fontSize:fontSizeText2??12, color:colors.text.a3}}>{text2}</Text>
                         }
                     </View>
                 </View>

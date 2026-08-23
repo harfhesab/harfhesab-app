@@ -87,8 +87,8 @@ function GridItem({
                         }
                     </View>
                     <View style={{width:"100%", alignItems:'center', paddingHorizontal:10, flex:1, justifyContent:'space-between'}}>
-                        {title&&<Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:13, width:width - 20, textAlign:'center', lineHeight:20}}>{title}</Text>}
-                        {description&&<Text style={{fontFamily:Font.medium, color:colors.text.a6, fontSize:8, width:width - 20, textAlign:'center', lineHeight:15}}>{description}</Text>}
+                        {title&&<Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:13, width:width - 20, textAlign:'center', lineHeight:20}}>{title}</Text>}
+                        {description&&<Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a6, fontSize:8, width:width - 20, textAlign:'center', lineHeight:15}}>{description}</Text>}
                     </View>
                 </View>
             </TouchableNativeFeedback> 
@@ -96,7 +96,7 @@ function GridItem({
         {
             (badge && badge?.length > 0)&&
             <View style={{position:'absolute', start:-5, top:-5, backgroundColor:colors.primary.a4, borderRadius:20, paddingHorizontal:12, paddingVertical:2, alignItems:'center', justifyContent:'center'}}>
-                <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:10, textAlign:"center"}}>{badge}</Text>
+                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a1, fontSize:10, textAlign:"center"}}>{badge}</Text>
             </View>
         }
         </View>

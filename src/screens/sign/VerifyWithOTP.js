@@ -399,7 +399,7 @@ function VerifyWithOTP(props){
                 <View style={{justifyContent:"center", alignItems:'center', paddingTop:50}}>
                     <Icon name={'tooltip-cellphone'} type={"MaterialCommunityIcons"} style={{color:colors.text.a3, fontSize:100}}/>
                     <Text style={{fontFamily:Font.black, color:colors.text.a1, fontSize:18, textAlign:'center', marginVertical:10}}>{'کد تایید را وارد کنید'}</Text>
-                    <Text style={{fontFamily:Font.medium, color:colors.text.a3, fontSize:12, textAlign:'center'}}>{'یک کد 6 رقمی به شماره‌ موبایل شما ارسال شد'}</Text>
+                    <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a3, fontSize:12, textAlign:'center'}}>{'یک کد 6 رقمی به شماره‌ موبایل شما ارسال شد'}</Text>
                     <Text style={{textDecorationLine:'underline', fontFamily:Font.black, color:colors.text.a3, fontSize:16, textAlign:'center', marginBottom:30}}>{phoneDigitSeperator(phone || '')}</Text>
                     <InputCodeField
                         value={value}
@@ -423,7 +423,7 @@ function VerifyWithOTP(props){
                             :
                             newOtp == true?
                             <TouchableOpacity activeOpacity={0.5} onPress={requestNewOtp}>
-                                <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'درخواست مجدد کد'}</Text>
+                                <Text style={{fontFamily:Font.bakh_bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'درخواست مجدد کد'}</Text>
                             </TouchableOpacity>
                             :
                             <TimerUIThread
@@ -437,7 +437,7 @@ function VerifyWithOTP(props){
                         }
                     </View>
                     <TouchableOpacity activeOpacity={0.5} onPress={()=>{props.navigation.goBack()}}>
-                        <Text style={{fontFamily:Font.bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'تغییر شماره موبایل'}</Text>
+                        <Text style={{fontFamily:Font.bakh_bold, color:colors.primary.a1, fontSize:14, textAlign:'center'}}>{'تغییر شماره موبایل'}</Text>
                     </TouchableOpacity>
                 </View>
                 <ButtonGradient

@@ -55,7 +55,7 @@ function SimpleItem({
                                 />
                             }
                         </ImageBackground>
-                        <Text style={{fontSize:14, color:title_color, fontFamily:Font.bold}}>{title}</Text>
+                        <Text style={{fontSize:14, color:title_color, fontFamily:Font.bakh_bold}}>{title}</Text>
                     </View>
                     <View style={{flexDirection:'row', alignItems:'center', gap:10}}>
                         {

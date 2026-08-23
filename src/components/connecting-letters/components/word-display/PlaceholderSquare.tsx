@@ -66,10 +66,10 @@ const PlaceholderSquare = ({ letter, isRevealed, size, mainWord, helped = false 
                 width={size}
                 height={size}
                 fontSize={size/1.4}
-                borderWidth={1}
                 textColor={"#960000"}
                 borderColor={"#ffeb3b"}
                 fontName={"YekanBakh-ExtraBlack"}
+                borderWidth={0.85}
             />
           )}
         </Animated.View>

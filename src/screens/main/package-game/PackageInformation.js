@@ -28,6 +28,7 @@ import CommentRating from '../../../components/rating/CommentRating';
 import Border from '../../../components/Border';
 import LoadingBar from '../../../components/screen-loading/LoadingBar';
 import SeasonsBannerSwiper from '../../../components/swiper/SeasonsBannerSwiper';
+import ExpandableText from '../../../components/text-components/expandable-text';
 
 const {width, height} = Dimensions.get("window")
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
@@ -142,6 +143,7 @@ function PackageInformation(props){
                                 },
                                 rating_reward,
                                 seasons{title, first_media{path}, number_stage},
+                                is_active
                             },
                             user_package_status{
                                 status,
@@ -695,6 +697,12 @@ function PackageInformation(props){
                                 resizeMode="cover"
                                 borderRadius={0}
                             />
+                            {
+                                data?.package?.badge&&
+                                <View style={{backgroundColor:colors.primary.a6, paddingHorizontal:15, borderRadius:20, paddingVertical:4, position:'absolute', bottom:-8, end:8}}>
+                                    <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.text.a1}}>{data.package.badge}</Text>
+                                </View>
+                            }
                         </View>
                         <View style={{width:width, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', marginTop:15, gap:10, paddingHorizontal:15}}>
                             <View style={{borderWidth:1, borderColor:colors.border.a1, borderRadius:15, backgroundColor:colors.border.a1}}>
@@ -707,8 +715,8 @@ function PackageInformation(props){
                                 />
                             </View>
                             <View style={{flexDirection:'column', alignItems:'flex-start', gap:5}}>
-                                <Text style={{fontFamily:Font.medium, fontSize:16, color:colors.text.a1}}>{data?.package?.title}</Text>
-                                <Text style={{fontFamily:Font.medium, fontSize:10, color:colors.text.a5}}>{data?.package?.subject}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:16, color:colors.text.a1}}>{data?.package?.title}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.text.a5}}>{data?.package?.subject}</Text>
                             </View>
                         </View>
                         <View style={{flexDirection:'row', alignItems:'center', paddingHorizontal:15, paddingTop:20, gap:5}}>
@@ -733,38 +741,60 @@ function PackageInformation(props){
                                 width={(width - 45)/4}
                             />
                         </View>
-                        <View style={{width:width, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15, paddingTop:20}}>
-                            {
-                                (checkUpdate !== "force-update")&&
-                                <ButtonGradient
-                                    text={
-                                        (packageId == packageParamId && progressLoading == true && contentSyncState == "initial-sync")?"در حال بارگیری":
-                                        (packageId == packageParamId && status == "get-error" && contentSyncState == "initial-sync")?"تلاش مجدد":
-                                        data?.user_package_status?.button_text
-                                    }
-                                    textSize={14}
-                                    onPress={onClickGetPackage}
-                                    width={checkUpdate == "need-update" ?width/2 - 20:width - 30}
-                                    height={50}
-                                    loading={false}
-                                />
-                            }
-                            {
-                                (checkUpdate == "need-update" || checkUpdate =="force-update")&&
-                                <ButtonBorder
-                                    text={
-                                        (packageId == packageParamId && progressLoading == true && contentSyncState == "delta-sync")?"در حال بارگیری":
-                                        (packageId == packageParamId && status == "get-error" && contentSyncState == "delta-sync")?"تلاش مجدد":
-                                        "بروزرسانی محتوا"
-                                    }
-                                    height={50}
-                                    width={checkUpdate == "force-update" ?width - 30:width/2 - 20}
-                                    loading={false}
-                                    onPress={onClickUpdatePackage}
-                                    textSize={14}
-                                />
-                            }
-                        </View>
+                        {
+                            data?.package?.is_active == true?
+                            <View style={{width:width, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15, paddingTop:20}}>
+                                {
+                                    (checkUpdate !== "force-update")&&
+                                    <ButtonGradient
+                                        text={
+                                            (packageId == packageParamId && progressLoading == true && contentSyncState == "initial-sync")?"در حال بارگیری":
+                                            (packageId == packageParamId && status == "get-error" && contentSyncState == "initial-sync")?"تلاش مجدد":
+                                            data?.user_package_status?.button_text
+                                        }
+                                        textSize={14}
+                                        onPress={onClickGetPackage}
+                                        width={checkUpdate == "need-update" ?width/2 - 20:width - 30}
+                                        height={50}
+                                        loading={false}
+                                    />
+                                }
+                                {
+                                    (checkUpdate == "need-update" || checkUpdate =="force-update")&&
+                                    <ButtonBorder
+                                        text={
+                                            (packageId == packageParamId && progressLoading == true && contentSyncState == "delta-sync")?"در حال بارگیری":
+                                            (packageId == packageParamId && status == "get-error" && contentSyncState == "delta-sync")?"تلاش مجدد":
+                                            "بروزرسانی محتوا"
+                                        }
+                                        height={50}
+                                        width={checkUpdate == "force-update" ?width - 30:width/2 - 20}
+                                        loading={false}
+                                        onPress={onClickUpdatePackage}
+                                        textSize={14}
+                                    />
+                                }
+                            </View>
+                            :
+                            <View style={{width:width, alignItems:'center', justifyContent:'center', paddingHorizontal:15, paddingTop:20}}>
+                                <TouchableOpacity
+                                    onPress={()=>{
+                                         showToast({
+                                            title: "غیر فعال",
+                                            message: "در حال حاضر این بستهٔ داستانی بازی غیر فعال است.",
+                                            type: "error",
+                                            animationType: "slide",
+                                            position: "top",
+                                            duration: 4000
+                                        });
+                                    }}
+                                    activeOpacity={0.8}
+                                    style={{height:50, width:width - 30, backgroundColor:`${colors.primary.a1}30`, borderRadius:10, alignItems:'center', justifyContent:'center'}}
+                                    >
+                                    <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6}}>{"غیر فعال"}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        }
                         <View style={{marginTop:10, width:width, alignItems:'center', height:15}}>
                             {
                                 (packageId == packageParamId && progressLoading == true)&&
@@ -782,7 +812,7 @@ function PackageInformation(props){
                         {
                             data?.package?.seasons?.length > 0&&
                             <View style={{width:width, marginTop:10}}>
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:16, marginHorizontal:15}}>{"فصل‌های بستهٔ بازی"}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a1, fontSize:16, marginHorizontal:15}}>{"فصل‌های بستهٔ بازی"}</Text>
                                 <View style={{width:width, alignItems:'center'}}>
                                     <SeasonsBannerSwiper
                                         items={data?.package?.seasons}
@@ -791,13 +821,21 @@ function PackageInformation(props){
                             </View>
                         }
                         <View style={{backgroundColor:`${colors.primary.a6}15`, width:width-30, alignSelf:'center', paddingHorizontal:10, paddingVertical:5, borderRadius:5, marginTop:20}}>
-                            <Text style={{fontFamily:Font.medium, color:colors.text.a6, fontSize:12, lineHeight:30}}>{`وضعیت محتوا : `}<Text style={{color:colors.primary.a6}}>{data?.package?.completion_status_title}</Text></Text>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a6, fontSize:12, lineHeight:30}}>{`وضعیت محتوا : `}<Text style={{color:colors.primary.a6}}>{data?.package?.completion_status_title}</Text></Text>
                         </View>
                         {
                             data?.package.description?.length>0&&
                             <View style={{width:width, paddingHorizontal:15, marginTop:20}}>
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:16, lineHeight:30}}>{"دربارهٔ بستهٔ بازی"}</Text>
-                                <Text style={{fontFamily:Font.medium, color:colors.text.a4, fontSize:14, textAlign:'justify', lineHeight:27}}>{data?.package.description}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:16, lineHeight:30}}>{"دربارهٔ بستهٔ بازی"}</Text>
+                                <ExpandableText
+                                    text={data?.package.description}
+                                    numberOfLines={7}
+                                    moreLabel={"بیشتر"}
+                                    lessLabel={"بستن"}
+                                    moreLabelColor={colors.primary.a8}
+                                    textStyle={{fontFamily:Font.bakh_semi_bold, color:colors.text.a4, fontSize:14, lineHeight:28, textAlign:'justify'}}
+                                    animationDuration={500}
+                                />
                             </View>
                         }
                         <View style={{width:width, paddingTop:30}}>
@@ -821,9 +859,9 @@ function PackageInformation(props){
                             <View style={{marginTop:10}}>
                                 <TouchableNativeFeedback onPress={viewAllPackageRating} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                                     <View style={{width:width, height:55, flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:15 }}>
-                                        <Text style={{fontFamily:Font.medium, color:colors.text.a1, fontSize:14}}>{"نظرات و امتیازها"}</Text>
+                                        <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a1, fontSize:14}}>{"نظرات و امتیازها"}</Text>
                                         <View style={{flexDirection:"row", alignItems:"center", gap:8}}>
-                                            <Text style={{fontSize:14, color:colors.primary.a1, fontFamily:Font.medium}}>{"بیشتر"}</Text>
+                                            <Text style={{fontSize:14, color:colors.primary.a1, fontFamily:Font.bakh_semi_bold}}>{"بیشتر"}</Text>
                                             <Icon name={'angle-left'} type={'FontAwesome'} style={{color:colors.primary.a1, fontSize:25}}/>
                                         </View>
                                     </View>
@@ -893,8 +931,8 @@ const InfoBox = ({title, value, width})=>{
     const colors = useAppTheme()
     return(
         <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center', gap:5, width:width, paddingVertical:10, backgroundColor:`${colors.background.a2}90`, borderRadius:10, borderColor:colors.border.a2, borderWidth:0.5}}>
-            <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a2}}>{value}</Text>
-            <Text style={{fontFamily:Font.medium, fontSize:8, color:colors.text.a6}}>{title}</Text>
+            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a2}}>{value}</Text>
+            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:8, color:colors.text.a6}}>{title}</Text>
         </View>
     )
 }

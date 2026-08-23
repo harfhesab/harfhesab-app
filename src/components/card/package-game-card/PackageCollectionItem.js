@@ -20,7 +20,7 @@ function PackageCollectionItem({_id, title, image}){
     return (
         <View style={{alignItems:'center', justifyContent:'center', borderRadius:10, overflow:'hidden'}}>
             <TouchableNativeFeedback onPress={click} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
-                <View style={{flexDirection:'column', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:8, height:itemWidth + 65}}>
+                <View style={{flexDirection:'column', gap:5, alignItems:'center', justifyContent:'flex-start', paddingHorizontal:5, paddingVertical:8, height:itemWidth + 60}}>
                     <View style={{width:itemWidth, height:itemWidth, alignItems:'center', justifyContent:'center', backgroundColor:colors.border.a1, borderRadius:15}}>
                         {
                             image?
@@ -37,7 +37,7 @@ function PackageCollectionItem({_id, title, image}){
                         }
                     </View>
                     <View>
-                        <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:13, textAlign:"center", width:itemWidth, lineHeight:21}}>{title}</Text>
+                        <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:13, textAlign:"center", width:itemWidth, lineHeight:22}}>{title}</Text>
                     </View>
                 </View>
             </TouchableNativeFeedback>

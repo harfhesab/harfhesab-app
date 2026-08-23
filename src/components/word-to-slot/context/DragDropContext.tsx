@@ -798,7 +798,7 @@ export const DragDropProvider: React.FC<{
         const sentence = parts[playingPartIndex]?.sentence_display??parts[playingPartIndex].sentence;
         showWordToSlotGuide({dispatch, currentWords, sentence})
       }, 2000)
-    } else if(unknownWordGuide == false && existUnknownWord == true && stageNumber && stageNumber < 4){
+    } else if(unknownWordGuide == false && existUnknownWord == true && stageNumber && stageNumber < 5){
       const { showUnknownWordGuide } = await import('../../../utils/functions/Guide');
       setTimeout(()=>{
         showUnknownWordGuide({dispatch})

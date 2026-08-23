@@ -13,7 +13,7 @@ function InputText({
     placeholder,
     placeholderTextColor,
     keyboardType = "default",
-    fontFamily = Font.medium,
+    fontFamily = Font.bakh_semi_bold,
     fontSize = 16,
     clearText,
     multiline,
@@ -53,7 +53,7 @@ function InputText({
             {
                 title && (
                     <View style={{with: "100%", alignItems: "flex-start", paddingBottom: 5}}>
-                        <Text style={{fontFamily: Font.medium, fontSize: 14, color: focused == true ? titleColor : textColor}}>{title}{required == true && (<Text style={{color: colors.alert.a1}}>{" * "}</Text>)}</Text>
+                        <Text style={{fontFamily: Font.bakh_semi_bold, fontSize: 14, color: focused == true ? titleColor : textColor}}>{title}{required == true && (<Text style={{color: colors.alert.a1}}>{" * "}</Text>)}</Text>
                     </View>
                 )
             }

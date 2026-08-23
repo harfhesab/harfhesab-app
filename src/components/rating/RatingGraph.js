@@ -39,7 +39,7 @@ const RatingGraph = ({ number_rating, reviews, index }) => {
     return (
         <View style={{ height: 20, width: width - 120, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
             <View style={{ width: 40, height: 20, alignItems: 'flex-end', justifyContent: 'center', marginEnd: 5 }}>
-                <Text style={{ fontSize: 10, color: colors.text.a6, fontFamily: Font.medium }}>
+                <Text style={{ fontSize: 10, color: colors.text.a6, fontFamily: Font.bakh_semi_bold }}>
                     {number_rating > 0 ? priceDigitSeperator(number_rating) : number_rating}
                 </Text>
             </View>

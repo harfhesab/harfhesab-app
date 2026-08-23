@@ -79,7 +79,6 @@ function StageNumber({
                     width={STAGE_CARD_SIZE}
                     height={fontSize*1.6}
                     fontSize={fontSize}
-                    borderWidth={3}
                     textColor={colors.primary.a5}
                     borderColor={colors.primary.a2}
                 />

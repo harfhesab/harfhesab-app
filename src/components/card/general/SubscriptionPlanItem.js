@@ -36,8 +36,8 @@ function SubscriptionPlanItem({_id, click, productId, title, badge, image, durat
                         />
                     </View>
                     <View>
-                        <Text numberOfLines={2} style={{fontFamily:Font.bold, color:colors.primary.a3, fontSize:14, textAlign:"center"}}>{`${priceDigitSeperator(duration)} روز اشتراک`}</Text>
-                        <Text numberOfLines={2} style={{fontFamily:Font.medium, color:colors.text.a2, fontSize:8, textAlign:"center", marginBottom:10}}>{`( ${title} )`}</Text>
+                        <Text numberOfLines={2} style={{fontFamily:Font.bakh_bold, color:colors.primary.a3, fontSize:14, textAlign:"center"}}>{`${priceDigitSeperator(duration)} روز اشتراک`}</Text>
+                        <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:8, textAlign:"center", marginBottom:10}}>{`( ${title} )`}</Text>
                         <ButtonImgSrc
                             onPress={click}
                             fontSize={12}

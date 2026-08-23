@@ -18,7 +18,7 @@ function SimpleCenterItem({ onPress, disabled, width, height, paddingHorizontal,
     return (
         <TouchableNativeFeedback disabled={disabled??undefined} onPress={onClick} style={{width:width??"100%"}} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
             <View style={{alignItems:'center', justifyContent:'center', width:width??"100%", height:height??60, paddingHorizontal:paddingHorizontal??15}}>
-                <Text style={{fontFamily:fontFamilyText1??Font.medium, color:colorText1??colors.text.a1, fontSize:fontSizeText1??14}}>{text1}</Text>
+                <Text style={{fontFamily:fontFamilyText1??Font.bakh_semi_bold, color:colorText1??colors.text.a1, fontSize:fontSizeText1??14}}>{text1}</Text>
             </View>
         </TouchableNativeFeedback> 
     );

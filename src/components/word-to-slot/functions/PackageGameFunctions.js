@@ -315,15 +315,15 @@ const endAllStageAlert = ({stageNumber, packageName, packageRef})=>{
     const msg = [
         {
             text:"مرحلهٔ بعدی یافت نشد!",
-            style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+            style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
         },
         {
             text:`مراحل جدید بستهٔ "${packageName}" یافت نشد. از صفحهٔ مربوط به بستهٔ بازی، بررسی کنید که در صورت وجود بروزرسانی، محتوای جدید بستهٔ بازی را دریافت کنید.`,
-            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
             text:`توجه کنید، بعد از دریافت محتوای جدید، دوباره مرحله ${stageNumber} را بازی کنید تا مرحله ${stageNumber + 1} باز شود.`,
-            style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
     ]
     AlertBottomDrawerHelper.showAlert({

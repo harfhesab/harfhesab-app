@@ -34,7 +34,6 @@ function ConnectingLettersKalamAkhar(props){
     const partWords = challengeData?.parts[partIndex]?.words
     const wordIndex = partWords?.findIndex(w=>w._id.toString() == wordId)
     const data =  partWords[wordIndex]
-    const stageNumber = 1
 
     const saveMainWordBuilded = ()=>{
         saveMainWordBuildedInKalamAkharChallenge( realm, challengeId, partIndex, wordId );
@@ -66,7 +65,7 @@ function ConnectingLettersKalamAkhar(props){
                         type={"kalam-akhar"}
                         data={data}
                         timeLimitData={timeLimitData}
-                        stageNumber={stageNumber}
+                        stageNumber={undefined}
                         saveMainWordBuilded={saveMainWordBuilded}
                         saveNewAdditionalWordsBuilded={saveNewAdditionalWordsBuilded}
                         saveNewHiddenWordsBuilded={saveNewHiddenWordsBuilded}

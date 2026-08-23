@@ -415,7 +415,7 @@ export const LettersProvider: React.FC<{
     checkShowGuide()
   }, [])
   const checkShowGuide = async()=>{
-    if(connectingLetterGuide == false && stageNumber && stageNumber < 4){
+    if(connectingLetterGuide == false && stageNumber && stageNumber < 5){
       const { showConnectingLetterGuide } = await import('../../../utils/functions/Guide');
       setTimeout(()=>{
         const letters = data?.letters

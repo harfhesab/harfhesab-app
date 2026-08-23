@@ -128,15 +128,15 @@ function Account(props){
         const msg = [
             {
                 text:"آیا از حسابتان خارج می‌شوید؟",
-                style:{ maxWidth:width-65, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
                 text:"توجه کنید برای ذخیره‌ی آخرین اطلاعات بازی روی حساب کاربری، از اتصال دستگاه خود به اینترنت مطمئن شوید تا همه‌ی اطلاعات، روی حسابتان ذخیره شود.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
             {
                 text:"لازم به ذکر است، اگر در آخرین مرحله از بازی‌ها، چه در بازی مرحله‌ای و چه در بسته‌های بازی، چنانچه دستگاهتان به اینترنت دسترسی نداشته است، ممکن است ذخیره‌ی روند پیشرفت بازی هایتان به درستی انجام نشده باشد.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             }
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -235,7 +235,7 @@ function Account(props){
                                     }
                                     <Text style={{fontFamily:Font.en_black, fontSize:15, color:colors.text.a1}}>{name}</Text>
                                 </View>
-                                <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{loginType == "registered" ? phone : "کاربر میهمان"}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a1}}>{loginType == "registered" ? phone : "کاربر میهمان"}</Text>
                             </View>
                             <TouchableOpacity 
                                 onPress={()=>{
@@ -261,7 +261,6 @@ function Account(props){
                                         fontSize={14}
                                         textColor={"#FFFFFF"}
                                         borderColor={"#311b92"}
-                                        borderWidth={2.5}
                                     />
                                 </ImageBackground>
                             </TouchableOpacity>

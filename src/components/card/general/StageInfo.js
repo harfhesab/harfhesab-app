@@ -67,7 +67,7 @@ function StageInfo({
                             lessLabel={"بستن"}
                             moreLabelColor={colors.primary.a8}
                             textStyle={{fontFamily:Font.bakh_semi_bold, color:`${colors.primary.a7}99`, fontSize:12, lineHeight:24}}
-                            animationDuration={700}
+                            animationDuration={500}
                             containerStyle={{marginTop:15}}
                         />
                 }

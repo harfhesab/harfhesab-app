@@ -42,17 +42,17 @@ function ArrowItem({showArrow, disabled, arrowColor, arrowSize, arrowText, arrow
                         />
                     }
                     <View>
-                        <Text style={{fontFamily:fontFamilyText1??Font.medium, fontSize:fontSizeText1??16, color:colors.text.a1}}>{text1}</Text>
+                        <Text style={{fontFamily:fontFamilyText1??Font.bakh_semi_bold, fontSize:fontSizeText1??16, color:colors.text.a1}}>{text1}</Text>
                         {
                             text2&&
-                            <Text style={{fontFamily:fontFamilyText2??Font.medium, fontSize:fontSizeText2??12, color:colors.text.a3}}>{text2}</Text>
+                            <Text style={{fontFamily:fontFamilyText2??Font.bakh_semi_bold, fontSize:fontSizeText2??12, color:colors.text.a3}}>{text2}</Text>
                         }
                     </View>
                 </View>
                 <View style={{flexDirection:"row", alignItems:"center", gap:10}}>
                     {
                         arrowText&&
-                        <Text style={{fontSize:arrowTextSize??14, color:arrowColor??colors.text.a2, fontFamily:Font.medium}}>{arrowText}</Text>
+                        <Text style={{fontSize:arrowTextSize??14, color:arrowColor??colors.text.a2, fontFamily:Font.bakh_semi_bold}}>{arrowText}</Text>
                     }
                     {
                         showArrow&&

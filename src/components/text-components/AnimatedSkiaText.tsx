@@ -10,7 +10,10 @@ import {
   TextDirection,
   Mask,
   Rect,
-  LinearGradient
+  LinearGradient,
+  PaintStyle,
+  StrokeJoin,
+  StrokeCap,
 } from '@shopify/react-native-skia';
 import { useDerivedValue, SharedValue } from 'react-native-reanimated';
 // مسیر این ایمپورت را بر اساس ساختار پوشه‌های خود تنظیم کنید
@@ -57,36 +60,53 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
 
     const maxWidth = initialWidth * 0.95;
 
-    // یک تابع سازنده برای تولید پاراگراف با رنگ‌های Solid (بدون Paint)
-    const buildPara = (color: Float32Array) => {
-      const builder = Skia.ParagraphBuilder.Make({
-        textAlign: TextAlign.Center,
-        textDirection: rtl ? TextDirection.RTL : TextDirection.LTR,
-      }, customFontMgr); // 👈 مدیر فونت پاس داده شد
+    // 🌟 پاراگراف ماسک (سفید، بدون تغییر) - برای برش گرادیانت استفاده می‌شود
+    const maskBuilder = Skia.ParagraphBuilder.Make({
+      textAlign: TextAlign.Center,
+      textDirection: rtl ? TextDirection.RTL : TextDirection.LTR,
+    }, customFontMgr);
 
-      builder.pushStyle({
-        fontFamilies: [fontName], // 👈 نام فونت به صورت داینامیک اعمال می‌شود
+    maskBuilder.pushStyle({
+      fontFamilies: [fontName],
+      fontSize: initialFontSize,
+      color: parsedWhiteColor,
+    });
+    maskBuilder.addText(text);
+    const pMask = maskBuilder.build();
+    pMask.layout(maxWidth);
+
+    // 🌟 پاراگراف حاشیه (border) - با foregroundPaint استروک واقعی به‌جای ۸ کپی آفست
+    const strokePaint = Skia.Paint();
+    strokePaint.setStyle(PaintStyle.Stroke);
+    strokePaint.setStrokeWidth(borderWidth * 2); // stroke از مرکز کشیده می‌شود، برای حاشیه‌ی بیرونی معادل borderWidth دو برابرش می‌کنیم
+    strokePaint.setColor(parsedBorderColor);
+    strokePaint.setStrokeJoin(StrokeJoin.Round);
+    strokePaint.setStrokeCap(StrokeCap.Round);
+    strokePaint.setAntiAlias(true);
+
+    const borderBuilder = Skia.ParagraphBuilder.Make({
+      textAlign: TextAlign.Center,
+      textDirection: rtl ? TextDirection.RTL : TextDirection.LTR,
+    }, customFontMgr);
+
+    borderBuilder.pushStyle(
+      {
+        fontFamilies: [fontName],
         fontSize: initialFontSize,
-        color: color, 
-      });
-
-      builder.addText(text); 
-      const p = builder.build();
-      p.layout(maxWidth); 
-      return p;
-    };
-
-    // ساخت دو پاراگراف: یکی برای حاشیه (با رنگ بوردر) و یکی برای ماسک (رنگ سفید)
-    const pBorder = buildPara(parsedBorderColor);
-    const pMask = buildPara(parsedWhiteColor);
+      },
+      strokePaint, // 👈 foregroundPaint - همان چیزی که کیفیت حاشیه را واقعی می‌کند
+    );
+    borderBuilder.addText(text);
+    const pBorder = borderBuilder.build();
+    pBorder.layout(maxWidth);
 
     return {
       maskParagraph: pMask,
       borderParagraph: pBorder,
-      paraHeight: pBorder.getHeight(),
+      paraHeight: pMask.getHeight(), // 👈 اندازه‌گیری از روی پاراگراف بدون استروک (متریک دقیق‌تر و بدون تاثیر ضخامت خط)
       paraWidth: maxWidth
     };
-  }, [customFontMgr, text, rtl, initialFontSize, initialWidth, parsedBorderColor, parsedWhiteColor, fontName]); // 👈 fontName اضافه شد
+  }, [customFontMgr, text, rtl, initialFontSize, initialWidth, parsedBorderColor, parsedWhiteColor, fontName, borderWidth]); // 👈 borderWidth هم به وابستگی‌ها اضافه شد چون در strokePaint استفاده می‌شود
 
   if (!customFontMgr || !maskParagraph || !borderParagraph) {
     return null;
@@ -94,30 +114,19 @@ const AnimatedSkiaText: React.FC<AnimatedSkiaTextProps> = ({
 
   const x = (initialWidth - paraWidth) / 2;
   const y = (initialHeight - paraHeight) / 2;
-  
-  // محاسبه مختصات برای افکت Stroke با استفاده از ۸ کپی از متن
-  const d = borderWidth;
-  const strokeOffsets = [
-    [-d, -d], [0, -d], [d, -d],
-    [-d,  0],          [d,  0],
-    [-d,  d], [0,  d], [d,  d]
-  ];
 
   return (
     <Canvas style={styles.canvas}>
       <Group transform={transform}>
         
         {/* لایه اول: استروک (Stroke) */}
-        {/* رسم چندین باره‌ی پاراگراف با جابه‌جایی‌های ریز برای ایجاد حاشیه */}
-        {strokeOffsets.map(([dx, dy], index) => (
-          <Paragraph 
-            key={`stroke-${index}`}
-            paragraph={borderParagraph} 
-            x={x + dx} 
-            y={y + dy} 
-            width={paraWidth} 
-          />
-        ))}
+        {/* یک پاراگراف حاشیه به‌جای ۸ کپی قبلی */}
+        <Paragraph 
+          paragraph={borderParagraph} 
+          x={x} 
+          y={y} 
+          width={paraWidth} 
+        />
 
         {/* لایه دوم: گرادیانت روی متن اصلی */}
         {/* استفاده از Paragraph به عنوان یک ماسک برای بُرش دادن مستطیل گرادیانت‌دار */}

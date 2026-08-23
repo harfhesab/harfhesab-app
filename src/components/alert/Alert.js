@@ -129,7 +129,7 @@ const Alert = React.forwardRef((props, ref)=>{
                                 style={{ flexGrow: 0 }}
                                 contentContainerStyle={{width:"100%", alignItems:bodyAlign??'center'}}
                             >
-                                <Text style={{fontSize:bodyTextSize??14, fontFamily:bodyFontFamily??Font.medium, color:colors.text.a2, textAlign:textAlign??'center', marginVertical:10, lineHeight:lineHeight??32}}>{body}</Text>
+                                <Text style={{fontSize:bodyTextSize??14, fontFamily:bodyFontFamily??Font.bakh_semi_bold, color:colors.text.a2, textAlign:textAlign??'center', marginVertical:10, lineHeight:lineHeight??32}}>{body}</Text>
                             </ScrollView>
                         </View>
                         {
@@ -176,7 +176,7 @@ const Alert = React.forwardRef((props, ref)=>{
                                             }}
                                             style={{alignItems:'center', justifyContent:'center'}}
                                         >
-                                            <Text style={{fontFamily:Font.bold, fontSize:item?.textSize??16, color:item?.color??colors.primary.a1, textAlign:'center'}}>{item.text}</Text>
+                                            <Text style={{fontFamily:Font.bakh_bold, fontSize:item?.textSize??16, color:item?.color??colors.primary.a1, textAlign:'center'}}>{item.text}</Text>
                                         </TouchableOpacity>)
                                     ))
                                 }

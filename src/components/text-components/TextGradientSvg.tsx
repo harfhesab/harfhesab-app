@@ -41,7 +41,7 @@ interface TextGradientSvgProps {
 const TextGradientSvg: React.FC<TextGradientSvgProps> = ({
   text,
   fontSize = 20,
-  fontFamily = Font.medium,
+  fontFamily = Font.bakh_semi_bold,
   colors = ['#4e2fffff', '#9c2f2fff'],
   height,
   x = 0,

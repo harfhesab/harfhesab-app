@@ -500,7 +500,7 @@ function KalamAkharInformation(props){
                                                     <View style={{ backgroundColor:`${colors.primary.a7}90`, borderRadius:10, alignItems:'center', justifyContent:'center', paddingHorizontal:10, paddingVertical:5}}>
                                                         <TimerUIThread
                                                             style={{fontSize: 12, fontFamily: Font.black, color: colors.primary.a5}}
-                                                            titleStyle={{fontSize:8, fontFamily: Font.medium, color: `${colors.primary.a5}99`}}
+                                                            titleStyle={{fontSize:8, fontFamily: Font.bakh_semi_bold, color: `${colors.primary.a5}99`}}
                                                             seconds={timer?.seconds}
                                                             minutes={timer?.minutes}
                                                             hours={timer?.hours}

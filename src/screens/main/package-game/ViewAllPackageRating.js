@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     centerFlex: { flex: 1, alignItems: 'center', justifyContent: 'center' },
     title: {
         fontSize: 14,
-        fontFamily: Font.medium,
+        fontFamily: Font.bakh_semi_bold,
         marginStart: 10,
         maxWidth: width - 100
     }

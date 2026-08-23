@@ -7,7 +7,7 @@ import Icon from '../../utils/Icon';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
 function ButtonGradient(
-    {loading, loadingType, onPress, borderRadius=8, width, height, text, text2, iconName, iconType, iconSize=25, backgorundGradinte, textSize=16, fontFamily=Font.medium, justifyContent='center', flexDirection='row', activeOpacity=0.8}
+    {loading, loadingType, onPress, borderRadius=8, width, height, text, text2, iconName, iconType, iconSize=25, backgorundGradinte, textSize=16, fontFamily=Font.bakh_semi_bold, justifyContent='center', flexDirection='row', activeOpacity=0.8}
 ){
     const colors = useAppTheme();
 
@@ -42,7 +42,7 @@ function ButtonGradient(
                             <Text style={{fontFamily:fontFamily, fontSize:textSize, color:colors.button_gradient.content_1, textAlign:'center'}}>{text}</Text>
                             {
                                 text2&&
-                                <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.button_gradient.content_2, textAlign:'center'}}>{text2}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.button_gradient.content_2, textAlign:'center'}}>{text2}</Text>
                             }
                         </View>)
                     }

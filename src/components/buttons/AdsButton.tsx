@@ -52,7 +52,7 @@ function AdsButton(
             const msg = [
                 {
                     text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
-                    style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                    style:{ width:screenWidth-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                 }
             ]
             AlertBottomDrawerHelper.showAlert({
@@ -84,7 +84,7 @@ function AdsButton(
             const msg = [
                 {
                     text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
-                    style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                    style:{ width:screenWidth-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                 }
             ]
             AlertBottomDrawerHelper.showAlert({
@@ -119,7 +119,7 @@ function AdsButton(
                 const msg = [
                     {
                         text:`تعداد ${reward} سکه با موفقیت به حساب کاربری شما اضافه شد.`,
-                        style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                        style:{ width:screenWidth-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                     }
                 ]
                 AlertBottomDrawerHelper.showAlert({
@@ -157,7 +157,7 @@ function AdsButton(
                     const msg = [
                         {
                             text:"برای دریافت سکه، باید ویدیو را تا انتها تماشا کنید.",
-                            style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                            style:{ width:screenWidth-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                         }
                     ]
                     AlertBottomDrawerHelper.showAlert({
@@ -187,7 +187,7 @@ function AdsButton(
                 const msg = [
                     {
                         text:"مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.",
-                        style:{ width:screenWidth-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
+                        style:{ width:screenWidth-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'center', textAlign:'center', lineHeight:24},
                     }
                 ]
                 AlertBottomDrawerHelper.showAlert({

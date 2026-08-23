@@ -98,7 +98,7 @@ const Calendar = React.forwardRef((props, ref)=>{
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
-                    <Text numberOfLines={1} style={{color:"#FFF", fontFamily:Font.medium, fontSize:10}}>{current == "year"?"سال":current == "mounth"?"ماه":current == "day"?"روز":""}</Text>
+                    <Text numberOfLines={1} style={{color:"#FFF", fontFamily:Font.bakh_semi_bold, fontSize:10}}>{current == "year"?"سال":current == "mounth"?"ماه":current == "day"?"روز":""}</Text>
                 </ImageBackground>
             </TouchableOpacity>
         )
@@ -150,7 +150,7 @@ const Calendar = React.forwardRef((props, ref)=>{
                             imageStyle={{ resizeMode: "stretch" }}
                             resizeMode="stretch"
                         >
-                            <Text style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1}}>{title}</Text>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a1}}>{title}</Text>
                         </ImageBackground>
                         <TouchableOpacity
                             activeOpacity={0.8}

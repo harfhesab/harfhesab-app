@@ -117,15 +117,15 @@ function StageGame(props){
         const msg = [
             {
                 text:"دریافت محتوای بازی مرحله‌ای!",
-                style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
                 text:"برای شروع بازی مرحله‌ای، ابتدا محتوای بازی را دریافت کنید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
             },
             {
                 text:"توجه کنید هنگام دریافت محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
             },
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -164,15 +164,15 @@ function StageGame(props){
         const msg = [
             {
                 text:"بروزرسانی محتوای بازی مرحله‌ای!",
-                style:{ maxWidth:width-30, fontFamily:Font.bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
                 text:"یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
             },
             {
                 text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
-                style:{ maxWidth:width-30, fontFamily:Font.medium, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
             },
         ]
         AlertBottomDrawerHelper.showAlert({
@@ -263,7 +263,7 @@ function StageGame(props){
                         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", height: "100%", paddingStart:9, paddingBottom:2}}>
                             <Icon name={'layers'} type={'Ionicons'} style={{fontSize:20, color:colors.primary.a3}}/>
                             <View style={{width:85, alignItems:'center'}}>
-                                <Text style={{fontFamily:Font.bold, color:colors.text.a2, fontSize:12}}>{`${stageGameLanguageName}`}</Text>
+                                <Text style={{fontFamily:Font.bakh_bold, color:colors.text.a2, fontSize:12}}>{`${stageGameLanguageName}`}</Text>
                             </View>
                         </View>
                     </ImageBackground>

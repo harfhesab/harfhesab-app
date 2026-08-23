@@ -303,8 +303,8 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                     showsVerticalScrollIndicator={false}
                 >
                     <View style={{flexDirection:'column', paddingHorizontal:15, gap:15, paddingTop:15, paddingBottom:30}}>
-                        <Text style={{fontFamily:Font.bold, fontSize:17, color:colors.text.a2, lineHeight:32}}>{currentData?.title}</Text>
-                        <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a3, lineHeight:27, marginTop:20}}>{currentData?.body}</Text>
+                        <Text style={{fontFamily:Font.bakh_bold, fontSize:17, color:colors.text.a2, lineHeight:32}}>{currentData?.title}</Text>
+                        <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a3, lineHeight:27, marginTop:20}}>{currentData?.body}</Text>
                         {
                         (currentData?.free_coin_plan && currentData?.free_coin_plan?.number_coin > 0)&&
                         <View style={{paddingVertical:20, gap:10, backgroundColor:"#00000085", borderRadius:10, paddingHorizontal:10, marginTop:15}}>
@@ -331,8 +331,8 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                                 }
                             </View>
                             <View style={{alignItems:'flex-start'}}>
-                                <Text numberOfLines={2} style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-110 }}>{currentData?.free_coin_plan.title}</Text>
-                                <Text numberOfLines={1} style={{fontFamily:Font.medium, fontSize:10, color:colors.primary.a3, lineHeight:18}}>{`${currentData?.free_coin_plan.number_coin} سکه`}</Text>
+                                <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-110 }}>{currentData?.free_coin_plan.title}</Text>
+                                <Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.primary.a3, lineHeight:18}}>{`${currentData?.free_coin_plan.number_coin} سکه`}</Text>
                             </View>
                             </View>
                             <ButtonBorder
@@ -374,8 +374,8 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                                 }
                             </View>
                             <View style={{alignItems:'flex-start'}}>
-                                <Text numberOfLines={2} style={{fontFamily:Font.medium, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-110 }}>{currentData?.free_subscription_plan?.title}</Text>
-                                <Text numberOfLines={1} style={{fontFamily:Font.medium, fontSize:10, color:colors.primary.a6, lineHeight:18}}>{`${currentData?.free_subscription_plan.duration} روز اشتراک`}</Text>
+                                <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a1, lineHeight:20, width: width-110 }}>{currentData?.free_subscription_plan?.title}</Text>
+                                <Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.primary.a6, lineHeight:18}}>{`${currentData?.free_subscription_plan.duration} روز اشتراک`}</Text>
                             </View>
                             </View>
                             <ButtonBorder
@@ -410,7 +410,7 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                                     <Icon name={'camera-off'} type={'Feather'} style={{fontSize:30, color:colors.text.a5}}/>
                                 }
                             </View>
-                            <Text style={{fontFamily:Font.medium, fontSize:14, color:colors.text.a1, lineHeight:30, width: width-135}}>{currentData?.package.title}</Text>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, lineHeight:30, width: width-135}}>{currentData?.package.title}</Text>
                             </View>
                         </TouchableOpacity>
                         }
@@ -418,7 +418,7 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                         (currentData?.link && currentData?.link.length>7)&&
                         <View style={{width:"100%", alignItems:'flex-end', marginTop:20}}>
                             <TouchableOpacity activeOpacity={0.6} onPress={openLink}>
-                                <Text style={{fontFamily:Font.medium, color:colors.primary.a6, fontSize:14}}>{currentData?.link}</Text>
+                                <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.primary.a6, fontSize:14}}>{currentData?.link}</Text>
                             </TouchableOpacity>
                         </View>
                         }
