@@ -2,7 +2,7 @@ import 'react-native-get-random-values';
 import * as Keychain from 'react-native-keychain';
 import { encode as btoa, decode as atob } from 'base-64';
 
-const SERVICE = 'com.dokalam.app.realm.encryption-key';
+const SERVICE = 'com.harfhesab.app.realm.encryption-key';
 const USERNAME = 'realm';
 const KEY_SIZE = 64;
 

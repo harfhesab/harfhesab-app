@@ -698,8 +698,8 @@ function PackageInformation(props){
                                 borderRadius={0}
                             />
                             {
-                                data?.package?.badge&&
-                                <View style={{backgroundColor:colors.primary.a6, paddingHorizontal:15, borderRadius:20, paddingVertical:4, position:'absolute', bottom:-8, end:8}}>
+                                (data?.package?.badge && data?.package?.badge.length > 0)&&
+                                <View style={{backgroundColor:colors.primary.a6, paddingHorizontal:12, borderRadius:20, paddingVertical:2, position:'absolute', bottom:-8, end:8, borderWidth:0.5, borderColor:colors.text.a1}}>
                                     <Text style={{fontFamily:Font.bakh_semi_bold, fontSize:10, color:colors.text.a1}}>{data.package.badge}</Text>
                                 </View>
                             }

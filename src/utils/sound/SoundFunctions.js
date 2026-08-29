@@ -61,9 +61,9 @@ export const successfulCompletionOfConnectingLetterSound = async(volume = 1) => 
 export const coinCountUpdateSound = (volume = 0.2) => playSFX('coin.ogg', volume);
 
 // ===================================================================================================================
-// ============================= Kalam Akhar =========================================================================
-export const kalamAkharChallengeTimeIsOverSound = (volume = 1) => playSFX('level_up.wav', volume);
-export const successfulCompletionOfKalamAkharChallenge = async(volume = 1) => {
+// ============================= Harf Akhar =========================================================================
+export const harfAkharChallengeTimeIsOverSound = (volume = 1) => playSFX('level_up.wav', volume);
+export const successfulCompletionOfHarfAkharChallenge = async(volume = 1) => {
   await playSFX('level_up.wav', volume);
   await playSFX('coin_reward.wav', volume);
 };

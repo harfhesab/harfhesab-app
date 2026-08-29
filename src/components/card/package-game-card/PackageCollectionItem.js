@@ -44,9 +44,9 @@ function PackageCollectionItem({_id, title, image, badge}){
                 </TouchableNativeFeedback>
             </View>
                 {
-                    badge&&
+                    (badge && badge?.length > 0) &&
                     <View style={{position:'absolute', backgroundColor:colors.primary.a6, borderRadius:15, alignItems:'center', justifyContent:'center', top:2, start:3, paddingHorizontal:10, paddingVertical:1, borderWidth:0.5, borderColor:"#FFF"}}>
-                        <Text style={{fontFamily:Font.bakh_bold, color:colors.text.a1, fontSize:9, textAlign:"center"}}>{badge}</Text>
+                        <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a1, fontSize:9, textAlign:"center"}}>{badge}</Text>
                     </View>
                 }
         </View>

@@ -29,7 +29,7 @@ const TopHeader = () => {
           </View>
           <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
             {
-              type !== "kalam-akhar"&&
+              type !== "harf-akhar"&&
               <NumberCoinsHelp
                   numberCoinsHelp={type == "stage-game"?coins_for_get_help_letter_connecting_stage_game:type == "package-game"&&coins_for_get_help_letter_connecting_package_game}
                   onPress={applyForHelp}
@@ -39,7 +39,7 @@ const TopHeader = () => {
           </View>
       </View>
       {
-        (type == "kalam-akhar" && timeLimitData?.time_limit)&&
+        (type == "harf-akhar" && timeLimitData?.time_limit)&&
         <View style={{position:'absolute', width:"100%", alignItems:'flex-end', end:57, paddingTop:7.5}}>
           <TimerAndSandTimer
             totalSeconds={timeLimitData?.time_limit}

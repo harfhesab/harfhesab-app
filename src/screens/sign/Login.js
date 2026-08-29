@@ -107,7 +107,7 @@ function Login(props){
         <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
             <View style={styles.container2}>
                 <KeyboardAvoidingView behavior='position' enabled keyboardVerticalOffset={50}>
-                    <Text style={{fontFamily:Font.bakh_bold, fontSize:20, color:colors.text.a1, textAlign:'center'}}>{"ورود به دوکلام"}</Text>
+                    <Text style={{fontFamily:Font.bakh_bold, fontSize:20, color:colors.text.a1, textAlign:'center'}}>{"ورود به حرف حساب"}</Text>
                     <View style={{gap:15}}>
                         <View style={{marginTop:100, width:width, paddingHorizontal:20}}>
                             <InputText

@@ -91,12 +91,12 @@ const TopHeader = () => {
         <View style={{flexDirection:'row', alignItems:'flex-start', gap:7, position:'absolute', end:10}}>
           <View style={{flexDirection:'column', alignItems:'flex-end'}}>
             {
-              type !== "kalam-akhar"?
+              type !== "harf-akhar"?
               <NumberCoinsHelp
                 numberCoinsHelp={type == "stage-game"?coins_for_get_help_word_to_slot_stage_game:type == "package-game"&&coins_for_get_help_word_to_slot_package_game}
                 onPress={applyForHelp}
               />
-              :(type == "kalam-akhar" && timeLimitData?.time_limit)&&
+              :(type == "harf-akhar" && timeLimitData?.time_limit)&&
               <TimerAndSandTimer
                 totalSeconds={timeLimitData?.time_limit}
                 remainingSeconds={timeLimitData?.remaining_time_seconds}

@@ -1,10 +1,10 @@
-password    DoKalam1234!@#$Game2026
-Alias       dokalam_key
-password    DoKalam1234!@#$Game2026
+password    HarfHesab1234!@#$Game2026
+Alias       harfhesab_key
+password    HarfHesab1234!@#$Game2026
 validity    25
-            Do Kalam
-            DoKalam
-            DoKalam
+            Harf Hesab
+            HarfHesab
+            HarfHesab
             Tehran
             Tehran
             IR

@@ -159,7 +159,7 @@ function CommentRating({ _id, name, grade, date, comment, likeNumbers = 0, disLi
                 <View style={styles.userInfo}>
                     <Icon name="person" type="Ionicons" style={[styles.userIcon, { color: colors.text.a6 }]} />
                     <View style={styles.nameGradeContainer}>
-                        <Text style={[styles.userName, { color: colors.text.a5 }]}>{name ? name : `کاربر دوکلام`}</Text>
+                        <Text style={[styles.userName, { color: colors.text.a5 }]}>{name ? name : `کاربر حرف حساب`}</Text>
                         <GradeNumber size={12} grade={grade} />
                     </View>
                 </View>

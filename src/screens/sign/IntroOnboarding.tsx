@@ -6,7 +6,7 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 import OnboardingWordToSlot from '../../components/onboarding-word-to-slot/OnboardingWordToSlot';
 import LocalImageComponent from '../../components/image-components/LocalImageComponent';
 import OnboardingConnectingLetters from '../../components/onboarding-connecting-letters/OnboardingConnectingLetters';
-import DoKalamLogoAnimation from '../../components/DoKalamLogoAnimation';
+import HarfHesabLogoAnimation from '../../components/HarfHesabLogoAnimation';
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,18 +15,18 @@ const imageWidth = IS_TABLET_CONDITION ? 450 : width - 80
 const slidesData: SlideItem[] = [
   {
     id: '1',
-    title: 'خوش آمدید',
-    description: 'تو این دنیای بی حساب، دو کلام، حرف حساب بازی کنید!',
+    title: 'خوش آمدی',
+    description: 'تو این دنیای بی حساب، دو کلام، حرف حساب بازی کن!',
     CustomComponent: ()=>{
-      return<DoKalamLogoAnimation
+      return<HarfHesabLogoAnimation
         animate={true}
       />
     }
   },
   {
     id: '2',
-    title: 'حرف حساب بسازید!',
-    description: 'برای ساختن یک حرف حساب، که می‌تواند یک جمله، ضرب المثل یا شعر باشد، کلمات معلق را به ترتیب درست در خانه‌های خالی بچینید.',
+    title: 'حرف حساب بساز!',
+    description: 'برای ساختن یک حرف حساب، که می‌تواند یک جمله، ضرب المثل یا شعر باشد، کلمات معلق را به ترتیب درست در خانه‌های خالی بچین.',
     CustomComponent: ()=>{
       return<OnboardingWordToSlot
         data={[
@@ -41,8 +41,8 @@ const slidesData: SlideItem[] = [
   },
   {
     id: '3',
-    title: 'کلمات نامعلوم را کشف کنید.',
-    description: 'اگر در بین کلمات معلق، روی کارتی علامت سؤال بود، ابتدا باید کلمهٔ مربوط به آن کارت را کشف کنید.',
+    title: 'کلمات نامعلوم را کشف کن.',
+    description: 'اگر در بین کلمات معلق، روی کارتی علامت سؤال بود، ابتدا باید کلمهٔ مربوط به آن کارت را پیدا کنی.',
     CustomComponent: ()=>{
       return<OnboardingWordToSlot
         data={[
@@ -58,7 +58,7 @@ const slidesData: SlideItem[] = [
   {
     id: '4',
     title: 'بازی کلمات',
-    description: 'برای حل چالش کشف کلمهٔ نامعلوم، باید به همراه آن تعدادی نیز کلمات اضافه پیدا کنید. برای ساختن یک کلمه، روی حروف معلق به ترتیب ضربه بزنید.',
+    description: 'برای پیدا کردن کلمهٔ نامعلوم، باید به همراه آن تعدادی نیز کلمات اضافه بسازی. برای ساختن یک کلمه، روی حروف معلق به ترتیب ضربه بزن.',
     CustomComponent: ()=>{
       return<OnboardingConnectingLetters
         data={{
@@ -74,14 +74,14 @@ const slidesData: SlideItem[] = [
   {
     id: '5',
     title: 'بازی‌های داستانی',
-    description: "بسته‌های بازی، که در آن‌ها باید داستان‌های مختلف را بازی کنید.",
+    description: "بسته‌های بازی، که در آن‌ها می‌توانی داستان‌های مختلف را بازی کنی.",
     imageSource: require("../../assets/image/story-cards.png"),
     imageStyle:{width:imageWidth, height:imageWidth, borderRadius:20}
   },
   {
     id: '6',
     title: 'زبان‌های مختلف',
-    description: "محتوای دوکلام شامل زبان های مختلفی مانند فارسی، ترکی، لری، کردی (و به زودی زبان‌های دیگر) می‌باشد که می‌توانید آن‌ها را بازی کنید.",
+    description: "محتوای حرف حساب شامل زبان های مختلفی مانند فارسی، ترکی، لری، کردی (و به زودی زبان‌های دیگر) می‌باشد که می‌توانی هر کدام را که خواستی بازی کنی.",
     imageSource: require("../../assets/image/language-cards.png"),
     imageStyle:{width:imageWidth, height:imageWidth, borderRadius:20}
   },

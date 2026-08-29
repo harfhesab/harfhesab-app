@@ -139,7 +139,7 @@ export const DragDropProvider: React.FC<{
   } else if(type === "package-game"){
     stageNumber = data.stage_number_in_package;
   }
-  if (type === "kalam-akhar" && data){
+  if (type === "harf-akhar" && data){
     if(data?.time_limit){
       timeLimitData = {
         time_limit: data?.time_limit,

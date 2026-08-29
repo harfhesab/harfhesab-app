@@ -24,10 +24,10 @@ import ViewAllPackageRating from '../screens/main/package-game/ViewAllPackageRat
 import Notification from '../screens/main/account/Notification';
 import MessageInApp from '../screens/main/account/MessageInApp';
 import StageGameUpdateScreen from '../screens/main/account/StageGameUpdateScreen';
-import KalamAkharBottomTab from '../screens/main/online-game/kalam-akhar/KalamAkharBottomTab';
-import KalamAkharInformation from '../screens/main/online-game/kalam-akhar/KalamAkharInformation';
-import WordToSlotKalamAkhar from '../screens/main/online-game/kalam-akhar/WordToSlotKalamAkhar';
-import ConnectingLettersKalamAkhar from '../screens/main/online-game/kalam-akhar/ConnectingLettersKalamAkhar';
+import HarfAkharBottomTab from '../screens/main/online-game/harf-akhar/HarfAkharBottomTab';
+import HarfAkharInformation from '../screens/main/online-game/harf-akhar/HarfAkharInformation';
+import WordToSlotHarfAkhar from '../screens/main/online-game/harf-akhar/WordToSlotHarfAkhar';
+import ConnectingLettersHarfAkhar from '../screens/main/online-game/harf-akhar/ConnectingLettersHarfAkhar';
 
 
 const Stack = createNativeStackNavigator();
@@ -85,10 +85,10 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"Notification"} component={Notification} />
       <Stack.Screen name={"MessageInApp"} component={MessageInApp} />
       <Stack.Screen name={"StageGameUpdateScreen"} component={StageGameUpdateScreen} />
-      <Stack.Screen name={"KalamAkharBottomTab"} component={KalamAkharBottomTab} />
-      <Stack.Screen name={"KalamAkharInformation"} component={KalamAkharInformation} />
-      <Stack.Screen name={"WordToSlotKalamAkhar"} component={WordToSlotKalamAkhar} />
-      <Stack.Screen name={"ConnectingLettersKalamAkhar"} component={ConnectingLettersKalamAkhar} />
+      <Stack.Screen name={"HarfAkharBottomTab"} component={HarfAkharBottomTab} />
+      <Stack.Screen name={"HarfAkharInformation"} component={HarfAkharInformation} />
+      <Stack.Screen name={"WordToSlotHarfAkhar"} component={WordToSlotHarfAkhar} />
+      <Stack.Screen name={"ConnectingLettersHarfAkhar"} component={ConnectingLettersHarfAkhar} />
     </Stack.Navigator>
   )
 }

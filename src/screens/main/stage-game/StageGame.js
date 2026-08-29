@@ -230,7 +230,7 @@ function StageGame(props){
             text1: [stageGameLanguageName],
         }:undefined;
         BottomDrawerGridHelper.showBottomDrawer({
-            title:"انتخاب زبان بازی مرحله‌ای",
+            title:"زبان بازی مرحله‌ای را انتخاب کنید.",
             list: languages.map(item => ({
                 _id: item._id,
                 text1: item.name,

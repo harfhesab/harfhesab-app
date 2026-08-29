@@ -50,8 +50,8 @@ function OnlineGameCard({_id, title, image, badge, active, onPress}){
                     </View>
                     {
                         (badge && badge?.length > 0)&&
-                        <View style={{position:'absolute', start:5, backgroundColor:active==true?colors.primary.a4:colors.primary.a6, borderRadius:20, paddingHorizontal:10, paddingVertical:2, alignItems:'center', justifyContent:'center'}}>
-                            <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a1, fontSize:10, textAlign:"center"}}>{badge}</Text>
+                        <View style={{position:'absolute', start:10, top:5, backgroundColor:active==true?colors.primary.a4:colors.primary.a6, borderRadius:20, paddingHorizontal:10, paddingVertical:1, alignItems:'center', justifyContent:'center', borderWidth:0.5, borderColor:colors.text.a1}}>
+                            <Text style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a1, fontSize:9, textAlign:"center"}}>{badge}</Text>
                         </View>
                     }
                     <Text numberOfLines={2} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:14, textAlign:"center", width:itemWidth, lineHeight:21}}>{title}</Text>

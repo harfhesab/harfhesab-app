@@ -25,7 +25,7 @@ const WordToSlot = ({
   gameTimeIsOver
 }:{
   id:string;
-  type:string; // "stage-game" | "package-game" | "kalam-akhar"
+  type:string; // "stage-game" | "package-game" | "harf-akhar"
   data:any;
   saveWordHelpUsed:(partIndex:number, wordId:any)=>void;
   saveCompletedPartAndSentenceBuilded:(partIndex:number)=>void;

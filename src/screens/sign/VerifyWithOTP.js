@@ -72,9 +72,8 @@ function VerifyWithOTP(props){
             if (match && match[1]) {
                 const otp = match[1];
                 setValue(otp);
-                const time = setTimeout(()=>{
-                    verifyWithOtp(otp)
-                    clearTimeout(time)
+                setTimeout(()=>{
+                    verifyUserLoginWithOTP(otp)
                 }, 500)
             }
         });
