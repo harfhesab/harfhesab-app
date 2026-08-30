@@ -109,6 +109,7 @@ function StageGameSeasonCard({
             width={STAGE_GAME_CARD_WIDTH * 0.6 - 30}
             height={18*1.6}
             fontSize={18}
+            borderWidth={1}
         />
       </ImageBackground>
     </View>
@@ -146,7 +147,7 @@ const CardContent = memo(({
           {
             lock == true?
             <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', gap:10, paddingBottom:10}}>
-              <Text style={{ color: colors.text.a1, fontFamily: Font.iran_yekan_black_fa, fontSize: 20 }}>{`فصل ${seasonNumber}`}</Text>
+              <Text style={{ color: colors.text.a1, fontFamily: Font.bakh_extra_bold, fontSize: 20 }}>{`فصل ${seasonNumber}`}</Text>
               <Icon name={'download-cloud'} type={'Feather'} style={{ fontSize: 25, color:"#fcb900" }} />
             </View>
             :
@@ -164,7 +165,7 @@ const CardContent = memo(({
                       imageStyle={{ resizeMode: "stretch", opacity:0.9 }}
                       resizeMode="stretch"
                   >
-                    <Text style={{ color: "#86442d", fontFamily: Font.iran_yekan_black_fa, fontSize:cupNumberFontSize }}>{seasonNumber}</Text>
+                    <Text style={{ color: "#86442d", fontFamily: Font.bakh_black, fontSize:cupNumberFontSize }}>{seasonNumber}</Text>
                   </ImageBackground>
                 }
             </View>
@@ -199,7 +200,7 @@ const CardContent = memo(({
                 blank_background={true}
               />
               :
-              <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:25, color:"#fcb900"}}>{'شروع بازی'}</Text>
+              <Text style={{fontFamily:Font.bakh_black, fontSize:25, color:"#fcb900"}}>{'شروع بازی'}</Text>
             }
           </ImageBackground>
         </TouchableOpacity>

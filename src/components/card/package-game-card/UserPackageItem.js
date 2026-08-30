@@ -11,6 +11,7 @@ import WoodProgressBar from '../../WoodProgressBar';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { navigate } from '../../../main/navigationService';
 import AlertBottomDrawerHelper from '../../alert-bottom-drawer/AlertBottomDrawerHelper';
+import SimpleBorderText from '../../text-components/SimpleBorderText';
 
 const width = Dimensions.get('window').width
 function UserPackageItem({_id, activeSubscription, packageId, title, image, accessType, price, numberStage, numberSeason, progress, contentCompleted, endedGame}){
@@ -112,7 +113,7 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                             </View>
                             <View style={{flexDirection:'column', alignItems:'flex-start', height:'100%', justifyContent:'space-between', height:95}}>
                                 <View>
-                                    <Text numberOfLines={2} style={{fontFamily:Font.black, color:colors.primary.a3, fontSize:16, maxWidth:width-170}}>{title}</Text>
+                                    <Text numberOfLines={2} style={{fontFamily:Font.bakh_extra_bold, color:colors.primary.a3, fontSize:16, maxWidth:width-170}}>{title}</Text>
                                     <Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a2, fontSize:11}}>{`${numberSeason} فصل  -  ${numberStage} مرحله`}</Text>
                                 </View>
                                 <WoodProgressBar
@@ -128,22 +129,22 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                                 accessType == "subscription"?
                                 <LocalImageComponent
                                     path={require('../../../assets/image/diamond.png')}
-                                    width={14}
-                                    height={14}
+                                    width={12}
+                                    height={12}
                                     resizeMode={'cover'}
                                     blank_background={true}
                                 />
                                 :accessType == "coin-payment"?
                                 <LocalImageComponent
                                     path={require('../../../assets/image/coin.png')}
-                                    width={14}
-                                    height={14}
+                                    width={12}
+                                    height={12}
                                     resizeMode={'cover'}
                                     blank_background={true}
                                 />
                                 :<Icon name={"cruelty-free"} type={"MaterialIcons"} style={{fontSize:14, color:colors.primary.a1}}/>
                             }
-                            {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a5, fontSize:10}}>{accessTypeText}</Text>}
+                            {accessTypeText&&<Text numberOfLines={1} style={{fontFamily:Font.bakh_semi_bold, color:colors.text.a5, fontSize:9}}>{accessTypeText}</Text>}
                         </View>
                     </View>
                     <View style={{width:"100%", flexDirection:'row', alignItems:'flex-end', justifyContent:endedGame == true?'space-between':'flex-end', paddingHorizontal:10}}>
@@ -157,7 +158,7 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                                     resizeMode={'cover'}
                                     blank_background={true}
                                 />
-                                <Text style={{ color: "#86442d", fontFamily: Font.iran_yekan_black_fa, fontSize:9, position:'absolute', top:2 }}>{"پایان"}</Text>
+                                <Text style={{ color: "#86442d", fontFamily: Font.bakh_extra_bold, fontSize:9, position:'absolute', top:2 }}>{"پایان"}</Text>
                             </View>
                         }
                         <TouchableOpacity onPress={startGame} activeOpacity={0.8} style={{ bottom:-15}}>
@@ -167,7 +168,15 @@ function UserPackageItem({_id, activeSubscription, packageId, title, image, acce
                                 imageStyle={{ resizeMode: "stretch" }}
                                 resizeMode="stretch"
                             >
-                                <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:14, color:colors.primary.a3}}>{contentCompleted==true?'شروع بازی':'بارگیری محتوا'}</Text>
+                                <SimpleBorderText
+                                    text={contentCompleted==true?'شروع بازی':'بارگیری محتوا'}
+                                    width={IS_TABLET_CONDITION?180:140}
+                                    height={IS_TABLET_CONDITION?70:54}
+                                    fontSize={14}
+                                    textColor={colors.primary.a3}
+                                    borderColor={colors.primary.a7}
+                                    borderWidth={1}
+                                />
                             </ImageBackground>
                         </TouchableOpacity>
                     </View>

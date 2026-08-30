@@ -159,19 +159,19 @@ function StagesStageGameSeason(props){
                                         <TouchableNativeFeedback onPress={()=>changeTab(2)} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                                             <View style={{width:"33.3%", flexDirection:'row', alignItems:'center', justifyContent:'center', gap:4, borderBottomColor:topTab == 2?colors.primary.a8:colors.shadow.a3, borderBottomWidth:topTab == 2?3:1, paddingTop:8, paddingBottom:topTab == 2?6:8}}>
                                                 <Icon name={"game-controller"} type={"Ionicons"} style={{color:topTab == 2?colors.primary.a8:colors.primary.a2, fontSize:20}}/>
-                                                <Text style={{fontFamily:Font.iran_yekan_bold, fontSize:13, color:topTab == 2?colors.primary.a8:colors.primary.a2}}>{"بازی"}</Text>
+                                                <Text style={{fontFamily:Font.bakh_bold, fontSize:13, color:topTab == 2?colors.primary.a8:colors.primary.a2}}>{"بازی"}</Text>
                                             </View>
                                         </TouchableNativeFeedback>
                                         <TouchableNativeFeedback onPress={()=>changeTab(1)} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                                             <View style={{width:"33.3%", flexDirection:'row', alignItems:'center', justifyContent:'center', gap:4, borderBottomColor:topTab == 1?colors.primary.a8:colors.shadow.a3, borderBottomWidth:topTab == 1?3:1, paddingTop:8, paddingBottom:topTab == 1?6:8}}>
                                                 <Icon name={"pencil"} type={"Entypo"} style={{color:topTab == 1?colors.primary.a8:colors.primary.a2, fontSize:18}}/>
-                                                <Text style={{fontFamily:Font.iran_yekan_bold, fontSize:13, color:topTab == 1?colors.primary.a8:colors.primary.a2}}>{"دربارهٔ فصل"}</Text>
+                                                <Text style={{fontFamily:Font.bakh_bold, fontSize:13, color:topTab == 1?colors.primary.a8:colors.primary.a2}}>{"دربارهٔ فصل"}</Text>
                                             </View>
                                         </TouchableNativeFeedback>
                                         <TouchableNativeFeedback onPress={()=>changeTab(0)} background={TouchableNativeFeedback.Ripple(colors.border.a1,false)}>
                                             <View style={{width:"33.3%", flexDirection:'row', alignItems:'center', justifyContent:'center', gap:4, borderBottomColor:topTab == 0?colors.primary.a8:colors.shadow.a3, borderBottomWidth:topTab == 0?3:1, paddingTop:8, paddingBottom:topTab == 0?6:8}}>
                                                 <Icon name={"list-alt"} type={"FontAwesome"} style={{color:topTab == 0?colors.primary.a8:colors.primary.a2, fontSize:18}}/>
-                                                <Text style={{fontFamily:Font.iran_yekan_bold, fontSize:13, color:topTab == 0?colors.primary.a8:colors.primary.a2}}>{"مراحل"}</Text>
+                                                <Text style={{fontFamily:Font.bakh_bold, fontSize:13, color:topTab == 0?colors.primary.a8:colors.primary.a2}}>{"مراحل"}</Text>
                                             </View>
                                         </TouchableNativeFeedback>
                                     </View>

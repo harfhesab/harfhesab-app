@@ -21,12 +21,6 @@ class MyFont {
         this.bakh_regular = "YekanBakhFaNum-Regular"
         this.bakh_semi_bold = "YekanBakhFaNum-SemiBold"
         this.bakh_thin = "YekanBakhFaNum-Thin"
-        this.iran_yekan_black = "IRANYekanWebBlack"
-        this.iran_yekan_black_fa = "IRANYekanWebBlackFaNum"
-        this.iran_yekan_extra_black = "IRANYekanWebExtraBlack"
-        this.iran_yekan_extra_black_fa = "IRANYekanWebExtraBlackFaNum"
-        this.iran_yekan_extra_bold = "IRANYekanWebExtraBold"
-        this.iran_yekan_bold = "IRANYekanX-Bold"
     }
 }
 

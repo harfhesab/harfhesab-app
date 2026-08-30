@@ -38,7 +38,7 @@ function PackageGameSeasonFirstCard({
   const colors = useAppTheme();
 
   const titleLength = title.length
-  const titleTextSize = titleLength < 10?22:titleLength<12?20:titleLength<14?18:14
+  const titleTextSize = titleLength < 10?22:titleLength<12?20:titleLength<14?18:16
 
   return (
     <View style={{height:PACKAGE_GAME_SEASON_CARD_HEIGHT, alignItems:'center', justifyContent:'flex-start'}}>
@@ -75,8 +75,10 @@ function PackageGameSeasonFirstCard({
             width={PACKAGE_GAME_CARD_WIDTH * 0.6 - 30}
             height={titleTextSize*1.6}
             fontSize={titleTextSize}
-            textColor={"#4d2719"}
-            borderColor={"#e5c0b3"}
+            textColor={colors.primary.a7}
+            borderColor={colors.primary.a3}
+            fontName={'YekanBakh-Black'}
+            borderWidth={0.5}
         />
       </ImageBackground>
       <TouchableOpacity onPress={startPackage} activeOpacity={0.8} style={{position:'absolute', bottom:0, alignSelf:'center'}}>
@@ -86,7 +88,7 @@ function PackageGameSeasonFirstCard({
             imageStyle={{ resizeMode: "stretch" }}
             resizeMode="stretch"
         >
-        <Text style={{fontFamily:Font.iran_yekan_black_fa, fontSize:25, color:colors.primary.a3}}>{'شروع'}</Text>
+        <Text style={{fontFamily:Font.bakh_black, fontSize:25, color:colors.primary.a3}}>{'شروع'}</Text>
         </ImageBackground>
       </TouchableOpacity>
     </View>
