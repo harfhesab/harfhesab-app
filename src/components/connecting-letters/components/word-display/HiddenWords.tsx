@@ -114,7 +114,7 @@ const HiddenWords = () => {
             if (localToastRef.current) {
                 localToastRef.current.show({
                     title: "دریافت سکه",
-                    message: "تعداد کلمات پنهان جدید، کمتر از حد نصاب برای تبدیل به سکه میباشد.",
+                    message: "تعداد کلمات پنهان جدید، کمتر از حد نصاب برای تبدیل به سکه می‌باشد.",
                     type: 'error',
                     animationType: 'slide',
                     position: 'top'

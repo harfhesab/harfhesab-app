@@ -26,7 +26,7 @@ const slidesData: SlideItem[] = [
   {
     id: '2',
     title: 'حرف حساب بساز!',
-    description: 'برای ساختن یک حرف حساب، که می‌تواند یک جمله، ضرب المثل یا شعر باشد، کلمات معلق را به ترتیب درست در خانه‌های خالی بچین.',
+    description: 'برای ساختن یک حرف حساب، که ممکنه یک جمله، ضرب المثل یا شعر باشه، کلمات معلق را به ترتیب درست در خانه‌های خالی بچین.',
     CustomComponent: ()=>{
       return<OnboardingWordToSlot
         data={[
@@ -74,14 +74,14 @@ const slidesData: SlideItem[] = [
   {
     id: '5',
     title: 'بازی‌های داستانی',
-    description: "بسته‌های بازی، که در آن‌ها می‌توانی داستان‌های مختلف را بازی کنی.",
+    description: "بسته‌های داستانی بازی، که در آن‌ها باید داستان‌های مختلف را بازی کنی.",
     imageSource: require("../../assets/image/story-cards.png"),
     imageStyle:{width:imageWidth, height:imageWidth, borderRadius:20}
   },
   {
     id: '6',
     title: 'زبان‌های مختلف',
-    description: "محتوای حرف حساب شامل زبان های مختلفی مانند فارسی، ترکی، لری، کردی (و به زودی زبان‌های دیگر) می‌باشد که می‌توانی هر کدام را که خواستی بازی کنی.",
+    description: "محتوای حرف حساب شامل زبان های مختلفی مانند فارسی، ترکی، لری، کردی می‌باشد که می‌توانی هر کدام را که خواستی بازی کنی.",
     imageSource: require("../../assets/image/language-cards.png"),
     imageStyle:{width:imageWidth, height:imageWidth, borderRadius:20}
   },

@@ -737,7 +737,7 @@ function PackageInformation(props){
                             />
                             <InfoBox
                                 title="قیمت"
-                                value={`${data?.package?.price} سکه`}
+                                value={data?.package?.price > 0?`${data?.package?.price} سکه`:"رایگان"}
                                 width={(width - 45)/4}
                             />
                         </View>
