@@ -1,6 +1,6 @@
-password    HarfHesab1234!@#$Game2026
+password    2KHarfHesab@APP$2026#1996
 Alias       harfhesab_key
-password    HarfHesab1234!@#$Game2026
+password    2KHarfHesab@APP$2026#1996
 validity    25
             Harf Hesab
             HarfHesab

@@ -1,9 +1,10 @@
 type TargetStore = 'direct' | 'googleplay' | 'cafebazaar' | 'myket' | 'appstore';
 type BuildType = 'apk' | 'aab';
 
-export const CAFE_BAZAAR_RSA_KEY: string = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwCeJZO6AI+cihjKC1ZXdOS9SfvaKeAxZMPX1+8qKxkWS60B6/3O/Hf1oycU0/eI5dUa0rtZ6jnwiC7smhfP5jf7tXHTAk9BxpoQP5zPrT7eNhRIDrIf79AP11qqNh8OYtuzQmY9gcP7NfFHvcL8EVM5XBSJMqiXIQ0O7AiK3iqVClHxK421nVKpCiGUV1m+zQLu1EMH4dtjWduH8qaxUp1kEjWv0T2WeGGUjn4Rc8UCAwEAAQ==";
-export const MYKET_RSA_KEY: string = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCinemOrBFW5eEBrrr+00j8H75jsEk1bbyxEzEDrHDOrUkWx8PMV/aA3ziJB7wNSyGxFFFtaqIWFvUiiLpv04b/b6pqCejZwovTp7386gP2EVHadWyQJtFCXrVMO/hZUKkd33+HsJc9jsF07Vizs/PPNRXgjpH0YhWKuM4tQDHA8QIDAQAB"
+export const CAFE_BAZAAR_RSA_KEY: string = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwCj2N1unwb+6ixMWB4zn6SD9BP7r/Wwu7lW0mHOV+ue8c2SroulJbJb8Cvyuue3+5GM8dZlgt/BywyeEVCQ/Yl1F04bxcFYtnXBPlssZbMQi1okqEVL124D0FWWIEUOKUaB6yqh8cAonNrTrgBZpl4b7sx9Sst8acF7b/wGW+rzvaFNuGK+DHfzOFv0NXuLGt0WV82L/8QaRVnuZtzP/F8wA+PKeZBfZJp8gUc21DsCAwEAAQ==";
+export const CAFE_BAZAAR_DYNAMIC_DISCOUNT_KEY: string = "CmzsFgoxF74687pE7UJurFTGxrDwl4lQHPZkLmgXC7c";
+export const MYKET_RSA_KEY: string = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC9TW4Y/vaJFjrjPOjmbqsgOq/0mjR0IhV/0LInO5DoFnEs0Km0P7+73K9/hlIyeqfuCB66Vrl9JRXqVLdo4AowvVjzQu23LDBm0Ei7QZQXbWM8uJI9sIseQORiyDAft/x6FolYvG8XYECBpOTTFQZIVir3lLDyIdW+Fz1d6H8DywIDAQAB";
 
-export const TARGET_STORE: TargetStore = "cafebazaar"; 
+export const TARGET_STORE: TargetStore = "myket"; 
 
 export const BUILD_TYPE: BuildType = "apk";
