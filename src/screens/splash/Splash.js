@@ -322,7 +322,7 @@ function Splash(props){
             </View>
             <View style={{width:"100%", alignItems:'center', gap:20, paddingBottom:50}}>
                 <View style={{width:"100%", alignItems:'center'}}>
-                    <Text style={{fontFamily:Font.bakh_regular, fontSize:8, color:colors.text.a1}}>{`${Globals.game_name_en}  |  ${Globals.game_name_fa}`}</Text>
+                    <Text style={{fontFamily:Font.bakh_regular, fontSize:10, color:colors.text.a1}}>{`${Globals.game_name_en}  |  ${Globals.game_name_fa}`}</Text>
                     <Text style={{fontFamily:Font.en_medium, fontSize:8, color:colors.text.a1}}>{DeviceInfo.getVersion()}</Text>
                 </View>
                 <LoadingBar 
