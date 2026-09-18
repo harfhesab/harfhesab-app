@@ -11,13 +11,11 @@ import { navigate } from '../../../main/navigationService';
 import { showToast } from '../../custom-toast/ToastRef';
 import DynamicProSkiaText from '../../text-components/DynamicProSkiaText';
 import { priceDigitSeperator } from '../../../utils/PriceDigitSeperator';
-import { useSelector } from 'react-redux';
 import BottomDrawerGridHelper from '../../bottom-drawer-grid/BottomDrawerGridHelper';
 import AlertBottomDrawerHelper from '../../alert-bottom-drawer/AlertBottomDrawerHelper';
 
 const {width} = Dimensions.get('screen')
 const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
-const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function HarfAkharChallengeStarted({
     _id,
     title,
@@ -28,14 +26,8 @@ function HarfAkharChallengeStarted({
     expiration
 }){
     const colors = useAppTheme();
-    const { numberCoins } = useSelector((state) => state.coins);
-    const { activeSubscription } = useSelector((state) => state.subscription);
-
     const cardImageBackground = require("../../../assets/image/harf-akhar-card-3.png")
-        
-
     const cardImageTitle = require("../../../assets/image/harf-akhar-title-3.png")
-
     const cardImageButton = subscription_required == true?
         require("../../../assets/image/circle_blue.png"):
         require("../../../assets/image/circle_red.png")
@@ -52,39 +44,7 @@ function HarfAkharChallengeStarted({
                 duration: 6000
             });
         } else {
-            if(subscription_required == true && activeSubscription !== true){
-                const btn = [
-                    {
-                        onPress : ()=>{
-                            navigate("SubscriptionPlans")
-                        },
-                        text: "خرید اشتراک",
-                        type: "bold",
-                    },
-                    {
-                        onPress : ()=>{},
-                        text: "لغو",
-                        type: "border",
-                    },
-                ]
-                AlertBottomDrawerHelper.showAlert({
-                    title:"شروع این چالش نیاز به اشتراک فعال دارد!",
-                    buttons:btn,
-                    options:{
-                        cancelable: true,
-                        icon:{
-                            Icon:()=>(
-                                <Image
-                                    style={{height:gridSize, width:gridSize}}
-                                    source={require('../../../assets/image/diamond.png')}
-                                />
-                            )
-                        }
-                    }
-                })
-            } else {
-                navigate("HarfAkharInformation", {_id:_id})
-            }
+            navigate("HarfAkharInformation", {_id:_id})
         }
     }
     return (

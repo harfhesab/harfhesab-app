@@ -24,6 +24,7 @@ import FullScreenLoading from '../components/full-screen-loading/FullScreenLoadi
 import AlertMessageInApp from '../components/alert-message-in-app/AlertMessageInApp';
 import AlertMessageInAppHelper from '../components/alert-message-in-app/AlertMessageInAppHelper';
 import { getAllNewMessageInAppForUser } from '../utils/api/GeneralApi';
+import { flushNotificationDataAfterSplash } from '../notifications/notificationNavigationService';
 
 const Main = (props) => {
   const { token, isLoggedIn } = useSelector((state) => state.account);
@@ -47,7 +48,20 @@ const Main = (props) => {
     if(splash == false && isLoggedIn == true && token && versionCreatedContent > 0 && stageGameLanguage){
       setTimeout(()=>{
         getAllNewMessageInAppForUser()
-      }, 2000)
+      }, 3000)
+    }
+  }, [splash])
+
+  // splash از true به false تغییر کرد یعنی Main.js همین الان ری‌رندر شده
+  // و navigator بین SplashRoutes و MainRoutes/SignRoutes سوییچ کرده است.
+  // اینجا امن است که ناوبریِ نوتیف را (اگر صف شده بود) اجرا کنیم.
+  useEffect(() => {
+    if (splash == false) {
+      // یک فریم صبر می‌کنیم تا navigator کاملاً mount/commit شود
+      const timer = setTimeout(() => {
+        flushNotificationDataAfterSplash();
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [splash])
   

@@ -34,7 +34,8 @@ function InputText({
     color = colors.primary.a1,
     titleColor = colors.primary.a1,
     textColor = colors.text.a1,
-    backgroundOpacity = 25
+    backgroundOpacity = 25,
+    inputDirection = undefined
 }) {
     
     const [focused, setFocused] = useState(false)
@@ -57,7 +58,7 @@ function InputText({
                     </View>
                 )
             }
-            <View style={{backgroundColor: `${color}${backgroundOpacity}`, width: "100%", flexDirection: 'row', alignItems: 'center', borderWidth: borderWidth, borderRadius: borderRadius, borderColor: focused == true ? color : checkValueState == true ? colors.alert.a1 : colors.border.a1, paddingHorizontal: 5}}>
+            <View style={{backgroundColor: `${color}${backgroundOpacity}`, direction:inputDirection, width: "100%", flexDirection: 'row', alignItems: 'center', borderWidth: borderWidth, borderRadius: borderRadius, borderColor: focused == true ? color : checkValueState == true ? colors.alert.a1 : colors.border.a1, paddingHorizontal: 5}}>
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={placeholderTextColor ?? colors.text.a6}

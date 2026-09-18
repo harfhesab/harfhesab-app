@@ -4,6 +4,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     
     <uses-permission android:name="${marketPermission}" />
     <queries>
@@ -26,7 +29,10 @@
       android:supportsRtl="true"
       android:alwaysRetainTaskState="true"
       android:restoreAnyVersion="true">
-      <service android:name="com.asterinet.react.bgactions.BackgroundActionsService" />
+      <service
+        android:name="com.asterinet.react.bgactions.BackgroundActionsService"
+        android:foregroundServiceType="dataSync"
+        android:exported="false" />
       <!-- فیلد resizeableActivity برای جلوگیری از تمام صفحه شدن در zFold هست -->
       <activity
         android:name=".MainActivity"

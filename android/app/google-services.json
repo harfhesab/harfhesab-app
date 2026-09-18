@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "437241359180",
+    "project_id": "harf-hesab",
+    "storage_bucket": "harf-hesab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:437241359180:android:69525003f241325ad2fde9",
+        "android_client_info": {
+          "package_name": "com.harfhesab.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcpAL-iqdSyWV3zwkBfaqLlKhT2Wiw-Sw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

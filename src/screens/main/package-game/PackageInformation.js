@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, StatusBar, Platform, PermissionsAndroid} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -521,6 +521,23 @@ function PackageInformation(props){
             }
         })
     }
+    const requestNotificationPermission = async () => {
+        if (Platform.OS === 'android' && Platform.Version >= 33) {
+            try {
+                await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+                    {
+                        title: 'نمایش وضعیت دانلود',
+                        message: 'برای نمایش پیشرفت دریافت محتوای بازی روی نوار اعلان، به این اجازه نیاز داریم.',
+                        buttonPositive: 'اجازه می‌دهم',
+                        buttonNegative: 'فعلاً نه',
+                    }
+                );
+            } catch (e) {
+                null
+            }
+        }
+    };
     const getForFirst = async(accessType, numberCoinPaid)=>{
         if(accessType == "coin-payment" && data?.package?.price > numberCoins){
             AlertHelper.showAlert({
@@ -547,6 +564,7 @@ function PackageInformation(props){
                 },
             });
         } else {
+            await requestNotificationPermission()
             const color = colors.primary.a1
             const status = data?.user_package_status.status
             const selectedAccessType = accessType

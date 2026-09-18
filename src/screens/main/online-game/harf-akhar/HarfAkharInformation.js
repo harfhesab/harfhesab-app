@@ -20,6 +20,9 @@ import Icon from '../../../../utils/Icon';
 import { showToast } from '../../../../components/custom-toast/ToastRef';
 import { reduceNumberCoins } from '../../../../redux/slices/coinSlice';
 import { useFocusEffect } from '@react-navigation/native';
+import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
+import BottomDrawerGridHelper from '../../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
+import AlertBottomDrawerHelper from '../../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 
 
 
@@ -50,11 +53,14 @@ function secondsToTimeObject(totalSeconds) {
 }
 const {width, height} = Dimensions.get("screen")
 const itemWidth = IS_TABLET_CONDITION?width*0.7:width - 30
+const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function HarfAkharInformation(props){
+    useImmersiveMode()
     const dispatch = useDispatch();
     const colors = useAppTheme()
     const realm = useRealm();
     const { numberCoins } = useSelector((state) => state.coins);
+    const { activeSubscription } = useSelector((state) => state.subscription);
     const [data, setData] = useState(null)
     const [progress, setProgress] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -152,15 +158,93 @@ function HarfAkharInformation(props){
                 position: "top",
                 duration: 4000
             });
-        } else if(!progress && numberCoins < data?.entry_fee_coins) {
-            showToast({
-                title: `شروع این چالش نیاز به پرداخت ${data?.entry_fee_coins} سکه می‌باشد!`,
-                message: "",
-                type: "error",
-                animationType: "slide",
-                position: "top",
-                duration: 4000
-            });
+        } else if(!progress && data?.subscription_required == true && activeSubscription !== true){
+            const btn = [
+                {
+                    onPress : ()=>{
+                        props.navigation.navigate("SubscriptionPlans")
+                    },
+                    text: "خرید اشتراک",
+                    type: "bold",
+                },
+                {
+                    onPress : ()=>{},
+                    text: "لغو",
+                    type: "border",
+                },
+            ]
+            AlertBottomDrawerHelper.showAlert({
+                title:"شروع این چالش نیاز به اشتراک فعال دارد!",
+                buttons:btn,
+                options:{
+                    cancelable: true,
+                    icon:{
+                        Icon:()=>(
+                            <Image
+                                style={{height:gridSize, width:gridSize}}
+                                source={require('../../../../assets/image/diamond.png')}
+                            />
+                        )
+                    }
+                }
+            })
+        } else if(data?.entry_fee_coins && data?.entry_fee_coins > numberCoins){
+            const previousSelected = {
+                _id:["2"],
+                text1:["دریافت سکه رایگان"]
+            }
+            BottomDrawerGridHelper.showBottomDrawer({
+                title:`شروع این چالش نیاز به پرداخت ${data?.entry_fee_coins} سکه می‌باشد!`,
+                list:[
+                    {
+                        _id: "1",
+                        text1: "خرید سکه",
+                        image: require('../../../../assets/image/coin.png'),
+                        localImage: true,
+                        height:gridSize + 40,
+                        width:gridSize,
+                        blank_background: true,
+                        onPress : ()=>{}
+                    },
+                    {
+                        _id: "2",
+                        text1: "دریافت سکه رایگان",
+                        image: require('../../../../assets/image/coin.png'),
+                        localImage: true,
+                        height:gridSize + 40,
+                        width:gridSize,
+                        blank_background: true,
+                        onPress : ()=>{}
+                    }
+                ],
+                buttons:[
+                    {
+                        onPress : ({data})=>{
+                            if(data._id[0] == "1"){
+                                props.navigation.navigate("CoinPlans")
+                            } else if(data._id[0] == "2"){
+                                props.navigation.navigate("FreeCoin")
+                            }
+                        },
+                        text: "افزایش سکه",
+                        loading: false,
+                        type: "bold",
+                        selectRequired:true
+                    },
+                    {
+                        onPress : ({data})=>{},
+                        text: "لغو",
+                        loading: false,
+                        type: "border",
+                    },
+                ],
+                options:{
+                    numberSelectable: 1,
+                    previousSelected:previousSelected,
+                    cancelable: true,
+                    selectRequired: true,
+                }
+            })
         } else {
             startChallenge()
         }

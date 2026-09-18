@@ -34,6 +34,7 @@ import { updateNumberHiddenWords } from '../../../../redux/slices/hiddenWordSlic
 import { BUILD_TYPE, TARGET_STORE } from '../../../../utils/constants/build-config';
 import { seenAllGuide } from '../../../../redux/slices/settingSlice';
 import TimerUIThread from '../../../../components/timer/TimerUIThread';
+import { getMessaging, getToken } from '@react-native-firebase/messaging';
   
   
 const {width, height} = Dimensions.get('window');
@@ -168,15 +169,23 @@ function VerifyLoginToAccount(props){
             });
         } else {
             setLoading(true)
-            // const firebase_token = await messaging().getToken()
-            const os = await DeviceInfo.getSystemName()
-            const os_version = await DeviceInfo.getSystemVersion()
-            const device_brand = await DeviceInfo.getBrand()
-            const device_name = await DeviceInfo.getDeviceName()
-            const device_model = await DeviceInfo.getModel()
-            const app_version = await DeviceInfo.getVersion()
-            const app_build_number = await DeviceInfo.getBuildNumber()
-            const unique_id = await DeviceInfo.getUniqueId()
+            let firebase_token = null
+            try {
+                const messaging = getMessaging();
+                firebase_token = await getToken(messaging);
+            } catch (error) {
+                firebase_token = null
+            }
+            const [os, os_version, device_brand, device_name, device_model, app_version, app_build_number, unique_id] = await Promise.all([
+                DeviceInfo.getSystemName(),
+                DeviceInfo.getSystemVersion(),
+                DeviceInfo.getBrand(),
+                DeviceInfo.getDeviceName(),
+                DeviceInfo.getModel(),
+                DeviceInfo.getVersion(),
+                DeviceInfo.getBuildNumber(),
+                DeviceInfo.getUniqueId()
+            ]);
             await axios({
                 url:'/',
                 method:'post',
@@ -233,7 +242,7 @@ function VerifyLoginToAccount(props){
                         "number_coins" : numberCoins,
                         "total_hidden_words" : totalHiddenWords,
                         "new_hidden_words" : newHiddenWords,
-                        "firebase_token" : "",
+                        "firebase_token" : firebase_token,
                         "app_version" : app_version,
                         "app_build_number" : Number(app_build_number),
                         "os" : os,

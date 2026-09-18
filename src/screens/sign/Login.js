@@ -123,6 +123,7 @@ function Login(props){
                                 borderRadius={10}
                                 clearText={()=>setPhone("")}
                                 onSubmitEditing={loginWithOtp}
+                                inputDirection={"ltr"}
                             />
                         </View>
                         <View style={{width:width, alignItems:'center'}}>

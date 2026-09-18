@@ -1,5 +1,18 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, KeyboardAvoidingView, SafeAreaView} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Dimensions,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  Platform,
+  PermissionsAndroid,
+  Modal,
+  Linking,
+  AppState,
+  TouchableOpacity,
+} from 'react-native';
 import Icon from '../../utils/Icon';
 import Font from '../../utils/Font';
 import { DotIndicator } from 'react-native-indicators';
@@ -23,9 +36,99 @@ import { preloadImages } from '../../utils/ImagePreloader';
 import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
 import { setUserConsent } from '@react-native-tapsell-mediation/tapsell';
 import { showToast } from '../../components/custom-toast/ToastRef';
+import {
+  getMessaging,
+  getToken,
+  hasPermission,
+  requestPermission,
+  AuthorizationStatus,
+} from '@react-native-firebase/messaging';
+import AlertBottomDrawerHelper from '../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 
 
 const {width, height} = Dimensions.get('window');
+
+// خروجی ممکن است یکی از این‌ها باشد:
+// 'granted'         -> دسترسی فعال است
+// 'denied'          -> کاربر همین الان دیالوگ سیستمی را رد کرد (یا در حالتی نامعتبر است)، اما دیالوگ سیستمی هنوز در آینده قابل نمایش است
+// 'never_ask_again'  -> سیستم دیگر خودش دیالوگ را نشان نمی‌دهد؛ فقط راه دستی (تنظیمات) باقی مانده
+
+async function requestAndroidNotificationPermission() {
+    // اندروید زیر 13: اصلاً permission ای برای درخواست وجود ندارد و پیش‌فرض فعال است.
+    // طبق تصمیم قبلی، این نسخه‌ها را اصلاً بررسی نمی‌کنیم (اگر کاربر خودش دستی خاموش کرده، تصمیم آگاهانه‌ی خودش بوده).
+    if (Platform.Version < 33) {
+        return 'granted';
+    }
+    try {
+        const alreadyGranted = await PermissionsAndroid.check(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
+        if (alreadyGranted) return 'granted';
+
+        // هر بار که این تابع صدا زده شود، دوباره request می‌زنیم.
+        // اگر سیستم هنوز مایل به نمایش دیالوگ باشد نشانش می‌دهد؛ در غیر این صورت
+        // بدون نمایش هیچ دیالوگی مستقیماً 'never_ask_again' برمی‌گرداند.
+        const result = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
+        return result; // 'granted' | 'denied' | 'never_ask_again'
+    } catch (error) {
+        console.log('Android Permission Error:', error);
+        return 'denied';
+    }
+}
+
+async function requestIOSNotificationPermission() {
+    try {
+        const messaging = getMessaging();
+        const authStatus = await requestPermission(messaging);
+        if (
+            authStatus === AuthorizationStatus.AUTHORIZED ||
+            authStatus === AuthorizationStatus.PROVISIONAL
+        ) {
+            return 'granted';
+        }
+        if (authStatus === AuthorizationStatus.DENIED) {
+            // در iOS بعد از یک‌بار رد شدن، دیالوگ سیستمی دیگر نشان داده نمی‌شود
+            return 'never_ask_again';
+        }
+        return 'denied';
+    } catch (error) {
+        console.log('iOS Permission Error:', error);
+        return 'denied';
+    }
+}
+
+async function requestNotificationPermissionStatus() {
+    if (Platform.OS === 'android') {
+        return requestAndroidNotificationPermission();
+    }
+    return requestIOSNotificationPermission();
+}
+
+// فقط بررسیِ وضعیتِ فعلی، بدون نمایش هیچ دیالوگی (برای استفاده هنگام برگشت از تنظیمات)
+async function checkCurrentNotificationPermission() {
+    if (Platform.OS === 'android') {
+        if (Platform.Version < 33) return true;
+        try {
+            return await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+        } catch (error) {
+            return false;
+        }
+    }
+    try {
+        const messaging = getMessaging();
+        // برخلاف requestPermission، این متد هیچ دیالوگی نشان نمی‌دهد و صرفاً وضعیت فعلی را می‌خواند
+        const authStatus = await hasPermission(messaging);
+        return (
+            authStatus === AuthorizationStatus.AUTHORIZED ||
+            authStatus === AuthorizationStatus.PROVISIONAL
+        );
+    } catch (error) {
+        return false;
+    }
+}
+
 function SignIn(props){
     const colors = useAppTheme()
     const dispatch = useDispatch();
@@ -35,24 +138,165 @@ function SignIn(props){
     const { subscriptionPlansVersion } = useSelector((state) => state.subscription);
     const [loading, setLoading] = useState(false)
 
+    // این مودال باید در کل عمر این صفحه (این سشن) فقط یک‌بار نمایش داده شود
+    const permissionModalShownRef = useRef(false)
+    // اکشنی که کاربر قصد اجرایش را داشت (ورود / ورود مهمان) و باید بعد از بسته‌شدن مودال اجرا شود
+    const pendingActionRef = useRef(null)
+    const appState = useRef(AppState.currentState)
+
     useEffect(()=>{
         setUserConsent(true);
     }, [])
 
-    const login =() =>{
-        props.navigation.navigate("Login")
+    // شنود بازگشت کاربر از صفحه تنظیمات گوشی به اپ (فقط برای ادامه‌ی اکشنی که قبل از رفتن به تنظیمات نیمه‌کاره مانده بود)
+    useEffect(()=>{
+        const subscription = AppState.addEventListener('change', async (nextAppState)=>{
+            if(appState.current.match(/inactive|background/) && nextAppState === 'active'){
+                if(pendingActionRef.current){
+                    const action = pendingActionRef.current
+                    pendingActionRef.current = null
+                    AlertBottomDrawerHelper.hideAlert()
+                    // چه کاربر در تنظیمات دسترسی را فعال کرده باشد چه نه، اجازه‌ی ورود همچنان داده می‌شود؛
+                    // این دسترسی اختیاری است و مانع ورود به بازی نمی‌شود.
+                    action()
+                }
+            }
+            appState.current = nextAppState
+        })
+        return ()=> subscription.remove()
+    }, [])
+
+    // پیش از اجرای اکشن حساس (لاگین / ورود مهمان) صدا زده می‌شود.
+    // این تابع هرگز اکشن را برای همیشه مسدود نمی‌کند؛ فقط یک‌بار تلاش (سیستمی + مودال داخلی) برای گرفتن دسترسی انجام می‌دهد.
+    async function ensureNotificationPermission(action) {
+        if (Platform.OS === 'android' && Platform.Version < 33) {
+            action()
+            return
+        }
+        try {
+            const status = await requestNotificationPermissionStatus()
+
+            if (status === 'granted') {
+                action()
+                return
+            }
+
+            if (status === 'never_ask_again') {
+                if (permissionModalShownRef.current) {
+                    // مودال قبلاً یک‌بار نمایش داده شده و کاربر تصمیمش را گرفته؛ دیگر مزاحمش نمی‌شویم
+                    action()
+                    return
+                }
+                permissionModalShownRef.current = true
+                pendingActionRef.current = action
+                showPermissionModal()
+                return // اکشن بعد از تصمیم کاربر در مودال (لغو/تنظیمات) اجرا می‌شود
+            }
+
+            // status === 'denied' -> دیالوگ سیستمی همین الان یک‌بار نشان داده و کاربر رد کرده است.
+            // چون این دسترسی اختیاری است، مانع ورود نمی‌شویم و فقط یک یادآوری نرم نشان می‌دهیم.
+            showToast({
+                title: "دسترسی اعلان‌ها",
+                message: "با فعال کردن اعلان‌ها از گردونه شانس، جوایز روزانه و مراحل جدید باخبر می‌شوید.",
+                type: "warning",
+                animationType: "slide",
+                position: "top",
+            });
+            action()
+        } catch (error) {
+            console.log('Permission Error:', error);
+            // در صورت بروز هرگونه خطای غیرمنتظره در مسیر گرفتن دسترسی، باز هم نباید ورود کاربر مسدود شود
+            action()
+        }
     }
-    const loginAsGuestOperation = async() => {
+
+    const showPermissionModal = () => {
+        const btn = [
+            {
+                onPress : ()=>{
+                    onPressGoToSettings()
+                },
+                text: "فعال کردن",
+                loading: false,
+                type: "bold",
+            },
+            {
+                onPress : ()=>{
+                    onPressCancelModal()
+                },
+                text: "لغو و ادامه",
+                loading: false,
+                type: "border",
+            },
+        ]
+        
+        AlertBottomDrawerHelper.showAlert({
+            title:"فعال سازی نوتیفیکیشن",
+            message: [
+                {
+                    text:"اعلانات را فعال کنید تا چالش‌های روزانهٔ «حرف آخر»، بسته‌های جدید داستانی و رویدادهای ویژهٔ «حرف حساب» را از دست ندهید.",
+                    style:{fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a2, alignSelf:'flex-start', textAlign:'justify', lineHeight:26},
+                }
+            ],
+            buttons:btn,
+            options:{
+                cancelable: true,
+                icon:{
+                    Icon:()=>(
+                        <Icon name={"notifications-on"} type={"MaterialIcons"} style={{fontSize:80, color:colors.primary.a3}}/>
+                    )
+                }
+            }
+        })
+    }
+
+    const login = () => {
+        ensureNotificationPermission(()=>{
+            props.navigation.navigate("Login")
+        })
+    }
+
+    const loginAsGuestOperation = () => {
+        ensureNotificationPermission(doLoginAsGuest)
+    }
+
+    const onPressCancelModal = () => {
+        loginAfterModalDecision()
+    }
+
+    const onPressGoToSettings = () => {
+        Linking.openSettings()
+    }
+
+    // چون action خودش داخل pendingActionRef ذخیره شده، این تابع کمکی برای دکمه‌ی لغو است
+    const loginAfterModalDecision = () => {
+        const action = pendingActionRef.current
+        if (action) {
+            pendingActionRef.current = null
+            action()
+        }
+    }
+
+    const doLoginAsGuest = async() => {
         setLoading(true)
-        // const firebase_token = await messaging().getToken()
-        const os = await DeviceInfo.getSystemName()
-        const os_version = await DeviceInfo.getSystemVersion()
-        const device_brand = await DeviceInfo.getBrand()
-        const device_name = await DeviceInfo.getDeviceName()
-        const device_model = await DeviceInfo.getModel()
-        const app_version = await DeviceInfo.getVersion()
-        const app_build_number = await DeviceInfo.getBuildNumber()
-        const unique_id = await DeviceInfo.getUniqueId()
+        let firebase_token = null
+        try {
+            const messaging = getMessaging();
+            firebase_token = await getToken(messaging);
+        } catch (error) {
+            firebase_token = null
+        }
+
+        const [os, os_version, device_brand, device_name, device_model, app_version, app_build_number, unique_id] = await Promise.all([
+            DeviceInfo.getSystemName(),
+            DeviceInfo.getSystemVersion(),
+            DeviceInfo.getBrand(),
+            DeviceInfo.getDeviceName(),
+            DeviceInfo.getModel(),
+            DeviceInfo.getVersion(),
+            DeviceInfo.getBuildNumber(),
+            DeviceInfo.getUniqueId()
+        ]);
         await axios({
             url:'/',
             method:'post',
@@ -150,7 +394,7 @@ function SignIn(props){
                 `,
                 variables : {
                     "constants_version" : constants_version,
-                    "firebase_token" : "",
+                    "firebase_token" : firebase_token,
                     "app_version" : app_version,
                     "app_build_number" : Number(app_build_number),
                     "os" : os,
@@ -237,6 +481,7 @@ function SignIn(props){
             });
         })
     }
+
     return(
         <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
             <View style={styles.container2}>
@@ -267,7 +512,6 @@ function SignIn(props){
                 </View>
             </View>
         </View>
-        
     )
 }
 const styles = StyleSheet.create({
@@ -282,4 +526,56 @@ const styles = StyleSheet.create({
         justifyContent:'space-around',
     },
 });
+
+const modalStyles = StyleSheet.create({
+    overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 24,
+    },
+    box: {
+        width: '100%',
+        borderRadius: 16,
+        padding: 20,
+    },
+    title: {
+        fontSize: 17,
+        textAlign: 'center',
+        marginBottom: 12,
+    },
+    message: {
+        fontSize: 14,
+        textAlign: 'right',
+        lineHeight: 24,
+        marginBottom: 12,
+    },
+    explain: {
+        fontSize: 12.5,
+        textAlign: 'right',
+        lineHeight: 21,
+        marginBottom: 18,
+    },
+    settingsButton: {
+        backgroundColor: '#4C6FFF',
+        borderRadius: 10,
+        paddingVertical: 12,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    settingsButtonText: {
+        color: '#fff',
+        fontSize: 15,
+    },
+    closeButton: {
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    closeButtonText: {
+        fontSize: 14,
+        opacity: 0.7,
+    },
+});
+
 export default SignIn

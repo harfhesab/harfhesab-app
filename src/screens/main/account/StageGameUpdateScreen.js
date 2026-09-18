@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, Platform, PermissionsAndroid} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import { useDispatch, useSelector } from 'react-redux';
@@ -90,8 +90,28 @@ function StageGameUpdateScreen(props){
         setFirstCheckGetError(false)
         firstCheck()
     }
-    const downloadUpdates = async()=>{
-        if(status == "need-update" || status == "force-update"){
+
+    const requestNotificationPermission = async () => {
+        if (Platform.OS === 'android' && Platform.Version >= 33) {
+            try {
+                await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+                    {
+                        title: 'نمایش وضعیت دانلود',
+                        message: 'برای نمایش پیشرفت دریافت محتوای بازی روی نوار اعلان، به این اجازه نیاز داریم.',
+                        buttonPositive: 'اجازه می‌دهم',
+                        buttonNegative: 'فعلاً نه',
+                    }
+                );
+            } catch (e) {
+                null
+            }
+        }
+    };
+
+    const downloadUpdates = async () => {
+        if (status == "need-update" || status == "force-update") {
+            await requestNotificationPermission();
             const color = colors.primary.a1
             const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
             await startUpdateStageGameContentTask({ dispatch, realm, state, versionContent, color });

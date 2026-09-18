@@ -6,13 +6,11 @@ const options = {
     taskTitle: 'در حال دریافت محتوای بازی مرحله‌ای',
     taskDesc: 'لطفاً تا پایان عملیات صبر کنید...',
     taskIcon: {
-        name: 'ic_launcher', // آیکون از mipmap/ic_launcher.png
+        name: 'ic_launcher',
         type: 'mipmap',
     },
     color: '#40bf42',
-    // parameters: {
-    //     delay: 60000,
-    // },
+    foregroundServiceType: ['dataSync'],
 };
 
 const veryIntensiveTask = async (taskDataArguments) => {
