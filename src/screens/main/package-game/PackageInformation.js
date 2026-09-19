@@ -564,7 +564,7 @@ function PackageInformation(props){
                 },
             });
         } else {
-            await requestNotificationPermission()
+            requestNotificationPermission()
             const color = colors.primary.a1
             const status = data?.user_package_status.status
             const selectedAccessType = accessType

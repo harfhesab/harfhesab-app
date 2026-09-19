@@ -1,5 +1,5 @@
-const url = "http://192.168.43.207:4000";
-// const url = "https://api.harfhesab.com";
+// const url = "http://192.168.43.207:4000";
+const url = "https://api.harfhesab.com";
 const uri = "https://dl.harfhesab.com";
 export default {
     game_name_fa: "حرف حساب",

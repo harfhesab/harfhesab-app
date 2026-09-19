@@ -30,7 +30,7 @@
       android:alwaysRetainTaskState="true"
       android:restoreAnyVersion="true">
       <service
-        android:name="com.asterinet.react.bgactions.BackgroundActionsService"
+        android:name="com.asterinet.react.bgactions.RNBackgroundActionsTask"
         android:foregroundServiceType="dataSync"
         android:exported="false" />
       <!-- فیلد resizeableActivity برای جلوگیری از تمام صفحه شدن در zFold هست -->

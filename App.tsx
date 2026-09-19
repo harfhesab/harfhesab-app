@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import { PermissionsAndroid, Platform } from 'react-native';
 import { Provider } from "react-redux";
 import { store, persistor } from './src/redux/store/Store';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -19,7 +20,14 @@ import {
     queueNotificationDataForAfterSplash,
 } from './src/notifications/notificationNavigationService';
 import notifee, { EventType } from 'react-native-notify-kit';
-
+import {
+  getMessaging,
+  getToken,
+  hasPermission,
+  requestPermission,
+  AuthorizationStatus,
+  subscribeToTopic
+} from '@react-native-firebase/messaging';
 
 axios.defaults.baseURL = Globals.baseURL;
 axios.defaults.headers.post['Accept'] = 'application/json';
@@ -28,7 +36,7 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
       createNotificationChannels();
-
+      
       // نمایش دستی نوتیف وقتی اپ در foreground است
       const unsubscribeForegroundDisplay = registerForegroundMessageHandler();
 
@@ -55,12 +63,34 @@ function App(): React.JSX.Element {
           }
       });
 
+      setupFCM()
+
       return () => {
           unsubscribeForegroundDisplay();
           unsubscribeForegroundPress();
           unsubscribeBackgroundOpen();
       };
   }, []);
+
+  async function setupFCM() {
+      try {
+        const messaging = getMessaging();
+        if (Platform.OS === 'android' && Platform.Version >= 33) {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+          );
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('Android notification permission denied');
+            return;
+          }
+        } else if (Platform.OS === 'ios') {
+          await requestPermission(messaging);
+        }
+        await subscribeToTopic(messaging, 'all_users');
+      } catch (error) {
+        null
+      }
+  }
 
 
   return (

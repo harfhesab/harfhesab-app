@@ -111,7 +111,7 @@ function StageGameUpdateScreen(props){
 
     const downloadUpdates = async () => {
         if (status == "need-update" || status == "force-update") {
-            await requestNotificationPermission();
+            requestNotificationPermission();
             const color = colors.primary.a1
             const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
             await startUpdateStageGameContentTask({ dispatch, realm, state, versionContent, color });
