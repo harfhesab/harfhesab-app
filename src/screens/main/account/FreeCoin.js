@@ -785,16 +785,19 @@ function FreeCoin(props){
                                 click={joinToTelegram}
                                 ValueComponent={()=>coinComponent(free_coin_join_telegram)}
                             />
-                            <SimpleItem
-                                title={"ثبت امتیاز و نظر به بازی"}
-                                arrow={false}
-                                icon_name={"star-half-alt"}
-                                icon_type={"FontAwesome5"}
-                                icon_size={25}
-                                icon_color={colors.primary.a5}
-                                click={setRaiting}
-                                ValueComponent={()=>coinComponent(free_coin_first_rating_in_store)}
-                            />
+                            {
+                                (TARGET_STORE === "myket")&&
+                                <SimpleItem
+                                    title={"ثبت امتیاز و نظر به بازی"}
+                                    arrow={false}
+                                    icon_name={"star-half-alt"}
+                                    icon_type={"FontAwesome5"}
+                                    icon_size={25}
+                                    icon_color={colors.primary.a5}
+                                    click={setRaiting}
+                                    ValueComponent={()=>coinComponent(free_coin_first_rating_in_store)}
+                                />
+                            }
                         </ScrollView>
                     </View>
                 </ImageBackground>

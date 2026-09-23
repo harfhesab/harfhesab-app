@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TouchableNativeFeedback, ImageBackground} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TouchableNativeFeedback, ImageBackground, NativeModules} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../redux/store/RootReducer';
 import { login, logout } from '../../../redux/slices/accountSlice';
@@ -18,8 +18,10 @@ import { persistor, store } from '../../../redux/store/Store';
 import axios from 'axios';
 import { showToast } from '../../../components/custom-toast/ToastRef';
 import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
+import { TARGET_STORE } from '../../../utils/constants/build-config';
 
 const {width, height} = Dimensions.get("window")
+const {CafeBazaar} = NativeModules;
 function Account(props){
     const colors = useAppTheme()
     const realm = useRealm();
@@ -27,6 +29,25 @@ function Account(props){
     const { activeSubscription } = useSelector((state) => state.subscription);
     const { numberCoins } = useSelector((state) => state.coins);
 
+    const setRaiting = ()=>{
+        if(TARGET_STORE == "cafebazaar"){
+            handleCafeBazaarRating()
+        }
+    }
+    const handleCafeBazaarRating = async () => {
+        try {
+            await CafeBazaar.openRating();
+        } catch (error) {
+            showToast({
+                title: `مشکلی پیش آمد`,
+                message: "خطایی در باز کردن کافه‌ بازار پیش آمد. یا اینکه کافه بازار نصب نیست.",
+                type: "error",
+                animationType: "slide",
+                position: "top",
+                duration: 4000
+            });
+        }
+    };
     const AccountOptions = [
         {
             title: "خرید سکه",
@@ -94,6 +115,14 @@ function Account(props){
             arrow: true,
             onPress:()=>{props.navigation.navigate("Setting")},
             is_visible:true
+        },
+        {
+            title: "ثبت امتیاز و نظر",
+            icon_name: "star-half-alt",
+            icon_type: "FontAwesome5",
+            arrow: false,
+            onPress:()=>{setRaiting()},
+            is_visible:(TARGET_STORE ==="cafebazaar")? true:false
         },
         {
             title: "خروج از حساب کاربری",
