@@ -5,6 +5,6 @@ export const CAFE_BAZAAR_RSA_KEY: string = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKB
 export const CAFE_BAZAAR_DYNAMIC_DISCOUNT_KEY: string = "CmzsFgoxF74687pE7UJurFTGxrDwl4lQHPZkLmgXC7c";
 export const MYKET_RSA_KEY: string = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC9TW4Y/vaJFjrjPOjmbqsgOq/0mjR0IhV/0LInO5DoFnEs0Km0P7+73K9/hlIyeqfuCB66Vrl9JRXqVLdo4AowvVjzQu23LDBm0Ei7QZQXbWM8uJI9sIseQORiyDAft/x6FolYvG8XYECBpOTTFQZIVir3lLDyIdW+Fz1d6H8DywIDAQAB";
 
-export const TARGET_STORE: TargetStore = "cafebazaar";
+export const TARGET_STORE: TargetStore = "myket";
 
-export const BUILD_TYPE: BuildType = "aab";
+export const BUILD_TYPE: BuildType = "apk";

@@ -32,6 +32,13 @@ const rowGap = 25
 const numColumns = IS_TABLET_CONDITION ? 2 : 1
 const snapInterval = itemHeight + rowGap
 
+const getSafeScrollIndex = (itemIndex, itemsCount) => {
+    if (itemsCount <= 0) return undefined;
+    const totalRows = Math.ceil(itemsCount / numColumns);
+    const row = Math.floor(Math.max(0, itemIndex) / numColumns);
+    return Math.min(row, totalRows - 1);
+};
+
 function useStageSeasonsByLanguage(languageId) {
   const all = useQuery(StageSeason);
   const seasons = useMemo(() => {
@@ -64,18 +71,20 @@ function StageGame(props){
     }, [stageGameLanguage])
     useEffect(() => {
         setLoading(true)
-        setTimeout(()=>{
+        const t = setTimeout(() => {
             setLoading(false)
         }, 300)
-        const targetIndex = Math.max(0, lastSeasonNumber - 1);
-        if (targetIndex < data.length) {
+
+        const rowIndex = getSafeScrollIndex(lastSeasonNumber - 1, data.length);
+        if (rowIndex !== undefined) {
             flatListRef.current?.scrollToIndex({
-                index: targetIndex,
+                index: rowIndex,
                 animated: false,
                 viewOffset: FLATLIST_PADDING_VERTICAL,
             });
         }
-    }, [stageGameLanguage, lastSeasonNumber]);
+        return () => clearTimeout(t);
+    }, [stageGameLanguage, lastSeasonNumber, data.length]);
     const getProgressOperation = async(selected)=>{
         const language = selected ?? stageGameLanguage
         const progress = await getCurrentLanguageLastStageAndLastSeason(realm, language)
@@ -347,11 +356,7 @@ function StageGame(props){
                     keyExtractor={keyExtractor}
                     initialNumToRender={3}
                     windowSize={5}
-                    initialScrollIndex={
-                        data.length > 0
-                        ? Math.min(Math.max(0, lastSeasonNumber - 1), data.length - 1)
-                        : 0
-                    }
+                    initialScrollIndex={getSafeScrollIndex(lastSeasonNumber - 1, data.length) ?? 0}
                     maxToRenderPerBatch={3}
                     contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:45}}
                     renderItem={memoizedValue}
@@ -378,12 +383,15 @@ function StageGame(props){
                     onViewableItemsChanged={onViewableItemsChanged}
                     ListEmptyComponent={ListEmptyComponent}
                     extraData={{ activeIndexes, lastSeasonNumber, lastStageNumber }}
-                    onScrollToIndexFailed={(info) => {
-                        flatListRef.current?.scrollToIndex({
-                            index: Math.max(0, data.length - 1),
-                            animated: false,
-                            viewOffset: FLATLIST_PADDING_VERTICAL,
-                        });
+                    onScrollToIndexFailed={() => {
+                        const rowIndex = getSafeScrollIndex(data.length - 1, data.length);
+                        if (rowIndex !== undefined) {
+                            flatListRef.current?.scrollToIndex({
+                                index: rowIndex,
+                                animated: false,
+                                viewOffset: FLATLIST_PADDING_VERTICAL,
+                            });
+                        }
                     }}
                 />
             </View>

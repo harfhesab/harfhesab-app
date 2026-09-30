@@ -6,6 +6,7 @@ import Icon from '../../../../utils/Icon';
 import Font from '../../../../utils/Font';
 import HarfAkhar from './HarfAkhar';
 import HarfAkharPlaying from './HarfAkharPlaying';
+import { useHarfAkharListMusic } from '../../../../utils/sound/MusicFunctions';
 
 const Tab = createBottomTabNavigator();
 
@@ -69,6 +70,7 @@ const TabBarItem = ({color, size, focused, iconActive, iconInactive, label}) => 
 );
 
 const HarfAkharBottomTab = () => {
+  useHarfAkharListMusic()
   const colors = useAppTheme();
 
   const screenOptions = useMemo(

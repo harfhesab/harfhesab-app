@@ -467,7 +467,7 @@ function SignIn(props){
         <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
             <View style={styles.container2}>
                 <Text style={{fontFamily:Font.bakh_bold, fontSize:20, color:colors.text.a1}}>{"دوکلام حرف حساب!"}</Text>
-                <View style={{gap:15}}>
+                <View style={{gap:20}}>
                     <View style={{width:width, alignItems:'center'}}>
                         <ButtonGradient
                             height={65}

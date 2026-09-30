@@ -23,6 +23,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 import BottomDrawerGridHelper from '../../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import AlertBottomDrawerHelper from '../../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
+import { useHarfAkharInfoMusic } from '../../../../utils/sound/MusicFunctions';
 
 
 
@@ -55,6 +56,7 @@ const {width, height} = Dimensions.get("screen")
 const itemWidth = IS_TABLET_CONDITION?width*0.7:width - 30
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function HarfAkharInformation(props){
+    useHarfAkharInfoMusic()
     useImmersiveMode()
     const dispatch = useDispatch();
     const colors = useAppTheme()
