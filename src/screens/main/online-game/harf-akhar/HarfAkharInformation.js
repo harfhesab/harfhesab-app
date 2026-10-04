@@ -5,7 +5,7 @@ import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../../components/header/GeneralHeader';
 import ScreenLoading from '../../../../components/screen-loading/ScreenLoading';
 import DynamicProSkiaText from '../../../../components/text-components/DynamicProSkiaText';
-import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
+import { IS_TABLET_CONDITION } from '../../../../utils/constants/constants';
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
 import { WaveIndicator } from 'react-native-indicators';
 import axios from 'axios';
@@ -24,6 +24,8 @@ import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 import BottomDrawerGridHelper from '../../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import AlertBottomDrawerHelper from '../../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 import { useHarfAkharInfoMusic } from '../../../../utils/sound/MusicFunctions';
+import { useStatusBarHeight } from '../../../../hooks/useStatusBarHeight';
+import { updateContinueGameInHarfAkhar } from '../../../../redux/slices/settingSlice';
 
 
 
@@ -56,6 +58,7 @@ const {width, height} = Dimensions.get("screen")
 const itemWidth = IS_TABLET_CONDITION?width*0.7:width - 30
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function HarfAkharInformation(props){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     useHarfAkharInfoMusic()
     useImmersiveMode()
     const dispatch = useDispatch();
@@ -339,6 +342,10 @@ function HarfAkharInformation(props){
                     } else {
                         props.navigation.navigate("WordToSlotHarfAkhar", {challenge:challengeParamId, session:receivedData?._id})
                     }
+                    dispatch(updateContinueGameInHarfAkhar({
+                        continueGameId:challengeParamId,
+                        continueGameName:data?.title
+                    }))
                 }
             } else {
                 setLoading2(false)

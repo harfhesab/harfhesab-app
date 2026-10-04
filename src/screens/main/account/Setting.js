@@ -3,12 +3,13 @@ import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, NativeModules
 import { useSelector, useDispatch } from 'react-redux';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
-import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import SwitchItem from '../../../components/list-view-items/SwitchItem';
 import { changeMusicGame, changeSoundGame, changeVibrationGame } from '../../../redux/slices/settingSlice';
+import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
 
 const { ImmersiveMode } = NativeModules;
 function Setting(props){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const dispatch = useDispatch();
     const colors = useAppTheme()

@@ -10,14 +10,15 @@ import { useSelector } from 'react-redux';
 import Back from '../../icon/Back';
 import Setting from '../../icon/Setting';
 import LocalImageComponent from '../../image-components/LocalImageComponent';
-import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import { Text } from '@react-navigation/elements';
 import { showToast } from '../../custom-toast/ToastRef';
 import MeaningSentence from '../../coin/MeaningSentence';
 import TimerAndSandTimer from '../../timer/TimerAndSandTimer';
+import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
+  const STATUS_BAR_HEIGHT = useStatusBarHeight()
   const {coins_for_get_help_word_to_slot_stage_game, coins_for_get_help_word_to_slot_package_game} = useSelector((state: RootState) => state.constants);
   const {
     changePlayingIndex,

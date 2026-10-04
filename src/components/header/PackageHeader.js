@@ -4,12 +4,13 @@ import useAppTheme from "../../hooks/theme/useAppTheme";
 import NumberCoins from "../coin/NumberCoins";
 import Back from "../icon/Back";
 import Setting from "../icon/Setting";
-import { STATUS_BAR_HEIGHT } from "../../utils/constants/constants";
 import { navigate } from "../../main/navigationService";
 import PackageInfoBtn from "../buttons/PackageInfoBtn";
+import { useStatusBarHeight } from "../../hooks/useStatusBarHeight";
 
 const {width} = Dimensions.get('screen');
 function PackageHeader({height=65, paddingHorizontal=12, back=true, coin=true, title, setting=true, packageIcon, packageId}){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const colors = useAppTheme();
     return(
         <View style={{backgroundColor:colors.header.background, paddingTop:STATUS_BAR_HEIGHT}}>

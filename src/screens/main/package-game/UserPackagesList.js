@@ -52,6 +52,7 @@ function UserPackagesList(props){
     const [loading, setLoading] = useState(true)
     const [noItem, setNoItem] = useState(false)
     const data = useUserPackage()
+    const single = props?.route?.params?.single
 
     useEffect(()=>{
         if(data.length > 0){
@@ -167,14 +168,15 @@ function UserPackagesList(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                back={true}
+                back={single === '1'?true:false}
+                home={single === '1'?false:true}
                 coin={true}
                 subscription={true}
             />
                 <View style={styles.container}>
                     <ImageBackground
                         source={require("../../../assets/image/frame_list.png")}
-                        style={{ width: width - 20, height: height-115, paddingTop:"3.2%", paddingBottom:"4.1%"}}
+                        style={{ width: width - 20, height:single === '1'?height-115:height-193, paddingTop:"3.2%", paddingBottom:"4.1%"}}
                         imageStyle={{ resizeMode: "stretch" }}
                         resizeMode="stretch"
                     >

@@ -24,6 +24,7 @@ import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/Botto
 import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
 import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
+import { useSeasonListStageGameMusic } from '../../../utils/sound/MusicFunctions';
 
 const {width, height} = Dimensions.get("window")
 const FLATLIST_PADDING_VERTICAL = 15
@@ -49,6 +50,7 @@ function useStageSeasonsByLanguage(languageId) {
   return seasons;
 }
 function StageGame(props){
+    useSeasonListStageGameMusic()
     const isFocused = useIsFocused();
     const colors = useAppTheme()
     const state = useSelector((state) => state.stageGameDownload);
@@ -344,8 +346,8 @@ function StageGame(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
+                home={true}
                 coin={true}
-                subscription={true}
                 RightComponent={headerRigthComponent}
             />
             <View style={styles.container}>

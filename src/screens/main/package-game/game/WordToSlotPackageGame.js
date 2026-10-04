@@ -8,8 +8,10 @@ import { useObject, useRealm } from '../../../../realm';
 import { BSON } from 'realm';
 import { saveCompletedPartAndSentenceBuildedInPackageGame, saveWordHelpUsedInPackageGame } from '../../../../realm/repositories/user/user-package-game-progress.repository';
 import { endOfAStageInPackageGame } from '../../../../components/word-to-slot/functions/PackageGameFunctions';
+import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 
 function WordToSlotPackageGame(props){
+    useImmersiveMode()
     useWordToSlotPackageGameMusic()
     const colors = useAppTheme()
     const realm = useRealm();

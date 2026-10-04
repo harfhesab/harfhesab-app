@@ -9,12 +9,12 @@ import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import FooterLoading from '../../../../components/screen-loading/FooterLoading';
 import Font from '../../../../utils/Font';
 import HarfAkharChallenge from '../../../../components/card/online-game/HarfAkharChallenge';
-import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
+import { IS_TABLET_CONDITION } from '../../../../utils/constants/constants';
 import GalaxyTwinkle from '../../../../components/particles/GalaxyTwinkle';
-import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 import { WaveIndicator } from 'react-native-indicators';
 import { removeExpiredHarfAkharChallenges } from '../../../../realm/repositories/harf-akhar/harf-akhar-challenge.repository';
 import { useRealm } from '../../../../realm';
+import { useStatusBarHeight } from '../../../../hooks/useStatusBarHeight';
 
 const { width } = Dimensions.get('screen');
 
@@ -23,17 +23,8 @@ const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
 const ITEM_HEIGHT = itemWidth * 1.25;
 const ROW_GAP = 20;
 const ROW_HEIGHT = ITEM_HEIGHT + ROW_GAP;
-const TOP_PADDING = STATUS_BAR_HEIGHT + 70;
 
-const getItemLayout = (_, index) => {
-    const rowIndex = Math.floor(index / NUM_COLUMNS);
 
-    return {
-        length: ROW_HEIGHT,
-        offset: TOP_PADDING + rowIndex * ROW_HEIGHT,
-        index,
-    };
-};
 
 const GET_ITEMS_QUERY = `
   query paginateHarfAkharChallenges($page : Int){
@@ -54,7 +45,7 @@ const GET_ITEMS_QUERY = `
 `;
 
 function HarfAkhar(props) {
-    useImmersiveMode()
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const realm = useRealm()
     const colors = useAppTheme();
     const [data, setData] = useState([]);
@@ -65,6 +56,17 @@ function HarfAkhar(props) {
     const [footerLoading, setFooterLoading] = useState(false);
     const [footerTry, setFooterTry] = useState(false);
     const isFetching = useRef(false);
+
+    const getItemLayout = (_, index) => {
+        const TOP_PADDING = STATUS_BAR_HEIGHT + 70;
+        const rowIndex = Math.floor(index / NUM_COLUMNS);
+
+        return {
+            length: ROW_HEIGHT,
+            offset: TOP_PADDING + rowIndex * ROW_HEIGHT,
+            index,
+        };
+    };
 
     useEffect(() => {
         fetchData(1, true);
@@ -231,7 +233,7 @@ function HarfAkhar(props) {
             <View style={{position:'absolute', paddingTop:STATUS_BAR_HEIGHT, backgroundColor:'#12042670'}}>
                 <GeneralHeader
                     backgroundColor={'transparent'}
-                    home={"BottomTab"}
+                    home={true}
                     coin={true}
                     subscription={true}
                     shadowColor={'transparent'}

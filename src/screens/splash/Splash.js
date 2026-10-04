@@ -308,11 +308,11 @@ function Splash(props){
     return(
         <View style={{flex:1, backgroundColor:colors.background.a1, alignItems:'center', justifyContent:'space-between'}}>
             <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                <View style={{width:"100%", alignItems:'center', gap:20}}>
+                <View style={{width:"100%", alignItems:'center', gap:25}}>
                     <LocalImageComponent
                         path={require('../../assets/image/icon.png')}
-                        width={120}
-                        height={120}
+                        width={180}
+                        height={180}
                         resizeMode={'cover'}
                         blank_background={true}
                         borderRadius={20}
@@ -327,8 +327,8 @@ function Splash(props){
                 </View>
                 <LoadingBar 
                     barColor={colors.primary.a1}
-                    width={width-40}
-                    height={10}
+                    width={width-80}
+                    height={8}
                     barWidthStart={0.25}
                     barWidthEnd={0.85}
                     isComplete={appIsReady}

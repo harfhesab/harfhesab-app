@@ -200,7 +200,14 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                     loading={(item?.loading == true && buttonsLoading == index)?true:false}
                                     onPress={()=>{
                                         if((selectRequired && extendedState._id.length == 0) || (item.selectRequired == true && extendedState._id.length == 0)){
-                                            null
+                                            localToastRef.current.show({
+                                                title: "انتخاب کنید.",
+                                                message: "برای ادامه یکی از موارد را انتخاب کنید.",
+                                                type: "error",
+                                                animationType: "slide",
+                                                position: "top",
+                                                duration: 4000
+                                            });
                                         } else {
                                             item.onPress({ data: extendedState })
                                             if(item.loading == true){
@@ -229,7 +236,14 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                                     loading={(item?.loading == true && buttonsLoading == index)?true:false}
                                     onPress={()=>{
                                         if((selectRequired && extendedState._id.length == 0) || (item.selectRequired == true && extendedState._id.length == 0)){
-                                            null
+                                            localToastRef.current.show({
+                                                title: "انتخاب کنید.",
+                                                message: "برای ادامه یکی از موارد را انتخاب کنید.",
+                                                type: "error",
+                                                animationType: "slide",
+                                                position: "top",
+                                                duration: 4000
+                                            });
                                         } else {
                                             item.onPress({ data: extendedState })
                                             if(item.loading == true){

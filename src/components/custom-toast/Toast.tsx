@@ -19,7 +19,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
-import useAppTheme from '../../hooks/theme/useAppTheme';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
 import { vibrate } from '../../utils/vibrationManager';

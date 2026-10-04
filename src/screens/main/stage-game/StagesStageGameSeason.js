@@ -13,7 +13,7 @@ import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CA
 import { getStagesBySeasonId } from '../../../realm/repositories/stage-game/stage.repository';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import SeasonHeader from '../../../components/header/SeasonHeader';
-import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import SeasonMediaSwiper from '../../../components/swiper/SeasonMediaSwiper';
 import { useImmersiveMode } from '../../../hooks/useImmersiveMode';
@@ -21,12 +21,16 @@ import Icon from '../../../utils/Icon';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageInfo from '../../../components/card/general/StageInfo';
 import { useStageListStageGameMusic } from '../../../utils/sound/MusicFunctions';
+import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
+import { updateContinueGameInStageGame } from '../../../redux/slices/settingSlice';
 
 const {width, height} = Dimensions.get("screen");
 
 function StagesStageGameSeason(props){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     useImmersiveMode()
     useStageListStageGameMusic();
+    const dispatch = useDispatch();
     const colors = useAppTheme()
     const tabRef = useRef()
     const realm = useRealm();
@@ -94,6 +98,14 @@ function StagesStageGameSeason(props){
             number={item.stage_number_in_language}
             onPress={()=>{
                 if(item.stage_number_in_language > lastStageNumber)return
+                dispatch(updateContinueGameInStageGame({
+                    continueGameLanguageId: stageGameLanguage,
+                    continueGameLanguageName: stageGameLanguageName,
+                    continueGameId:item?._id.toHexString(),
+                    continueGameName:`${item.stage_number_in_language}`,
+                    continueGameSeasonId:props?.route?.params?.season,
+                    continueGameSeasonName:props?.route?.params?.seasonName,
+                }))
                 props.navigation.navigate("WordToSlotStageGame", {stage:item?._id.toHexString()})
             }}
         />

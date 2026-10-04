@@ -58,7 +58,7 @@ function MyPackageBtn({
 
   const onClick = () => {
     onPress?.();
-    navigate("UserPackagesList")
+    navigate("UserPackagesList", {single:"1"})
   };
 
   return (

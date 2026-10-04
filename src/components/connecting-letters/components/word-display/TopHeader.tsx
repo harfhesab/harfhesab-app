@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import { useLetters } from '../../context/LettersContext';
 import { View } from 'react-native';
 import NumberCoins from '../../../coin/NumberCoins';
@@ -9,12 +9,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store/RootReducer';
 import Setting from '../../../icon/Setting';
 import Back from '../../../icon/Back';
-import { STATUS_BAR_HEIGHT } from '../../../../utils/constants/constants';
 import HiddenWords from './HiddenWords';
 import TimerAndSandTimer from '../../../timer/TimerAndSandTimer';
+import { useStatusBarHeight } from '../../../../hooks/useStatusBarHeight';
 
 const {width} = Dimensions.get("screen");
 const TopHeader = () => {
+  const STATUS_BAR_HEIGHT = useStatusBarHeight()
   const {coins_for_get_help_letter_connecting_stage_game, coins_for_get_help_letter_connecting_package_game} = useSelector((state: RootState) => state.constants);
   const { type, applyForHelp, timeLimitData, gameTimeIsOver } = useLetters();
 
@@ -46,6 +47,7 @@ const TopHeader = () => {
             remainingSeconds={timeLimitData?.remaining_time_seconds}
             remainingSyncedAt={timeLimitData?.remaining_synced_at}
             onFinish={gameTimeIsOver}
+            paused={false}
           />
         </View>
       }

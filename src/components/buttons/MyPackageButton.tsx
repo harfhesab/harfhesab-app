@@ -1,7 +1,6 @@
 import React, {useEffect, memo} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ImageBackground} from 'react-native';
 import Font from '../../utils/Font';
-import useAppTheme from '../../hooks/theme/useAppTheme';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -19,8 +18,6 @@ interface MyPackageButtonProps {
 const MyPackageButton: React.FC<MyPackageButtonProps> = ({
   onPress = ()=>{},
 }) => {
-    const colors = useAppTheme();
-
     const size = useSharedValue(35);
     const rotateY = useSharedValue(0);
 

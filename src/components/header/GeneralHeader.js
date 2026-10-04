@@ -11,6 +11,7 @@ import SubscriptionBtn from "../buttons/SubscriptionBtn";
 import MyPackageBtn from "../buttons/MyPackageBtn";
 import NotificationBtn from "../buttons/NotificationBtn";
 import Home from "../icon/Home";
+import Account from "../icon/Account";
 
 const {width} = Dimensions.get('window');
 const colors = useAppTheme();
@@ -22,6 +23,7 @@ function GeneralHeader({
     RightComponent,
     LeftComponent,
     back,
+    account,
     home,
     notification,
     myPackage,
@@ -44,16 +46,18 @@ function GeneralHeader({
         <View style={{backgroundColor:backgroundColor, height:height, width:width, shadowColor:shadowColor, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:100, borderBottomColor:borderBottomColor, borderBottomWidth:borderBottomWidth}}>
             <View style={{flex: 1, height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10, overflow: 'hidden'}}>
                 {
+                    home&&
+                    <Home/>
+                }
+                {
+                    account&&
+                    <Account/>
+                }
+                {
                     RightComponent?
                     <RightComponent/>
                     :back&&
                     <Back/>
-                }
-                {
-                    home?.length > 0&&
-                    <Home
-                        route={home}
-                    />
                 }
                 {
                     notification&&

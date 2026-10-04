@@ -3,10 +3,11 @@ import {StyleSheet, View, Dimensions, NativeModules, ImageBackground} from 'reac
 import FastImage from '@d11/react-native-fast-image';
 import ImageZoom from 'react-native-image-pan-zoom';
 import GeneralHeader from '../../components/header/GeneralHeader';
-import { STATUS_BAR_HEIGHT } from '../../utils/constants/constants';
+import { useStatusBarHeight } from '../../hooks/useStatusBarHeight';
 
 const { ImmersiveMode } = NativeModules;
 function ImageScreen(props){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const {params} = props.route;
     const goBack = ()=>{

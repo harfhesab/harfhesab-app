@@ -1,4 +1,4 @@
-import { createNavigationContainerRef, StackActions } from '@react-navigation/native';
+import { createNavigationContainerRef, StackActions, CommonActions } from '@react-navigation/native';
 
 export const navigationRef = createNavigationContainerRef<any>();
 
@@ -33,6 +33,17 @@ export function popTo(name: string, params?: object) {
   if (navigationRef.isReady()) {
     navigationRef.dispatch(
       StackActions.popTo(name, params)
+    );
+  }
+}
+
+export function reset(routes: any[], index?: number) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(
+      CommonActions.reset({
+        index: index ?? routes.length - 1,
+        routes,
+      }),
     );
   }
 }

@@ -3,14 +3,15 @@ import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, NativeModules
 import { useSelector, useDispatch } from 'react-redux';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
-import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import axios from 'axios';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import NotificationCard from '../../../components/card/notification/NotificationCard';
+import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
 
 const { ImmersiveMode } = NativeModules;
 function MessageInApp(props){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true)

@@ -306,13 +306,14 @@ function Account(props){
                 notification={true}
                 coin={true}
                 subscription={true}
+                home={true}
             />
             <View style={{flex:1, alignItems:'center'}}>
                 
                 {account()}
                 <ImageBackground
                     source={require("../../../assets/image/menu_frame.png")}
-                    style={{ width: width - 20, height: height-295, paddingVertical:"3.4%"}}
+                    style={{ width: width - 20, height: height-230, paddingVertical:"3.4%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >

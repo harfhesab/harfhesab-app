@@ -10,7 +10,6 @@ import GeneralHeader from '../../../components/header/GeneralHeader';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import axios from 'axios';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
-import MyPackageButton from '../../../components/buttons/MyPackageButton';
 
 const {width, height} = Dimensions.get("window")
 function PackageGame(props){
@@ -236,7 +235,7 @@ function PackageGame(props){
     return(
          <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
-                myPackage={true}
+                home={true}
                 coin={true}
                 subscription={true}
             />
@@ -258,11 +257,6 @@ function PackageGame(props){
                     removeClippedSubviews={Platform.OS == 'ios' ? false : true}
                     ListEmptyComponent={ListEmptyComponent}
                 /> 
-            </View>
-            <View style={{position:'absolute', width:width, alignItems:'flex-start', bottom:15, paddingHorizontal:15}}>
-                <MyPackageButton
-                    onPress={()=>{props.navigation.navigate("UserPackagesList")}}
-                />
             </View>
         </View>
     )

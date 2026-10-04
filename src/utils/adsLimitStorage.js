@@ -5,6 +5,55 @@ const STORAGE_KEY = 'reward_ads_limit';
 const MAX_ADS = 3;
 const WINDOW_TIME = 3 * 60 * 60 * 1000; // 3 ساعت
 
+export const getRewardAdsStatusForHomeScreen = async () => {
+    try {
+        const data = await AsyncStorage.getItem(STORAGE_KEY);
+
+        if (!data) {
+            return {
+                allowed: true,
+            };
+        }
+
+        let { startTime, count } = JSON.parse(data);
+
+        const now = Date.now();
+        const resetAt = startTime + WINDOW_TIME;
+
+        // اگر پنجره 3 ساعته تمام شده باشد
+        if (now >= resetAt) {
+            await AsyncStorage.removeItem(STORAGE_KEY);
+
+            return {
+                allowed: true,
+            };
+        }
+
+        // --- محاسبه زمان باقی‌مانده دقیقاً مشابه منطق تایمر شما ---
+        const val1 = resetAt - now;
+        
+        const b2 = Math.trunc(val1 / 3600000);
+        const hour = Math.max(0, b2);
+        
+        const val3 = val1 - (hour * 3600000);
+        const b3 = Math.trunc(val3 / 60000);
+        const minute = Math.max(0, b3);
+        
+        const val4 = val3 - (minute * 60000);
+        const b4 = Math.trunc(val4 / 1000);
+        const second = Math.max(0, b4);
+        // --------------------------------------------------------
+
+        return {
+            allowed: count < MAX_ADS,
+        };
+    } catch (error) {
+        return {
+            allowed: true,
+        };
+    }
+};
+
 export const getRewardAdsStatus = async () => {
     try {
         const data = await AsyncStorage.getItem(STORAGE_KEY);

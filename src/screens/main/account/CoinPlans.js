@@ -16,7 +16,7 @@ import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import CoinPlanItem from '../../../components/card/general/CoinPlanItem';
 import { getAllCoinPlansList } from '../../../realm/repositories/user/coin-plan-repository';
-import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import Globals from '../../../utils/Globals';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import { CAFE_BAZAAR_RSA_KEY, MYKET_RSA_KEY, TARGET_STORE } from '../../../utils/constants/build-config';
@@ -24,6 +24,7 @@ import FullScreenLoadingHelper from '../../../components/full-screen-loading/Ful
 import { showToast } from '../../../components/custom-toast/ToastRef';
 import axios from 'axios';
 import { increaseNumberCoins } from '../../../redux/slices/coinSlice';
+import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
 
 const usePaymentHook = TARGET_STORE == "cafebazaar"?
     require('@cafebazaar/react-native-poolakey').useBazaar
@@ -34,6 +35,7 @@ const usePaymentHook = TARGET_STORE == "cafebazaar"?
 const { ImmersiveMode } = NativeModules;
 const numColumns = IS_TABLET_CONDITION ? 4 : 2
 function CoinPlans(props){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const realm = useRealm();
     const isFocused = useIsFocused();

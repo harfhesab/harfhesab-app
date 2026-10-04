@@ -1,21 +1,22 @@
 import { useEffect } from 'react';
-import { NativeModules } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-
-const { ImmersiveMode } = NativeModules;
+import { immersiveController } from './immersiveController';
 
 export function useImmersiveMode() {
   const isFocused = useIsFocused();
 
   useEffect(() => {
     if (isFocused) {
-      ImmersiveMode.enterImmersiveMode();
+      immersiveController.enter();
     }
   }, [isFocused]);
 
+  // ثبت مالکیت تا زمان unmount (مثل رفتار قبلی: فقط با unmount خارج می‌شود)
   useEffect(() => {
+    immersiveController.addOwner();
     return () => {
-      ImmersiveMode.exitImmersiveMode();
+      immersiveController.removeOwner();
+      immersiveController.scheduleExit();
     };
   }, []);
 }

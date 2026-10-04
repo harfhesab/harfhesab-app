@@ -1,15 +1,19 @@
 import { useEffect } from 'react';
-import { NativeModules } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-
-const { ImmersiveMode } = NativeModules;
+import { immersiveController } from './immersiveController';
 
 export function useImmersiveModeNotExit() {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) {
-      ImmersiveMode.enterImmersiveMode();
+    if (!isFocused) {
+      return;
     }
+    immersiveController.addNotExitFocused();
+    immersiveController.enter();
+    return () => {
+      // خودش هیچ‌وقت exit نمی‌زند، فقط ثبت حضورش برداشته می‌شود
+      immersiveController.removeNotExitFocused();
+    };
   }, [isFocused]);
 }

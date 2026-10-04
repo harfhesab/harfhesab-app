@@ -9,8 +9,10 @@ import { useObject, useRealm } from '../../../../realm';
 import { BSON } from 'realm';
 import { saveCompletedPartAndSentenceBuildedInStageGame, saveWordHelpUsedInStageGame } from '../../../../realm/repositories/user/user-stage-game-progress.repository';
 import { endOfAStageInStageGame } from '../../../../components/word-to-slot/functions/StageGameFunctions';
+import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 
 function WordToSlotStageGame(props){
+    useImmersiveMode()
     useWordToSlotStageGameMusic()
     const dispatch = useDispatch();
     const colors = useAppTheme()

@@ -9,7 +9,7 @@ import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-gam
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
-import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
 import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
@@ -18,7 +18,7 @@ import { BSON } from 'realm';
 import { useIsFocused } from '@react-navigation/native';
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
-import PackageGameSeasonCard, { PACKAGE_GAME_SEASON_CARD_HEIGHT, PACKAGE_GAME_SEASON_CARD_MARGIN, HEADER_HEIGHT, PACKAGE_GAME_CARD_WIDTH } from '../../../components/card/package-game-card/PackageGameSeasonCard';
+import PackageGameSeasonCard, { PACKAGE_GAME_SEASON_CARD_HEIGHT, PACKAGE_GAME_SEASON_CARD_MARGIN } from '../../../components/card/package-game-card/PackageGameSeasonCard';
 import { PackageSeason } from '../../../realm/schemas/package-game/PackageSeasonSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
