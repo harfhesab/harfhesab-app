@@ -113,53 +113,7 @@ function StageGame(props){
     const stageNotFoundAlert = ()=>{
         setTimeout(()=>{
             props.navigation.navigate("StageGameUpdateScreen")
-            AlertBottomDrawerHelper.hideAlert()
         }, 500)
-        const btn = [
-            {
-                onPress : ()=>{
-                    props.navigation.navigate("StageGameUpdateScreen")
-                },
-                text: "دریافت محتوای بازی",
-                loading: false,
-                type: "bold",
-            },
-        ]
-        const msg = [
-            {
-                text:"دریافت محتوای بازی مرحله‌ای!",
-                style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
-            },
-            {
-                text:"برای شروع بازی مرحله‌ای، ابتدا محتوای بازی را دریافت کنید.",
-                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
-            },
-            {
-                text:"توجه کنید هنگام دریافت محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
-                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
-            },
-        ]
-        AlertBottomDrawerHelper.showAlert({
-            title:"دریافت بازی مرحله‌ای",
-            message: msg,
-            buttons:btn,
-            options:{
-                cancelable: false,
-                icon:{
-                    Icon:()=>(
-                        <View style={{width:width, alignItems:'center'}}>
-                            <LocalImageComponent
-                                path={require('../../../assets/image/download.png')}
-                                width={40}
-                                height={40}
-                                resizeMode={'stretch'}
-                                blank_background={true}
-                            />
-                        </View>
-                    )
-                }
-            }
-        })
     }
     const forceUpdateAlert = ()=>{
         const btn = [

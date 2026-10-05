@@ -847,7 +847,7 @@ const showSuccessAlertForDownloaded = (firstGetContent)=>{
         body:firstGetContent==true?"محتوای بازی مرحله‌ای با موفقیت دریافت شد!":"بروزرسانی محتوای بازی مرحله‌ای با موفقیت انجام شد!",
         buttons: [
             {
-                text: "متوجه شدم",
+                text: "شروع بازی",
                 onPress: () => {
                     goBack()
                 },

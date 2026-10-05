@@ -29,6 +29,10 @@ import {
   markRated,
 } from '../../utils/ratingScheduler';
 import { TARGET_STORE } from '../../utils/constants/build-config';
+import useContentGate from '../../features/homeOnboarding/useContentGate';
+import FirstTouchGate from '../../features/homeOnboarding/FirstTouchGate';
+import showWelcomeDialog from '../../features/homeOnboarding/showWelcomeDialog';
+import showDownloadDialog from '../../features/homeOnboarding/showDownloadDialog';
 
 /* ═════════════ ثابت‌ها ═════════════ */
 const HEADER_HEIGHT = 60;
@@ -52,6 +56,9 @@ const {CafeBazaar, Myket} = NativeModules;
 function Home(props) {
     const colors = useAppTheme();
     const dispatch = useDispatch();
+    const {versionCreatedContent} = useSelector(state => state.stageGamePersist);
+    const isStoreReady = useSelector(state => state._persist?.rehydrated ?? true);
+    const hasContent = versionCreatedContent > 0;
     // فقط همین یک فیلد انتخاب می‌شود تا با تغییر بقیه‌ی constants این صفحه دوباره رندر نشود
     const coinReward = useSelector(state => state.constants.free_coin_view_ads);
     const {
@@ -69,15 +76,40 @@ function Home(props) {
 
     const navigate = useCallback(route => props.navigation.navigate(route), [props.navigation]);
 
+    const handleShowWelcome = useCallback(() => {
+        showWelcomeDialog({width, colors});
+    }, [width, colors]);
+
+    const handleShowDownload = useCallback(() => {
+        showDownloadDialog({width, colors});
+    }, [width, colors]);
+
+    const {isGateActive, handleGatePress} = useContentGate({
+        isReady: isStoreReady,
+        hasContent,
+        onShowWelcome: handleShowWelcome,
+        onShowDownload: handleShowDownload,
+    });
+
+    const ratingCheckedRef = useRef(false);
+
     useEffect(() => {
+        if (!isStoreReady || ratingCheckedRef.current) {
+            return;
+        }
+        ratingCheckedRef.current = true;
+
         (async () => {
             await registerLaunch();
+            if (!hasContent) {
+                return; // کاربر هنوز محتوا را ندارد
+            }
             if (await shouldAskForRating()) {
                 await markPromptShown();
                 showRatingDialog();
             }
         })();
-    }, []);
+    }, [isStoreReady, hasContent]);
 
     const showRatingDialog = ()=>{
         const btn = [
@@ -144,7 +176,7 @@ function Home(props) {
                             />
                         </View>
                     )
-                }
+                },
             }
         })
     }
@@ -340,7 +372,7 @@ function Home(props) {
         setBody(prev => (prev.w === w && prev.h === h ? prev : {w, h}));
     }, []);
 
-    const showAdButton = adsStatus?.allowed !== false;
+    const showAdButton = hasContent && adsStatus?.allowed !== false;
 
     return (
         <View style={{flex: 1, backgroundColor: colors.background.a1}}>
@@ -384,6 +416,7 @@ function Home(props) {
                             })}
                         </View>
                     </View>
+                    {isGateActive && <FirstTouchGate onPress={handleGatePress} />}
                 </ScrollView>
 
                 <View style={styles.header}>
@@ -398,6 +431,7 @@ function Home(props) {
                         notification={true}
                         account={true}
                     />
+                    {isGateActive && <FirstTouchGate onPress={handleGatePress} />}
                 </View>
             </View>
         </View>

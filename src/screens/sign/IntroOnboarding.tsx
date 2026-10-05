@@ -15,7 +15,7 @@ const imageWidth = IS_TABLET_CONDITION ? 450 : width - 80
 const slidesData: SlideItem[] = [
   {
     id: '1',
-    title: 'خوش آمدی',
+    title: 'به بازی «حرف حساب» خوش آمدی',
     description: 'تو این دنیای بی حساب، دو کلام، حرف حساب بازی کن!',
     CustomComponent: ()=>{
       return<HarfHesabLogoAnimation
@@ -103,7 +103,7 @@ const IntroOnboarding = (props:any) => {
         onFinish={finishOnboarding} 
         nextButtonColor={colors.primary.a3}
         doneButtonColor={colors.primary.a1}
-        titleStyle={{fontFamily:Font.bakh_bold, fontSize:18, color:colors.text.a1}}
+        titleStyle={{fontFamily:Font.bakh_bold, fontSize:18, color:colors.primary.a3}}
         descriptionStyle={{fontFamily:Font.bakh_regular, fontSize:14, color:colors.text.a2}}
       />
     </View>
