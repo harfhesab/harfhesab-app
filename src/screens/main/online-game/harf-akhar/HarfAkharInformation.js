@@ -26,6 +26,7 @@ import AlertBottomDrawerHelper from '../../../../components/alert-bottom-drawer/
 import { useHarfAkharInfoMusic } from '../../../../utils/sound/MusicFunctions';
 import { useStatusBarHeight } from '../../../../hooks/useStatusBarHeight';
 import { updateContinueGameInHarfAkhar } from '../../../../redux/slices/settingSlice';
+import BottomDrawerGrid from '../../../../components/bottom-drawer-grid/BottomDrawerGrid';
 
 
 
@@ -611,6 +612,7 @@ function HarfAkharInformation(props){
                     }
                 </View>
             </GalaxyTwinkle>
+            <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </SafeAreaView>
     )
 }

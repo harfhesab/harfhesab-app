@@ -6,7 +6,7 @@ const KEY = 'rating_state_v1';
 const DAY = 24 * 60 * 60 * 1000;
 
 const CONFIG = {
-  minDaysSinceFirstOpen: 2, // حداقل روز از اولین ورود
+  minDaysSinceFirstOpen: 1, // حداقل روز از اولین ورود
   minLaunches: 2,           // حداقل دفعات باز شدن برنامه
   baseIntervalDays: 4,      // فاصله‌ی اول بعد از «بعداً» (بعدی‌ها: 8، 16، 32، ...)
   maxIntervalDays: 60,      // سقف فاصله (قابل تغییر)

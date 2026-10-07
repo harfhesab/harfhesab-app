@@ -26,12 +26,37 @@ import {
   hasPermission,
   requestPermission,
   AuthorizationStatus,
-  subscribeToTopic
+  subscribeToTopic,
+  unsubscribeFromTopic,
 } from '@react-native-firebase/messaging';
+import DeviceInfo from 'react-native-device-info';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 axios.defaults.baseURL = Globals.baseURL;
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.post['client'] = 'user';
+
+const VERSION_TOPIC_STORAGE_KEY = 'fcm_version_topic';
+
+// عضویت در تاپیک ورژن فعلی و خروج از تاپیک ورژن قبلی (در صورت آپدیت)
+async function syncVersionTopic(messaging: ReturnType<typeof getMessaging>) {
+  const version = DeviceInfo.getVersion().replace(/[^a-zA-Z0-9_-]/g, '_');
+  const currentTopic = `version_${version}`;
+  const previousTopic = await AsyncStorage.getItem(VERSION_TOPIC_STORAGE_KEY);
+
+  if (previousTopic === currentTopic) return;
+
+  // اول عضو ورژن جدید می‌شویم تا اگر خطا رخ داد کاربر بی‌تاپیک نماند
+  await subscribeToTopic(messaging, currentTopic);
+
+  if (previousTopic) {
+    await unsubscribeFromTopic(messaging, previousTopic);
+  }
+
+  // فقط بعد از موفقیت کامل ذخیره می‌کنیم؛ اگر خطا شد، اجرای بعدی دوباره تلاش می‌کند
+  await AsyncStorage.setItem(VERSION_TOPIC_STORAGE_KEY, currentTopic);
+}
+
 function App(): React.JSX.Element {
 
   useEffect(() => {
@@ -87,6 +112,7 @@ function App(): React.JSX.Element {
           await requestPermission(messaging);
         }
         await subscribeToTopic(messaging, 'all_users');
+        await syncVersionTopic(messaging);
       } catch (error) {
         null
       }

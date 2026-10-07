@@ -11,7 +11,6 @@ import { navigate } from '../../../main/navigationService';
 import { showToast } from '../../custom-toast/ToastRef';
 import DynamicProSkiaText from '../../text-components/DynamicProSkiaText';
 import { priceDigitSeperator } from '../../../utils/PriceDigitSeperator';
-import BottomDrawerGridHelper from '../../bottom-drawer-grid/BottomDrawerGridHelper';
 import AlertBottomDrawerHelper from '../../alert-bottom-drawer/AlertBottomDrawerHelper';
 
 const {width} = Dimensions.get('screen')
