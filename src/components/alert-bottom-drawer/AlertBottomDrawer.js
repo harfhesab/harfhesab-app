@@ -148,7 +148,8 @@ const AlertBottomDrawer = React.forwardRef((props, ref) => {
                                     borderRadius={item?.borderRadius ?? 10}
                                     textSize={item?.textSize ?? (isBorder ? 14 : 16)}
                                     textColor={isBorder ? (item?.color ?? undefined) : undefined}
-                                    borderColor={isBorder ? (item?.color ?? undefined) : undefined}
+                                    borderColor={isBorder ? (item?.borderColor ?? undefined) : undefined}
+                                    borderWidth={isBorder ? (item?.borderWidth ?? undefined) : undefined}
                                     backgorundGradinte={isGradient ? (item?.color ?? undefined) : undefined}
                                     iconName={item?.iconName ?? undefined}
                                     iconType={item?.iconType ?? undefined}

@@ -238,7 +238,7 @@ function StageGameUpdateScreen(props){
             <GlowBackground colorA={colors.primary.a1} colorB={accent} />
             <GeneralHeader
                 back={true}
-                title={"دریافت محتوای بازی مرحله‌ای"}
+                title={"دریافت محتوای بازی جمله‌چین"}
             />
             {
                 firstCheckLoading?

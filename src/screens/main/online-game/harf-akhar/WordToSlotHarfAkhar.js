@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Dimensions, StatusBar} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import { useDispatch } from 'react-redux';
@@ -9,8 +9,10 @@ import { useObject, useRealm } from '../../../../realm';
 import { BSON } from 'realm';
 import { saveCompletedPartAndSentenceBuildedInHarfAkhar } from '../../../../realm/repositories/user/user-harf-akhar-progress.repository';
 import { endOfAChallengeInHarfAkhar, harfAkharChallengeTimeIsOverInWordToSlot } from '../../../../components/word-to-slot/functions/HarfAkharFunctions';
+import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 
 function WordToSlotHarfAkhar(props){
+    useImmersiveMode()
     useWordToSlotStageGameMusic()
     const colors = useAppTheme()
     const realm = useRealm();
@@ -48,6 +50,7 @@ function WordToSlotHarfAkhar(props){
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
+            <StatusBar translucent={true} hidden={true} />
             <GalaxyTwinkle >
                 <SafeAreaView style={styles.container}>
                     <WordToSlot 

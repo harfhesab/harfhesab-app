@@ -6,7 +6,11 @@ export interface ILanguage {
   badge?: string;
   icon_image?: string;
   stage_game?: boolean;
+  stage_game_active?: boolean;
+  word_game?: boolean;
+  word_game_active?: boolean;
   package_game?: boolean;
+  package_game_active?: boolean;
   code: string;
   rtl: boolean;
   ltr: boolean;

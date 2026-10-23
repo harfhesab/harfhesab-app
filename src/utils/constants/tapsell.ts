@@ -17,7 +17,10 @@ export const tapsell = {
         },
         harf_akhar_challenge:{
             zone_id : "6a9d5b8619ebb37f83dd3d6d",
-        }
+        },
+        word_game_completed_stage:{
+            zone_id : "6ad7fb78840e8a3d29cae17a",
+        },
     }
 }
 export type AdsPosition = keyof typeof tapsell.position;

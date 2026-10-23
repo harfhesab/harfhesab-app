@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, StatusBar} from 'react-native';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import ConnectingLetters from '../../../../components/connecting-letters/ConnectingLetters';
 import NightSky from '../../../../components/particles/NightSky';
@@ -14,8 +14,10 @@ import {
     saveUserHelpRequestsInStageGame
 } from '../../../../realm/repositories/user/user-stage-game-progress.repository';
 import { unknownWordCompletedInStageGame } from '../../../../components/connecting-letters/functions/StageGameFunctions';
+import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 
 function ConnectingLettersStageGame(props){
+    useImmersiveMode()
     useConnectingLetterStageGameMusic()
     const colors = useAppTheme()
     const realm = useRealm();
@@ -59,6 +61,7 @@ function ConnectingLettersStageGame(props){
     
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
+            <StatusBar translucent={true} hidden={true} />
             <NightSky>
                 <View style={styles.container}>
                     <ConnectingLetters 

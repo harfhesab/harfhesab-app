@@ -5,7 +5,6 @@ import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
-import { getStageSeasonsByLanguage } from '../../../realm/repositories/stage-game/stage-season.repository';
 import { getAllLanguages } from '../../../realm/repositories/general/language.repository';
 import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
@@ -128,11 +127,11 @@ function StageGame(props){
         ]
         const msg = [
             {
-                text:"بروزرسانی محتوای بازی مرحله‌ای!",
+                text:"بروزرسانی محتوای بازی جمله‌چین!",
                 style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
             },
             {
-                text:"یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
+                text:"یک بروزرسانی اجباری برای محتوای بازی جمله‌چین یافت شد. برای دریافت آن اقدام کنید.",
                 style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
             },
             {
@@ -141,7 +140,7 @@ function StageGame(props){
             },
         ]
         AlertBottomDrawerHelper.showAlert({
-            title:"بروزرسانی بازی مرحله‌ای",
+            title:"بروزرسانی بازی جمله‌چین",
             message: msg,
             buttons:btn,
             options:{
@@ -195,7 +194,7 @@ function StageGame(props){
             text1: [stageGameLanguageName],
         }:undefined;
         BottomDrawerGridHelper.showBottomDrawer({
-            title:"زبان بازی مرحله‌ای را انتخاب کنید.",
+            title:"زبان بازی جمله‌چین را انتخاب کنید.",
             list: languages.map(item => ({
                 _id: item._id,
                 text1: item.name,
@@ -203,7 +202,7 @@ function StageGame(props){
                 badge: item?.badge,
                 disabled: item.is_active == false?true:false,
                 disabledToastTitle:item.is_active == false?"زبان مورد نظر غیر فعال است":null,
-                disabledToastMessage:item.is_active == false?`در حال حاضر زبان "${item?.name}" در بخش بازی مرحله‌ای فعال نمی‌باشد.`:null,
+                disabledToastMessage:item.is_active == false?`در حال حاضر زبان "${item?.name}" در بخش بازی جمله‌چین فعال نمی‌باشد.`:null,
             })),
             buttons:btn,
             options:{
@@ -240,6 +239,7 @@ function StageGame(props){
     const renderItem = ({item, index})=>{
         return(
             <StageGameSeasonCard
+                type={"stage-game"}
                 ended={item.season_number < lastSeasonNumber?true:false}
                 lock={item.season_number > lastSeasonNumber?true:false}
                 progress={(item.season_number == lastSeasonNumber && lastStageNumber > 0)?lastStageNumber - item.stage_number_from:null }

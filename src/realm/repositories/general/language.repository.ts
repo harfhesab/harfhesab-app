@@ -27,26 +27,74 @@ export const createLanguage = (
 };
 
 // --- تابع ایجاد گروهی سند جدید ---
+
 export const createManyLanguages = (
   realm: Realm,
-  dataList: Array<Partial<Omit<Language, "createdAt" | "updatedAt">> & { _id: BSON.ObjectId | string }>
+  dataList: Array<
+    Partial<Omit<Language, "createdAt" | "updatedAt">> & {
+      _id: BSON.ObjectId | string;
+    }
+  >
 ): boolean => {
   const batchSize = 100;
+
   try {
     for (let i = 0; i < dataList.length; i += batchSize) {
       const chunk = dataList.slice(i, i + batchSize);
 
       realm.write(() => {
-        chunk.forEach(data => {
-          const objectId = typeof data._id === "string" ? new BSON.ObjectId(data._id) : data._id;
-          const exists = realm.objectForPrimaryKey("Language", objectId);
-          if (!exists) {
-            realm.create("Language", {
-              ...data,
-              _id: objectId,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            });
+        chunk.forEach((data) => {
+          const objectId =
+            typeof data._id === "string"
+              ? new BSON.ObjectId(data._id)
+              : data._id;
+
+          const exists = realm.objectForPrimaryKey<Language>(
+            "Language",
+            objectId
+          );
+
+          const now = new Date();
+
+          // ساخت داده نهایی بر اساس اطلاعات دریافتی
+          const languageData = {
+            _id: objectId,
+            name: data.name,
+            badge: data.badge ?? null,
+            icon_image: data.icon_image ?? null,
+
+            stage_game: data.stage_game,
+            stage_game_active: data.stage_game_active,
+            word_game: data.word_game,
+            word_game_active: data.word_game_active,
+            package_game: data.package_game,
+            package_game_active: data.package_game_active,
+
+            code: data.code,
+            rtl: data.rtl ?? true,
+            ltr: data.ltr ?? false,
+            is_visible: data.is_visible ?? false,
+            is_active: data.is_active ?? false,
+
+            order: data.order ?? null,
+            version_created: data.version_created ?? null,
+            version_updated: data.version_updated ?? null,
+            version_deleted: data.version_deleted ?? null,
+
+            createdAt: exists?.createdAt ?? now,
+            updatedAt: now,
+          };
+
+          if (exists) {
+            // به‌روزرسانی سند موجود
+            realm.create(
+              "Language",
+              languageData,
+              Realm.UpdateMode.All
+            );
+          } else {
+            // ایجاد سند جدید
+            realm.create("Language", languageData);
           }
         });
       });
@@ -54,9 +102,11 @@ export const createManyLanguages = (
 
     return true;
   } catch (e) {
+    console.error("createManyLanguages error:", e);
     return false;
   }
 };
+
 
 // تابع آپدیت گروهی اسناد
 export const updateManyLanguages = (
@@ -126,6 +176,19 @@ export const getAllLanguages = (
   const results = realm
     .objects<Language>("Language")
     .filtered("is_visible == true")
+    .sorted("order");
+
+  return Array.from(results);
+};
+
+// --- تابع گرفتن همه اسناد ---
+export const getAllWordGameLanguages = (
+  realm: Realm,
+): Language[] => {
+
+  const results = realm
+    .objects<Language>("Language")
+    .filtered("is_visible == true AND word_game == true")
     .sorted("order");
 
   return Array.from(results);

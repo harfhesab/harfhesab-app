@@ -183,20 +183,30 @@ export const getCurrentLanguageNextStageInformation = (
             if(next){
                 const nextStage = next._id.toString()
                 if(currentSeason?.equals(next.season)){
+                    const nextSeasonName = realm.objectForPrimaryKey<StageSeason>(
+                        'StageSeason',
+                        new BSON.ObjectId(currentSeason.toString())
+                    )?.title ?? null;
                     return {
                         nextStage : nextStage.toString(),
                         nextStageNumber : nextStageNumber,
                         nextSeason : currentSeason.toString(),
                         nextSeasonNumber : currentSeasonNumber,
+                        nextSeasonName : nextSeasonName,
                         endCurrentSeason : false,
                         endAllStage : false
                     }
                 } else {
+                    const nextSeasonName = realm.objectForPrimaryKey<StageSeason>(
+                        'StageSeason',
+                        new BSON.ObjectId(next.season.toString())
+                    )?.title ?? null;
                     return {
                         nextStage : nextStage.toString(),
                         nextStageNumber : nextStageNumber,
                         nextSeason : next.season.toString(),
                         nextSeasonNumber : currentSeasonNumber ? currentSeasonNumber + 1 : 2,
+                        nextSeasonName : nextSeasonName,
                         endCurrentSeason : true,
                         endAllStage : false
                     }
@@ -207,6 +217,7 @@ export const getCurrentLanguageNextStageInformation = (
                     nextStageNumber : null,
                     nextSeason : null,
                     nextSeasonNumber : null,
+                    nextSeasonName : null,
                     endCurrentSeason : false,
                     endAllStage : true
                 }
@@ -217,12 +228,17 @@ export const getCurrentLanguageNextStageInformation = (
             if(next){
                 const currentStageNumber = 1;
                 const currentStage = realm.objects<Stage>('Stage').filtered('language_ref == $0 AND stage_number_in_language == $1', languageRefId, currentStageNumber)[0];
+                const nextSeasonName = realm.objectForPrimaryKey<StageSeason>(
+                    'StageSeason',
+                    new BSON.ObjectId(next.season.toString())
+                )?.title ?? null;
                 if(next.season.equals(currentStage.season)){
                     return {
                         nextStage : next._id.toString(),
                         nextStageNumber : nextStageNumber,
                         nextSeason : next.season.toString(),
                         nextSeasonNumber : 1,
+                        nextSeasonName : nextSeasonName,
                         endCurrentSeason : false,
                         endAllStage : false
                     }
@@ -232,6 +248,7 @@ export const getCurrentLanguageNextStageInformation = (
                         nextStageNumber : nextStageNumber,
                         nextSeason : next.season.toString(),
                         nextSeasonNumber : 2,
+                        nextSeasonName : nextSeasonName,
                         endCurrentSeason : true,
                         endAllStage : false
                     }
@@ -242,6 +259,7 @@ export const getCurrentLanguageNextStageInformation = (
                     nextStageNumber : null,
                     nextSeason : null,
                     nextSeasonNumber : null,
+                    nextSeasonName : null,
                     endCurrentSeason : false,
                     endAllStage : true
                 }

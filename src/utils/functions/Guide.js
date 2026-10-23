@@ -1,7 +1,7 @@
 import AlertBottomDrawerHelper from "../../components/alert-bottom-drawer/AlertBottomDrawerHelper";
 import DynamicProSkiaText from "../../components/text-components/DynamicProSkiaText";
 import { colors } from "../../hooks/theme/colors";
-import { seenConnectingLetterGuide, seenUnknownWordGuide, seenWordToSlotGuide } from "../../redux/slices/settingSlice";
+import { seenConnectingLetterGuide, seenUnknownWordGuide, seenWordGameGuide, seenWordToSlotGuide } from "../../redux/slices/settingSlice";
 import Font from "../Font";
 import Globals from "../Globals";
 import Icon from "../Icon";
@@ -11,15 +11,15 @@ import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, Flat
 export const showWordToSlotGuide = async({dispatch, currentWords, sentence})=>{
     const msg = [
         {
-            text:"کارت‌های معلق را به ترتیب درست در خانه‌های خالی بچینید. باید با قرار دادن هر کارت در جای صحیح، جملهٔ صحیح هر مرحله را ایجاد کنید.",
+            text:"کارت‌های معلق را به‌ترتیب در خانه‌های خالی بچین تا جملهٔ صحیح ساخته شود.",
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
         },
         {
-            text:`در این مرحله ${currentWords.length} کارت معلق وجود دارد. با توجه به کملهٔ هر کارت، آن را به ترتیب درون خانه‌های خالی شماره 1 تا ${currentWords.length} قرار دهید تا جملهٔ  "${sentence}"  ایجاد شود.`,
+            text:`با توجه به کلمات ${currentWords.length} کارت معلق، آن‌ها را به‌ترتیب در خانه‌های ۱ تا ${currentWords.length} بچین تا جملهٔ «${sentence}» ساخته شود.`,
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
         },
         {
-            text:`* روی هر کارت لمس کرده و آن را و روی صفحه بکشید و در جایی که میخواهید رها کنید.`,
+            text:"* کارت را لمس کن، روی صفحه بِکِش و در محل دلخواه رها کن.",
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.primary.a3, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
         },
     ]
@@ -85,7 +85,7 @@ export const showWordToSlotGuide = async({dispatch, currentWords, sentence})=>{
 export const showUnknownWordGuide = ({dispatch})=>{
     const msg = [
         {
-            text:`در بین کارت‌های بازی، کارتی که روی آن علامت سوال است دارای کلمه‌ای نامعلوم است. قبل از مرتب کردن کارت‌ها، آن را فشار داده و کملهٔ مربوط به آن را کشف کنید.`,
+            text:"کارت دارای علامت سؤال، کلمه‌ای نامعلوم دارد. پیش از مرتب‌کردن کارت‌ها، آن را لمس کن تا کلمه را در بخش دیگری کشف کنی.",
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
         },
     ]
@@ -124,23 +124,19 @@ export const showUnknownWordGuide = ({dispatch})=>{
 export const showConnectingLetterGuide = async({dispatch, letters, word, additionalWords})=>{
     const msg = [
         {
-            text:`با ترکیب حروف معلق، یک کملهٔ اصلی (مخصوص جملهٔ بخش قبل) و چند کلمه اضافه بسازید.`,
+            text:`با ترکیب ${letters?.length} حرف، کلمهٔ اصلی «${word}»${additionalWords?.length > 0 ? ` و کلمات اضافهٔ «${additionalWords.join("، ")}»` : ""} را بساز.`,
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
         },
         {
-            text:`در اینجا تعداد ${letters?.length} حرف وجود دارد که باید یک کلمه اصلی  "${word}"  ${additionalWords?.length > 0?`و ${additionalWords?.length} کلمه اضافهٔ  "${additionalWords.join("، ")}" `:""} ساخته شود.`,
+            text:"برای ساختن هر کلمه، حروف معلق را به‌ترتیب لمس کن. برای انتخاب حرف بعدی، زمان محدودی داری.",
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
         },
         {
-            text:`برای ساختن هر کلمه، حروف معلق را به ترتیب فشار دهید. زمان برای فشار دادن حرف بعدی چند ثانیه است.`,
-            style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
-        },
-        {
-            text:`* دو حرف  "آ"  و  "ا"  هر دو یکی هستند. اگر برای ساخت یک کلمه نیاز به حرف  "آ"  بود از  "ا"  استفاده کنید.`,
+            text:"* حروف «آ» و «ا» در بازی یکسان‌اند؛ برای ساخت کلمات، از «ا» به‌جای «آ» استفاده کن.",
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.primary.a3, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
         },
         {
-            text:`* در هر مرحله باید کلمات مربوط به زبان آن مرحله ساخته شود. برای مثال اگر زبان مرحله‌ای ترکی بود کلماتی که باید ایجاد شوند نیز همه کلمات ترکی هستند.`,
+            text:"* کلمات هر مرحله باید به زبان همان مرحله باشند؛ مثلاً در جمله‌چین ترکی، باید کلمات ترکی بسازی.",
             style:{ fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.primary.a3, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
         },
     ]
@@ -184,4 +180,64 @@ export const showConnectingLetterGuide = async({dispatch, letters, word, additio
         }
     })
     dispatch(seenConnectingLetterGuide())
+}
+export const showWordGameGuide = async({dispatch, letters, words})=>{
+    const msg = [
+        {
+            text:`با ترکیب این ${letters?.length} حرف، ${words.length} کلمهٔ «${words.join("، ")}» را بساز.`,
+            style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+        },
+        {
+            text:"برای ساختن هر کلمه، حروف معلق را به‌ترتیب لمس کن. برای انتخاب حرف بعدی، زمان محدودی داری.",
+            style:{ fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
+        },
+        {
+            text:"* حروف «آ» و «ا» در بازی یکسان‌اند؛ برای ساخت کلمات، از «ا» به‌جای «آ» استفاده کن.",
+            style:{ fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.primary.a3, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
+        },
+        {
+            text:"* کلمات هر مرحله باید به زبان همان مرحله باشند؛ مثلاً در خان کلمات ترکی، باید کلمات ترکی بسازی.",
+            style:{ fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.primary.a3, alignSelf:'flex-start', textAlign:'justify', lineHeight:24},
+        },
+    ]
+    AlertBottomDrawerHelper.showAlert({
+        title:"آموزش بازی خان کلمات",
+        message: msg,
+        buttons:[
+            {
+                onPress : ()=>{},
+                text: "متوجه شدم",
+                type: "bold",
+            },
+        ],
+        options:{
+            cancelable: false,
+            icon:{
+                Icon:()=>(
+                    <View style={{flexDirection:'row', flexWrap:'wrap', alignItems:'center', justifyContent:'center', gap:5}}>
+                        {
+                            letters.map((item, index)=>(
+                                <View key={index.toString()}>
+                                    <ImageBackground
+                                        source={require("../../assets/image/letter-card.png")}
+                                        resizeMode="stretch"
+                                        style={{ width: 50, height: 50, alignItems:'center', justifyContent:'center' }}
+                                    >
+                                        <DynamicProSkiaText 
+                                            text={item}
+                                            textColor={"#512da8"} 
+                                            borderColor={"#FFFFFF"} 
+                                            borderWidth={1}
+                                            fontSize={25}
+                                        />
+                                    </ImageBackground>
+                                </View>
+                            ))
+                        }
+                    </View>
+                )
+            }
+        }
+    })
+    dispatch(seenWordGameGuide())
 }

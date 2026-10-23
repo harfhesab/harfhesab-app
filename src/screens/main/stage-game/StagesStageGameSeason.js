@@ -6,7 +6,6 @@ import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useRealm } from '../../../realm';
 import { getStageSeasonById } from '../../../realm/repositories/stage-game/stage-season.repository';
-import { changeStageGameLanguage } from '../../../redux/slices/stageGamePersistSlice';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import Font from '../../../utils/Font';
 import StageNumber, { STAGE_CARD_MARGIN, LIST_STAGE_CARD_NUMBER_COLUMN, STAGE_CARD_SIZE } from '../../../components/card/general/StageNumber';
@@ -23,6 +22,7 @@ import StageInfo from '../../../components/card/general/StageInfo';
 import { useStageListStageGameMusic } from '../../../utils/sound/MusicFunctions';
 import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
 import { updateContinueGameInStageGame } from '../../../redux/slices/settingSlice';
+import Globals from '../../../utils/Globals';
 
 const {width, height} = Dimensions.get("screen");
 
@@ -35,7 +35,7 @@ function StagesStageGameSeason(props){
     const tabRef = useRef()
     const realm = useRealm();
     const { stageGameLanguage, stageGameLanguageName } = useSelector((state) => state.stageGamePersist);
-    const { lastStageNumber, lastStage } = useSelector((state) => state.stageGame);
+    const { lastStageNumber, lastStage, lastSeasonNumber } = useSelector((state) => state.stageGame);
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
     const [noItem, setNoItem] = useState(false)
@@ -125,10 +125,12 @@ function StagesStageGameSeason(props){
 
     const keyExtractor = (item,index)=>index.toString()
     const FLATLIST_PADDING_TOP = 15
-    const changeTab = (index)=>{
-        setTopTab(index)
-        tabRef.current.scrollTo({x: index*tabWidth, animated: true});
-    }
+    const changeTab = (index) => {
+        setTopTab(index);
+        requestAnimationFrame(() => {
+            tabRef.current?.scrollTo({ x: index * tabWidth, animated: true });
+        });
+    };
     const ListEmptyComponent = ()=>(
         <View style={{width: tabWidth, height:(width-20)*0.75, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
@@ -154,9 +156,19 @@ function StagesStageGameSeason(props){
                         <SeasonHeader/>
                         <View style={styles.container}>
                             <SeasonMediaSwiper
-                                items={info?.media}
+                                items={info?.media?.map((item) => 
+                                    item.type === "end" && info?.season_number >= lastSeasonNumber
+                                        ? { ...item, lock: true }
+                                        : item
+                                )}
                                 title={seasonName}
+                                badge={info?.badge}
                                 height={height - (STATUS_BAR_HEIGHT + 65 + ((width-20)*1.21) + (((width*0.55)/2.5)/3.2) + 40)}
+                                autoPlay={false}
+                                effect={
+                                    ['petals', 'sunlight', 'fireflies', 'leaves']
+                                        [(info?.season_number - 1) % 4]
+                                }
                             />
                             <ImageBackground
                                 source={require("../../../assets/image/frame_stages.png")}
@@ -200,10 +212,10 @@ function StagesStageGameSeason(props){
                                         bounces={true}
                                         bouncesZoom={true}
                                         tabIndex={topTab}
-                                        onMomentumScrollEnd={(e)=>{
-                                            const contentOffset = e.nativeEvent.contentOffset.x
-                                            const tabIndex = contentOffset/tabWidth.toFixed()
-                                            setTopTab(tabIndex)
+                                        onMomentumScrollEnd={(e) => {
+                                            const contentOffset = e.nativeEvent.contentOffset.x;
+                                            const tabIndex = Math.round(contentOffset / tabWidth);
+                                            setTopTab(tabIndex);
                                         }}
                                         hitSlop={100}
                                         directionalLockEnabled={true}

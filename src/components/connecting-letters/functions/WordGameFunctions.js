@@ -1,0 +1,262 @@
+import axios from "axios";
+import { Dimensions, InteractionManager, View } from 'react-native';
+import { goBack, navigate } from "../../../main/navigationService";
+import { getCurrentWordGameLanguageNextStageInformation, makingStageContentReplayableInWordGame, updateUserWordGameProgress } from "../../../realm/repositories/user/user-word-game-progress.repository";
+import { updateWordGameCurrentLanguageLastStageAndLastSeason } from "../../../redux/slices/wordGameSlice";
+import GameAlertHelper from "../../game-alert/GameAlertHelper";
+import { successfulCompletionOfSeasonSound, successfulCompletionOfStageSound } from "../../../utils/sound/SoundFunctions";
+import { store } from "../../../redux/store/Store";
+import { colors } from "../../../hooks/theme/colors";
+import LocalImageComponent from "../../image-components/LocalImageComponent";
+import AlertBottomDrawerHelper from "../../alert-bottom-drawer/AlertBottomDrawerHelper";
+import Font from "../../../utils/Font";
+import { updateContinueGameInWordGame } from "../../../redux/slices/settingSlice";
+import askForStoreRatingIfNeeded from "../../../features/ratingReward/useStoreRatingReward";
+
+
+export const endOfAStageInWordGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber})=>{
+    const state = store.getState()
+    if(stageId.toString() === currentStageId.toString()){
+        const next = getCurrentWordGameLanguageNextStageInformation(realm, language_ref)
+        const languageName = state.wordGamePersist.wordGameLanguageName
+        if(next.endAllStage == true){
+            GameAlertHelper.showAlertGame({
+                title:`پایان مرحله ${stageNumber}`,
+                admiration: "احسنت، عالی بود!",
+                description: `کلمات مرحله ${stageNumber} زبان ${languageName} با موفقیت ساخته شد.`,
+                buttons: [
+                    {
+                        text: 'ادامه',
+                        onPress: () => {
+                            goBack()
+                            goBack()
+                            setTimeout(()=>{
+                                endAllStageAlert({stageNumber, languageName})
+                            }, 800)
+                        },
+                        type:'bold'
+                    },
+                    {
+                        type:'ads',
+                        reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
+                        adsPosition: "word_game_completed_stage"
+                    }
+                ],
+                options : {
+                    lottie: 'success',
+                    cancelable: false,
+                },
+            });
+        } else {
+            const last_season = next?.nextSeason;
+            const last_season_number = next?.nextSeasonNumber;
+            const last_stage = next?.nextStage;
+            const last_stage_number = next?.nextStageNumber;
+            const updateProgress = await updateUserWordGameProgress(realm, language_ref, last_season, last_season_number, last_stage, last_stage_number)
+            if(updateProgress == true){
+                const data = {
+                    lastStage: last_stage,
+                    lastStageNumber: last_stage_number,
+                    lastSeason: last_season,
+                    lastSeasonNumber: last_season_number  
+                }
+                const numberCoins = state.coins.numberCoins;
+                const coinsReward = state.constants.coins_reward_from_stage_completed_stage_game
+                const totalCoins = numberCoins + coinsReward
+                await dispatch(updateWordGameCurrentLanguageLastStageAndLastSeason(data))
+                GameAlertHelper.showAlertGame({
+                    title:`پایان مرحله ${stageNumber}`,
+                    admiration: "احسنت، عالی بود!",
+                    description: `کلمات مرحله ${stageNumber} زبان ${state.wordGamePersist.wordGameLanguageName} با موفقیت ساخته شد.`,
+                    buttons: [
+                        {
+                            text: 'ادامه',
+                            onPress: () => {
+                                goBack()
+                                if(next.endCurrentSeason == true){
+                                    setTimeout(()=>{
+                                        endOfASeasonInWordGame({seasonNumber:last_season_number-1})
+                                    }, 500)
+                                } else {
+                                    askForStoreRatingIfNeeded(stageNumber)
+                                }
+                            },
+                            type:'bold'
+                        },
+                        {
+                            type:'ads',
+                            reward: state.constants.coins_reward_from_play_video_ads_current_stage,
+                            adsPosition: "word_game_completed_stage"
+                        }
+                    ],
+                    options : {
+                        lottie: 'success',
+                        reward : coinsReward,
+                        cancelable: false,
+                    },
+                });
+                setTimeout(()=>{
+                    dispatch(updateContinueGameInWordGame({
+                        continueGameLanguageId: language_ref,
+                        continueGameLanguageName: languageName,
+                        continueGameId:last_stage,
+                        continueGameName:`${last_stage_number}`,
+                        continueGameSeasonId:last_season,
+                        continueGameSeasonName:next.nextSeasonName??`${last_season_number}`,
+                    }))
+                    updateUserWordGameProgressInServer(data, language_ref, totalCoins)
+                }, 1000)
+            }
+        }
+    } else {
+        GameAlertHelper.showAlertGame({
+            title:`پایان مرحله ${stageNumber}`,
+            admiration: "احسنت، عالی بود!",
+            description: `کلمات مرحله ${stageNumber} زبان ${state.wordGamePersist.wordGameLanguageName} مجددا، با موفقیت ساخته شد.`,
+            buttons: [
+                {
+                    text: 'ادامه',
+                    onPress: () => {
+                        goBack()
+                        askForStoreRatingIfNeeded(stageNumber)
+                    },
+                    type:'bold'
+                },
+                {
+                    type:'ads',
+                    reward: state.constants.coins_reward_from_play_video_ads_previous_stage,
+                    adsPosition: "word_game_completed_stage"
+                }
+            ],
+            options : {
+                lottie: 'success',
+                cancelable: false,
+            },
+        });
+    }
+    makingStageContentReplayableInWordGame(realm, stageId)
+    setTimeout(()=>{
+        successfulCompletionOfStageSound()
+    }, 1000)
+}
+const endOfASeasonInWordGame = ({seasonNumber})=>{
+    const state = store.getState()
+    GameAlertHelper.showAlertGame({
+        title:`پایان فصل ${seasonNumber}`,
+        admiration: "تبریک!",
+        description: `مراحل فصل ${seasonNumber} زبان ${state.wordGamePersist.wordGameLanguageName} با موفقیت به اتمام رسید.`,
+        buttons: [
+            {
+                text: "شروع فصل جدید",
+                onPress: () => {
+                    goBack()
+                },
+                type:'bold'
+            }
+        ],
+        options : {
+            lottie: 'unlocked',
+            reward : state.constants.coins_reward_from_season_completed_stage_game,
+            cancelable: false,
+        },
+    });
+    setTimeout(()=>{
+        successfulCompletionOfSeasonSound()
+    }, 1000)
+}
+const updateUserWordGameProgressInServer = (data, language_ref, totalCoins)=>{
+    InteractionManager.runAfterInteractions(()=>{
+        const run = async ()=>{
+            await axios({
+                url:'/',
+                method:'post',
+                data: {
+                    query : `
+                    mutation updateUserWordGameProgress(
+                        $number_coin : Int,
+                        $language_ref : ID!,
+                        $last_season : ID!,
+                        $last_season_number : Int!,
+                        $last_stage : ID!,
+                        $last_stage_number : Int!,
+                    ){
+                        updateUserWordGameProgress(
+                            number_coin : $number_coin,
+                            language_ref : $language_ref,
+                            last_season : $last_season,
+                            last_season_number : $last_season_number,
+                            last_stage : $last_stage,
+                            last_stage_number : $last_stage_number,
+                        ) {
+                            status,
+                        }
+                    }
+                    `,
+                    variables : {
+                        "number_coin" : totalCoins,
+                        "language_ref" : language_ref,
+                        "last_season" : data.lastSeason,
+                        "last_season_number" : data.lastSeasonNumber,
+                        "last_stage" : data.lastStage,
+                        "last_stage_number" : data.lastStageNumber,
+                    }
+                }
+            })
+        }
+        run()
+    })
+}
+const endAllStageAlert = ({stageNumber, languageName})=>{
+    const {width} = Dimensions.get("window")
+    const btn = [
+        {
+            onPress : ()=>{
+                navigate("WordGameUpdateScreen")
+            },
+            text: "بروزرسانی محتوا",
+            loading: false,
+            type: "bold",
+        },
+        {
+            onPress : ()=>{},
+            text: "متوجه شدم",
+            loading: false,
+            type: "border",
+        },
+    ]
+    const msg = [
+        {
+            text:"مرحلهٔ بعدی یافت نشد!",
+            style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+        },
+        {
+            text:`مراحل جدید زبان ${languageName} یافت نشد. از قسمت بروزرسانی بازی خان کلمات، محتوای جدید بازی خان کلمات را دریافت کنید.`,
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+        {
+            text:`توجه کنید، بعد از دریافت محتوای جدید، دوباره مرحله ${stageNumber} زبان ${languageName} را بازی کنید تا مرحله ${stageNumber + 1} باز شود.`,
+            style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+        },
+    ]
+    AlertBottomDrawerHelper.showAlert({
+        title:"بروزرسانی بازی خان کلمات",
+        message: msg,
+        buttons:btn,
+        options:{
+            cancelable: true,
+            icon:{
+                Icon:()=>(
+                    <View style={{width:width, alignItems:'center'}}>
+                        <LocalImageComponent
+                            path={require('../../../assets/image/download.png')}
+                            width={40}
+                            height={40}
+                            resizeMode={'stretch'}
+                            blank_background={true}
+                        />
+                    </View>
+                )
+            }
+        }
+    })
+}

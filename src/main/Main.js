@@ -39,7 +39,8 @@ const Main = (props) => {
     "WordToSlotPackageGame",
     "ConnectingLettersPackageGame",
     "WordToSlotHarfAkhar",
-    "ConnectingLettersHarfAkhar"
+    "ConnectingLettersHarfAkhar",
+    "ConnectingLettersWordGame"
   ]
 
   axios.defaults.headers.post['token'] = token;

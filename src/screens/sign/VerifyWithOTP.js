@@ -33,9 +33,10 @@ import { showToast } from '../../components/custom-toast/ToastRef';
 import { updateNumberHiddenWords } from '../../redux/slices/hiddenWordSlice';
 import { preloadImages } from '../../utils/ImagePreloader';
 import { BUILD_TYPE, TARGET_STORE } from '../../utils/constants/build-config';
-import { seenAllGuide } from '../../redux/slices/settingSlice';
+import { seenAllGuide, seenWordGameGuide } from '../../redux/slices/settingSlice';
 import TimerUIThread from '../../components/timer/TimerUIThread';
 import { getMessaging, getToken } from '@react-native-firebase/messaging';
+import { updateUserWordGameProgressInLogin } from '../../realm/repositories/user/user-word-game-progress.repository';
   
   
 const {width, height} = Dimensions.get('window');
@@ -233,12 +234,14 @@ function VerifyWithOTP(props){
                             token,
                             user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration, new_notifications},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
+                            user_word_game_progress{word_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                             game_constants{
                                 constants_version,
                                 coins_for_get_help_word_to_slot_stage_game,
                                 coins_for_get_help_word_to_slot_package_game,
                                 coins_for_get_help_letter_connecting_stage_game,
                                 coins_for_get_help_letter_connecting_package_game,
+                                coins_for_get_help_word_game,
                                 coins_reward_from_play_video_ads_current_stage,
                                 coins_reward_from_play_video_ads_previous_stage,
                                 coins_reward_from_play_video_ads_unknown_word,
@@ -365,8 +368,19 @@ function VerifyWithOTP(props){
                         updateUserStageGameProgressInLogin(realm, progressData)
                         for (let index = 0; index < progressData.length; index++) {
                             const element = progressData[index];
-                            if(element?.last_stage_number > 3){
+                            if(element?.last_stage_number > 4){
                                 dispatch(seenAllGuide())
+                                break
+                            }
+                        }
+                    }
+                    const progressWordGameData = data?.user_word_game_progress?.word_game
+                    if(progressWordGameData?.length > 0){
+                        updateUserWordGameProgressInLogin(realm, progressWordGameData)
+                        for (let index = 0; index < progressData.length; index++) {
+                            const element = progressData[index];
+                            if(element?.last_stage_number > 2){
+                                dispatch(seenWordGameGuide())
                                 break
                             }
                         }

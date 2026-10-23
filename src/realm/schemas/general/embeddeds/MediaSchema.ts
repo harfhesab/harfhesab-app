@@ -5,6 +5,7 @@ export class Media extends Realm.Object<Media> {
   order?: number;
   file_type?: string;
   duration?: string;
+  type?: string;
 
   static schema: Realm.ObjectSchema = {
     name: "Media",
@@ -14,6 +15,7 @@ export class Media extends Realm.Object<Media> {
       order: "int?",
       file_type: "string?",
       duration: "string?",
+      type: "string?",
     },
   };
 }

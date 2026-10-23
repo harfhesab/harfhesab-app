@@ -1,0 +1,379 @@
+import React, {useMemo, useState, useEffect, useRef} from 'react';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import AlertHelper from '../../../components/alert/AlertHelper';
+import { checkWordGameContentVersion } from '../../../utils/api/WordGameApi';
+import { useDispatch, useSelector } from "react-redux";
+import { useQuery, useRealm } from '../../../realm';
+import { getAllWordGameLanguages } from '../../../realm/repositories/general/language.repository';
+import { changeWordGameLanguage } from '../../../redux/slices/wordGamePersistSlice';
+import useAppTheme from '../../../hooks/theme/useAppTheme';
+import Font from '../../../utils/Font';
+import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
+import StageGameSeasonCard, { STAGE_GAME_SEASON_CARD_HEIGHT, STAGE_GAME_SEASON_CARD_MARGIN } from '../../../components/card/stage-game-card/StageGameSeasonCard';
+import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import GeneralHeader from '../../../components/header/GeneralHeader';
+import Icon from '../../../utils/Icon';
+import { getCurrentWordGameLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-word-game-progress.repository';
+import { updateWordGameCurrentLanguageLastStageAndLastSeason } from '../../../redux/slices/wordGameSlice';
+import { BSON } from 'realm';
+import { WordGameSeason } from '../../../realm/schemas/word-game/WordGameSeasonSchema';
+import { useIsFocused } from '@react-navigation/native';
+import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
+import BottomDrawerGrid from '../../../components/bottom-drawer-grid/BottomDrawerGrid';
+import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
+import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
+import { useSeasonListStageGameMusic } from '../../../utils/sound/MusicFunctions';
+
+const {width, height} = Dimensions.get("window")
+const FLATLIST_PADDING_VERTICAL = 15
+const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT
+const rowGap = 25
+const numColumns = IS_TABLET_CONDITION ? 2 : 1
+const snapInterval = itemHeight + rowGap
+
+const getSafeScrollIndex = (itemIndex, itemsCount) => {
+    if (itemsCount <= 0) return undefined;
+    const totalRows = Math.ceil(itemsCount / numColumns);
+    const row = Math.floor(Math.max(0, itemIndex) / numColumns);
+    return Math.min(row, totalRows - 1);
+};
+
+function useWordGameSeasonsByLanguage(languageId) {
+  const all = useQuery(WordGameSeason);
+  const seasons = useMemo(() => {
+    if (!languageId) return [];
+    const id = typeof languageId === 'string' ? new BSON.ObjectId(languageId) : languageId;
+    return all.filtered("language_ref == $0 AND is_visible == true", id).sorted("season_number");
+  }, [all, languageId]);
+  return seasons;
+}
+function WordGame(props){
+    useSeasonListStageGameMusic()
+    const isFocused = useIsFocused();
+    const colors = useAppTheme()
+    const state = useSelector((state) => state.wordGameDownload);
+    const dispatch = useDispatch();
+    const realm = useRealm();
+    const flatListRef = useRef(null);
+    const [activeIndexes, setActiveIndexes] = useState([]);
+    const { wordGameLanguage, wordGameLanguageName, forceUpdate, versionCreatedContent, versionUpdatedContent, versionDeletedContent } = useSelector((state) => state.wordGamePersist);
+    const { lastSeasonNumber, lastStageNumber } = useSelector((state) => state.wordGame);
+    const [loading, setLoading] = useState(true)
+    const data = useWordGameSeasonsByLanguage(wordGameLanguage)
+
+    useEffect(() => {
+        if(isFocused){
+            startFirst()
+        }
+    }, [isFocused]);
+    useEffect(()=>{
+        getProgressOperation()
+    }, [wordGameLanguage])
+    useEffect(() => {
+        setLoading(true)
+        const t = setTimeout(() => {
+            setLoading(false)
+        }, 300)
+
+        const rowIndex = getSafeScrollIndex(lastSeasonNumber - 1, data.length);
+        if (rowIndex !== undefined) {
+            flatListRef.current?.scrollToIndex({
+                index: rowIndex,
+                animated: false,
+                viewOffset: FLATLIST_PADDING_VERTICAL,
+            });
+        }
+        return () => clearTimeout(t);
+    }, [wordGameLanguage, lastSeasonNumber, data.length]);
+    const getProgressOperation = async(selected)=>{
+        const language = selected ?? wordGameLanguage
+        const progress = await getCurrentWordGameLanguageLastStageAndLastSeason(realm, language)
+        const data = {
+            lastStage: progress?.last_stage,
+            lastStageNumber: progress?.last_stage_number,
+            lastSeason: progress?.last_season,
+            lastSeasonNumber: progress?.last_season_number  
+        }
+        await dispatch(updateWordGameCurrentLanguageLastStageAndLastSeason(data))
+    }
+    const startFirst = async() =>{
+        if(versionCreatedContent == 0){
+            stageNotFoundAlert()
+        } else if(forceUpdate == true){
+            forceUpdateAlert()
+        } else if(!wordGameLanguage){
+            getLanguages()
+        } else {
+            const versionContent = { versionCreatedContent, versionUpdatedContent, versionDeletedContent }
+            checkWordGameContentVersion({ dispatch, realm, state, versionContent });
+        }
+    }
+    const stageNotFoundAlert = ()=>{
+        setTimeout(()=>{
+            props.navigation.navigate("WordGameUpdateScreen")
+        }, 500)
+    }
+    const forceUpdateAlert = ()=>{
+        const btn = [
+            {
+                onPress : ()=>{
+                    props.navigation.navigate("WordGameUpdateScreen")
+                },
+                text: "دریافت بروزرسانی",
+                loading: false,
+                type: "bold",
+            },
+        ]
+        const msg = [
+            {
+                text:"بروزرسانی محتوای بازی جمله‌چین!",
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
+            },
+            {
+                text:"یک بروزرسانی اجباری برای محتوای بازی جمله‌چین یافت شد. برای دریافت آن اقدام کنید.",
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            },
+            {
+                text:"توجه کنید هنگام بروزرسانی محتوای بازی، از اتصال دستگاه خود به اینترنت مطمئن شوید.",
+                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
+            },
+        ]
+        AlertBottomDrawerHelper.showAlert({
+            title:"بروزرسانی بازی جمله‌چین",
+            message: msg,
+            buttons:btn,
+            options:{
+                cancelable: false,
+                icon:{
+                    Icon:()=>(
+                        <View style={{width:width, alignItems:'center'}}>
+                            <LocalImageComponent
+                                path={require('../../../assets/image/download.png')}
+                                width={40}
+                                height={40}
+                                resizeMode={'stretch'}
+                                blank_background={true}
+                            />
+                        </View>
+                    )
+                }
+            }
+        })
+    }
+    const getLanguages = ()=>{
+        const languages = getAllWordGameLanguages(realm)
+        const btn = [
+            {
+                onPress : ({data})=>{
+                    const selected = data._id[0]
+                    const selectedName = data.text1[0]
+                    dispatch(changeWordGameLanguage({
+                        language:selected.toString(),
+                        languageName:selectedName.toString(),
+                    }))
+                },
+                text: 'انتخاب زبان',
+                loading: false,
+                type: "bold",
+                selectRequired:true
+            },
+        ]
+        if(wordGameLanguage){
+            const cancelBtn = {
+                onPress : ()=>{},
+                text: 'لغو',
+                loading: false,
+                type: "border",
+                selectRequired:false
+            }
+            btn.push(cancelBtn)
+        }
+        const previousSelected = wordGameLanguage?{
+            _id: [wordGameLanguage],
+            text1: [wordGameLanguageName],
+        }:undefined;
+        BottomDrawerGridHelper.showBottomDrawer({
+            title:"زبان بازی خان کلمات را انتخاب کنید.",
+            list: languages.map(item => ({
+                _id: item._id,
+                text1: item.name,
+                image: item.icon_image,
+                badge: item.word_game_active == false?"به زودی":null,
+                disabled: item.word_game_active == false?true:false,
+                disabledToastTitle:item.word_game_active == false?"زبان مورد نظر غیر فعال است":null,
+                disabledToastMessage:item.word_game_active == false?`در حال حاضر زبان "${item?.name}" در بخش بازی خان کلمات فعال نمی‌باشد.`:null,
+            })),
+            buttons:btn,
+            options:{
+                numberSelectable: 1,
+                previousSelected:previousSelected,
+                cancelable: wordGameLanguage?true:false,
+                selectRequired: wordGameLanguage?false:true,
+            }
+        })
+    }
+    const headerRigthComponent = ()=>{
+        return(
+            (wordGameLanguage)&&
+            <View style={{height:'100%', alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity activeOpacity={0.85} onPress={getLanguages}>
+                    <ImageBackground
+                        source={require("../../../assets/image/rtl_thumb_frame.png")}
+                        style={{ width: 115, height: 40, justifyContent: "center", alignItems: "center" }}
+                        imageStyle={{ resizeMode: "stretch" }}
+                        resizeMode="stretch"
+                    >
+                        <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", height: "100%", paddingStart:9, paddingBottom:2}}>
+                            <Icon name={'layers'} type={'Ionicons'} style={{fontSize:20, color:colors.primary.a3}}/>
+                            <View style={{width:85, alignItems:'center'}}>
+                                <Text style={{fontFamily:Font.bakh_bold, color:colors.text.a2, fontSize:12}}>{`${wordGameLanguageName}`}</Text>
+                            </View>
+                        </View>
+                    </ImageBackground>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    const renderItem = ({item, index})=>{
+        return(
+            <StageGameSeasonCard
+                type={"word-game"}
+                ended={item.season_number < lastSeasonNumber?true:false}
+                lock={item.season_number > lastSeasonNumber?true:false}
+                progress={(item.season_number == lastSeasonNumber && lastStageNumber > 0)?lastStageNumber - item.stage_number_from:null }
+                currentScroll={activeIndexes.includes(index)}
+                title={item.title}
+                description={item.description}
+                badge={item.badge}
+                image={
+                    item.media.find(media => media.type === (item.season_number < lastSeasonNumber ? "end" : "start"))?.path
+                    ?? item.media[0]?.path
+                }
+                isActive={item.is_active}
+                numberStage={item.number_stage}
+                seasonNumber={item.season_number}
+                stageNumberFrom={item.stage_number_from}
+                stageNumberTo={item.stage_number_to}
+                onPress={()=>{
+                    if(item.season_number > lastSeasonNumber)return
+                    props.navigation.navigate("StagesWordGameSeason", {season:item._id.toString(), seasonName:item.title.toString()})
+                }}
+                languageName={wordGameLanguageName}
+            />
+        )
+    }
+    const memoizedValue = useMemo(() => renderItem, [data, activeIndexes, lastSeasonNumber, lastStageNumber]);
+    const keyExtractor = (item,index)=>index.toString()
+    
+
+    
+
+    // کانفیگ برای تشخیص آیتم‌های دیده‌شده
+    const viewabilityConfig = {
+        itemVisiblePercentThreshold: 90, // حداقل 90% آیتم دیده شود
+    };
+
+    // وقتی آیتم‌های دیده‌شده تغییر کنند
+    const onViewableItemsChanged = useRef(({ viewableItems }) => {
+        if (viewableItems.length > 0) {
+            if (numColumns === 1) {
+                // موبایل: فقط یک آیتم در مرکز فعال باشد
+                const currentIndex = viewableItems[0].index;
+                setActiveIndexes([currentIndex]);
+            } else {
+                // تبلت: هر ردیف شامل دو آیتم → هر دو فعال باشند
+                const currentRow = Math.floor(viewableItems[0].index / 2);
+                const firstIndex = currentRow * 2;
+                const secondIndex = firstIndex + 1;
+                setActiveIndexes([firstIndex, secondIndex]);
+            }
+        }
+    }).current;
+    const ListEmptyComponent = ()=>(
+        <View style={{height:height-200, width:width, alignItems:'center', justifyContent:'center'}}>
+            <ScreenLoading
+                loading={false}
+                getError={false}
+                noItem={true}
+                tryAgain={()=>{}}
+            />
+        </View>
+    )
+    return(
+        <View style={{flex:1, backgroundColor:colors.background.a1}}>
+            <GeneralHeader
+                home={true}
+                coin={true}
+                RightComponent={headerRigthComponent}
+            />
+            <View style={styles.container}>
+                <FlatList
+                    ref={flatListRef}
+                    key={wordGameLanguage}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={keyExtractor}
+                    initialNumToRender={3}
+                    windowSize={5}
+                    initialScrollIndex={getSafeScrollIndex(lastSeasonNumber - 1, data.length) ?? 0}
+                    maxToRenderPerBatch={3}
+                    contentContainerStyle={{alignItems:'center', rowGap:rowGap, paddingTop:FLATLIST_PADDING_VERTICAL, paddingBottom:45}}
+                    renderItem={memoizedValue}
+                    data={data}
+                    numColumns={numColumns}
+                    onEndReachedThreshold={0.5}
+                    removeClippedSubviews={Platform.OS == 'ios' ? false : true}
+                    style={{width:width, paddingHorizontal:STAGE_GAME_SEASON_CARD_MARGIN}}
+                    getItemLayout={(data, index) => {
+                        const row = Math.floor(index / numColumns); // هر ردیف
+                        return {
+                            length: itemHeight,
+                            offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
+                            index,
+                        };
+                    }}
+                    snapToInterval={snapInterval} // ارتفاع هر ردیف
+                    snapToAlignment="start"       // آیتم از بالا چفت شود
+                    decelerationRate="fast"       // سرعت کاهش سریع برای اسنپ بهتر
+                    disableIntervalMomentum={true} // محدود کردن اسکرول به فقط یک interval در هر سوایپ
+                    disableScrollViewPanResponder={true}
+                    bounces={true}                // فنری بودن مانند iOS
+                    viewabilityConfig={viewabilityConfig}
+                    onViewableItemsChanged={onViewableItemsChanged}
+                    ListEmptyComponent={ListEmptyComponent}
+                    extraData={{ activeIndexes, lastSeasonNumber, lastStageNumber }}
+                    onScrollToIndexFailed={() => {
+                        const rowIndex = getSafeScrollIndex(data.length - 1, data.length);
+                        if (rowIndex !== undefined) {
+                            flatListRef.current?.scrollToIndex({
+                                index: rowIndex,
+                                animated: false,
+                                viewOffset: FLATLIST_PADDING_VERTICAL,
+                            });
+                        }
+                    }}
+                />
+            </View>
+            {
+                loading == true&&
+                <View style={{width:"100%", height:"100%", backgroundColor:colors.background.a1, alignItems:'center', justifyContent:'center', position:'absolute'}}>
+                    <ScreenLoading
+                        loading={true}
+                        getError={false}
+                        noItem={false}
+                        tryAgain={()=>{}}
+                    />
+                </View>
+            }
+            <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
+        </View>
+    )
+}
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+    }
+});
+export default WordGame;

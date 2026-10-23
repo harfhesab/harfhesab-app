@@ -149,10 +149,12 @@ function StagesPackageGameSeason(props){
 
     const keyExtractor = (item,index)=>index.toString()
     const FLATLIST_PADDING_TOP = 15
-    const changeTab = (index)=>{
-        setTopTab(index)
-        tabRef.current.scrollTo({x: index*tabWidth, animated: true});
-    }
+    const changeTab = (index) => {
+        setTopTab(index);
+        requestAnimationFrame(() => {
+            tabRef.current?.scrollTo({ x: index * tabWidth, animated: true });
+        });
+    };
     const ListEmptyComponent = ()=>(
         <View style={{width: tabWidth, height:(width-20)*0.75, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
@@ -181,9 +183,18 @@ function StagesPackageGameSeason(props){
                         />
                         <View style={styles.container}>
                             <SeasonMediaSwiper
-                                items={info?.media}
+                                items={info?.media?.map((item) => 
+                                    item.type === "end" && info?.season_number >= lastSeasonNumber
+                                        ? { ...item, lock: true }
+                                        : item
+                                )}
                                 title={seasonName}
+                                badge={info?.badge}
                                 height={height - (STATUS_BAR_HEIGHT + 65 + ((width-20)*1.21) + (((width*0.55)/2.5)/3) + 40)}
+                                effect={
+                                    ['sunlight', 'fireflies', 'petals', 'leaves']
+                                        [(info?.season_number - 1) % 4]
+                                }
                             />
                             <ImageBackground
                                 source={require("../../../assets/image/frame_stages.png")}
@@ -227,10 +238,10 @@ function StagesPackageGameSeason(props){
                                         bounces={true}
                                         bouncesZoom={true}
                                         tabIndex={topTab}
-                                        onMomentumScrollEnd={(e)=>{
-                                            const contentOffset = e.nativeEvent.contentOffset.x
-                                            const tabIndex = contentOffset/tabWidth.toFixed()
-                                            setTopTab(tabIndex)
+                                        onMomentumScrollEnd={(e) => {
+                                            const contentOffset = e.nativeEvent.contentOffset.x;
+                                            const tabIndex = Math.round(contentOffset / tabWidth);
+                                            setTopTab(tabIndex);
                                         }}
                                         hitSlop={100}
                                         directionalLockEnabled={true}

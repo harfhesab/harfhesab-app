@@ -454,6 +454,10 @@ function HarfAkharInformation(props){
                                                 items={data?.media}
                                                 height={(itemWidth - 30)/1.85}
                                                 frameWidth={itemWidth - 60}
+                                                effect={
+                                                    ['leaves', 'fireflies', 'petals', 'sunlight']
+                                                        [Math.floor(Math.random() * 4)]
+                                                }
                                             />
                                         }
                                         {data?.description&&<Text style={{fontSize:12, fontFamily:Font.bakh_bold, color:colors.primary.a7, width:itemWidth - 60, marginTop:data?.media?.length > 0?0:30}}>{data?.description}</Text>}

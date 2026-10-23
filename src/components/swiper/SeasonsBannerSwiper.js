@@ -1,6 +1,5 @@
 import React, {useMemo, memo} from "react";
 import {StyleSheet, View, Dimensions, TouchableOpacity, FlatList, TouchableNativeFeedback, Text} from 'react-native';
-import Swiper from 'react-native-swiper';
 import useAppTheme from "../../hooks/theme/useAppTheme";
 import ImageComponent from "../image-components/ImageComponent";
 import ButtonBorder from "../buttons/ButtonBorder";

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Dimensions, StatusBar} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,6 +50,7 @@ function WordToSlotStageGame(props){
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
+            <StatusBar translucent={true} hidden={true} />
             <GalaxyTwinkle >
                 <SafeAreaView style={styles.container}>
                     <WordToSlot 

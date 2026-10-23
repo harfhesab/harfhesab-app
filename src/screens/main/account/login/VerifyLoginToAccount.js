@@ -32,9 +32,11 @@ import { deleteAllUserPackages } from '../../../../realm/repositories/user/user-
 import { showToast } from '../../../../components/custom-toast/ToastRef';
 import { updateNumberHiddenWords } from '../../../../redux/slices/hiddenWordSlice';
 import { BUILD_TYPE, TARGET_STORE } from '../../../../utils/constants/build-config';
-import { seenAllGuide } from '../../../../redux/slices/settingSlice';
+import { seenAllGuide, seenWordGameGuide } from '../../../../redux/slices/settingSlice';
 import TimerUIThread from '../../../../components/timer/TimerUIThread';
 import { getMessaging, getToken } from '@react-native-firebase/messaging';
+import { updateUserWordGameProgressInLogin } from '../../../../realm/repositories/user/user-word-game-progress.repository';
+import { updateWordGameCurrentLanguageLastStageAndLastSeason } from '../../../../redux/slices/wordGameSlice';
   
   
 const {width, height} = Dimensions.get('window');
@@ -232,6 +234,7 @@ function VerifyLoginToAccount(props){
                             token,
                             user{name, number_coins, total_hidden_words, new_hidden_words, active_subscription, subscription_expiration, new_notifications},
                             user_stage_game_progress{stage_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
+                            user_word_game_progress{word_game{language_ref, last_season, last_season_number, last_stage, last_stage_number}},
                             command_to_remove_user_packages_in_client
                         }
                     }
@@ -290,8 +293,29 @@ function VerifyLoginToAccount(props){
                         }
                         for (let index = 0; index < progressData.length; index++) {
                             const element = progressData[index];
-                            if(element?.last_stage_number > 3){
+                            if(element?.last_stage_number > 4){
                                 dispatch(seenAllGuide())
+                                break
+                            }
+                        }
+                    }
+                    const progressWordGameData = data?.user_word_game_progress?.word_game
+                    if(progressWordGameData?.length > 0){
+                        updateUserWordGameProgressInLogin(realm, progressWordGameData)
+                        const currentProgressItem = progressWordGameData.find((i)=>i.language_ref == stageGameLanguage)
+                        if(currentProgressItem?.language_ref){
+                            const currentProgressData = {
+                                lastStage: currentProgressItem?.last_stage,
+                                lastStageNumber: currentProgressItem?.last_stage_number,
+                                lastSeason: currentProgressItem?.last_season,
+                                lastSeasonNumber: currentProgressItem?.last_season_number  
+                            }
+                            await dispatch(updateWordGameCurrentLanguageLastStageAndLastSeason(currentProgressData))
+                        }
+                        for (let index = 0; index < progressWordGameData.length; index++) {
+                            const element = progressWordGameData[index];
+                            if(element?.last_stage_number > 2){
+                                dispatch(seenWordGameGuide())
                                 break
                             }
                         }

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, StatusBar} from 'react-native';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import ConnectingLetters from '../../../../components/connecting-letters/ConnectingLetters';
 import NightSky from '../../../../components/particles/NightSky';
@@ -13,8 +13,10 @@ import {
     saveUnknownWordCompletedInHarfAkharChallenge
 } from '../../../../realm/repositories/user/user-harf-akhar-progress.repository';
 import { harfAkharChallengeTimeIsOverInConnectingLetters, unknownWordCompletedInHarfAkharChallenge } from '../../../../components/connecting-letters/functions/HarfAkharFunctions';
+import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 
 function ConnectingLettersHarfAkhar(props){
+    useImmersiveMode()
     useConnectingLetterStageGameMusic()
     const colors = useAppTheme()
     const realm = useRealm();
@@ -59,6 +61,7 @@ function ConnectingLettersHarfAkhar(props){
     
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
+            <StatusBar translucent={true} hidden={true} />
             <NightSky>
                 <View style={styles.container}>
                     <ConnectingLetters

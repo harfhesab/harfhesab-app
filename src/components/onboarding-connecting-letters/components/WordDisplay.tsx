@@ -51,7 +51,7 @@ const WordDisplay = () => {
                     key={index.toString()}
                     word={word}
                     isWordFound={foundWords.additional.has(word)}
-                    size={WORD_SQUARE_WIDTH - 17}
+                    size={data?.word?WORD_SQUARE_WIDTH - 17:WORD_SQUARE_WIDTH - 10}
                     mainWord={false}
                   />
                 ))}
@@ -60,6 +60,8 @@ const WordDisplay = () => {
           </View>
           
             {/* کلمه اصلی */}
+            {
+              data?.word&&
             <View style={{width:'100%', marginTop: 20, alignSelf:'center', alignItems:'center' }}>
               <WordPlaceholderRow
                 word={data.word}
@@ -68,6 +70,7 @@ const WordDisplay = () => {
                 mainWord={true}
               />
             </View>
+            }
         </View>
       </View>
     </View>

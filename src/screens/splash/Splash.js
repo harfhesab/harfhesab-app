@@ -4,7 +4,6 @@ import axios from 'axios';
 import Font from '../../utils/Font';
 import { useDispatch, useSelector } from 'react-redux';
 import useAppTheme from '../../hooks/theme/useAppTheme';
-import LocalImageComponent from '../../components/image-components/LocalImageComponent';
 import { colors } from '../../hooks/theme/colors';
 import LoadingBar from '../../components/screen-loading/LoadingBar';
 import DeviceInfo from 'react-native-device-info';
@@ -25,6 +24,7 @@ import { persistor, store } from '../../redux/store/Store';
 import { showToast } from '../../components/custom-toast/ToastRef';
 import { changeNewNotifications } from '../../redux/slices/accountSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import HarfHesabLogoAnimation from '../../components/HarfHesabLogoAnimation';
 
 const { width } = Dimensions.get("window");
 function Splash(props){
@@ -94,6 +94,7 @@ function Splash(props){
                             coins_for_get_help_word_to_slot_package_game,
                             coins_for_get_help_letter_connecting_stage_game,
                             coins_for_get_help_letter_connecting_package_game,
+                            coins_for_get_help_word_game,
                             coins_reward_from_play_video_ads_current_stage,
                             coins_reward_from_play_video_ads_previous_stage,
                             coins_reward_from_play_video_ads_unknown_word,
@@ -309,14 +310,18 @@ function Splash(props){
         <View style={{flex:1, backgroundColor:colors.background.a1, alignItems:'center', justifyContent:'space-between'}}>
             <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
                 <View style={{width:"100%", alignItems:'center', gap:25}}>
-                    <LocalImageComponent
-                        path={require('../../assets/image/icon.png')}
-                        width={180}
-                        height={180}
-                        resizeMode={'cover'}
-                        blank_background={true}
-                        borderRadius={20}
-                    />
+                    <HarfHesabLogoAnimation
+                        animate={true}
+                        size={150}
+                        colors={{
+                            primary: "#FFB938",    // حلقه‌ها و جرقه‌ها
+                            secondary: "#5CE1E6",  // جرقه‌ی دوم و حلقه‌ی بیرونی
+                            sunInner: "#FFD84A",   // زرد مرکز نور (جدید)
+                            sunOuter: "#FF8A1F",   // نارنجی لبه‌ی نور (جدید)
+                        }}
+                        onPress={() => {}}
+                        onReady={() => {}}
+                        />
                     <Text style={{fontFamily:Font.bakh_bold, fontSize:18, color:colors.text.a1}}>{"دوکلام حرف حساب!"}</Text>
                 </View>
             </View>

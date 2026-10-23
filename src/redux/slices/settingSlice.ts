@@ -11,8 +11,10 @@ interface UiState {
   unknownWordGuide: boolean;
   connectingLetterGuide: boolean;
   // ====================================================================
+  wordGameGuide: boolean;
   // ====================================================================
-  continueGameType?: "stage-game" | "package-game" | "harf-akhar" | null;
+  // ====================================================================
+  continueGameType?: "stage-game" | "package-game" | "harf-akhar" | "word-game" | null;
   continueGameLanguageId?: string | null;
   continueGameLanguageName?: string | null;
   continueGameSeasonId?: string | null;
@@ -36,6 +38,8 @@ const initialState: UiState = {
   wordToSlotGuide: false,
   unknownWordGuide: false,
   connectingLetterGuide: false,
+  // =====================================================================
+  wordGameGuide: false,
   // =====================================================================
   // =====================================================================
   continueGameType: null,
@@ -106,6 +110,12 @@ const settingSlice = createSlice({
       state.connectingLetterGuide = true;
     },
     // =====================================================================
+    seenWordGameGuide(
+      state,
+    ) {
+      state.wordGameGuide = true;
+    },
+    // =====================================================================
     // =====================================================================
     updateContinueGameInStageGame(
       state,
@@ -119,6 +129,30 @@ const settingSlice = createSlice({
       }>
     ) {
       state.continueGameType = "stage-game";
+      state.continueGameLanguageId = action.payload.continueGameLanguageId;
+      state.continueGameLanguageName = action.payload.continueGameLanguageName;
+      state.continueGameSeasonId = action.payload.continueGameSeasonId;
+      state.continueGameSeasonName = action.payload.continueGameSeasonName;
+      state.continueGameId = action.payload.continueGameId;
+      state.continueGameName = action.payload.continueGameName;
+      state.continueGamePackageId = null;
+      state.continueGamePackageName = null;
+      state.continueGamePackageIcon = null;
+      state.continueGameUserPackage = null;
+      state.continueGameLastStage = null;
+    },
+    updateContinueGameInWordGame(
+      state,
+      action: PayloadAction<{
+        continueGameLanguageId: string,
+        continueGameLanguageName: string,
+        continueGameSeasonId: string,
+        continueGameSeasonName: string,
+        continueGameId : string,
+        continueGameName : string,
+      }>
+    ) {
+      state.continueGameType = "word-game";
       state.continueGameLanguageId = action.payload.continueGameLanguageId;
       state.continueGameLanguageName = action.payload.continueGameLanguageName;
       state.continueGameSeasonId = action.payload.continueGameSeasonId;
@@ -206,7 +240,10 @@ export const {
   seenConnectingLetterGuide,
   seenAllGuide,
   // ===========================================================================
+  seenWordGameGuide,
+  // ===========================================================================
   updateContinueGameInStageGame,
+  updateContinueGameInWordGame,
   updateContinueGameInPackageGame,
   updateContinueGameInHarfAkhar,
   deleteContinueGame

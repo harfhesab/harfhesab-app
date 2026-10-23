@@ -82,12 +82,21 @@ function Account(props){
             is_visible:true
         },
         {
-            title: "بروزرسانی بازی مرحله‌ای",
+            title: "بروزرسانی بازی جمله‌چین",
             image_icon: require('../../../assets/image/download.png'),
             icon_size: 25,
             image_width: 18,
             arrow: true,
             onPress:()=>{props.navigation.navigate("StageGameUpdateScreen")},
+            is_visible:true
+        },
+        {
+            title: "بروزرسانی بازی خان کلمات",
+            image_icon: require('../../../assets/image/download.png'),
+            icon_size: 25,
+            image_width: 18,
+            arrow: true,
+            onPress:()=>{props.navigation.navigate("WordGameUpdateScreen")},
             is_visible:true
         },
         {
@@ -164,7 +173,7 @@ function Account(props){
                 style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             },
             {
-                text:"لازم به ذکر است، اگر در آخرین مرحله از بازی‌ها، چه در بازی مرحله‌ای و چه در بسته‌های بازی، چنانچه دستگاهتان به اینترنت دسترسی نداشته است، ممکن است ذخیره‌ی روند پیشرفت بازی هایتان به درستی انجام نشده باشد.",
+                text:"لازم به ذکر است، اگر در آخرین مرحله از بازی‌ها، چه در بازی جمله‌چین و چه در بسته‌های بازی، چنانچه دستگاهتان به اینترنت دسترسی نداشته است، ممکن است ذخیره‌ی روند پیشرفت بازی هایتان به درستی انجام نشده باشد.",
                 style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:12, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:25},
             }
         ]

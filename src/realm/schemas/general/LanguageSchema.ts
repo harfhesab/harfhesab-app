@@ -6,7 +6,11 @@ export class Language extends Realm.Object<Language> {
   badge?: string;
   icon_image?: string;
   stage_game?: boolean;
+  stage_game_active?: boolean;
+  word_game?: boolean;
+  word_game_active?: boolean;
   package_game?: boolean;
+  package_game_active?: boolean;
   code!: string;
   rtl!: boolean;
   ltr!: boolean;
@@ -28,7 +32,11 @@ export class Language extends Realm.Object<Language> {
       badge: "string?",
       icon_image: "string?",
       stage_game: { type: "bool", optional: true },
+      stage_game_active: { type: "bool", optional: true },
+      word_game: { type: "bool", optional: true },
+      word_game_active: { type: "bool", optional: true },
       package_game: { type: "bool", optional: true },
+      package_game_active: { type: "bool", optional: true },
       code: "string",
       rtl: { type: "bool", default: true },
       ltr: { type: "bool", default: false },

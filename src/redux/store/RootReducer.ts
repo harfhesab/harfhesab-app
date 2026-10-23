@@ -5,6 +5,9 @@ import mainReducer from "../slices/mainSlice";
 import stageGameReducer from "../slices/stageGameSlice";
 import stageGamePersistReducer from "../slices/stageGamePersistSlice";
 import stageGameDownloadReducer from "../slices/stageGameDownloadSlice";
+import wordGameReducer from "../slices/wordGameSlice";
+import wordGamePersistReducer from "../slices/wordGamePersistSlice";
+import wordGameDownloadReducer from "../slices/wordGameDownloadSlice";
 import coinReducer from "../slices/coinSlice";
 import subscriptionReducer from "../slices/subscriptionSlice";
 import constantsReducer from "../slices/constantsSlice";
@@ -18,6 +21,9 @@ const appReducer = combineReducers({
   stageGame: stageGameReducer,
   stageGamePersist: stageGamePersistReducer,
   stageGameDownload: stageGameDownloadReducer,
+  wordGame: wordGameReducer,
+  wordGamePersist: wordGamePersistReducer,
+  wordGameDownload: wordGameDownloadReducer,
   packageGameDownload: packageGameDownloadReducer,
   coins: coinReducer,
   hiddenWords: hiddenWordReducer,

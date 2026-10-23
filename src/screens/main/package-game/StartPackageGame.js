@@ -12,8 +12,6 @@ import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import Icon from '../../../utils/Icon';
-import { getCurrentLanguageLastStageAndLastSeason } from '../../../realm/repositories/user/user-stage-game-progress.repository';
-import { updateCurrentLanguageLastStageAndLastSeason } from '../../../redux/slices/stageGameSlice';
 import { BSON } from 'realm';
 import { useIsFocused } from '@react-navigation/native';
 import BottomDrawerGridHelper from '../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
@@ -112,6 +110,7 @@ function StartPackageGame(props){
                 progress={(item.season_number == lastSeasonNumber && lastStageNumber > 0)?lastStageNumber - item.stage_number_from:null }
                 currentScroll={activeIndexes.includes(index)}
                 title={item.title}
+                badge={item?.badge}
                 description={item.description}
                 image={item.media[0].path}
                 isActive={item.is_active}

@@ -12,6 +12,10 @@ import { UserPackage } from "./user/UserPackageSchema";
 import { CoinPlan } from "./user/CoinPlanSchema";
 import { SubscriptionPlan } from "./user/SubscriptionPlanSchema";
 import { HarfAkharChallenge } from "./harf-akhar/HarfAkharChallengeSchema";
+import { WordGameSeason } from "./word-game/WordGameSeasonSchema";
+import { WordGameStage } from "./word-game/WordGameStageSchema";
+import { WordGameVersionControl } from "./word-game/WordGameVersionControlSchema";
+import { UserWordGameProgress } from "./user/UserWordGameProgressSchema";
 
 export const realmSchemas = [
   StageGameVersionControl,
@@ -28,5 +32,9 @@ export const realmSchemas = [
   UserPackage,
   CoinPlan,
   SubscriptionPlan,
-  HarfAkharChallenge
+  HarfAkharChallenge,
+  WordGameSeason,
+  WordGameStage,
+  WordGameVersionControl,
+  UserWordGameProgress
 ];

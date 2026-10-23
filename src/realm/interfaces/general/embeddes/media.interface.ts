@@ -3,4 +3,5 @@ export interface IMedia {
   order?: number;
   file_type?: string;
   duration?: string;
+  type?: string;
 }

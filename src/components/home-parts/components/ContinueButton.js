@@ -23,12 +23,14 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import {useDispatch, useSelector, shallowEqual} from 'react-redux';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
 import {BLEED, CONT_H, CONT_LIP, CONT_R, GOLD, IS_RTL} from '../homeConfig';
 import Font from '../../../utils/Font';
 import Icon from '../../../utils/Icon';
 import {reset} from '../../../main/navigationService';
 import {changeStageGameLanguage} from '../../../redux/slices/stageGamePersistSlice';
 import {deleteContinueGame} from '../../../redux/slices/settingSlice';
+import { changeWordGameLanguage } from '../../../redux/slices/wordGamePersistSlice';
 
 const FACE_H = CONT_H - CONT_LIP;
 const SHIMMER_W = 70;
@@ -272,11 +274,15 @@ const GlowingController = memo(function GlowingController({time, progress}) {
     );
 });
 
-const buildRoutes = (s) => {
+// homeKey: کلید همین صفحه‌ی خانه. بدون key، reset برای Home کلید تازه می‌سازد و react-navigation
+// خانه‌ی فعلی را unmount و یک خانه‌ی کاملاً جدید (حدود ۳۰ Canvas اسکیا) را هم‌زمان با صفحه‌ی بازی mount می‌کند.
+// با key همان خانه‌ی موجود زیر پشته می‌ماند و فقط صفحه‌های بالایی ساخته می‌شوند.
+const buildRoutes = (s, homeKey) => {
+    const home = homeKey ? {name: 'Home', key: homeKey} : {name: 'Home'};
     switch (s.continueGameType) {
         case 'stage-game':
             return [
-                {name: 'Home'},
+                home,
                 {name: 'StageGame'},
                 {
                     name: 'StagesStageGameSeason',
@@ -284,9 +290,19 @@ const buildRoutes = (s) => {
                 },
                 {name: 'WordToSlotStageGame', params: {stage: s.continueGameId}},
             ];
+        case 'word-game':
+            return [
+                home,
+                {name: 'WordGame'},
+                {
+                    name: 'StagesWordGameSeason',
+                    params: {season: s.continueGameSeasonId, seasonName: s.continueGameSeasonName},
+                },
+                {name: 'ConnectingLettersWordGame', params: {stageId: s.continueGameId}},
+            ];
         case 'package-game':
             return [
-                {name: 'Home'},
+                home,
                 {
                     name: 'StartPackageGame',
                     params: {_id: s.continueGameUserPackage, packageId: s.continueGamePackageId},
@@ -314,7 +330,7 @@ const buildRoutes = (s) => {
             ];
         case 'harf-akhar':
             return [
-                {name: 'Home'},
+                home,
                 {name: 'HarfAkharBottomTab'},
                 {name: 'HarfAkharInformation', params: {_id: s.continueGameId}},
             ];
@@ -327,14 +343,16 @@ const buildTexts = (s) => {
     const {continueGameType: type} = s;
     const title =
         type === 'stage-game'
-            ? `ادامهٔ بازی مرحله‌ای - زبان ${s.continueGameLanguageName}`
+            ? `ادامهٔ بازی جمله‌چین - زبان ${s.continueGameLanguageName}`
+            : type === 'word-game'
+            ?`ادامهٔ بازی خان کلمات - زبان ${s.continueGameLanguageName}`
             : type === 'package-game'
             ? `ادامهٔ بازی داستانی - ${s.continueGamePackageName}`
             : type === 'harf-akhar'
             ? 'ادامهٔ بازی حرف آخر'
             : '';
     const subtitle =
-        type === 'stage-game' || type === 'package-game'
+        type === 'stage-game' || type === 'word-game' || type === 'package-game'
             ? `فصل ${s.continueGameSeasonName}، مرحله ${s.continueGameName}`
             : `چالش ${s.continueGameName}`;
     return {title, subtitle};
@@ -346,6 +364,7 @@ const buildTexts = (s) => {
 const ContinueButton = memo(function ContinueButton({width, time}) {
     const dispatch = useDispatch();
     const s = useSelector(selectContinue, shallowEqual);
+    const homeKey = useRoute().key;
 
     const [loading, setLoading] = useState(false);
     const progress = useSharedValue(0); // ۰ = عادی، ۱ = لودینگ
@@ -361,11 +380,28 @@ const ContinueButton = memo(function ContinueButton({width, time}) {
     // پاک‌سازی تایمرها هنگام unmount
     useEffect(() => clearTimers, [clearTimers]);
 
+    // خانه دیگر unmount نمی‌شود؛ وقتی reset انجام شد و خانه از فوکوس خارج شد، دکمه بی‌صدا به حالت
+    // عادی برمی‌گردد تا موقع برگشتن کاربر، مثل قبل دکمه‌ی سالم دیده شود (نه اسپینر)
+    useFocusEffect(
+        useCallback(
+            () => () => {
+                if (!busyRef.current) {
+                    return;
+                }
+                clearTimers();
+                busyRef.current = false;
+                progress.value = 0;
+                setLoading(false);
+            },
+            [clearTimers, progress],
+        ),
+    );
+
     const handlePress = useCallback(() => {
         if (busyRef.current) {
             return;
         }
-        const routes = buildRoutes(s);
+        const routes = buildRoutes(s, homeKey);
         if (!routes) {
             return;
         }
@@ -391,10 +427,17 @@ const ContinueButton = memo(function ContinueButton({width, time}) {
                         languageName: s.continueGameLanguageName,
                     }),
                 );
+            } else if(s.continueGameType === 'word-game'){
+                dispatch(
+                    changeWordGameLanguage({
+                        language: s.continueGameLanguageId,
+                        languageName: s.continueGameLanguageName,
+                    }),
+                );
             }
             reset(routes);
         }, NAV_DELAY_MS);
-    }, [s, dispatch, progress]);
+    }, [s, homeKey, dispatch, progress]);
 
     const handleClose = useCallback(() => {
         dispatch(deleteContinueGame());

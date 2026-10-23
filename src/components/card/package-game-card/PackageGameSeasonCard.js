@@ -18,6 +18,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import SimpleBorderText from '../../text-components/SimpleBorderText';
 import LocalImageComponent from '../../image-components/LocalImageComponent';
 import WoodProgressBar from '../../WoodProgressBar';
+import CardBadge from '../../home-parts/components/CardBadge';
 
 const { width, height } = Dimensions.get('screen');
 export const HEADER_HEIGHT = 65+STATUS_BAR_HEIGHT
@@ -33,6 +34,7 @@ function PackageGameSeasonCard({
   ended,
   currentScroll,
   title,
+  badge,
   description,
   image,
   progress,
@@ -72,6 +74,7 @@ function PackageGameSeasonCard({
               lock={lock}
               ended={ended}
               title={title}
+              badge={badge}
               image={image}
               progress={progress}
               seasonNumber={seasonNumber}
@@ -117,7 +120,7 @@ function PackageGameSeasonCard({
 }
 
 const CardContent = memo(({
-  lock, ended, title, image, progress, seasonNumber, stageNumberFrom, stageNumberTo, numberStage, colors, onClick, packageName
+  lock, ended, title, badge, image, progress, seasonNumber, stageNumberFrom, stageNumberTo, numberStage, colors, onClick, packageName
 }) => {
   const seasonNumberLength = seasonNumber?.toString().length
   const cupNumberFontSize = seasonNumberLength == 1?14:seasonNumberLength == 2?11:8
@@ -136,6 +139,12 @@ const CardContent = memo(({
           resizeMode={'cover'}
           style={{borderTopLeftRadius:PACKAGE_GAME_CARD_WIDTH*0.16, borderTopRightRadius:PACKAGE_GAME_CARD_WIDTH*0.16, borderBottomLeftRadius:8, borderBottomRightRadius:8}}
         />
+        {
+          badge?.length > 0&&
+          <View style={{position:'absolute', width:STAGE_GAME_CARD_WIDTH*0.92, alignItems:'flex-end'}}>
+            <CardBadge label={badge} style={{top:STAGE_GAME_CARD_WIDTH * 0.5175 + 5, end:5}}/>
+          </View>
+        }
       </View>
       <View style={{ width: '100%', alignItems: 'center' }}>
         <ImageBackground
@@ -147,15 +156,15 @@ const CardContent = memo(({
           {
             lock == true?
             <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', gap:10, paddingBottom:10}}>
-              <Text style={{ color: colors.text.a1, fontFamily: Font.bakh_extra_bold, fontSize: 20 }}>{`فصل ${seasonNumber}`}</Text>
-              <Icon name={'download-cloud'} type={'Feather'} style={{ fontSize: 25, color:"#fcb900" }} />
+              <Text style={{ color: colors.primary.a5, fontFamily: Font.bakh_extra_bold, fontSize: 20 }}>{`فصل ${seasonNumber}`}</Text>
+              <Icon name={'download-cloud'} type={'Feather'} style={{ fontSize: 25, color:colors.primary.a3 }} />
             </View>
             :
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', height: '100%', paddingHorizontal:15, paddingBottom:10}}>
-                <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap:3}}>
-                  <Text style={{ color: colors.text.a1, fontFamily: Font.bakh_extra_bold, fontSize: 16 }}>{`فصل ${seasonNumber}`}</Text>
-                  <Text style={{ color: colors.text.a3, fontFamily: Font.bakh_semi_bold, fontSize: 11 }}>{`مرحله ${stageNumberFrom} تا ${stageNumberTo} (${numberStage} مرحله)`}</Text>
-                  <Text style={{ color: colors.text.a3, fontFamily: Font.bakh_semi_bold, fontSize: 11 }}>{`بستهٔ ${packageName}`}</Text>
+                <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                  <Text style={{ color: colors.primary.a3, fontFamily: Font.bakh_extra_bold, fontSize: 18 }}>{`فصل ${seasonNumber}`}</Text>
+                  <Text style={{ color: colors.primary.a5, fontFamily: Font.bakh_semi_bold, fontSize: 11, marginTop:7 }}>{`مرحله ${stageNumberFrom} تا ${stageNumberTo} (${numberStage} مرحله)`}</Text>
+                  <Text style={{ color: colors.primary.a5, fontFamily: Font.bakh_semi_bold, fontSize: 11, marginTop:2 }}>{`بستهٔ ${packageName}`}</Text>
                 </View>
                 {
                   ended == true&&
@@ -200,7 +209,7 @@ const CardContent = memo(({
                 blank_background={true}
               />
               :
-              <Text style={{fontFamily:Font.bakh_black, fontSize:25, color:"#fcb900"}}>{'شروع بازی'}</Text>
+              <Text style={{fontFamily:Font.bakh_black, fontSize:25, color:colors.primary.a3}}>{'شروع بازی'}</Text>
             }
           </ImageBackground>
         </TouchableOpacity>

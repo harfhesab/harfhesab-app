@@ -45,7 +45,7 @@ const BottomTab = (props) => {
           component={StageGame}
           options={{
             tabBarLabel : ({color}) => (
-              <Text style={[styles.lable, {color:color}]}>{"بازی مرحله‌ای"}</Text>
+              <Text style={[styles.lable, {color:color}]}>{"بازی جمله‌چین"}</Text>
             ),
             tabBarIcon : ({color, size, focused}) => (
               <Icon name={focused?'game-controller':'game-controller-outline'} type={'Ionicons'} style={{color:color, fontSize:size*1.15}}/>

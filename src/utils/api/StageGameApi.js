@@ -218,7 +218,11 @@ const getNewVersionCreatedStageGameContent = async ({page, dispatch, realm, stat
                             icon_image,
                             code,
                             stage_game,
+                            stage_game_active,
+                            word_game,
+                            word_game_active,
                             package_game,
+                            package_game_active,
                             rtl,
                             ltr,
                             is_visible,
@@ -415,7 +419,11 @@ const getNewVersionUpdatedStageGameContent = async ({page, dispatch, realm, stat
                             icon_image,
                             code,
                             stage_game,
+                            stage_game_active,
+                            word_game,
+                            word_game_active,
                             package_game,
+                            package_game_active,
                             rtl,
                             ltr,
                             is_visible,
@@ -700,7 +708,11 @@ const getNewVersionCreatedStageGameContentForFirst = async ({page, dispatch, rea
                             icon_image,
                             code,
                             stage_game,
+                            stage_game_active,
+                            word_game,
+                            word_game_active,
                             package_game,
+                            package_game_active,
                             rtl,
                             ltr,
                             is_visible,
@@ -844,7 +856,7 @@ export const upgradeStageGameContentVersion = async({dispatch, newVersionContent
 }
 const showSuccessAlertForDownloaded = (firstGetContent)=>{
     AlertHelper.showAlert({
-        body:firstGetContent==true?"محتوای بازی مرحله‌ای با موفقیت دریافت شد!":"بروزرسانی محتوای بازی مرحله‌ای با موفقیت انجام شد!",
+        body:firstGetContent==true?"محتوای بازی جمله‌چین با موفقیت دریافت شد!":"بروزرسانی محتوای بازی جمله‌چین با موفقیت انجام شد!",
         buttons: [
             {
                 text: "شروع بازی",
@@ -882,11 +894,11 @@ const showUpdateAlert = ()=>{
     ]
     const msg = [
         {
-            text:"بروزرسانی محتوای بازی مرحله‌ای!",
+            text:"بروزرسانی محتوای بازی جمله‌چین!",
             style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
         },
         {
-            text:"یک بروزرسانی برای محتوای بازی مرحله‌ای یافت شد. می‌توانید برای دریافت آن اقدام کنید.",
+            text:"یک بروزرسانی برای محتوای بازی جمله‌چین یافت شد. می‌توانید برای دریافت آن اقدام کنید.",
             style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
@@ -895,7 +907,7 @@ const showUpdateAlert = ()=>{
         },
     ]
     AlertBottomDrawerHelper.showAlert({
-        title:"بروزرسانی بازی مرحله‌ای",
+        title:"بروزرسانی بازی جمله‌چین",
         message: msg,
         buttons:btn,
         options:{
@@ -930,11 +942,11 @@ const forceUpdateAlert = ()=>{
     ]
     const msg = [
         {
-            text:"بروزرسانی محتوای بازی مرحله‌ای!",
+            text:"بروزرسانی محتوای بازی جمله‌چین!",
             style:{ maxWidth:width-30, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
         },
         {
-            text:"یک بروزرسانی اجباری برای محتوای بازی مرحله‌ای یافت شد. برای دریافت آن اقدام کنید.",
+            text:"یک بروزرسانی اجباری برای محتوای بازی جمله‌چین یافت شد. برای دریافت آن اقدام کنید.",
             style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
@@ -943,7 +955,7 @@ const forceUpdateAlert = ()=>{
         },
     ]
     AlertBottomDrawerHelper.showAlert({
-        title:"بروزرسانی بازی مرحله‌ای",
+        title:"بروزرسانی بازی جمله‌چین",
         message: msg,
         buttons:btn,
         options:{

@@ -1,10 +1,15 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {NativeModules, ScrollView, StyleSheet, View, useWindowDimensions} from 'react-native';
+import {StyleSheet, View, useWindowDimensions} from 'react-native';
+// ScrollView از gesture-handler: تا اسکرول و برداشتن کارت (GameCard) درست از هم تفکیک شوند
+import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
+import {useSharedValue} from 'react-native-reanimated';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../components/header/GeneralHeader';
-import {CARDS, GAP, PADDING} from '../../components/home-parts/homeConfig';
+import {CARDS, GAP, IS_RTL, PADDING} from '../../components/home-parts/homeConfig';
 import {getHomeLayout, getCardSpec} from '../../components/home-parts/homeGeometry';
 import useSceneClock from '../../components/home-parts/useSceneClock';
+import useHomeIntro from '../../components/home-parts/useHomeIntro';
+import IntroReveal from '../../components/home-parts/components/IntroReveal';
 import DustBackdrop from '../../components/home-parts/components/DustBackdrop';
 import ContinueButton from '../../components/home-parts/components/ContinueButton';
 import GameCard from '../../components/home-parts/components/GameCard';
@@ -22,13 +27,6 @@ import Font from '../../utils/Font';
 import LocalImageComponent from '../../components/image-components/LocalImageComponent';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from '../../utils/Icon';
-import {
-  registerLaunch,
-  shouldAskForRating,
-  markPromptShown,
-  markRated,
-} from '../../utils/ratingScheduler';
-import { TARGET_STORE } from '../../utils/constants/build-config';
 import useContentGate from '../../features/homeOnboarding/useContentGate';
 import FirstTouchGate from '../../features/homeOnboarding/FirstTouchGate';
 import showWelcomeDialog from '../../features/homeOnboarding/showWelcomeDialog';
@@ -52,26 +50,42 @@ const showAdToast = message =>
         duration: 5000,
     });
 
-const {CafeBazaar, Myket} = NativeModules;
+// وضعیت تبلیغ با هر برگشت به خانه دوباره خوانده می‌شود و هر بار شیء تازه است؛ اگر محتوایش
+// همان قبلی باشد، state عوض نمی‌شود تا کل صفحه درست هم‌زمان با برگشتن و ساخته شدن دوباره‌ی
+// سطح‌های اسکیا بی‌دلیل re-render نشود
+const keepIfSame = next => prev => {
+    if (!prev || !next || typeof prev !== 'object' || typeof next !== 'object') {
+        return next;
+    }
+    const keys = Object.keys(next);
+    return keys.length === Object.keys(prev).length && keys.every(k => prev[k] === next[k]) ? prev : next;
+};
+
+// کارت‌ها یکی‌درمیان از دو طرف پخش می‌شوند؛ دو کارت کوچکِ هم‌ردیف هر کدام از سمت خودشان می‌آیند
+const dealSide = index => (index % 2 === 0 ? 1 : -1) * (IS_RTL ? 1 : -1);
+
 function Home(props) {
     const colors = useAppTheme();
     const dispatch = useDispatch();
-    const {versionCreatedContent} = useSelector(state => state.stageGamePersist);
+    const versionCreatedContent = useSelector(state => state.stageGamePersist.versionCreatedContent);
+    const continueGameType = useSelector(state => state.setting.continueGameType);
+    const continueGameId = useSelector(state => state.setting.continueGameId);
     const isStoreReady = useSelector(state => state._persist?.rehydrated ?? true);
     const hasContent = versionCreatedContent > 0;
     // فقط همین یک فیلد انتخاب می‌شود تا با تغییر بقیه‌ی constants این صفحه دوباره رندر نشود
     const coinReward = useSelector(state => state.constants.free_coin_view_ads);
-    const {
-        continueGameType,
-        continueGameId,
-    } = useSelector((state) => state.setting);
 
     const [adsStatus, setAdsStatus] = useState({allowed: false});
+    const [adsChecked, setAdsChecked] = useState(false); // تا معلوم نشده دکمه‌ی تبلیغ هست یا نه، ورود شروع نشود
+    // کارت‌های برداشته‌شده {id: true}؛ فقط روی UI thread عوض می‌شود و هیچ re-render ای ندارد
+    const raisedCards = useSharedValue({});
     const {width, height: windowHeight} = useWindowDimensions(); // با تا/باز شدن Fold آپدیت می‌شود
     const [body, setBody] = useState({w: width, h: windowHeight});
     const adBusyRef = useRef(false); // جلوگیری از درخواست هم‌زمان تبلیغ (دابل‌تپ)
 
     const time = useSceneClock(props.navigation);
+    // ورود صفحه: وقتی صحنه آرام شد و داده‌های چیدمان رسیدند شروع می‌شود (intro.go و intro.clock)
+    const intro = useHomeIntro(props.navigation, isStoreReady && adsChecked);
     const layout = useMemo(() => getHomeLayout(width), [width]);
 
     const navigate = useCallback(route => props.navigation.navigate(route), [props.navigation]);
@@ -91,129 +105,6 @@ function Home(props) {
         onShowDownload: handleShowDownload,
     });
 
-    const ratingCheckedRef = useRef(false);
-
-    useEffect(() => {
-        if (!isStoreReady || ratingCheckedRef.current) {
-            return;
-        }
-        ratingCheckedRef.current = true;
-
-        (async () => {
-            await registerLaunch();
-            if (!hasContent) {
-                return; // کاربر هنوز محتوا را ندارد
-            }
-            if (await shouldAskForRating()) {
-                await markPromptShown();
-                showRatingDialog();
-            }
-        })();
-    }, [isStoreReady, hasContent]);
-
-    const showRatingDialog = ()=>{
-        const btn = [
-            {
-                onPress : async()=>{
-                    openStorePage();
-                },
-                text: "امتیاز می‌دهم",
-                loading: false,
-                type: "bold",
-            },
-            {
-                onPress : ()=>{},
-                text: "لغو",
-                loading: false,
-                type: "border",
-            },
-        ]
-        const msg = [
-            {
-                text:"آیا از بازی راضی هستی؟",
-                style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:22, color:colors.primary.a3, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
-            },
-            {
-                text:"اگر بازی «حرف حساب» را دوست داشتی، با ثبت امتیاز از ما حمایت کن.",
-                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:15, color:colors.text.a2, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
-            },
-            {
-                text:"عملیات ثبت امتیاز حداکثر 10 ثانیه طول می‌کشد.",
-                style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:15, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
-            },
-        ]
-        AlertBottomDrawerHelper.showAlert({
-            title:"ثبت امتیاز",
-            message: msg,
-            buttons:btn,
-            options:{
-                cancelable: true,
-                icon:{
-                    Icon:()=>(
-                        <View style={{width:"100%", flexDirection:'row', alignItems:'flex-end', justifyContent:'center', gap:5}}>
-                            <LocalImageComponent
-                                path={require("../../assets/image/star.png")}
-                                width={47.5}
-                                height={50}
-                                resizeMode="stretch"
-                                blank_background
-                                style={{marginBottom:6}}
-                            />
-                            <LocalImageComponent
-                                path={require("../../assets/image/star.png")}
-                                width={76}
-                                height={80}
-                                resizeMode="stretch"
-                                blank_background
-                            />
-                            <LocalImageComponent
-                                path={require("../../assets/image/star.png")}
-                                width={47.5}
-                                height={50}
-                                resizeMode="stretch"
-                                blank_background
-                                style={{marginBottom:6}}
-                            />
-                        </View>
-                    )
-                },
-            }
-        })
-    }
-
-    const handleCafeBazaarRating = useCallback(async () => {
-        try {
-            const success = await CafeBazaar.openRating();
-            if (success) {
-                await markRated();
-            }
-        } catch (error) {
-            showErrorToast('خطایی در باز کردن کافه‌ بازار پیش آمد. یا اینکه کافه بازار نصب نیست.', 4000);
-        }
-    }, []);
-
-    const handleMyketRating = useCallback(async () => {
-        try {
-            const success = await Myket.openRating();
-            if (success) {
-                await markRated();
-            }
-        } catch (error) {
-            if (error.code === 'E_MYKET_NOT_INSTALLED') {
-                showErrorToast('تا زمانی که مایکت نصب نباشد ثبت نظر و امتیاز ممکن نیست.', 4000);
-            } else {
-                showErrorToast('خطایی در باز کردن مایکت پیش آمد.', 4000);
-            }
-        }
-    }, []);
-
-    const openStorePage = useCallback(async () => {
-        if (TARGET_STORE == 'cafebazaar') {
-            await handleCafeBazaarRating();
-        } else if (TARGET_STORE == 'myket') {
-            await handleMyketRating();
-        }
-    }, [handleCafeBazaarRating, handleMyketRating]);
 
     /* ═════════════ وضعیت محدودیت تبلیغ ═════════════ */
     useEffect(() => {
@@ -224,8 +115,9 @@ function Home(props) {
         useCallback(() => {
             let alive = true;
             getRewardAdsStatusForHomeScreen()
-                .then(status => alive && setAdsStatus(status))
-                .catch(() => {});
+                .then(status => alive && setAdsStatus(keepIfSame(status)))
+                .catch(() => {})
+                .then(() => alive && setAdsChecked(true));
             return () => {
                 alive = false;
             };
@@ -234,7 +126,7 @@ function Home(props) {
 
     const registerLocalHistoryAds = useCallback(async () => {
         try {
-            setAdsStatus(await registerRewardAdWatch());
+            setAdsStatus(keepIfSame(await registerRewardAdWatch()));
         } catch (e) {}
     }, []);
 
@@ -373,45 +265,72 @@ function Home(props) {
     }, []);
 
     const showAdButton = hasContent && adsStatus?.allowed !== false;
+    const hasContinue = Boolean(continueGameType && continueGameId);
 
+    // صف ورود: هدر (۰) ← ادامه‌ی بازی ← تبلیغ ← کارت‌ها به ترتیب چیدمان
+    const adOrder = hasContinue ? 2 : 1;
+    const firstCardOrder = adOrder + (showAdButton ? 1 : 0);
+
+    // فقط همین صفحه ریشه‌ی gesture-handler می‌گیرد؛ اگر بعداً کل اپ هم پیچیده شود،
+    // این یکی خودکار غیرفعال می‌شود و مشکلی پیش نمی‌آید
     return (
-        <View style={{flex: 1, backgroundColor: colors.background.a1}}>
+        <GestureHandlerRootView style={{flex: 1, backgroundColor: colors.background.a1}}>
             <View style={styles.body} onLayout={onBodyLayout}>
-                <DustBackdrop width={body.w} height={body.h} base={colors.background.a1} time={time} />
+                <DustBackdrop
+                    width={body.w}
+                    height={body.h}
+                    base={colors.background.a1}
+                    time={time}
+                    intro={intro.clock}
+                />
                 <ScrollView
                     bounces={false}
                     overScrollMode="never"
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.scrollContent}>
                     <View style={[styles.content, {width: layout.contentWidth}]}>
-                        {
-                            (continueGameType && continueGameId)&&
-                            <ContinueButton
-                                width={layout.contentWidth}
-                                time={time}
-                            />
-                        }
+                        {hasContinue ? (
+                            <IntroReveal go={intro.go} order={1}>
+                                <ContinueButton
+                                    width={layout.contentWidth}
+                                    time={time}
+                                />
+                            </IntroReveal>
+                        ) : null}
                         <View style={styles.grid}>
                             {showAdButton ? (
-                                <AdRewardButton
-                                    width={layout.contentWidth}
-                                    reward={coinReward}
-                                    time={time}
-                                    onPress={requestShowAd}
-                                />
+                                <IntroReveal go={intro.go} order={adOrder}>
+                                    <AdRewardButton
+                                        width={layout.contentWidth}
+                                        reward={coinReward}
+                                        time={time}
+                                        onPress={requestShowAd}
+                                    />
+                                </IntroReveal>
                             ) : null}
-                            {CARDS.map(item => {
+                            {CARDS.map((item, index) => {
                                 const spec = getCardSpec(layout, item);
                                 return (
-                                    <GameCard
+                                    <IntroReveal
                                         key={item.id}
-                                        item={item}
-                                        width={spec.width}
-                                        height={spec.height}
-                                        mode={spec.mode}
-                                        time={time}
-                                        onPress={navigate}
-                                    />
+                                        go={intro.go}
+                                        order={firstCardOrder + index}
+                                        side={dealSide(index)}
+                                        glint
+                                        raisedCards={raisedCards}
+                                        raiseKey={item.id}>
+                                        <GameCard
+                                            item={item}
+                                            width={spec.width}
+                                            height={spec.height}
+                                            mode={spec.mode}
+                                            time={time}
+                                            // وقتی FirstTouchGate فعال است، کارت‌ها هیچ لمسی نمی‌پذیرند (اسکرول آزاد است)
+                                            interactive={!isGateActive}
+                                            onPress={navigate}
+                                            raisedCards={raisedCards}
+                                        />
+                                    </IntroReveal>
                                 );
                             })}
                         </View>
@@ -419,7 +338,7 @@ function Home(props) {
                     {isGateActive && <FirstTouchGate onPress={handleGatePress} />}
                 </ScrollView>
 
-                <View style={styles.header}>
+                <IntroReveal go={intro.go} variant="drop" style={styles.header}>
                     <GeneralHeader
                         backgroundColor={'transparent'}
                         coin={true}
@@ -432,9 +351,9 @@ function Home(props) {
                         account={true}
                     />
                     {isGateActive && <FirstTouchGate onPress={handleGatePress} />}
-                </View>
+                </IntroReveal>
             </View>
-        </View>
+        </GestureHandlerRootView>
     );
 }
 

@@ -32,6 +32,10 @@ import OnlineGame from '../screens/main/online-game/OnlineGame';
 import Account from '../screens/main/account/Account';
 import PackageGameBottomTab from '../screens/main/package-game/PackageGameBottomTab';
 import UserPackagesList from '../screens/main/package-game/UserPackagesList';
+import WordGameUpdateScreen from '../screens/main/account/WordGameUpdateScreen';
+import WordGame from '../screens/main/word-game/WordGame';
+import StagesWordGameSeason from '../screens/main/word-game/StagesWordGameSeason';
+import ConnectingLettersWordGame from '../screens/main/word-game/game/ConnectingLettersWordGame';
 
 
 const Stack = createNativeStackNavigator();
@@ -66,7 +70,7 @@ const MainRoutes = (props) =>{
   };
 
   return(
-    <Stack.Navigator screenOptions={{headerShown:false}} >
+    <Stack.Navigator screenOptions={{headerShown:false, freezeOnBlur:true}} >
       <Stack.Screen name={"Home"} component={Home} />
       <Stack.Screen name={"StageGame"} component={StageGame} />
       <Stack.Screen name={"PackageGameBottomTab"} component={PackageGameBottomTab} />
@@ -97,6 +101,10 @@ const MainRoutes = (props) =>{
       <Stack.Screen name={"HarfAkharInformation"} component={HarfAkharInformation} />
       <Stack.Screen name={"WordToSlotHarfAkhar"} component={WordToSlotHarfAkhar} />
       <Stack.Screen name={"ConnectingLettersHarfAkhar"} component={ConnectingLettersHarfAkhar} />
+      <Stack.Screen name={"WordGameUpdateScreen"} component={WordGameUpdateScreen} />
+      <Stack.Screen name={"WordGame"} component={WordGame} />
+      <Stack.Screen name={"StagesWordGameSeason"} component={StagesWordGameSeason} />
+      <Stack.Screen name={"ConnectingLettersWordGame"} component={ConnectingLettersWordGame} />
     </Stack.Navigator>
   )
 }

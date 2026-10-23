@@ -1,4 +1,4 @@
-import React, {memo, useMemo} from 'react';
+import React, {memo, useMemo, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {
     BlurMask,
@@ -10,7 +10,11 @@ import {
     Rect,
     vec,
 } from '@shopify/react-native-skia';
-import {useDerivedValue} from 'react-native-reanimated';
+import {runOnJS, useAnimatedReaction, useDerivedValue} from 'react-native-reanimated';
+import IntroBurst from './IntroBurst';
+import {INTRO_MS} from '../useHomeIntro';
+
+const SKY_FADE_MS = 900; // روشن شدن آسمان در شروع صفحه
 
 /**
  * پس‌زمینه‌ی آسمانی ساده: آسمان شب با دو درخشش نرم، و غبار طلایی که از آن می‌گذرد.
@@ -25,6 +29,8 @@ import {useDerivedValue} from 'react-native-reanimated';
  *   width, height : اندازه‌ی ناحیه
  *   base          : رنگ بالای آسمان (رنگ تم، برای ادغام با هدر)
  *   time          : SharedValue زمان بر حسب میلی‌ثانیه (از useSceneClock)
+ *   intro         : (اختیاری) clock ورود از useHomeIntro. اگر داده شود، آسمان تا شروع ورود
+ *                   نامرئی است، بعد روشن می‌شود و انفجار نور (IntroBurst) در همین کانواس پخش می‌شود.
  */
 const LAYERS = [
     {key: 'far', density: 9000, speed: 9, bob: 6, phase: 0.0, size: 2, blur: 0, color: 'rgba(190,235,230,0.40)', seed: 1},
@@ -75,39 +81,64 @@ const DustLayer = ({layer, w, h, time}) => {
     );
 };
 
-const DustBackdrop = memo(function DustBackdrop({width: w, height: h, base, time}) {
+const DustBackdrop = memo(function DustBackdrop({width: w, height: h, base, time, intro}) {
+    // انفجار نور فقط تا پایان تایم‌لاین ورود در درخت می‌ماند؛ بعد حذف می‌شود تا هر فریم هزینه نداشته باشد
+    const [burstDone, setBurstDone] = useState(!intro);
+
+    const sceneOpacity = useDerivedValue(() => {
+        if (!intro) {
+            return 1;
+        }
+        const k = 1 - Math.min(1, intro.value / SKY_FADE_MS);
+        return 1 - k * k * k;
+    });
+
+    useAnimatedReaction(
+        () => (intro ? intro.value >= INTRO_MS : true),
+        (done, previous) => {
+            if (done && !previous) {
+                runOnJS(setBurstDone)(true);
+            }
+        },
+    );
+
     return (
         <Canvas style={StyleSheet.absoluteFill} pointerEvents="none">
-            {/* آسمان */}
-            <Rect x={0} y={0} width={w} height={h}>
-                <LinearGradient
-                    start={vec(0, 0)}
-                    end={vec(0, h)}
-                    colors={[base, '#0A2A31', '#05141A']}
-                    positions={[0, 0.5, 1]}
-                />
-            </Rect>
+            <Group opacity={sceneOpacity}>
+                {/* آسمان */}
+                <Rect x={0} y={0} width={w} height={h}>
+                    <LinearGradient
+                        start={vec(0, 0)}
+                        end={vec(0, h)}
+                        colors={[base, '#0A2A31', '#05141A']}
+                        positions={[0, 0.5, 1]}
+                    />
+                </Rect>
 
-            {/* دو درخشش نرم: طلایی از بالا، فیروزه‌ای از پایین */}
-            <Rect x={0} y={0} width={w} height={h}>
-                <RadialGradient
-                    c={vec(w * 0.5, 0)}
-                    r={w * 0.9}
-                    colors={['rgba(240,185,59,0.16)', 'rgba(240,185,59,0)']}
-                />
-            </Rect>
-            <Rect x={0} y={0} width={w} height={h}>
-                <RadialGradient
-                    c={vec(w, h)}
-                    r={w * 1.1}
-                    colors={['rgba(39,181,163,0.14)', 'rgba(39,181,163,0)']}
-                />
-            </Rect>
+                {/* دو درخشش نرم: طلایی از بالا، فیروزه‌ای از پایین */}
+                <Rect x={0} y={0} width={w} height={h}>
+                    <RadialGradient
+                        c={vec(w * 0.5, 0)}
+                        r={w * 0.9}
+                        colors={['rgba(240,185,59,0.16)', 'rgba(240,185,59,0)']}
+                    />
+                </Rect>
+                <Rect x={0} y={0} width={w} height={h}>
+                    <RadialGradient
+                        c={vec(w, h)}
+                        r={w * 1.1}
+                        colors={['rgba(39,181,163,0.14)', 'rgba(39,181,163,0)']}
+                    />
+                </Rect>
 
-            {/* غبار: از دور به نزدیک */}
-            {LAYERS.map(layer => (
-                <DustLayer key={layer.key} layer={layer} w={w} h={h} time={time} />
-            ))}
+                {/* غبار: از دور به نزدیک */}
+                {LAYERS.map(layer => (
+                    <DustLayer key={layer.key} layer={layer} w={w} h={h} time={time} />
+                ))}
+            </Group>
+
+            {/* انفجار نور شروع صفحه (بدون کانواس اضافه) */}
+            {burstDone ? null : <IntroBurst width={w} height={h} clock={intro} />}
         </Canvas>
     );
 });

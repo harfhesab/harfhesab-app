@@ -10,14 +10,16 @@ import { colors } from "../../../hooks/theme/colors";
 import LocalImageComponent from "../../image-components/LocalImageComponent";
 import AlertBottomDrawerHelper from "../../alert-bottom-drawer/AlertBottomDrawerHelper";
 import Font from "../../../utils/Font";
+import { updateContinueGameInStageGame } from "../../../redux/slices/settingSlice";
+import askForStoreRatingIfNeeded from "../../../features/ratingReward/useStoreRatingReward";
 
 
 export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber, sentences, stageHint})=>{
     const state = store.getState()
     if(stageId.toString() === currentStageId.toString()){
         const next = getCurrentLanguageNextStageInformation(realm, language_ref)
+        const languageName = state.stageGamePersist.stageGameLanguageName
         if(next.endAllStage == true){
-            const languageName = state.stageGamePersist.stageGameLanguageName
             GameAlertHelper.showAlertGame({
                 title:`پایان مرحله ${stageNumber}`,
                 admiration: "احسنت، عالی بود!",
@@ -79,6 +81,8 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                                     setTimeout(()=>{
                                         endOfASeasonInStageGame({seasonNumber:last_season_number-1})
                                     }, 500)
+                                } else {
+                                    askForStoreRatingIfNeeded(stageNumber)
                                 }
                             },
                             type:'bold'
@@ -96,6 +100,14 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     },
                 });
                 setTimeout(()=>{
+                    dispatch(updateContinueGameInStageGame({
+                        continueGameLanguageId: language_ref,
+                        continueGameLanguageName: languageName,
+                        continueGameId:last_stage,
+                        continueGameName:`${last_stage_number}`,
+                        continueGameSeasonId:last_season,
+                        continueGameSeasonName:next.nextSeasonName??`${last_season_number}`,
+                    }))
                     updateUserStageGameProgressInServer(data, language_ref, totalCoins)
                 }, 1000)
             }
@@ -112,6 +124,7 @@ export const endOfAStageInStageGame = async({dispatch, realm, language_ref, stag
                     text: 'ادامه',
                     onPress: () => {
                         goBack()
+                        askForStoreRatingIfNeeded(stageNumber)
                     },
                     type:'bold'
                 },
@@ -223,7 +236,7 @@ const endAllStageAlert = ({stageNumber, languageName})=>{
             style:{ maxWidth:width-65, fontFamily:Font.bakh_bold, fontSize:20, color:colors.alert.a1, alignSelf:'flex-start', textAlign:'justify', lineHeight:30},
         },
         {
-            text:`مراحل جدید زبان ${languageName} یافت نشد. از قسمت بروزرسانی بازی مرحله‌ای، محتوای جدید بازی مرحله‌ای را دریافت کنید.`,
+            text:`مراحل جدید زبان ${languageName} یافت نشد. از قسمت بروزرسانی بازی جمله‌چین، محتوای جدید بازی جمله‌چین را دریافت کنید.`,
             style:{ maxWidth:width-30, fontFamily:Font.bakh_semi_bold, fontSize:14, color:colors.text.a6, alignSelf:'flex-start', textAlign:'justify', lineHeight:28},
         },
         {
@@ -232,7 +245,7 @@ const endAllStageAlert = ({stageNumber, languageName})=>{
         },
     ]
     AlertBottomDrawerHelper.showAlert({
-        title:"بروزرسانی بازی مرحله‌ای",
+        title:"بروزرسانی بازی جمله‌چین",
         message: msg,
         buttons:btn,
         options:{

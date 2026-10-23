@@ -8,15 +8,15 @@ import { reset } from '../../main/navigationService';
 
 export default function showDownloadDialog({width, colors}) {
     AlertBottomDrawerHelper.showAlert({
-        title: 'راهنمای شروع بازی',
+        title: 'شروع بازی',
         message: [
             {
-                text: 'برای ادامه، دریافت مراحل بازی مرحله‌ای الزامی است.',
+                text: 'برای ادامه، دریافت مراحل بازی جمله‌چین الزامی است.',
                 style: {maxWidth: width - 40, fontFamily: Font.bakh_bold, fontSize: 16, color: colors.primary.a3, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 30},
             },
             {
-                text: '*دریافت مراحل فقط چند ثانیه طول می‌کشد.',
-                style: {maxWidth: width - 40, fontFamily: Font.bakh_light, fontSize: 12, color: colors.text.a2, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 25},
+                text: '* دریافت مراحل فقط چند ثانیه طول می‌کشد.',
+                style: {maxWidth: width - 40, fontFamily: Font.bakh_semi_bold, fontSize: 12, color: colors.text.a2, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 25},
             },
         ],
         buttons: [
@@ -40,19 +40,19 @@ export default function showDownloadDialog({width, colors}) {
             icon:{
                 Icon:()=>(
                     <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', gap: 30}}>
-                        {/* بازی مرحله‌ای */}
+                        {/* بازی جمله‌چین */}
                         <View
                             style={{ alignItems: 'center', gap: 8}}>
                             <LocalImageComponent
                                 path={require('../../assets/image/home-stage-game.png')}
-                                width={90}
-                                height={90}
+                                width={70}
+                                height={70}
                                 resizeMode="stretch"
                                 blank_background
                                 borderRadius={10}
                                 style={{borderColor:colors.primary.a5, borderWidth:1.5}}
                             />
-                            <Text style={{fontFamily: Font.bakh_bold, fontSize: 20, color: colors.primary.a5}}>{'بازی مرحله‌ای'}</Text>
+                            <Text style={{fontFamily: Font.bakh_bold, fontSize: 16, color: colors.primary.a5}}>{'بازی جمله‌چین'}</Text>
                         </View>
                         {/* سایر بخش‌ها */}
                         <View
@@ -65,8 +65,12 @@ export default function showDownloadDialog({width, colors}) {
                         >
                             {[
                                 {
+                                    image: require('../../assets/image/home-word-game.png'),
+                                    title: 'خان کلمات',
+                                },
+                                {
                                     image: require('../../assets/image/home-package-game.png'),
-                                    title: 'بازی داستانی',
+                                    title: 'داستان‌چین',
                                 },
                                 {
                                     image: require('../../assets/image/home-harf-akhar.png'),

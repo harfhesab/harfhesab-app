@@ -1,82 +1,103 @@
-import React from 'react';
-import {Dimensions, StyleSheet} from 'react-native';
-import { useLetters } from '../../context/LettersContext';
-import { View } from 'react-native';
-import NumberCoins from '../../../coin/NumberCoins';
-import Font from '../../../../utils/Font';
-import NumberCoinsHelp from '../../../coin/NumberCoinsHelp';
+import React, { memo } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../../redux/store/RootReducer';
+import { useLettersStatic } from '../../context/LettersContext';
+import HiddenWords from './HiddenWords';
+import NumberCoins from '../../../coin/NumberCoins';
+import NumberCoinsHelp from '../../../coin/NumberCoinsHelp';
 import Setting from '../../../icon/Setting';
 import Back from '../../../icon/Back';
-import HiddenWords from './HiddenWords';
 import TimerAndSandTimer from '../../../timer/TimerAndSandTimer';
+import type { RootState } from '../../../../redux/store/RootReducer';
 import { useStatusBarHeight } from '../../../../hooks/useStatusBarHeight';
 
-const {width} = Dimensions.get("screen");
-const TopHeader = () => {
-  const STATUS_BAR_HEIGHT = useStatusBarHeight()
-  const {coins_for_get_help_letter_connecting_stage_game, coins_for_get_help_letter_connecting_package_game} = useSelector((state: RootState) => state.constants);
-  const { type, applyForHelp, timeLimitData, gameTimeIsOver } = useLetters();
+const HEADER_HEIGHT = 55;
+
+function TopHeader() {
+  const statusBarHeight = useStatusBarHeight();
+  const { type, applyForHelp, timeLimitData, gameTimeIsOver } = useLettersStatic();
+  const helpCost = useSelector((state: RootState) => {
+    if (type === 'stage-game') {
+      return state.constants.coins_for_get_help_letter_connecting_stage_game;
+    }
+    if (type === 'package-game') {
+      return state.constants.coins_for_get_help_letter_connecting_package_game;
+    }
+    if (type === 'word-game') {
+      return state.constants.coins_for_get_help_word_game;
+    }
+    return false;
+  });
+  const timeLimit = type === 'harf-akhar' ? timeLimitData?.time_limit : undefined;
 
   return (
-    <View style={{width:width, marginTop:STATUS_BAR_HEIGHT}}>
+    <View style={[styles.container, { marginTop: statusBarHeight }]}>
       <View style={styles.header}>
-          <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-              <Setting/>
-              <View style={{direction:'rtl'}}>
-                  <NumberCoins />
-              </View>
+        <View style={styles.group}>
+          <Setting />
+          <View style={styles.rtl}>
+            <NumberCoins />
           </View>
-          <View style={{flexDirection:'row', alignItems:'center', gap:7}}>
-            {
-              type !== "harf-akhar"&&
-              <NumberCoinsHelp
-                  numberCoinsHelp={type == "stage-game"?coins_for_get_help_letter_connecting_stage_game:type == "package-game"&&coins_for_get_help_letter_connecting_package_game}
-                  onPress={applyForHelp}
-              />
-            }
-          <Back/>
-          </View>
+        </View>
+        <View style={styles.group}>
+          {type !== 'harf-akhar' && <NumberCoinsHelp numberCoinsHelp={helpCost} onPress={applyForHelp} />}
+          <Back />
+        </View>
       </View>
-      {
-        (type == "harf-akhar" && timeLimitData?.time_limit)&&
-        <View style={{position:'absolute', width:"100%", alignItems:'flex-end', end:57, paddingTop:7.5}}>
+      {!!timeLimit && (
+        <View style={styles.timer}>
           <TimerAndSandTimer
-            totalSeconds={timeLimitData?.time_limit}
+            totalSeconds={timeLimit}
             remainingSeconds={timeLimitData?.remaining_time_seconds}
             remainingSyncedAt={timeLimitData?.remaining_synced_at}
             onFinish={gameTimeIsOver}
             paused={false}
           />
         </View>
-      }
-      <View style={{alignItems:'center', justifyContent:'center', position:'absolute', bottom:-57, start:10}}>
-          <HiddenWords/>
+      )}
+      {/* درست زیر هدر قرار دارد؛ WordSlots خانه‌هایش را از این ناحیه دور نگه می‌دارد. */}
+      <View style={styles.hiddenWords}>
+        <HiddenWords />
       </View>
     </View>
   );
-};
+}
+
 const styles = StyleSheet.create({
-  sentenceContainer: {
-    flex:1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingBottom:10
-  },
-  sentenceText: {
-    fontSize: 18,
-    fontFamily: Font.black,
-    textAlign: 'center',
+  container: {
+    width: '100%',
+    zIndex: 1,
   },
   header: {
-    height:55,
-    width:width,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between',
-    paddingHorizontal:10,
+    height: HEADER_HEIGHT,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  group: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+  },
+  rtl: {
+    direction: 'rtl',
+  },
+  timer: {
+    position: 'absolute',
+    width: '100%',
+    alignItems: 'flex-end',
+    end: 57,
+    paddingTop: 7.5,
+  },
+  hiddenWords: {
+    position: 'absolute',
+    bottom: -57,
+    start: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
-export default React.memo(TopHeader);
+export default memo(TopHeader);

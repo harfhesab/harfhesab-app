@@ -18,6 +18,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import SimpleBorderText from '../../text-components/SimpleBorderText';
 import LocalImageComponent from '../../image-components/LocalImageComponent';
 import WoodProgressBar from '../../WoodProgressBar';
+import CardBadge from '../../home-parts/components/CardBadge';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,11 +30,13 @@ const STAGE_GAME_CARD_WIDTH = IS_TABLET_CONDITION
   : width - (STAGE_GAME_SEASON_CARD_MARGIN * 2);
 
 function StageGameSeasonCard({
+  type,
   lock,
   ended,
   currentScroll,
   title,
   description,
+  badge,
   image,
   progress,
   seasonNumber,
@@ -56,7 +59,7 @@ function StageGameSeasonCard({
   return (
     <View style={{height:STAGE_GAME_SEASON_CARD_HEIGHT, alignItems:'center', justifyContent:'flex-end'}}>
       <ImageBackground
-          source={require("../../../assets/image/frame_stage.png")}
+          source={type == "stage-game"?require("../../../assets/image/frame_stage.png"):require("../../../assets/image/frame_stage_blue.png")}
           style={{ width: STAGE_GAME_CARD_WIDTH, height: CONTENT_HEIGHT }}
           imageStyle={{ resizeMode: "stretch" }}
           resizeMode="stretch"
@@ -69,9 +72,11 @@ function StageGameSeasonCard({
         }}>
           <View style={{ flex: 1, position: 'relative' }}>
             <CardContent
+              type={type}
               lock={lock}
               ended={ended}
               title={title}
+              badge={badge}
               image={image}
               progress={progress}
               seasonNumber={seasonNumber}
@@ -117,7 +122,7 @@ function StageGameSeasonCard({
 }
 
 const CardContent = memo(({
-  lock, ended, title, image, progress, seasonNumber, stageNumberFrom, stageNumberTo, numberStage, colors, onClick, languageName
+  type, lock, ended, title, badge, image, progress, seasonNumber, stageNumberFrom, stageNumberTo, numberStage, colors, onClick, languageName
 }) => {
   const seasonNumberLength = seasonNumber?.toString().length
   const cupNumberFontSize = seasonNumberLength == 1?14:seasonNumberLength == 2?11:8
@@ -136,10 +141,16 @@ const CardContent = memo(({
           resizeMode={'cover'}
           style={{borderTopLeftRadius:STAGE_GAME_CARD_WIDTH*0.16, borderTopRightRadius:STAGE_GAME_CARD_WIDTH*0.16, borderBottomLeftRadius:8, borderBottomRightRadius:8}}
         />
+        {
+          badge?.length > 0&&
+          <View style={{position:'absolute', width:STAGE_GAME_CARD_WIDTH*0.92, alignItems:'flex-end'}}>
+            <CardBadge label={badge} style={{top:STAGE_GAME_CARD_WIDTH * 0.5175 + 5, end:5}}/>
+          </View>
+        }
       </View>
       <View style={{ width: '100%', alignItems: 'center' }}>
         <ImageBackground
-            source={require("../../../assets/image/frame_stage_info.png")}
+            source={type == "stage-game"?require("../../../assets/image/frame_stage_info.png"):require("../../../assets/image/frame_stage_info_blue.png")}
             style={{ width: STAGE_GAME_CARD_WIDTH*0.8, height: STAGE_GAME_CARD_WIDTH*0.31, alignItems:'center', justifyContent:'center'}}
             imageStyle={{ resizeMode: "stretch" }}
             resizeMode="stretch"
@@ -147,15 +158,15 @@ const CardContent = memo(({
           {
             lock == true?
             <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%', gap:10, paddingBottom:10}}>
-              <Text style={{ color: colors.text.a1, fontFamily: Font.bakh_extra_bold, fontSize: 20 }}>{`فصل ${seasonNumber}`}</Text>
-              <Icon name={'download-cloud'} type={'Feather'} style={{ fontSize: 25, color:"#fcb900" }} />
+              <Text style={{ color: colors.primary.a5, fontFamily: Font.bakh_extra_bold, fontSize: 20 }}>{`فصل ${seasonNumber}`}</Text>
+              <Icon name={'download-cloud'} type={'Feather'} style={{ fontSize: 25, color:colors.primary.a3 }} />
             </View>
             :
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', height: '100%', paddingHorizontal:15, paddingBottom:10}}>
-                <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap:3}}>
-                  <Text style={{ color: colors.text.a1, fontFamily: Font.black, fontSize: 16 }}>{`فصل ${seasonNumber}`}</Text>
-                  <Text style={{ color: colors.text.a3, fontFamily: Font.bakh_semi_bold, fontSize: 11 }}>{`مرحله ${stageNumberFrom} تا ${stageNumberTo} (${numberStage} مرحله)`}</Text>
-                  <Text style={{ color: colors.text.a3, fontFamily: Font.bakh_semi_bold, fontSize: 11 }}>{`زبان ${languageName}`}</Text>
+                <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                  <Text style={{ color: colors.primary.a3, fontFamily: Font.bakh_extra_bold, fontSize: 18 }}>{`فصل ${seasonNumber}`}</Text>
+                  <Text style={{ color: colors.primary.a5, fontFamily: Font.bakh_semi_bold, fontSize: 11, marginTop:7 }}>{`مرحله ${stageNumberFrom} تا ${stageNumberTo}  ( ${numberStage} مرحله )`}</Text>
+                  <Text style={{ color: colors.primary.a5, fontFamily: Font.bakh_semi_bold, fontSize: 11, marginTop:2 }}>{`زبان ${languageName}`}</Text>
                 </View>
                 {
                   ended == true&&
@@ -200,7 +211,7 @@ const CardContent = memo(({
                 blank_background={true}
               />
               :
-              <Text style={{fontFamily:Font.bakh_black, fontSize:25, color:"#fcb900"}}>{'شروع بازی'}</Text>
+              <Text style={{fontFamily:Font.bakh_black, fontSize:25, color:colors.primary.a3}}>{'شروع بازی'}</Text>
             }
           </ImageBackground>
         </TouchableOpacity>

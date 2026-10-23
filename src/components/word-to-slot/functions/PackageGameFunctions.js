@@ -14,6 +14,7 @@ import AlertBottomDrawerHelper from "../../alert-bottom-drawer/AlertBottomDrawer
 import LocalImageComponent from "../../image-components/LocalImageComponent";
 import Font from "../../../utils/Font";
 import { colors } from "../../../hooks/theme/colors";
+import askForStoreRatingIfNeeded from "../../../features/ratingReward/useStoreRatingReward";
 
 
 export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, packageName, stageId, currentStageId, stageNumber, sentences, stageHint})=>{
@@ -71,6 +72,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                             onPress: () => {
                                 goBack()
                                 goBack()
+                                askForStoreRatingIfNeeded(stageNumber)
                             },
                             type:'bold'
                         },
@@ -142,6 +144,8 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                                     setTimeout(()=>{
                                         endOfASeasonInStageGame({seasonNumber:last_season_number-1, packageName})
                                     }, 500)
+                                } else {
+                                    askForStoreRatingIfNeeded(stageNumber)
                                 }
                             },
                             type:'bold'
@@ -175,6 +179,7 @@ export const endOfAStageInPackageGame = async({ realm, packageRef, userPackage, 
                     text: 'ادامه',
                     onPress: () => {
                         goBack()
+                        askForStoreRatingIfNeeded(stageNumber)
                     },
                     type:'bold'
                 },

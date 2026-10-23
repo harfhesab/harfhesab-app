@@ -3,7 +3,7 @@ import { updateStageGameContent } from '../api/StageGameApi';
 
 const options = {
     taskName: 'دریافت محتوا',
-    taskTitle: 'در حال دریافت محتوای بازی مرحله‌ای',
+    taskTitle: 'در حال دریافت محتوای بازی جمله‌چین',
     taskDesc: 'لطفاً تا پایان عملیات صبر کنید...',
     taskIcon: {
         name: 'ic_launcher',

@@ -15,18 +15,27 @@ const imageWidth = IS_TABLET_CONDITION ? 450 : width - 80
 const slidesData: SlideItem[] = [
   {
     id: '1',
-    title: 'به بازی «حرف حساب» خوش آمدی',
-    description: 'تو این دنیای بی حساب، دو کلام، حرف حساب بازی کن!',
+    title: 'به بازی «حرف حساب» خوش آمدی!',
+    description: `تو این دنیای بی‌حساب، دو کلام، حرف حساب بازی کن!\n\nتو «حرف حساب» با کلمات، جمله‌ها و داستان‌ها بازی کن و از دنیای واژه‌ها لذت ببر.`,
     CustomComponent: ()=>{
       return<HarfHesabLogoAnimation
-        animate={true}
-      />
+                animate={true}
+                size={150}
+                colors={{
+                    primary: "#FFB938",    // حلقه‌ها و جرقه‌ها
+                    secondary: "#5CE1E6",  // جرقه‌ی دوم و حلقه‌ی بیرونی
+                    sunInner: "#FFD84A",   // زرد مرکز نور (جدید)
+                    sunOuter: "#FF8A1F",   // نارنجی لبه‌ی نور (جدید)
+                }}
+                onPress={() => {}}
+                onReady={() => {}}
+            />
     }
   },
   {
     id: '2',
     title: 'حرف حساب بساز!',
-    description: 'برای ساختن یک حرف حساب، که ممکنه یک جمله، ضرب المثل یا شعر باشه، کلمات معلق را به ترتیب درست در خانه‌های خالی بچین.',
+    description: 'برای ساختن یک «حرف حساب» که می‌تونه جمله، ضرب‌المثل یا شعر باشه، کلمات معلق رو به‌ترتیب درست در خانه‌های خالی بچین.',
     CustomComponent: ()=>{
       return<OnboardingWordToSlot
         data={[
@@ -42,7 +51,7 @@ const slidesData: SlideItem[] = [
   {
     id: '3',
     title: 'کلمات نامعلوم را کشف کن.',
-    description: 'اگر در بین کلمات معلق، روی کارتی علامت سؤال بود، ابتدا باید کلمهٔ مربوط به آن کارت را پیدا کنی.',
+    description: 'اگر روی یکی از کارت‌های معلق علامت سؤال دیدی، آن را لمس کن تا کلمهٔ نامعلوم را کشف کنی.',
     CustomComponent: ()=>{
       return<OnboardingWordToSlot
         data={[
@@ -58,7 +67,7 @@ const slidesData: SlideItem[] = [
   {
     id: '4',
     title: 'بازی کلمات',
-    description: 'برای پیدا کردن کلمهٔ نامعلوم، باید به همراه آن تعدادی نیز کلمات اضافه بسازی. برای ساختن یک کلمه، روی حروف معلق به ترتیب ضربه بزن.',
+    description: 'برای کشف کلمهٔ نامعلوم، باید چند کلمهٔ اضافه هم بسازی. برای ساختن هر کلمه، حروف معلق رو به‌ترتیب لمس کن.',
     CustomComponent: ()=>{
       return<OnboardingConnectingLetters
         data={{
@@ -73,15 +82,29 @@ const slidesData: SlideItem[] = [
   },
   {
     id: '5',
+    title: 'خان کلمات',
+    description: 'با ساختن کلمات از حروف معلق، از خان‌های مختلف عبور کن و مهارت واژه‌سازی‌ات رو در زبان‌های مختلف به چالش بکش.',
+    CustomComponent: ()=>{
+      return<OnboardingConnectingLetters
+        data={{
+          additional_words: ["مادر", "مرد", "سرد"],
+          additional_words_builded: ["مادر"],
+          letters : ["م", "ا", "د", "ر", "س"]
+        }}
+      />
+    }
+  },
+  {
+    id: '6',
     title: 'بازی‌های داستانی',
-    description: "بسته‌های داستانی بازی، که در آن‌ها باید داستان‌های مختلف را بازی کنی.",
+    description: 'داستان‌ها و شعرها رو جمله‌به‌جمله یا بیت‌به‌بیت کامل کن و با چیدن کلمات، روایت رو پیش ببر.',
     imageSource: require("../../assets/image/story-cards.png"),
     imageStyle:{width:imageWidth, height:imageWidth, borderRadius:20}
   },
   {
-    id: '6',
+    id: '7',
     title: 'زبان‌های مختلف',
-    description: "محتوای حرف حساب شامل زبان های مختلفی مانند فارسی، ترکی، لری، کردی می‌باشد که می‌توانی هر کدام را که خواستی بازی کنی.",
+    description: "محتوای «حرف حساب» شامل زبان های مختلفی مانند فارسی، ترکی، لری، کردی می‌باشد که می‌توانی هر کدام را که خواستی بازی کنی.",
     imageSource: require("../../assets/image/language-cards.png"),
     imageStyle:{width:imageWidth, height:imageWidth, borderRadius:20}
   },

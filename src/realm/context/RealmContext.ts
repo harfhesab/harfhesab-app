@@ -3,7 +3,7 @@ import { realmSchemas } from "../schemas";
 
 export const RealmContext = createRealmContext({
   schema: realmSchemas,
-  schemaVersion: 1,
+  schemaVersion: 2,
   onMigration: (oldRealm, newRealm) => {
     // نمونه تابع مایگریشن
     // if (oldRealm.schemaVersion < 2) {
