@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface UiState {
+interface SettingState {
   theme: string;
   sound: boolean;
   music: boolean;
@@ -28,7 +28,7 @@ interface UiState {
   continueGameLastStage?: string | null;
 }
 
-const initialState: UiState = {
+const initialState: SettingState = {
   theme: "t1",
   sound: true,
   music: true,
@@ -43,6 +43,8 @@ const initialState: UiState = {
   // =====================================================================
   // =====================================================================
   continueGameType: null,
+  continueGameLanguageId: null,
+  continueGameLanguageName: null,
   continueGameSeasonId: null,
   continueGameSeasonName: null,
   continueGameId: null,
@@ -216,6 +218,8 @@ const settingSlice = createSlice({
       state,
     ) {
       state.continueGameType = null;
+      state.continueGameLanguageId = null;
+      state.continueGameLanguageName = null;
       state.continueGameSeasonId = null;
       state.continueGameSeasonName = null;
       state.continueGameId = null;

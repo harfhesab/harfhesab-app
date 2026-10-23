@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
+import { persistStore, persistReducer, PersistConfig } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import rootReducer from "./RootReducer";
+import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
+import rootReducer, { RootState as ReducerState } from "./RootReducer";
 
-const persistConfig = {
+const persistConfig: PersistConfig<ReducerState> = {
   key: "root",
   storage: AsyncStorage,
+  stateReconciler: autoMergeLevel2,
   whitelist: ["account", "setting", "stageGamePersist", "wordGamePersist", "coins", "constants", "subscription", "hiddenWords"],
   blacklist: ["stageGameDownload", "stageGame", "wordGameDownload", "wordGame", "main", "packageGameDownload"],
 };
