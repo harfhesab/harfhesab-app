@@ -211,7 +211,6 @@ function NotificationCard({
                   width={width - 95}
                   loading={loading1}
                   onPress={getFreeCoin}
-                  borderRadius={10}
                   textSize={14}
                   textColor={colors.primary.a1}
                   borderColor={colors.primary.a6}
@@ -254,7 +253,6 @@ function NotificationCard({
                   width={width - 95}
                   loading={loading2}
                   onPress={getFreeSubscription}
-                  borderRadius={10}
                   textSize={14}
                   textColor={colors.primary.a1}
                   borderColor={colors.primary.a6}

@@ -130,6 +130,7 @@ function LoginToAccount(props){
                             borderRadius={10}
                             clearText={()=>setPhone("")}
                             onSubmitEditing={loginWithOtp}
+                            inputDirection={"ltr"}
                         />
                     </View>
                     <View style={{width:width, alignItems:'center'}}>
@@ -140,7 +141,6 @@ function LoginToAccount(props){
                             onPress={loginWithOtp}
                             loading={loading}
                             textSize={18}
-                            borderRadius={10}
                         />
                     </View>
                     </View>

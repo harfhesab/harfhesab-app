@@ -12,6 +12,7 @@ import AlertBottomDrawerHelper from "../../alert-bottom-drawer/AlertBottomDrawer
 import Font from "../../../utils/Font";
 import { updateContinueGameInWordGame } from "../../../redux/slices/settingSlice";
 import askForStoreRatingIfNeeded from "../../../features/ratingReward/useStoreRatingReward";
+import showStageGameStart from "../../../features/homeOnboarding/showStageGameStart";
 
 
 export const endOfAStageInWordGame = async({dispatch, realm, language_ref, stageId, currentStageId, stageNumber})=>{
@@ -78,7 +79,11 @@ export const endOfAStageInWordGame = async({dispatch, realm, language_ref, stage
                                         endOfASeasonInWordGame({seasonNumber:last_season_number-1})
                                     }, 500)
                                 } else {
-                                    askForStoreRatingIfNeeded(stageNumber)
+                                    if(stageNumber > 3 && stageNumber < 8){
+                                        showStageGameStart()
+                                    } else {
+                                        askForStoreRatingIfNeeded(stageNumber)
+                                    }
                                 }
                             },
                             type:'bold'

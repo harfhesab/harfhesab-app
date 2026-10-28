@@ -11,12 +11,8 @@ export default function showDownloadDialog({width, colors}) {
         title: 'شروع بازی',
         message: [
             {
-                text: 'برای ادامه، دریافت مراحل بازی جمله‌چین الزامی است.',
-                style: {maxWidth: width - 40, fontFamily: Font.bakh_bold, fontSize: 16, color: colors.primary.a3, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 30},
-            },
-            {
-                text: '* دریافت مراحل فقط چند ثانیه طول می‌کشد.',
-                style: {maxWidth: width - 40, fontFamily: Font.bakh_semi_bold, fontSize: 12, color: colors.text.a2, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 25},
+                text: 'برای ادامه، بخش «خان کلمات» رو امتحان کن؛ با حروف کلمه بساز و در هر فصل یک خان رو شکست بده!',
+                style: {maxWidth: width - 40, fontFamily: Font.bakh_semi_bold, fontSize: 14, color: colors.primary.a3, alignSelf: 'flex-start', textAlign: 'justify', lineHeight: 30},
             },
         ],
         buttons: [
@@ -25,8 +21,8 @@ export default function showDownloadDialog({width, colors}) {
                     reset(
                         [
                             {name: 'Home'},
-                            {name: 'StageGame'},
-                            {name: 'StageGameUpdateScreen'},
+                            {name: 'WordGame'},
+                            {name: 'WordGameUpdateScreen'},
                         ]
                     )
                 },
@@ -40,11 +36,10 @@ export default function showDownloadDialog({width, colors}) {
             icon:{
                 Icon:()=>(
                     <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', gap: 30}}>
-                        {/* بازی جمله‌چین */}
                         <View
                             style={{ alignItems: 'center', gap: 8}}>
                             <LocalImageComponent
-                                path={require('../../assets/image/home-stage-game.png')}
+                                path={require('../../assets/image/home-word-game.png')}
                                 width={70}
                                 height={70}
                                 resizeMode="stretch"
@@ -52,9 +47,8 @@ export default function showDownloadDialog({width, colors}) {
                                 borderRadius={10}
                                 style={{borderColor:colors.primary.a5, borderWidth:1.5}}
                             />
-                            <Text style={{fontFamily: Font.bakh_bold, fontSize: 16, color: colors.primary.a5}}>{'بازی جمله‌چین'}</Text>
+                            <Text style={{fontFamily: Font.bakh_bold, fontSize: 16, color: colors.primary.a5}}>{'بازی خان کلمات'}</Text>
                         </View>
-                        {/* سایر بخش‌ها */}
                         <View
                             style={{
                                 flexDirection: 'row',
@@ -65,8 +59,8 @@ export default function showDownloadDialog({width, colors}) {
                         >
                             {[
                                 {
-                                    image: require('../../assets/image/home-word-game.png'),
-                                    title: 'خان کلمات',
+                                    image: require('../../assets/image/home-stage-game.png'),
+                                    title: 'جمله‌چین',
                                 },
                                 {
                                     image: require('../../assets/image/home-package-game.png'),

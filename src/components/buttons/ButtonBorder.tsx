@@ -1,9 +1,12 @@
 import React, { memo } from 'react';
 import { View, Text, TouchableNativeFeedback } from 'react-native';
+import Animated, { interpolate, interpolateColor, useAnimatedStyle } from 'react-native-reanimated';
 import Font from '../../utils/Font';
 import { DotIndicator, MaterialIndicator } from 'react-native-indicators';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import Icon from '../../utils/Icon';
+import usePressAnimation from '../../hooks/animation/usePressAnimation';
+import { vibrate } from '../../utils/vibrationManager';
 
 const colors = useAppTheme();
 
@@ -50,6 +53,20 @@ function ButtonBorder({
     CustomContent
 }:Props) {
 
+    const { pressed, onPressIn, onPressOut, pressStyle } = usePressAnimation({ pressedScale: 0.95, pressedTranslateY: 1 });
+
+    const baseColor = borderColor ?? colors.primary.a1;
+
+    // با لمس، کادر از حالت کم‌رنگ به رنگ کامل می‌رود
+    const borderAnimStyle = useAnimatedStyle(() => ({
+        borderColor: interpolateColor(pressed.value, [0, 1], [`${baseColor}99`, baseColor]),
+    }));
+
+    // پر شدن نرم داخل دکمه با رنگ کادر
+    const fillStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(pressed.value, [0, 1], [0, 0.18]),
+    }));
+
     const renderLoading = () => (
         <View style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
             {
@@ -63,8 +80,13 @@ function ButtonBorder({
         </View>
     )
 
+    const click = ()=>{
+        vibrate({pattern:40})
+        onPress()
+    }
+
     return (
-        <View style={{
+        <Animated.View style={[{
             borderRadius: borderRadius,
             width: width,
             height: height,
@@ -72,10 +94,16 @@ function ButtonBorder({
             borderWidth: borderWidth,
             borderColor: `${borderColor}99`,
             backgroundColor: borderColor ? `${borderColor}15` : `${colors.primary.a1}15`
-        }}>
+        }, pressStyle, borderAnimStyle]}>
+            <Animated.View
+                pointerEvents="none"
+                style={[{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: baseColor }, fillStyle]}
+            />
             <TouchableNativeFeedback
                 disabled={loading}
-                onPress={onPress}
+                onPress={click}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
                 useForeground={false} 
                 background={TouchableNativeFeedback.Ripple(colors.border.a1, false)}
             >
@@ -109,7 +137,7 @@ function ButtonBorder({
                     }
                 </View>
             </TouchableNativeFeedback>
-        </View>
+        </Animated.View>
     )
 }
 export default memo(ButtonBorder);

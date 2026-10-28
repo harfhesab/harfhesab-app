@@ -67,7 +67,7 @@ const dealSide = index => (index % 2 === 0 ? 1 : -1) * (IS_RTL ? 1 : -1);
 function Home(props) {
     const colors = useAppTheme();
     const dispatch = useDispatch();
-    const versionCreatedContent = useSelector(state => state.stageGamePersist.versionCreatedContent);
+    const versionCreatedContent = useSelector(state => state.wordGamePersist.versionCreatedContent);
     const continueGameType = useSelector(state => state.setting.continueGameType);
     const continueGameId = useSelector(state => state.setting.continueGameId);
     const isStoreReady = useSelector(state => state._persist?.rehydrated ?? true);

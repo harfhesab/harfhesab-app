@@ -469,7 +469,6 @@ function VerifyWithOTP(props){
                     onPress={verifyUserLoginWithOTP}
                     loading={loading}
                     textSize={18}
-                    borderRadius={10}
                 />
             </View>
         </View>

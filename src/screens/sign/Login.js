@@ -134,7 +134,6 @@ function Login(props){
                                 onPress={loginWithOtp}
                                 loading={loading}
                                 textSize={18}
-                                borderRadius={10}
                             />
                         </View>
                     </View>

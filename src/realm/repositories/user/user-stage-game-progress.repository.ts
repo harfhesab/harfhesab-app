@@ -502,5 +502,11 @@ export const saveCompletedPartAndSentenceBuildedInStageGame = (
         return false;
     }
 };
-
+export const hasPlayedStageGame = (
+    realm: Realm
+): boolean => {
+  return realm
+    .objects<UserStageGameProgress>("UserStageGameProgress")
+    .filtered("last_stage_number > 1").length > 0;
+};
 

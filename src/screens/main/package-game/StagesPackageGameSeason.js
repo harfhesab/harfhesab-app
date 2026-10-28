@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useRef} from 'react';
 import { BSON } from 'realm';
 import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, StatusBar, TouchableNativeFeedback, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useObject, useRealm } from '../../../realm';

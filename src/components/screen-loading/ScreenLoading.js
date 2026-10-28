@@ -52,7 +52,6 @@ function ScreenLoading({
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
-                                borderRadius={10}
                             />
                         </View>
                     }
@@ -72,7 +71,6 @@ function ScreenLoading({
                                 onPress={tryAgain}
                                 width={"60%"}
                                 height={45}
-                                borderRadius={10}
                             />
                         </View>
                     }

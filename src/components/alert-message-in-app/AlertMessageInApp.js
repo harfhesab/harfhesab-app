@@ -341,7 +341,6 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                                 width={width - 50}
                                 loading={loading1}
                                 onPress={getFreeCoin}
-                                borderRadius={10}
                                 textSize={14}
                                 textColor={colors.primary.a1}
                                 borderColor={colors.primary.a6}
@@ -384,7 +383,6 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                                 width={width - 50}
                                 loading={loading2}
                                 onPress={getFreeSubscription}
-                                borderRadius={10}
                                 textSize={14}
                                 textColor={colors.primary.a1}
                                 borderColor={colors.primary.a6}
@@ -431,7 +429,6 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
                         width={(width/2) - 20}
                         loading={false}
                         onPress={next}
-                        borderRadius={10}
                         textSize={16}
                     />
                 </View>

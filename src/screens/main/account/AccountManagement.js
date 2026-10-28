@@ -301,7 +301,6 @@ function AccountManagement(props){
                         <ButtonGradient
                             text={"ثبت اطلاعات"}
                             height={55}
-                            borderRadius={10}
                             width={width-40}
                             loading={loading2}
                             onPress={confirmInformation}

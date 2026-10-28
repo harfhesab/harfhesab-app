@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Onboarding, SlideItem } from '../../components/onboarding';
 import Font from '../../utils/Font';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import OnboardingWordToSlot from '../../components/onboarding-word-to-slot/OnboardingWordToSlot';
-import LocalImageComponent from '../../components/image-components/LocalImageComponent';
 import OnboardingConnectingLetters from '../../components/onboarding-connecting-letters/OnboardingConnectingLetters';
 import HarfHesabLogoAnimation from '../../components/HarfHesabLogoAnimation';
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AlertHelper from '../../components/alert/AlertHelper';
 
 const {width} = Dimensions.get("window")
 const imageWidth = IS_TABLET_CONDITION ? 450 : width - 80
@@ -116,6 +116,28 @@ const IntroOnboarding = (props:any) => {
   const finishOnboarding = async() =>{
     await AsyncStorage.setItem("onboarded", "1")
     props.navigation.navigate("SignIn")
+  }
+
+
+  useEffect(()=>{
+    showHelp()
+  }, [])
+
+  const showHelp = ()=>{
+    AlertHelper.showAlert({
+        body:`برای آشنایی با بخش‌های مختلف بازی، اسلایدهای معرفی را ببین.\nبرای ادامه، روی دکمهٔ «بعدی» بزن و در پایان، «ورود به بازی» را انتخاب کن.`,
+        buttons: [
+            {
+                text: "متوجه شدم",
+                onPress: () => {},
+                type:'bold'
+            },
+        ],
+        options : {
+            type: 'info',
+            cancelable: true
+        },
+    });
   }
   
   return (

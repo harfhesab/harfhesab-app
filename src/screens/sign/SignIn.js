@@ -477,7 +477,6 @@ function SignIn(props){
                             onPress={login}
                             loading={false}
                             textSize={16}
-                            borderRadius={10}
                         />
                     </View>
                     <View style={{width:width, alignItems:'center'}}>
@@ -487,7 +486,6 @@ function SignIn(props){
                             width={width - 40}
                             loading={loading}
                             onPress={loginAsGuestOperation}
-                            borderRadius={10}
                             textSize={16}
                         />
                     </View>

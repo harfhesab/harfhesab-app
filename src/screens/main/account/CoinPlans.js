@@ -1,7 +1,6 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground, NativeModules, Linking} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import AlertHelper from '../../../components/alert/AlertHelper';
 import { useDispatch } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
 import useAppTheme from '../../../hooks/theme/useAppTheme';

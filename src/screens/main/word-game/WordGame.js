@@ -1,7 +1,6 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import AlertHelper from '../../../components/alert/AlertHelper';
 import { checkWordGameContentVersion } from '../../../utils/api/WordGameApi';
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
@@ -112,7 +111,7 @@ function WordGame(props){
     const stageNotFoundAlert = ()=>{
         setTimeout(()=>{
             props.navigation.navigate("WordGameUpdateScreen")
-        }, 500)
+        }, 100)
     }
     const forceUpdateAlert = ()=>{
         const btn = [
