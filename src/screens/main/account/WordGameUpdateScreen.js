@@ -273,7 +273,7 @@ function WordGameUpdateScreen(props){
                                     needUpdate&&
                                     <View style={[styles.noteBox, {backgroundColor:colors.background.a2, borderColor:colors.border.a1}]}>
                                         <View style={[styles.noteBar, {backgroundColor:colors.primary.a1}]} />
-                                        <Text style={{flex:1, fontFamily:Font.bakh_semi_bold, color:colors.text.a5, fontSize:12, textAlign:'justify', lineHeight:24}}>{`هنگام دریافت مراحل، در همین صفحه بمون و مطمئن شو دستگاهت به اینترنت وصله.\nمراحل بازی حتی با اینترنت ضعیف، در کمتر از 5 ثانیه دریافت می‌شن.`}</Text>
+                                        <Text style={{flex:1, fontFamily:Font.bakh_semi_bold, color:colors.text.a5, fontSize:12, textAlign:'justify', lineHeight:24}}>{`مراحل بازی حتی با اینترنت ضعیف، در کمتر از 4 ثانیه دریافت می‌شن.\nهنگام دریافت مراحل، در همین صفحه بمون و مطمئن شو دستگاهت به اینترنت وصله.`}</Text>
                                     </View>
                                 }
                             </Animated.View>
