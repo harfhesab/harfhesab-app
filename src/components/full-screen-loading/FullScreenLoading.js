@@ -1,16 +1,11 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
-import { View, Dimensions, Text, StyleSheet, NativeModules} from 'react-native';
+import { View, Dimensions, Text, StyleSheet} from 'react-native';
 import Modal from 'react-native-modal';
 import Font from '../../utils/Font';
 import { DotIndicator } from 'react-native-indicators';
 
-const { ImmersiveMode } = NativeModules;
-
+const { width, height } = Dimensions.get('screen');
 const FullScreenLoading = React.forwardRef((props, ref)=>{
-    const { width, height } = ImmersiveMode.isImmersiveModeActive()
-        ? Dimensions.get('screen')
-        : Dimensions.get('window');
-
     const [visible, setVisible] = useState(false)
     const [cancelable, setCancelable] = useState(true)
     const [title, setTitle] = useState(null)
@@ -72,8 +67,9 @@ const FullScreenLoading = React.forwardRef((props, ref)=>{
                 }
             }}
             style={{justifyContent:'center', alignItems:'center', margin: 0}}
+            statusBarTranslucent={true}
             deviceHeight={height}
-            statusBarTranslucent={ImmersiveMode.isImmersiveModeActive() ? true : false}
+            deviceWidth={width}
             coverScreen={true}
         >
             <View style={styles.modalContainer}>

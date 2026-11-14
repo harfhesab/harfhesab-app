@@ -71,7 +71,7 @@ interface ToastContentProps {
   onDismiss: () => void; // تابعی که به پدر می‌گوید "من بسته شدم، مرا نابود کن"
 }
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('screen');
 const FRAME_WIDTH = IS_TABLET_CONDITION ? 460 : width - 40;
 const FRAME_HEIGHT = FRAME_WIDTH * 0.4;
 

@@ -38,7 +38,7 @@ import {
 } from '@react-native-firebase/messaging';
 import AlertBottomDrawerHelper from '../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 
 // حداکثر تعداد دفعاتی که مودال سفارشی نمایش داده می‌شود
 const MAX_PROMPTS = 2;

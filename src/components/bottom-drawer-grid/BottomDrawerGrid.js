@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
-import { View, Dimensions, TouchableOpacity, Text, StyleSheet, NativeModules, ScrollView} from 'react-native';
+import { View, Dimensions, TouchableOpacity, Text, StyleSheet, ScrollView} from 'react-native';
 import Modal from 'react-native-modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
@@ -11,9 +11,8 @@ import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 import GridItem from '../list-view-items/GridItem';
 import Toast from '../custom-toast/Toast';
 
-const { ImmersiveMode } = NativeModules;
+const { width, height } = Dimensions.get('screen');
 const BottomDrawerGrid = React.forwardRef((props, ref)=>{
-    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const localToastRef = useRef(null);
     const colors = useAppTheme();
     const maxHeight = height*0.9 - 160;
@@ -123,8 +122,9 @@ const BottomDrawerGrid = React.forwardRef((props, ref)=>{
                 }
             }}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
+            statusBarTranslucent={true}
             deviceHeight={height}
-            statusBarTranslucent={ImmersiveMode.isImmersiveModeActive()?true:false}
+            deviceWidth={width}
             coverScreen={true}
         >
             <Toast ref={localToastRef} defaultPosition="top" />

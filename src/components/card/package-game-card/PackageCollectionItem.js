@@ -9,7 +9,7 @@ import ImageComponent from '../../image-components/ImageComponent';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { navigate } from '../../../main/navigationService';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 const itemWidth = IS_TABLET_CONDITION?(width - 160)/6:(width - 80)/3
 function PackageCollectionItem({_id, title, image, badge}){
     const colors = useAppTheme();

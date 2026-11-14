@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, memo, useCallback } from 'react';
-import { View, Dimensions, Text, StyleSheet, NativeModules, ScrollView } from 'react-native';
+import { View, Dimensions, Text, StyleSheet, ScrollView } from 'react-native';
 import Modal from 'react-native-modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
@@ -7,12 +7,9 @@ import ButtonBorder from '../buttons/ButtonBorder';
 import ButtonGradient from '../buttons/ButtonGradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const { ImmersiveMode } = NativeModules;
 
+const { width, height } = Dimensions.get('screen');
 const AlertBottomDrawer = React.forwardRef((props, ref) => {
-    const isImmersive = ImmersiveMode.isImmersiveModeActive?.() ?? false;
-    const { width, height } = isImmersive ? Dimensions.get('screen') : Dimensions.get('window');
-    
     const colors = useAppTheme();
     const maxHeight = height * 0.5;
 
@@ -80,8 +77,9 @@ const AlertBottomDrawer = React.forwardRef((props, ref) => {
             onBackButtonPress={handleDismiss}
             onSwipeComplete={handleDismiss}
             style={styles.modalWrapper}
+            statusBarTranslucent={true}
             deviceHeight={height}
-            statusBarTranslucent={isImmersive}
+            deviceWidth={width}
             coverScreen={true}
         >
             <View style={[styles.modalContainer, { backgroundColor: colors.bottom_drawer.background, width: width }]}>

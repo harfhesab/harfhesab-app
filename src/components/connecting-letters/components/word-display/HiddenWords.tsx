@@ -161,11 +161,12 @@ function HiddenWords() {
         isVisible={visible}
         onBackdropPress={close}
         onBackButtonPress={close}
-        deviceHeight={SCREEN_HEIGHT}
-        statusBarTranslucent
-        coverScreen
         useNativeDriverForBackdrop
         style={I18nManager.isRTL ? styles.rtl : styles.ltr}
+        statusBarTranslucent={true}
+        deviceHeight={SCREEN_HEIGHT}
+        deviceWidth={SCREEN_WIDTH}
+        coverScreen={true}
       >
         <Toast ref={localToastRef} defaultPosition="top" />
         <View style={styles.center}>

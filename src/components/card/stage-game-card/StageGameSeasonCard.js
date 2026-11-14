@@ -20,7 +20,7 @@ import LocalImageComponent from '../../image-components/LocalImageComponent';
 import WoodProgressBar from '../../WoodProgressBar';
 import CardBadge from '../../home-parts/components/CardBadge';
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 export const STAGE_GAME_SEASON_CARD_MARGIN = 10;
 export const STAGE_GAME_SEASON_CARD_HEIGHT = height - 185;

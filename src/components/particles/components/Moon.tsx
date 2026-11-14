@@ -9,7 +9,7 @@ import {
 } from '@shopify/react-native-skia';
 import { useSharedValue, useDerivedValue, useFrameCallback } from 'react-native-reanimated';
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 const MOON_RADIUS = 20;
 const MOON_GLOW_RADIUS = 55;
 

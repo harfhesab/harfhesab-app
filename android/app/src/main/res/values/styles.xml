@@ -4,7 +4,23 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
-        <item name="android:navigationBarColor">#001012</item>
-    </style>
 
+        <!-- Fullscreen / Immersive: وضعیت‌بار از همان ابتدای اجرا پنهان است -->
+        <item name="android:windowFullscreen">true</item>
+
+        <!-- محتوا زیر system bars کشیده می‌شود -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- رنگ پس‌زمینه‌ی پنجره تا هنگام لود اپ فلش سفید دیده نشود -->
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+    <style name="Theme.FullScreenDialog" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
 </resources>

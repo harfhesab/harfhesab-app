@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import {StyleSheet, Platform, View, Text, Dimensions, TouchableOpacity, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import CollectionPackageList from '../../../components/list-view-items/CollectionPackageList';
@@ -14,7 +13,7 @@ import MyPackageButton from '../../../components/buttons/MyPackageButton';
 import OnlineGameCard from '../../../components/card/online-game/OnlineGameCard';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get('screen')
 function OnlineGame(props){
     const colors = useAppTheme()
     const [loading, setLoading] = useState(true)

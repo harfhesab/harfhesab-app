@@ -10,7 +10,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import Font from '../../../utils/Font';
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('screen');
 
 const GET_COMMENTS_QUERY = `
   query paginatePackageGameRating($package : ID!, $page : Int){

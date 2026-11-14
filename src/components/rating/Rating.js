@@ -18,7 +18,7 @@ import { showToast } from '../custom-toast/ToastRef';
 import { increaseNumberCoins, reduceNumberCoins } from '../../redux/slices/coinSlice';
 import { vibrate } from '../../utils/vibrationManager';
 
-const width = Dimensions.get('window').width;
+const { width, height } = Dimensions.get('screen');
 const Rating = ({
     defaultRating:defaultRatingProps,
     comment:commentProps,
@@ -234,6 +234,10 @@ const Rating = ({
                 onBackdropPress={closeDrawer}
                 useNativeDriverForBackdrop={true}
                 style={{justifyContent:'center', alignItems:'center'}}
+                statusBarTranslucent={true}
+                deviceHeight={height}
+                deviceWidth={width}
+                coverScreen={true}
             >
                 <Toast ref={localToastRef} defaultPosition="top" />
                 <View>

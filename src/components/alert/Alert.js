@@ -16,7 +16,7 @@ import ButtonGradient from '../buttons/ButtonGradient';
 import LottieView from 'lottie-react-native';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 const GLOW = 18;          // فضای اضافه‌ی کانواس برای هاله‌ی دور کارت
 const RADIUS = 14;        // شعاع گوشه‌های کارت
@@ -343,6 +343,10 @@ const Alert = React.forwardRef((props, ref) => {
                 }
             }}
             onModalHide={resetAfterHide}
+            statusBarTranslucent={true}
+            deviceHeight={height}
+            deviceWidth={width}
+            coverScreen={true}
         >
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 40 }}>
                 <Animated.View

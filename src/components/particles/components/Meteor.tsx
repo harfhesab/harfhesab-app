@@ -16,7 +16,7 @@ import {
 } from 'react-native-reanimated';
 import { Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('screen');
 
 interface MeteorProps {
   meteor: {

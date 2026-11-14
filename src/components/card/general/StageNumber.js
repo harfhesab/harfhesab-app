@@ -19,7 +19,7 @@ import SimpleBorderText from '../../text-components/SimpleBorderText';
 
 
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 export const STAGE_CARD_MARGIN = 5
 const PADDING_HORIZONTAL = 32

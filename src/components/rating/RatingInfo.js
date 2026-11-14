@@ -6,7 +6,7 @@ import RatingGraph from './RatingGraph';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { priceDigitSeperator } from '../../utils/PriceDigitSeperator';
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get('screen').width;
 const RatingInfo = ({reviews, rating_info, rating_average}) => {
     const colors = useAppTheme()
     const rating = []

@@ -5,7 +5,7 @@ import Font from '../../utils/Font';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import Switch from '../Switch';
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get('screen').width;
 
 function SwitchItem({
   click,

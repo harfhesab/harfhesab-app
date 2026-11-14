@@ -1,6 +1,6 @@
 import { Dimensions } from "react-native";
 
-const {width, height} = Dimensions.get("window");
+const {width, height} = Dimensions.get('screen');
 
 export const SLOT_GAP = 6; // فاصله اسلات ها از هم
 export const SLOT_HORIZONTAL = 15; // فاصله اسلات از کنار صفحه

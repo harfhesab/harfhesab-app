@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground, NativeModules, Linking} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground, Linking} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
@@ -13,7 +13,7 @@ import { useIsFocused } from '@react-navigation/native';
 import UserPackageItem from '../../../components/card/package-game-card/UserPackageItem';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
 import { Package } from '../../../realm/schemas/package-game/PackageSchema';
-import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
+import { IS_TABLET_CONDITION, STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 import SubscriptionPlanItem from '../../../components/card/general/SubscriptionPlanItem';
 import { getAllSubscriptionPlansList } from '../../../realm/repositories/user/subscription-plan-repository';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
@@ -24,7 +24,6 @@ import axios from 'axios';
 import { updateSubscriptionStatus } from '../../../redux/slices/subscriptionSlice';
 import { toGregorian, toJalaali} from 'jalaali-js';
 import TimerUIThread from '../../../components/timer/TimerUIThread';
-import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
 
 const usePaymentHook = TARGET_STORE == "cafebazaar"?
     require('@cafebazaar/react-native-poolakey').useBazaar
@@ -32,11 +31,9 @@ const usePaymentHook = TARGET_STORE == "cafebazaar"?
     require('iab-myket-reactnative/src/index').useMyket
     :null
 
-const { ImmersiveMode } = NativeModules;
 const numColumns = IS_TABLET_CONDITION ? 4 : 2
+const { width, height } = Dimensions.get('screen');
 function SubscriptionPlans(props){
-  const STATUS_BAR_HEIGHT = useStatusBarHeight()
-    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const { subscriptionExpiration, activeSubscription} = useSelector((state) => state.subscription);
     const { loginType } = useSelector((state) => state.account);
     const realm = useRealm();
@@ -394,7 +391,7 @@ function SubscriptionPlans(props){
         }
     }
     return(
-        <View style={{flex:1, backgroundColor:colors.background.a2, paddingTop:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
+        <View style={{flex:1}}>
             <GeneralHeader
                 back={true}
                 subscriptionInfo={true}
@@ -402,7 +399,7 @@ function SubscriptionPlans(props){
             <View style={[styles.container, {backgroundColor:colors.background.a1}]}>
                 <ImageBackground
                     source={require("../../../assets/image/frame_list.png")}
-                    style={{ width: width - 20, height:ImmersiveMode.isImmersiveModeActive()?height-(115 + STATUS_BAR_HEIGHT):height-115, paddingTop:"3.2%", paddingBottom:"4.1%"}}
+                    style={{ width: width - 20, height:height-(115 + STATUS_BAR_HEIGHT), paddingTop:"3.2%", paddingBottom:"4.1%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >

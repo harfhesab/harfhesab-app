@@ -12,8 +12,9 @@ import MyPackageBtn from "../buttons/MyPackageBtn";
 import NotificationBtn from "../buttons/NotificationBtn";
 import Home from "../icon/Home";
 import Account from "../icon/Account";
+import { STATUS_BAR_HEIGHT } from "../../utils/constants/constants";
 
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 const colors = useAppTheme();
 function GeneralHeader({
     height=60,
@@ -43,7 +44,7 @@ function GeneralHeader({
 }){
 
     return(
-        <View style={{backgroundColor:backgroundColor, height:height, width:width, shadowColor:shadowColor, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:100, borderBottomColor:borderBottomColor, borderBottomWidth:borderBottomWidth}}>
+        <View style={{backgroundColor:backgroundColor, height:height+STATUS_BAR_HEIGHT, width:width, shadowColor:shadowColor, elevation:hideShadow?0:5, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:100, borderBottomColor:borderBottomColor, borderBottomWidth:borderBottomWidth, paddingTop:STATUS_BAR_HEIGHT}}>
             <View style={{flex: 1, height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10, overflow: 'hidden'}}>
                 {
                     home&&

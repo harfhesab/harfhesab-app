@@ -11,7 +11,7 @@ import {
 import useAppTheme from '../../hooks/theme/useAppTheme';
   
   
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 function InputCodeField({value,  cellCount, setValue, onSubmitEditing}){
     const colors = useAppTheme();
     const ref = useBlurOnFulfill({value, cellCount});

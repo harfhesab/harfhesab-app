@@ -41,9 +41,11 @@ import {
     useAnimatedReaction,
     cancelAnimation,
 } from 'react-native-reanimated';
-import {useStatusBarHeight} from '../../../hooks/useStatusBarHeight';
+import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 
-const {CafeBazaar, Myket, ImmersiveMode} = NativeModules;
+const {CafeBazaar, Myket} = NativeModules;
+
+const { width, height } = Dimensions.get('screen');
 
 /* ═════════════ ثابت‌ها ═════════════ */
 // کلیدهای ذخیره‌سازی و فیلدهای سرور (همان allowedFields قبلی)
@@ -224,10 +226,8 @@ const TimerComponent = memo(function TimerComponent({iconName, iconType, color, 
 
 /* ═════════════ صفحه ═════════════ */
 function FreeCoin(props) {
-    const STATUS_BAR_HEIGHT = useStatusBarHeight();
     const windowDims = useWindowDimensions();
-    const immersive = ImmersiveMode.isImmersiveModeActive();
-    const {width, height} = immersive ? Dimensions.get('screen') : windowDims;
+
 
     const dispatch = useDispatch();
     const colors = useAppTheme();
@@ -585,26 +585,18 @@ function FreeCoin(props) {
         }
     }, [loginType, props.navigation]);
 
-    /* ───────── استایل‌های وابسته به ابعاد/تم ───────── */
-    const rootStyle = useMemo(
-        () => ({flex: 1, backgroundColor: colors.background.a2, paddingTop: immersive ? STATUS_BAR_HEIGHT : 0}),
-        [colors.background.a2, immersive, STATUS_BAR_HEIGHT],
-    );
+
     const contentBoxStyle = useMemo(() => ({flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background.a1}), [colors.background.a1]);
-    const frameStyle = useMemo(
-        () => ({width: width - 20, height: immersive ? height - (80 + STATUS_BAR_HEIGHT) : height - 80, paddingVertical: '3.5%'}),
-        [width, height, immersive, STATUS_BAR_HEIGHT],
-    );
     const listBoxStyle = useMemo(() => ({borderRadius: '10%', overflow: 'hidden', width: width - 40, alignItems: 'center', alignSelf: 'center'}), [width]);
     const sectionLabelStyle = useMemo(() => ({fontFamily: Font.bakh_semi_bold, fontSize: 12, color: colors.text.a4}), [colors.text.a4]);
 
     return (
-        <View style={rootStyle}>
+        <View style={{flex:1}}>
             <GeneralHeader coin={true} back={true} title={'دریافت سکه رایگان'} />
             <View style={contentBoxStyle}>
                 <ImageBackground
                     source={require('../../../assets/image/menu_frame_full.png')}
-                    style={frameStyle}
+                    style={{width: width - 20, height: height - (80 + STATUS_BAR_HEIGHT), paddingVertical: '3.5%'}}
                     imageStyle={styles.frameImage}
                     resizeMode="stretch">
                     <View style={listBoxStyle}>

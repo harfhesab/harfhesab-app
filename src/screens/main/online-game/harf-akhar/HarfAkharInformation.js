@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, StatusBar, ImageBackground, Image, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, ImageBackground, Image, ActivityIndicator} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../../components/header/GeneralHeader';
@@ -20,7 +20,6 @@ import Icon from '../../../../utils/Icon';
 import { showToast } from '../../../../components/custom-toast/ToastRef';
 import { reduceNumberCoins } from '../../../../redux/slices/coinSlice';
 import { useFocusEffect } from '@react-navigation/native';
-import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 import BottomDrawerGridHelper from '../../../../components/bottom-drawer-grid/BottomDrawerGridHelper';
 import AlertBottomDrawerHelper from '../../../../components/alert-bottom-drawer/AlertBottomDrawerHelper';
 import { useHarfAkharInfoMusic } from '../../../../utils/sound/MusicFunctions';
@@ -61,7 +60,6 @@ const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 function HarfAkharInformation(props){
     const STATUS_BAR_HEIGHT = useStatusBarHeight()
     useHarfAkharInfoMusic()
-    useImmersiveMode()
     const dispatch = useDispatch();
     const colors = useAppTheme()
     const realm = useRealm();
@@ -377,20 +375,17 @@ function HarfAkharInformation(props){
     }
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
-            <StatusBar translucent={true} hidden={true} />
             <GalaxyTwinkle >
-                <View style={{ paddingTop:STATUS_BAR_HEIGHT}}>
-                    <GeneralHeader
-                        backgroundColor={'transparent'}
-                        back={true}
-                        coin={true}
-                        subscription={true}
-                        shadowColor={'transparent'}
-                        borderBottomColor={'transparent'}
-                        borderBottomWidth={0}
-                        height={60}
-                    />
-                </View>
+                <GeneralHeader
+                    backgroundColor={'transparent'}
+                    back={true}
+                    coin={true}
+                    subscription={true}
+                    shadowColor={'transparent'}
+                    borderBottomColor={'transparent'}
+                    borderBottomWidth={0}
+                    height={60}
+                />
                 <View style={styles.container}>
                     {
                         loading?

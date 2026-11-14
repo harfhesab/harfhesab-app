@@ -12,7 +12,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const { width: SCREEN_WIDTH } = Dimensions.get('screen');
 
 interface LoadingBarProps {
   barColor?: string;

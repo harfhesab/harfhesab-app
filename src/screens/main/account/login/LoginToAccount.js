@@ -13,7 +13,7 @@ import GeneralHeader from '../../../../components/header/GeneralHeader';
 import { showToast } from '../../../../components/custom-toast/ToastRef';
 
 
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 function LoginToAccount(props){
     const colors = useAppTheme()
     const [phone, setPhone] = useState('')

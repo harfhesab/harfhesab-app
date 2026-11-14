@@ -39,7 +39,7 @@ import { updateUserWordGameProgressInLogin } from '../../../../realm/repositorie
 import { updateWordGameCurrentLanguageLastStageAndLastSeason } from '../../../../redux/slices/wordGameSlice';
   
   
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 function VerifyLoginToAccount(props){
     const realm = useRealm();
     const dispatch = useDispatch();

@@ -10,7 +10,7 @@ import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AlertHelper from '../../components/alert/AlertHelper';
 
-const {width} = Dimensions.get("window")
+const {width} = Dimensions.get('screen')
 const imageWidth = IS_TABLET_CONDITION ? 450 : width - 80
 const slidesData: SlideItem[] = [
   {

@@ -298,12 +298,11 @@ const endedUserPackageGameProgressInServer = (userPackage, totalCoins)=>{
     })
 }
 const endAllStageAlert = ({stageNumber, packageName, packageRef})=>{
-    const {width} = Dimensions.get("window")
+    const {width} = Dimensions.get('screen')
     const { ImmersiveMode } = NativeModules;
     const btn = [
         {
             onPress : ()=>{
-                ImmersiveMode.exitImmersiveMode()
                 navigate("PackageInformation", {_id:packageRef});
             },
             text: "بروزرسانی محتوا",
@@ -364,7 +363,6 @@ const endedUserPackageGameAlert = (packageName, packageRef, coinsRewardPackage)=
             {
                 text: 'ثبت نظر و امتیاز',
                 onPress: () => {
-                    ImmersiveMode.exitImmersiveMode()
                     navigate("PackageInformation", {_id:packageRef});
                 },
                 type:'bold'

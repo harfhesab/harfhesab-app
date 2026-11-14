@@ -7,12 +7,14 @@ import NumberCoins from "../coin/NumberCoins";
 import Back from "../icon/Back";
 import Setting from "../icon/Setting";
 import PackageInfoBtn from "../buttons/PackageInfoBtn";
+import { useStatusBarHeight } from "../../hooks/useStatusBarHeight";
 
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 function SeasonHeader({height=65, paddingHorizontal=12, back=true, coin=true, title, setting=true, packageId, packageIcon}){
+    const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const colors = useAppTheme();
     return(
-        <View style={{height:height, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000}}>
+        <View style={{height:height + STATUS_BAR_HEIGHT, width:width, flexDirection:'row', alignItems:'center', paddingHorizontal:paddingHorizontal, justifyContent:'space-between', zIndex:1000, paddingTop:STATUS_BAR_HEIGHT}}>
             <View style={{height:"100%", flexDirection:'row', alignItems:'center', justifyContent:'flex-start', gap:10}}>
                 {
                     back&&

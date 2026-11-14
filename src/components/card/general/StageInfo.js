@@ -18,7 +18,7 @@ import ExpandableText from '../../text-components/expandable-text';
 
 
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 
 function StageInfo({

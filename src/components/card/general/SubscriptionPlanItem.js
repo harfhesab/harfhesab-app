@@ -9,7 +9,7 @@ import { priceDigitSeperator } from '../../../utils/PriceDigitSeperator';
 import ButtonImgSrc from '../../buttons/ButtonImgSrc';
 import AdvancedImageComponent from '../../image-components/AdvancedImageComponent';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 const size = IS_TABLET_CONDITION?(width-105)/4:(width-75)/2
 
 function SubscriptionPlanItem({_id, click, productId, title, badge, image, duration, price, active}){

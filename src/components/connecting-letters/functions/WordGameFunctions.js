@@ -212,7 +212,7 @@ const updateUserWordGameProgressInServer = (data, language_ref, totalCoins)=>{
     })
 }
 const endAllStageAlert = ({stageNumber, languageName})=>{
-    const {width} = Dimensions.get("window")
+    const {width} = Dimensions.get('screen')
     const btn = [
         {
             onPress : ()=>{

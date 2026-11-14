@@ -10,7 +10,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get('screen').width;
 
 const RatingGraph = ({ number_rating, reviews, index }) => {
     const colors = useAppTheme();

@@ -23,7 +23,7 @@ import { toGregorian, toJalaali} from 'jalaali-js';
 import AlertHelper from '../../../components/alert/AlertHelper';
 import { showToast } from '../../../components/custom-toast/ToastRef';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get('screen')
 function AccountManagement(props){
     const colors = useAppTheme()
     const dispatch = useDispatch();

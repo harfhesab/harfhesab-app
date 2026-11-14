@@ -1,6 +1,6 @@
 import { Dimensions } from 'react-native';
 
-const {width, height} = Dimensions.get("window");
+const {width, height} = Dimensions.get('screen');
 
 export const BOUNDARY_HORIZONTAL_OFFSET = 50;
 export const BOUNDARY_BOTTOM_OFFSET = 20;

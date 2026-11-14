@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import {StyleSheet, View, Text, SafeAreaView, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView} from 'react-native';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import ConnectingLetters from '../../../../components/connecting-letters/ConnectingLetters';
 import NightSky from '../../../../components/particles/NightSky';
@@ -8,11 +8,9 @@ import { useRealm } from '../../../../realm';
 import { getWordGameStageById } from '../../../../realm/repositories/word-game/word-game-stage.repository';
 import { endOfAStageInWordGame } from '../../../../components/connecting-letters/functions/WordGameFunctions';
 import { saveNewHiddenWordsBuildedInWordGame, saveNewWordsBuildedInWordGame, saveUserHelpRequestsInWordGame } from '../../../../realm/repositories/user/user-word-game-progress.repository';
-import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 import { useDispatch, useSelector } from 'react-redux';
 
 function ConnectingLettersWordGame(props){
-    useImmersiveMode()
     useConnectingLetterStageGameMusic()
     const dispatch = useDispatch();
     const colors = useAppTheme()
@@ -53,7 +51,6 @@ function ConnectingLettersWordGame(props){
     
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#000000"}}>
-            <StatusBar translucent={true} hidden={true} />
             <NightSky>
                 <View style={styles.container}>
                     <ConnectingLetters 

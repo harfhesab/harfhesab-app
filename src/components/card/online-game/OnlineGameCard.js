@@ -10,7 +10,7 @@ import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import { navigate } from '../../../main/navigationService';
 import { showToast } from '../../custom-toast/ToastRef';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 const itemWidth = IS_TABLET_CONDITION?(width - 80)/3:(width - 60)/2
 function OnlineGameCard({_id, title, image, badge, active, onPress}){
     const colors = useAppTheme();

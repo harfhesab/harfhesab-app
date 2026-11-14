@@ -26,7 +26,7 @@ interface Props {
     fontSize?: number;
     textColor?: string;
 }
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get('screen').width;
 function AdsButton(
     { onPress, hideAction, reward=7, adsPosition="get_free_coin", width=160, height=55, fontSize=15, textColor="#FFFFFF"}:Props
 ){

@@ -10,7 +10,7 @@ import { showToast } from '../custom-toast/ToastRef';
 import AlertBottomDrawerHelper from '../alert-bottom-drawer/AlertBottomDrawerHelper';
 import { vibrate } from '../../utils/vibrationManager';
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('screen');
 
 function CommentRating({ _id, name, grade, date, comment, likeNumbers = 0, disLikeNumbers = 0, likedIt = false, disLikedIt = false }) {
     const colors = useAppTheme();

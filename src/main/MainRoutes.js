@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
-import { AppState, NativeModules } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { getCurrentRouteName } from './navigationService';
 import Home from '../screens/main/Home';
 import WordToSlotStageGame from '../screens/main/stage-game/game/WordToSlotStageGame';
 import ConnectingLettersStageGame from '../screens/main/stage-game/game/ConnectingLettersStageGame';
@@ -39,35 +37,7 @@ import ConnectingLettersWordGame from '../screens/main/word-game/game/Connecting
 
 
 const Stack = createNativeStackNavigator();
-
-const { ImmersiveMode } = NativeModules;
 const MainRoutes = (props) =>{
-
-  const limitedRoute = [
-    "WordToSlotStageGame",
-    "ConnectingLettersStageGame",
-    "StagesStageGameSeason",
-    "WordToSlotPackageGame",
-    "ConnectingLettersPackageGame",
-    "StagesPackageGameSeason",
-    "StartPackageGame"
-  ]
-
-  useEffect(()=>{
-    const listenner = AppState.addEventListener('change', handleAppStateChange);
-    return () => {
-      listenner.remove()
-    };
-  }, [])
-
-  const handleAppStateChange = (nextAppState) => {
-    if(nextAppState === 'active'){
-      const currentRoute = getCurrentRouteName();
-      if(limitedRoute.includes(currentRoute)){
-        ImmersiveMode.enterImmersiveMode();
-      }
-    }
-  };
 
   return(
     <Stack.Navigator screenOptions={{headerShown:false, freezeOnBlur:true}} >

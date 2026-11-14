@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import {StyleSheet, Platform, View, Text, Dimensions, TouchableOpacity, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import CollectionPackageList from '../../../components/list-view-items/CollectionPackageList';
@@ -11,7 +10,7 @@ import useAppTheme from '../../../hooks/theme/useAppTheme';
 import axios from 'axios';
 import ButtonGradient from '../../../components/buttons/ButtonGradient';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get('screen')
 function PackageGame(props){
     const colors = useAppTheme()
     const [collection, setCollection] = useState([])

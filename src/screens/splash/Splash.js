@@ -26,7 +26,7 @@ import { changeNewNotifications } from '../../redux/slices/accountSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HarfHesabLogoAnimation from '../../components/HarfHesabLogoAnimation';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('screen');
 function Splash(props){
     const dispatch = useDispatch();
     const realm = useRealm();

@@ -828,7 +828,7 @@ const showSuccessAlertForDownloaded = (firstGetContent)=>{
     });
 }
 const showUpdateAlert = ()=>{
-    const {width} = Dimensions.get("window");
+    const {width} = Dimensions.get('screen');
     const btn = [
         {
             onPress : ()=>{
@@ -884,7 +884,7 @@ const showUpdateAlert = ()=>{
     })
 }
 const forceUpdateAlert = ()=>{
-    const {width} = Dimensions.get("window");
+    const {width} = Dimensions.get('screen');
     const btn = [
         {
             onPress : ()=>{

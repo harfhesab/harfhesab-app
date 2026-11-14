@@ -6,7 +6,7 @@ import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 function ArrowItem({showArrow, disabled, arrowColor, arrowSize, arrowText, arrowTextSize, onPress, width, height, paddingHorizontal, iconName, iconType, iconSize, iconColor, imageUrl, imageSize, imageLocal, text1, text2, fontFamilyText1, fontSizeText1, fontFamilyText2, fontSizeText2}){
     const colors = useAppTheme();
 

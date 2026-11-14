@@ -10,7 +10,7 @@ import { colors } from '../../hooks/theme/colors';
 import Border from '../Border';
 import LocalImageComponent from '../image-components/LocalImageComponent';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 const ITEM_SIZE = IS_TABLET_CONDITION?(width-105)/6:(width - 100)/4
 const Calendar = React.forwardRef((props, ref)=>{
     const maxHeight = height*0.55;
@@ -120,6 +120,10 @@ const Calendar = React.forwardRef((props, ref)=>{
             onBackButtonPress={close}
             onSwipeComplete={close}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
+            statusBarTranslucent={true}
+            deviceHeight={height}
+            deviceWidth={width}
+            coverScreen={true}
         >
             <View activeOpacity={1} style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>
                 <View>

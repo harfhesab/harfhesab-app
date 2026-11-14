@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { PermissionsAndroid, Platform, StatusBar } from 'react-native';
 import { Provider } from "react-redux";
 import { store, persistor } from './src/redux/store/Store';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -120,15 +120,18 @@ function App(): React.JSX.Element {
 
 
   return (
-    <RealmProviderWrapper>
-      <Provider store={store}> 
-        <PersistGate loading={<ProvidersLoader />} persistor={persistor}>
-          <SkiaFontProvider>
-            <Main/>
-          </SkiaFontProvider>
-        </PersistGate>
-      </Provider>
-    </RealmProviderWrapper>
+    <>
+      <StatusBar hidden translucent backgroundColor="transparent" />
+      <RealmProviderWrapper>
+        <Provider store={store}> 
+          <PersistGate loading={<ProvidersLoader />} persistor={persistor}>
+            <SkiaFontProvider>
+              <Main/>
+            </SkiaFontProvider>
+          </PersistGate>
+        </Provider>
+      </RealmProviderWrapper>
+    </>
   );
 }
 

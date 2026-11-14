@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Dimensions, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Dimensions} from 'react-native';
 import WordToSlot from '../../../../components/word-to-slot/WordToSlot';
 import useAppTheme from '../../../../hooks/theme/useAppTheme';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,10 +9,8 @@ import { useObject, useRealm } from '../../../../realm';
 import { BSON } from 'realm';
 import { saveCompletedPartAndSentenceBuildedInStageGame, saveWordHelpUsedInStageGame } from '../../../../realm/repositories/user/user-stage-game-progress.repository';
 import { endOfAStageInStageGame } from '../../../../components/word-to-slot/functions/StageGameFunctions';
-import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 
 function WordToSlotStageGame(props){
-    useImmersiveMode()
     useWordToSlotStageGameMusic()
     const dispatch = useDispatch();
     const colors = useAppTheme()
@@ -50,7 +48,6 @@ function WordToSlotStageGame(props){
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
-            <StatusBar translucent={true} hidden={true} />
             <GalaxyTwinkle >
                 <SafeAreaView style={styles.container}>
                     <WordToSlot 

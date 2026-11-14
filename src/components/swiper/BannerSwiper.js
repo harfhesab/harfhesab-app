@@ -6,7 +6,7 @@ import ButtonBorder from "../buttons/ButtonBorder";
 import Font from "../../utils/Font";
 import { navigate } from "../../main/navigationService";
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get('screen').width;
 
 const bannerWidth = width > 600 ? 460 : width - 50
 const itemGap = 15

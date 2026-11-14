@@ -27,7 +27,7 @@ import AlertBottomDrawerHelper from '../../../components/alert-bottom-drawer/Ale
 import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
 
 /* ═════════════ ثابت‌ها ═════════════ */
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 const FLATLIST_PADDING_VERTICAL = 15;
 const itemHeight = STAGE_GAME_SEASON_CARD_HEIGHT;
 const rowGap = 25;
@@ -49,10 +49,10 @@ const getSafeScrollIndex = (itemIndex, itemsCount) => {
 };
 
 const getItemLayout = (_data, index) => {
-    const row = Math.floor(index / numColumns); // هر ردیف
+    const row = Math.floor(index / numColumns);
     return {
         length: itemHeight,
-        offset: FLATLIST_PADDING_VERTICAL + row * snapInterval,
+        offset: row * snapInterval,
         index,
     };
 };

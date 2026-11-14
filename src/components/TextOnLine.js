@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import useAppTheme from '../hooks/theme/useAppTheme';
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get('screen').width;
 function TextOnLine(props){
     const colors = useAppTheme();
 

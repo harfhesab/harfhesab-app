@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, memo, useRef } from 'react';
-import { View, Dimensions, Text, StyleSheet, NativeModules, Linking, TouchableOpacity, ScrollView} from 'react-native';
+import { View, Dimensions, Text, StyleSheet, Linking, TouchableOpacity, ScrollView} from 'react-native';
 import Modal from 'react-native-modal';
 import Font from '../../utils/Font';
 import Icon from '../../utils/Icon';
@@ -18,9 +18,8 @@ import axios from 'axios';
 import { navigate } from '../../main/navigationService';
 
 
-const { ImmersiveMode } = NativeModules;
+const { width, height } = Dimensions.get('screen');
 const AlertMessageInApp = React.forwardRef((props, ref)=>{
-    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const colors = useAppTheme();
     const localToastRef = useRef(null);
     const maxHeight = height*0.7;
@@ -289,8 +288,9 @@ const AlertMessageInApp = React.forwardRef((props, ref)=>{
             useNativeDriverForBackdrop={true}
             onBackButtonPress={next}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
+            statusBarTranslucent={true}
             deviceHeight={height}
-            statusBarTranslucent={ImmersiveMode.isImmersiveModeActive()?true:false}
+            deviceWidth={width}
             coverScreen={true}
         >
             <Toast ref={localToastRef} defaultPosition="top" />

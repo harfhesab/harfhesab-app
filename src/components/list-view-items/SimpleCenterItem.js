@@ -6,7 +6,7 @@ import FastImage from '@d11/react-native-fast-image';
 import Globals from '../../utils/Globals';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 function SimpleCenterItem({ onPress, disabled, width, height, paddingHorizontal, text1, fontFamilyText1, fontSizeText1, colorText1}){
     const colors = useAppTheme();
 

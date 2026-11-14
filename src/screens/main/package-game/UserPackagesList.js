@@ -1,5 +1,5 @@
 import React, {useMemo, useState, useEffect, useRef} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, ImageBackground, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery, useRealm } from '../../../realm';
@@ -17,8 +17,9 @@ import SimpleBorderText from '../../../components/text-components/SimpleBorderTe
 import { creatingMultiplePackageAndUsePackageDocumentsInSameTime } from '../../../realm/repositories/user/user-package-game-progress.repository';
 import { updateSyncUserPackage } from '../../../redux/slices/accountSlice';
 import axios from 'axios';
+import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get('screen')
 function useUserPackage() {
     const isFocused = useIsFocused();
     const allUserPackage = useQuery(UserPackage);
@@ -175,7 +176,7 @@ function UserPackagesList(props){
                 <View style={styles.container}>
                     <ImageBackground
                         source={require("../../../assets/image/frame_list.png")}
-                        style={{ width: width - 20, height:single === '1'?height-115:height-193, paddingTop:"3.2%", paddingBottom:"4.1%"}}
+                        style={{ width: width - 20, height:single === '1'?height-(115 + STATUS_BAR_HEIGHT):height-(193+STATUS_BAR_HEIGHT), paddingTop:"3.2%", paddingBottom:"4.1%"}}
                         imageStyle={{ resizeMode: "stretch" }}
                         resizeMode="stretch"
                     >

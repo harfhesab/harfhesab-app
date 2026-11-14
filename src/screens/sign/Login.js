@@ -12,7 +12,7 @@ import useAppTheme from '../../hooks/theme/useAppTheme';
 import { showToast } from '../../components/custom-toast/ToastRef';
 
 
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 function Login(props){
     const colors = useAppTheme()
     const [phone, setPhone] = useState('')

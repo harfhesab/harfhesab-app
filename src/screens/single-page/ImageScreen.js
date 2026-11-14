@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
-import {StyleSheet, View, Dimensions, NativeModules, ImageBackground} from 'react-native';
+import {StyleSheet, View, Dimensions, ImageBackground} from 'react-native';
 import FastImage from '@d11/react-native-fast-image';
 import ImageZoom from 'react-native-image-pan-zoom';
 import GeneralHeader from '../../components/header/GeneralHeader';
 import { useStatusBarHeight } from '../../hooks/useStatusBarHeight';
 
-const { ImmersiveMode } = NativeModules;
+
+const {width, height} = Dimensions.get('screen');
 function ImageScreen(props){
     const STATUS_BAR_HEIGHT = useStatusBarHeight()
-    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const {params} = props.route;
     const goBack = ()=>{
         props.navigation.goBack()
@@ -42,7 +42,7 @@ function ImageScreen(props){
             />
             </ImageZoom>
         </View>
-        <View style={{width:width, position:'absolute', top:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
+        <View style={{width:width, position:'absolute', top:STATUS_BAR_HEIGHT}}>
             <GeneralHeader
                 back={true}
                 coin={true}

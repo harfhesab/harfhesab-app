@@ -159,7 +159,7 @@ const VerifyTimer = memo(function VerifyTimer({iconName, iconType, color, endTim
 
 /* ═════════════ آلرت «دریافت سکه» ═════════════ */
 function showCoinAlert(text) {
-    const {width} = Dimensions.get('window');
+    const {width} = Dimensions.get('screen');
     AlertBottomDrawerHelper.showAlert({
         title: 'دریافت سکه',
         message: [
@@ -279,7 +279,7 @@ async function applyReward() {
 
 /* ═════════════ آلرت «آیا امتیاز دادید؟» با تایمر ═════════════ */
 function showVerificationAlert() {
-    const {width} = Dimensions.get('window');
+    const {width} = Dimensions.get('screen');
 
     // استعلام هم‌زمان با نمایش آلرت شروع می‌شود؛ تایمر در پایان منتظر نتیجه‌اش می‌ماند
     permissionPromise = checkPermission();
@@ -342,7 +342,7 @@ function showVerificationAlert() {
 
 /* ═════════════ دیالوگ «از حرف حساب راضی بودی؟» ═════════════ */
 function showRatingDialog() {
-    const {width} = Dimensions.get('window');
+    const {width} = Dimensions.get('screen');
     const reward = store.getState().constants.free_coin_first_rating_in_store;
 
     AlertBottomDrawerHelper.showAlert({

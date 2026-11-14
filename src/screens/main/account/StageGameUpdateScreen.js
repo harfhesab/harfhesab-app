@@ -28,7 +28,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Canvas, Circle, Path, BlurMask, Group } from '@shopify/react-native-skia';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get('screen')
 
 /* ------------------------------------------------------------------ */
 /*  پس‌زمینه‌ی متحرک: چند هاله‌ی نورانی که آرام شناورند                  */

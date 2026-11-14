@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, NativeModules, FlatList} from 'react-native';
+import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, FlatList} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
@@ -7,12 +7,10 @@ import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import axios from 'axios';
 import FooterLoading from '../../../components/screen-loading/FooterLoading';
 import NotificationCard from '../../../components/card/notification/NotificationCard';
-import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
+import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 
-const { ImmersiveMode } = NativeModules;
+const { width, height } = Dimensions.get('screen');
 function MessageInApp(props){
-    const STATUS_BAR_HEIGHT = useStatusBarHeight()
-    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true)
     const [getError, setGetError] = useState(false)
@@ -200,7 +198,7 @@ function MessageInApp(props){
     const memoizedValue = useMemo(() => renderItem, [data]);
     const keyExtractor = (item,index)=>index.toString()
     const ListEmptyComponent = ()=>(
-        <View style={{width: width - 60, height:ImmersiveMode.isImmersiveModeActive()?(height-(80 + STATUS_BAR_HEIGHT))*0.8:(height-80)*0.8, alignItems:'center', justifyContent:'center'}}>
+        <View style={{width: width - 60, height:(height-(80 + STATUS_BAR_HEIGHT))*0.8, alignItems:'center', justifyContent:'center'}}>
             <ScreenLoading
                 loading={loading}
                 getError={getError}
@@ -210,7 +208,7 @@ function MessageInApp(props){
         </View>
     )
     return(
-        <View style={{flex:1, backgroundColor:colors.background.a2, paddingTop:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
+        <View style={{flex:1}}>
             <GeneralHeader
                 coin={true}
                 back={true}
@@ -221,7 +219,7 @@ function MessageInApp(props){
 
                 <ImageBackground
                     source={require("../../../assets/image/menu_frame_full.png")}
-                    style={{ width: width - 20, height:ImmersiveMode.isImmersiveModeActive()?height-(80 + STATUS_BAR_HEIGHT):height-80, paddingVertical:"3.8%"}}
+                    style={{ width: width - 20, height:height-(80 + STATUS_BAR_HEIGHT), paddingVertical:"3.8%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >

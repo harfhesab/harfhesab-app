@@ -3,7 +3,7 @@ import {StyleSheet, View, Dimensions} from 'react-native';
 import { BarIndicator } from 'react-native-indicators';
 import useAppTheme from '../hooks/theme/useAppTheme';
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get('screen').width;
 function GraphLoading(props){
     const colors = useAppTheme();
     return(

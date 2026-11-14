@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef} from 'react';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, StatusBar, TouchableNativeFeedback, ScrollView} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, TouchableNativeFeedback, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,6 @@ import SeasonHeader from '../../../components/header/SeasonHeader';
 import { IS_TABLET_CONDITION } from '../../../utils/constants/constants';
 import SimpleBorderText from '../../../components/text-components/SimpleBorderText';
 import SeasonMediaSwiper from '../../../components/swiper/SeasonMediaSwiper';
-import { useImmersiveMode } from '../../../hooks/useImmersiveMode';
 import Icon from '../../../utils/Icon';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageInfo from '../../../components/card/general/StageInfo';
@@ -26,7 +25,6 @@ const {width, height} = Dimensions.get("screen");
 
 function StagesWordGameSeason(props){
     const STATUS_BAR_HEIGHT = useStatusBarHeight()
-    useImmersiveMode()
     useStageListStageGameMusic();
     const dispatch = useDispatch();
     const colors = useAppTheme()
@@ -132,14 +130,13 @@ function StagesWordGameSeason(props){
     )
     return(
         <SafeAreaView>
-            <StatusBar translucent={true} hidden={true} />
             <ImageBackground
                 source={require("../../../assets/image/background.png")}
                 style={{ width: width, height: height}}
                 imageStyle={{ resizeMode: "cover" }}
                 resizeMode="cover"
             >
-                <View style={{flex:1, paddingTop:STATUS_BAR_HEIGHT}}>
+                <View style={{flex:1}}>
                         <SeasonHeader/>
                         <View style={styles.container}>
                             <SeasonMediaSwiper

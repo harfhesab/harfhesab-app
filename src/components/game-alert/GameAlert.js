@@ -119,11 +119,12 @@ const GameAlert = React.forwardRef((props, ref) => {
             backdropOpacity={0.5}
             isVisible={visible}
             onBackdropPress={handleBackdropPress}
-            deviceHeight={height}
-            statusBarTranslucent={true}
-            coverScreen={true}
             useNativeDriverForBackdrop={true}
             onBackButtonPress={handleBackdropPress}
+            statusBarTranslucent={true}
+            deviceHeight={height}
+            deviceWidth={width}
+            coverScreen={true}
         >
             <View style={styles.outer}>
                 <ImageBackground

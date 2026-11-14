@@ -1,13 +1,12 @@
 import React, {memo} from "react";
-import { Text, TouchableOpacity, ImageBackground, NativeModules} from 'react-native';
+import { Text, TouchableOpacity, ImageBackground} from 'react-native';
 import Font from "../../utils/Font";
 import ImageComponent from "../image-components/ImageComponent";
 import { navigate } from "../../main/navigationService";
 
-const { ImmersiveMode } = NativeModules;
+
 function PackageInfoBtn({packageId, packageIcon}){
     const packageInfoClick = ()=>{
-        ImmersiveMode.exitImmersiveMode()
         navigate("PackageInformation", {_id:packageId});
     }
     return(

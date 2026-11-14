@@ -3,7 +3,7 @@ import {StyleSheet, View, Dimensions, TouchableOpacity, Text, ActivityIndicator}
 import Font from '../utils/Font';
 import useAppTheme from '../hooks/theme/useAppTheme';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 function FooterPaginate({loading, tryAgain, tryOperation}){
     const colors = useAppTheme();
     return(

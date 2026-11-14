@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { StatusBar, SafeAreaView} from 'react-native';
+import { SafeAreaView} from 'react-native';
 import { MD3LightTheme as PaperDefaultTheme, PaperProvider } from 'react-native-paper';
 import {NavigationContainer, DefaultTheme as NavigationDefaultTheme} from '@react-navigation/native';
 import SplashRoutes from './SplashRoutes';
@@ -68,7 +68,6 @@ const Main = (props) => {
   
   return (
     <SafeAreaProvider>
-        <StatusBar backgroundColor={colors.status_bar.background} barStyle={colors.status_bar.bar_style}/>
         <NavigationContainer 
           ref={navigationRef}
           onStateChange={(state) => {

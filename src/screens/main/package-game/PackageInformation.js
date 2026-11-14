@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, StatusBar, Platform, PermissionsAndroid} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, TouchableNativeFeedback, Platform, PermissionsAndroid} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
@@ -30,7 +29,7 @@ import LoadingBar from '../../../components/screen-loading/LoadingBar';
 import SeasonsBannerSwiper from '../../../components/swiper/SeasonsBannerSwiper';
 import ExpandableText from '../../../components/text-components/expandable-text';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get('screen')
 const gridSize = IS_TABLET_CONDITION?(width-75)/4:(width-45)/2
 const SEASON_ITEM_WIDTH = IS_TABLET_CONDITION? (width-60)/3 : (width - 45)/2
 function PackageInformation(props){
@@ -688,7 +687,6 @@ function PackageInformation(props){
         }
     }
     return(
-        <SafeAreaView style={{flex:1}}>
         <View style={{flex:1, backgroundColor:colors.background.a1}}>
             <GeneralHeader
                 coin={true}
@@ -942,7 +940,6 @@ function PackageInformation(props){
             </View>
             <BottomDrawerGrid ref = {Ref => {BottomDrawerGridHelper.setRef(Ref)}}/>
         </View>
-        </SafeAreaView>
     )
 }
 const InfoBox = ({title, value, width})=>{

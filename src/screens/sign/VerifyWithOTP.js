@@ -39,7 +39,7 @@ import { getMessaging, getToken } from '@react-native-firebase/messaging';
 import { updateUserWordGameProgressInLogin } from '../../realm/repositories/user/user-word-game-progress.repository';
   
   
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 function VerifyWithOTP(props){
     const realm = useRealm();
     const dispatch = useDispatch();

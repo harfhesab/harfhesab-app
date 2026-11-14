@@ -19,8 +19,9 @@ import axios from 'axios';
 import { showToast } from '../../../components/custom-toast/ToastRef';
 import LocalImageComponent from '../../../components/image-components/LocalImageComponent';
 import { TARGET_STORE } from '../../../utils/constants/build-config';
+import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 
-const {width, height} = Dimensions.get("window")
+const {width, height} = Dimensions.get('screen')
 const {CafeBazaar} = NativeModules;
 function Account(props){
     const colors = useAppTheme()
@@ -70,7 +71,7 @@ function Account(props){
             image_icon: require('../../../assets/image/my-package.png'),
             icon_size: 30,
             arrow: true,
-            onPress:()=>{props.navigation.navigate("UserPackagesList")},
+            onPress:()=>{props.navigation.navigate("UserPackagesList", {single:"1"})},
             is_visible:true
         },
         {
@@ -322,7 +323,7 @@ function Account(props){
                 {account()}
                 <ImageBackground
                     source={require("../../../assets/image/menu_frame.png")}
-                    style={{ width: width - 20, height: height-230, paddingVertical:"3.4%"}}
+                    style={{ width: width - 20, height: height-(230 + STATUS_BAR_HEIGHT), paddingVertical:"3.4%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >

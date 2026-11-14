@@ -6,7 +6,7 @@ import ButtonGradient from '../buttons/ButtonGradient';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { colors } from '../../hooks/theme/colors';
 
-const width = Dimensions.get('window').width;
+const width = Dimensions.get('screen').width;
 function ScreenLoading({
     loading,
     textColor=colors.text.a1,

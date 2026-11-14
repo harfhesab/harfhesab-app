@@ -13,7 +13,7 @@ import { navigate } from '../../../main/navigationService';
 import AlertBottomDrawerHelper from '../../alert-bottom-drawer/AlertBottomDrawerHelper';
 import SimpleBorderText from '../../text-components/SimpleBorderText';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 function UserPackageItem({_id, activeSubscription, packageId, title, image, accessType, price, numberStage, numberSeason, progress, contentCompleted, endedGame}){
     const colors = useAppTheme();
     const accessTypeText = 

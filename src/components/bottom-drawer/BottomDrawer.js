@@ -12,7 +12,7 @@ import ArrowItem from '../list-view-items/ArrowItem';
 import RadioButtonItem from '../list-view-items/RadioButtonItem';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 const BottomDrawer = React.forwardRef((props, ref)=>{
     const colors = useAppTheme();
     const maxHeight = height*0.9 - 160;
@@ -210,6 +210,10 @@ const BottomDrawer = React.forwardRef((props, ref)=>{
                     close()
                 }
             }}
+            statusBarTranslucent={true}
+            deviceHeight={height}
+            deviceWidth={width}
+            coverScreen={true}
             style={{justifyContent:'flex-end', alignItems:'center', margin: 0}}
         >
             <View style={[styles.modalContainer, {backgroundColor:colors.bottom_drawer.background}]}>

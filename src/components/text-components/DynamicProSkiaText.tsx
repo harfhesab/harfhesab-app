@@ -22,7 +22,7 @@ interface DynamicProSkiaTextProps {
   fontName?: string; 
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 const DynamicProSkiaText: React.FC<DynamicProSkiaTextProps> = ({ 
   text,

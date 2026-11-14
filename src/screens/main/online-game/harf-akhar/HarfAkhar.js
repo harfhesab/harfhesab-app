@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Platform, StyleSheet, View, Dimensions, FlatList, Text, StatusBar, InteractionManager } from 'react-native';
+import { Platform, StyleSheet, View, Dimensions, FlatList, Text, InteractionManager } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import ScreenLoading from '../../../../components/screen-loading/ScreenLoading';
@@ -200,7 +200,6 @@ function HarfAkhar(props) {
 
     return (
         <SafeAreaView style={{flex:1, backgroundColor:"#120426"}}>
-            <StatusBar translucent={true} hidden={true} />
             <GalaxyTwinkle >
                 <View style={{flex:1 }}> 
                     <View style={styles.container}>
@@ -230,7 +229,7 @@ function HarfAkhar(props) {
                     </View>
                 </View>
             </GalaxyTwinkle>
-            <View style={{position:'absolute', paddingTop:STATUS_BAR_HEIGHT, backgroundColor:'#12042670'}}>
+            <View style={{position:'absolute', backgroundColor:'#12042670'}}>
                 <GeneralHeader
                     backgroundColor={'transparent'}
                     home={true}

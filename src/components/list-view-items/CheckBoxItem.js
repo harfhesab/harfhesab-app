@@ -7,7 +7,7 @@ import Globals from '../../utils/Globals';
 import CheckBox from '../CheckBox';
 import useAppTheme from '../../hooks/theme/useAppTheme';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 function CheckBoxItem({check, disabled, checkBoxSize, onPress, width, height, paddingHorizontal, iconName, iconType, iconSize, iconColor, imageUrl, imageSize, imageLocal, text1, text2, fontFamilyText1, fontSizeText1, fontFamilyText2, fontSizeText2}){
     const colors = useAppTheme();
     const [checkState, setCheckState] = useState(check);

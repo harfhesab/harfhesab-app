@@ -8,7 +8,7 @@ import PackageCollectionItem from '../card/package-game-card/PackageCollectionIt
 import useAppTheme from '../../hooks/theme/useAppTheme';
 import { IS_TABLET_CONDITION } from '../../utils/constants/constants';
 
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 const ITEM_WIDTH = IS_TABLET_CONDITION?(width - 160)/6:(width - 80)/3;
 const HORIZONTAL = 10;
 const GAP = 5;

@@ -5,7 +5,6 @@ import GameTabBar from '../../../../components/Gametabbar';
 import HarfAkhar from './HarfAkhar';
 import HarfAkharPlaying from './HarfAkharPlaying';
 import {useHarfAkharListMusic} from '../../../../utils/sound/MusicFunctions';
-import { useImmersiveMode } from '../../../../hooks/useImmersiveMode';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,7 +39,6 @@ const TAB_ITEMS = Object.fromEntries(
 );
 
 const HarfAkharBottomTab = () => {
-  useImmersiveMode()
   useHarfAkharListMusic();
   const colors = useAppTheme();
   const accent = colors.primary.a5;

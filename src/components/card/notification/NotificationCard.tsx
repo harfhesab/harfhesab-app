@@ -30,7 +30,7 @@ interface Props {
   freeSubscriptionPlan : any;
   createdAt : Date;
 }
-const width = Dimensions.get('window').width
+const width = Dimensions.get('screen').width
 function NotificationCard({
     _id,
     title,

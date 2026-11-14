@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef} from 'react';
 import { BSON } from 'realm';
-import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, StatusBar, TouchableNativeFeedback, ScrollView} from 'react-native';
+import {Platform, StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, FlatList, I18nManager, ImageBackground, TouchableNativeFeedback, ScrollView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { checkStageGameContentVersion } from '../../../utils/api/StageGameApi';
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +16,6 @@ import SeasonMediaSwiper from '../../../components/swiper/SeasonMediaSwiper';
 import { getPackageSeasonById } from '../../../realm/repositories/package-game/package-season.repository';
 import { getPackageStagesBySeasonId } from '../../../realm/repositories/package-game/package-stage.repository';
 import { UserPackage } from '../../../realm/schemas/user/UserPackageSchema';
-import { useImmersiveModeNotExit } from '../../../hooks/useImmersiveModeNotExit';
 import Icon from '../../../utils/Icon';
 import ScreenLoading from '../../../components/screen-loading/ScreenLoading';
 import StageInfo from '../../../components/card/general/StageInfo';
@@ -40,7 +39,6 @@ function useUserPackageGameData({ userPackageId }) {
 function StagesPackageGameSeason(props){
     const STATUS_BAR_HEIGHT = useStatusBarHeight()
     const dispatch = useDispatch();
-    useImmersiveModeNotExit()
     useStageListPackageGameMusic()
     const colors = useAppTheme()
     const tabRef = useRef()
@@ -168,14 +166,13 @@ function StagesPackageGameSeason(props){
     )
     return(
         <SafeAreaView>
-            <StatusBar translucent={true} hidden={true} />
             <ImageBackground
                 source={require("../../../assets/image/background.png")}
                 style={{ width: width, height: height}}
                 imageStyle={{ resizeMode: "cover" }}
                 resizeMode="cover"
             >
-                <View style={{flex:1, paddingTop:STATUS_BAR_HEIGHT}}>
+                <View style={{flex:1}}>
                         <SeasonHeader
                             packageIcon={packageIcon}
                             packageId={userPackage.package_ref.toHexString()}

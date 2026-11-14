@@ -31,9 +31,10 @@ import useContentGate from '../../features/homeOnboarding/useContentGate';
 import FirstTouchGate from '../../features/homeOnboarding/FirstTouchGate';
 import showWelcomeDialog from '../../features/homeOnboarding/showWelcomeDialog';
 import showDownloadDialog from '../../features/homeOnboarding/showDownloadDialog';
+import { STATUS_BAR_HEIGHT } from '../../utils/constants/constants';
 
 /* ═════════════ ثابت‌ها ═════════════ */
-const HEADER_HEIGHT = 60;
+const HEADER_HEIGHT = 60 + STATUS_BAR_HEIGHT;
 
 const AD_LOAD_ERROR_MESSAGE =
     'مشکلی در بارگذاری ویدیو پیش آمد. اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.';
@@ -346,7 +347,6 @@ function Home(props) {
                         shadowColor={'transparent'}
                         borderBottomColor={'transparent'}
                         borderBottomWidth={0}
-                        height={HEADER_HEIGHT}
                         notification={true}
                         account={true}
                     />

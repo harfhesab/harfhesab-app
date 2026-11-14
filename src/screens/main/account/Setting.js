@@ -1,16 +1,15 @@
 import React from 'react';
-import {StyleSheet, View, Dimensions, ScrollView, ImageBackground, NativeModules} from 'react-native';
+import {StyleSheet, View, Dimensions, ScrollView, ImageBackground} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import useAppTheme from '../../../hooks/theme/useAppTheme';
 import GeneralHeader from '../../../components/header/GeneralHeader';
 import SwitchItem from '../../../components/list-view-items/SwitchItem';
 import { changeMusicGame, changeSoundGame, changeVibrationGame } from '../../../redux/slices/settingSlice';
-import { useStatusBarHeight } from '../../../hooks/useStatusBarHeight';
+import { STATUS_BAR_HEIGHT } from '../../../utils/constants/constants';
 
-const { ImmersiveMode } = NativeModules;
+
+const { width, height } = Dimensions.get('screen');
 function Setting(props){
-    const STATUS_BAR_HEIGHT = useStatusBarHeight()
-    const { width, height } = ImmersiveMode.isImmersiveModeActive()? Dimensions.get('screen'): Dimensions.get('window');
     const dispatch = useDispatch();
     const colors = useAppTheme()
     const { sound, music, vibration } = useSelector((state) => state.setting);
@@ -18,7 +17,7 @@ function Setting(props){
     
     
     return(
-        <View style={{flex:1, backgroundColor:colors.background.a2, paddingTop:ImmersiveMode.isImmersiveModeActive()?STATUS_BAR_HEIGHT:0}}>
+        <View style={{flex:1}}>
             <GeneralHeader
                 coin={true}
                 back={true}
@@ -29,7 +28,7 @@ function Setting(props){
 
                 <ImageBackground
                     source={require("../../../assets/image/menu_frame_full.png")}
-                    style={{ width: width - 20, height:ImmersiveMode.isImmersiveModeActive()?height-(80 + STATUS_BAR_HEIGHT):height-80, paddingVertical:"3.5%"}}
+                    style={{ width: width - 20, height:height-(80 + STATUS_BAR_HEIGHT), paddingVertical:"3.5%"}}
                     imageStyle={{ resizeMode: "stretch" }}
                     resizeMode="stretch"
                 >
